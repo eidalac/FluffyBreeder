@@ -1,0 +1,200 @@
+:: init [nobr]
+
+/*
+Fluffy Breeder
+a text-based fluffy management game
+Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
+
+This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+
+This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+
+You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+*/
+
+<<unset $releaseID>>
+<<set $ver = "00.00.01", $releaseID = COMMIT>>
+<<if ndef $releaseID>><<set $releaseID = 1>><</if>>
+
+<<set $week = 1>>
+<<set $month = "January">>
+<<set $day = random(9, 21)>>
+<<set $year = random(2030, 2056)>>
+
+<<set $cash = 1000>>
+<<set $economy = 1>>
+<<set $alicornRarity = 1>> 
+<<set $alicornMonster = 1>> 
+<<set $pooBaby = 1>>
+<<set $smartySyndrom = 1>>
+
+<<set $showStartingExplanation = 1>>
+<<set $customDad = "">>
+<<set $customMom = "">>
+<<set $outShopping = false>> 
+
+<<set $fID = 0>>
+<<set $storeMales = 0>>
+<<set $storeFemales = 0>>
+<<set $storeFoals = 0>>
+
+<<set $storePoints = 111>>
+<<set $ourStore = {
+	name: "The Store",
+	space: 0,
+	shelter: 0,
+	display: 0,
+	storage: 0,
+	fluffies: [],
+	stallions: 0,
+	mares: 0,
+	foals: 0
+}
+>>
+<<set $food = {
+	kibble: {
+		trash: 0,
+		cheap: 0,
+		basic: 0,
+		good: 0,
+		quality: 0
+	},
+	formula: {
+		trash: 0,
+		cheap: 0,
+		basic: 0,
+		good: 0,
+		quality: 0
+	},
+	greens: {
+		trash: 0,
+		cheap: 0,
+		basic: 0,
+		good: 0,
+		quality: 0
+	},
+	sketti: {
+		trash: 0,
+		cheap: 0,
+		basic: 0,
+		good: 0,
+		quality: 0
+	}
+}
+>>
+<<set $foodPrice = {
+	kibble: {
+		trash: .05,
+		cheap: .5,
+		basic: 2,
+		good: 7,
+		quality: 14
+	},
+	formula: {
+		trash: 0.2,
+		cheap: 2,
+		basic: 6,
+		good: 10,
+		quality: 21
+	},
+	greens: {
+		trash: 0.01,
+		cheap: .1,
+		basic: 1,
+		good: 5,
+		quality: 10
+	},
+	sketti: {
+		trash: 2,
+		cheap: 5,
+		basic: 10,
+		good: 15,
+		quality: 20
+	}
+}
+>>
+
+<<set $breedMare = -1>>
+<<set $breedStal = -1>>
+
+/* This needs to be broken down into individual files that can be added to StoryInit instead. */
+
+<<if ndef $saveImported>>
+	<<set $saveImported = 0>>
+<</if>>
+
+<<if $saveImported == 0>>
+
+<<set $cheater = 0>>
+<<set $cash = 1000>>
+<<set $normalizedEvents = 0>>
+<<set $autosave = 1>>
+<<set $seeAge = 1>>
+<<set $seeImages = 0>>
+<<set $imageChoice = 0>>
+<<set $seeVectorArtHighlights = 1>>
+
+<<include "Init Rules">>
+
+<<set $lastWeeksFinances = {
+incomeSales: 0,
+expensesRents: 0,
+profitsTotal: 0
+}>>
+
+<<set $niceWeather = [
+	{name: "Sunny", severity: 1},
+	{name: "Cloudy", severity: 1},
+	{name: "Partly Cloudy", severity: 1},
+	{name: "Overcast", severity: 1},
+	{name: "Light Wind", severity: 1},
+	{name: "Clear and Calm", severity: 1},
+	{name: "Light Rain", severity: 1},
+	{name: "Heavy Rain", severity: 1},
+	{name: "Smoke warning", severity: 1},
+]>>
+
+<<set $lightWeather = [
+	{name: "High Winds", severity: 2},
+	{name: "Acid Rain", severity: 2},
+	{name: "T-Storm Warning", severity: 2},
+	{name: "Flood Warning", severity: 2},
+	{name: "Tornado Warning", severity: 2},
+	{name: "Light Sandstorm", severity: 2},
+	{name: "High Heat", severity: 2},
+	{name: "Smoky", severity: 2},
+]>>
+
+<<set $heavyWeather = [
+	{name: "Extreme Winds", severity: 3},
+	{name: "Heavy Acid Rain", severity: 3},
+	{name: "Extreme T-storm", severity: 3},
+	{name: "Flooding", severity: 3},
+	{name: "Tornadoes", severity: 3},
+	{name: "Sandstorm", severity: 3},
+	{name: "Extreme Heat", severity: 3},
+	{name: "Dense Smoke", severity: 3},
+]>>
+
+<<set $extremeWeather = [
+	{name: "Solar Flare", severity: 4},
+	{name: "Ion Storm", severity: 4},
+	{name: "Cataclysmic Rains", severity: 4},
+	{name: "Cat 6 Hurricane", severity: 4},
+	{name: "Abrasive Sandstorm", severity: 4},
+	{name: "Radiological Warning", severity: 4},
+]>>
+
+<<set $weatherToday = $niceWeather.random()>>
+
+<<set $returnTo = "Week Start">>
+<<set $nextButton = "END WEEK">>
+<<set $nextLink = "EW Fluffies">>
+
+
+<<set $cheatMode = 0>>
+
+/* HACKY EVENT WORKAROUNDS */
+<<set $eventID = -1>>
+
+<<goto "Disclaimer">>

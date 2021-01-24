@@ -1,0 +1,47 @@
+:: description widgets [widget nobr]
+
+<<widget "MainLinks">>
+
+<center>
+<<switch $personalAttention>>
+<<case "business">>You plan to focus on business this week.
+<<case "trading">>This week you will learn trading.
+<<case "warfare">>This week you will learn modern combat tactics.
+<<case "engineering">>This week you will learn engineering.
+<<case "medicine">>This week you will learn medicine.
+<<default>>
+<</switch>>
+
+<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@
+
+<</widget>>
+
+
+
+<<widget "FluffyDesc">>
+	<br>$activeFluffy.name is a $activeFluffy.gender $activeFluffy.breed.
+	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat, <<inlineColor $activeFluffy.mColor>> mane and <<inlineColor $activeFluffy.eColor>> eyes. 
+	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
+	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
+	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
+	<br>
+	<br>Stats
+	<br>Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
+<</widget>>
+
+/%
+ Call as <<shortDesc $fluffy>>
+	Calling this widget will create a summary for the passed fluffy
+	It should be preceeded by the fluffy selection link.
+%/
+
+<<widget "shortDesc">>
+	<<set _fluffy = $args[0]>>
+
+	_fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat | <<inlineColor _fluffy.mColor>> mane | <<inlineColor _fluffy.eColor>> eyes
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;Mother ... Father ... Children ... <<if _fluffy.specialFriend != -1>>Special Friend <<print $ourStore.fluffies[_fluffy.specialFriend].name>><</if>>
+<</widget>>
+
+

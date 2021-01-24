@@ -1,0 +1,53 @@
+::Fluffy List [nobr]
+<<set $ui = "main">>
+<br>
+<br>
+<<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
+<<set _eMare = [], _eStal = []>>
+
+
+<<capture _f>>
+
+<<for _f to 0; _f lt $ourStore.fluffies.length; _f++>>
+
+	<<set _fluff = $ourStore.fluffies[_f]>>
+
+	[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_f]]] <<shortDesc _fluff>>
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_f], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
+	<<set $ourStore.fluffies[_f] = _fluff>>
+	<hr>
+
+/%
+	<<if $ourStore.fluffies[$i].gender == "female" && !$ourStore.fluffies[$i].pregnant && !$ourStore.fluffies[$i].nursing && $ourStore.fluffies[$i].specialFriend == -1>>
+		<<run _eMare.push($ourStore.fluffies[$i])>>
+	<</if>>
+	
+	<<if $ourStore.fluffies[$i].gender == "male" && $ourStore.fluffies[$i].specialFriend == -1>>
+		<<run _eStal.push($ourStore.fluffies[$i])>>
+	<</if>>
+%/
+	
+<</for>>
+
+/%
+<<if _eMare.length>>
+	<hr>
+	<<for _f to 0; _f lt _eMare.length; _f++>>
+		<<set _tID = _eMare[_f].ID>>
+		[[_eMare[_f].name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_tID]]] <<shortDesc _eMare[_f]>>
+		<<set $ourStore.fluffies[_tID] = _eMare[$i]>>
+		<hr>
+	<</for>>
+<</if>>
+
+<<if _eStal.length>>
+	<<for _f to 0; _f lt _eStal.length; _f++>>
+		<<set _tID = _eStal[_f].ID>>
+		[[_eStal[_f].name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_tID]]]], <<shortDesc _eStal[_f]>>
+		<<set $ourStore.fluffies[_tID] = _eStal[_f]>>
+		<hr>
+	<</for>>
+<</if>>
+%/
+<<set $activeFluffy = 0, _fluff = 0>>
+<</capture>>

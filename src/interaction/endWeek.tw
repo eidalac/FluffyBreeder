@@ -1,0 +1,56 @@
+:: End Week [nobr]
+
+<<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
+
+<<for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++>>
+	<<if $ourStore.fluffies[_ef].specialFriend != -1 && $ourStore.fluffies[_ef].gender == "female">>
+		<<set $mom = $ourStore.fluffies[_ef]>>
+		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
+		
+		<br>$mom.name and $dad.name have special hugs.
+		<br>enf enf enf
+		
+		<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+		<br>_litter foals
+
+
+		<<for _fo = 0; _fo < _litter; _fo++>>
+			<<breedFluffies $mom $dad>>
+			<br>Foal#<<print _f+1>> <<FluffyDesc>>
+			<hr>
+			<<set $activeFluffy.ID = $ourStore.fluffies.length>>
+			<<run $ourStore.fluffies.push($activeFluffy)>>
+
+		<</for>>
+	<</if>>
+<</for>>
+
+
+
+<br>@@.orange;THE END.@@
+<br>
+<br>.. of what has been coded so far.
+<br>
+<br>
+<br>@@.yellow;Developers TODO list.@@
+<br>
+<br>
+ <ol>
+ <li>Get breeding running to test genes/illness/inbreeding.</li>
+ <li>Check for genes linked to illness/still births/inbreed.</li>
+ <li>Clean up the buying of starting fluffies.</li>
+ <li>Enable feral hunting.</li>
+ <li>Other inherited traits ala CK2/CK3 https://ck3.paradoxwikis.com/Traits</li>
+ <li>Non genetic traits fluffies can aquire.ala CK2/CK3 https://ck3.paradoxwikis.com/Traits</li>
+ <li>Add validation for inserting custom genes for a fluffy generation</li>
+ <li>Include a debug menu/option for the above</li>
+ <li>Some PC customization (at least what the fluffies will call you).</li>
+ <li>Player stats: Reputation, Training XP, Abuse XP, Hugbox XP, Abuse Reputation, Hugbox Reputation, stress</li>
+ <li>Outline code for weekly events.</li>
+ <li>Make this page do ... things.</li>
+ </ol>
+ <br>
+
+<br>//[[Back to Week Start|Week Start]]//
+<br>
+<br>//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//
