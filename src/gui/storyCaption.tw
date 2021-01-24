@@ -1,0 +1,161 @@
+:: StoryCaption
+\
+<<set _Pass = passage()>>\
+<<if _Pass == "Encyclopedia">>
+<<elseif _Pass == "Intro Summary">>\
+	<<SidebarDate>>	
+<<elseif _Pass == "Shop Intro">>\
+	<<SidebarDate>>
+	<<SidebarWeather>>
+<<elseif _Pass == "Fluffy Intro">>\
+	<<SidebarDate>>
+	<<SidebarWeather>>
+	<<SidebarCash>>
+	<<SidebarStore>>
+<<elseif _Pass == "Food Intro">>\
+	<<SidebarDate>>
+	<<SidebarWeather>>
+	<<SidebarCash>>
+	<<SidebarFluffies>>
+	<<SidebarStore>>
+<<elseif $ui == "main">>\
+	<<SidebarDate>>
+	<<SidebarWeather>>
+	<<SidebarButton>>
+	<<SidebarCash>>
+	<<SidebarFluffies>>
+	<<SidebarFood>>
+	<<SidebarStore>>
+<<nobr>>
+ 
+
+<br>@@.green;Rep@@ |
+<<set $rep = Math.clamp(Math.trunc($rep), 0, 20000)>>
+<span id="rep">
+<<if $rep > 19000>>
+	@@color:rgb(0,145,0);worshipped@@
+<<elseif $rep > 18000>>
+	@@color:rgb(0,150,0);great@@
+<<elseif $rep > 17000>>
+	@@color:rgb(0,155,0);exalted@@
+<<elseif $rep > 16000>>
+	@@color:rgb(0,160,0);illustrious@@
+<<elseif $rep > 15000>>
+	@@color:rgb(0,165,0);prestigious@@
+<<elseif $rep > 14000>>
+	@@color:rgb(0,170,0);renowned@@
+<<elseif $rep > 13000>>
+	@@color:rgb(0,175,0);famed@@
+<<elseif $rep > 12000>>
+	@@color:rgb(0,180,0);celebrated@@
+<<elseif $rep > 11000>>
+	@@color:rgb(0,185,0);honored@@
+<<elseif $rep > 10000>>
+	@@color:rgb(0,190,0);acclaimed@@
+<<elseif $rep > 9000>>
+	@@color:rgb(0,195,0);eminent@@
+<<elseif $rep > 8250>>
+	@@color:rgb(0,200,0);prominent@@
+<<elseif $rep > 7000>>
+	@@color:rgb(0,205,0);distinguished@@
+<<elseif $rep > 6750>>
+	@@color:rgb(0,210,0);admired@@
+<<elseif $rep > 6000>>
+	@@color:rgb(0,215,0);esteemed@@
+<<elseif $rep > 5250>>
+	@@color:rgb(0,220,0);respected@@
+<<elseif $rep > 4500>>
+	@@color:rgb(0,225,0);known@@
+<<elseif $rep > 3750>>
+	@@color:rgb(0,230,0);recognized@@
+<<elseif $rep > 3000>>
+	@@color:rgb(0,235,0);rumored@@
+<<elseif $rep > 2250>>
+	@@color:rgb(0,240,0);envied@@
+<<elseif $rep > 1500>>
+	@@color:rgb(0,245,0);resented@@
+<<elseif $rep > 750>>
+	@@color:rgb(0,250,0);disliked@@
+<<else>>
+	@@color:rgb(0,255,0);unknown@@
+<</if>>
+($rep)
+</span>
+<<if (_Pass == "Main")>>
+	<<if ($cheatMode) && ($cheatModeM)>>
+	<<set _TRep = $rep>>
+	<<textbox "$rep" $rep>>
+	<<link "Apply">>
+	<<set $rep = Math.clamp(Math.trunc(Number($rep) || _TRep), 0, 20000), $cheater = 1>>
+	<<replace "#rep">>
+	<<if $rep > 19000>>
+		@@color:rgb(0,145,0);worshipped@@
+	<<elseif $rep > 18000>>
+		@@color:rgb(0,150,0);great@@
+	<<elseif $rep > 17000>>
+		@@color:rgb(0,155,0);exalted@@
+	<<elseif $rep > 16000>>
+		@@color:rgb(0,160,0);illustrious@@
+	<<elseif $rep > 15000>>
+		@@color:rgb(0,165,0);prestigious@@
+	<<elseif $rep > 14000>>
+		@@color:rgb(0,170,0);renowned@@
+	<<elseif $rep > 13000>>
+		@@color:rgb(0,175,0);famed@@
+	<<elseif $rep > 12000>>
+		@@color:rgb(0,180,0);celebrated@@
+	<<elseif $rep > 11000>>
+		@@color:rgb(0,185,0);honored@@
+	<<elseif $rep > 10000>>
+		@@color:rgb(0,190,0);acclaimed@@
+	<<elseif $rep > 9000>>
+		@@color:rgb(0,195,0);eminent@@
+	<<elseif $rep > 8250>>
+		@@color:rgb(0,200,0);prominent@@
+	<<elseif $rep > 7000>>
+		@@color:rgb(0,205,0);distinguished@@
+	<<elseif $rep > 6750>>
+		@@color:rgb(0,210,0);admired@@
+	<<elseif $rep > 6000>>
+		@@color:rgb(0,215,0);esteemed@@
+	<<elseif $rep > 5250>>
+		@@color:rgb(0,220,0);respected@@
+	<<elseif $rep > 4500>>
+		@@color:rgb(0,225,0);known@@
+	<<elseif $rep > 3750>>
+		@@color:rgb(0,230,0);recognized@@
+	<<elseif $rep > 3000>>
+		@@color:rgb(0,235,0);rumored@@
+	<<elseif $rep > 2250>>
+		@@color:rgb(0,240,0);envied@@
+	<<elseif $rep > 1500>>
+		@@color:rgb(0,245,0);resented@@
+	<<elseif $rep > 750>>
+		@@color:rgb(0,250,0);disliked@@
+	<<else>>
+		@@color:rgb(0,255,0);unknown@@
+	<</if>>
+	($rep)
+	<</replace>>
+	<</link>>
+	<</if>>
+<<elseif _Pass == "Options">>
+<<else>>
+	<br><br><br><br><br><br><br><br>
+<</if>>
+<</nobr>>
+<</if>>\
+<<nobr>>
+<<if (_Pass == "Encyclopedia") || ($showEncyclopedia == 0) || ($encyclopedia == " ")>>
+<<else>>
+	//FCE:// [[$encyclopedia|Encyclopedia][$nextButton = "Back", $nextLink = _Pass]]
+<</if>>
+	<br><br>
+<<if ($debugMode == 1)>>
+	Debugging
+	<br>
+	<<link "Display Variables">><<checkvars>><</link>>
+	<br>
+	<<link "Bug Report">><<bugreport>><</link>>
+<</if>>
+<</nobr>>

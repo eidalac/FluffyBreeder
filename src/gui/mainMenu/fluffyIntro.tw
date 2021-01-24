@@ -1,8 +1,6 @@
 :: Fluffy Intro [nobr]
 <br>
 <<set $cash = Number($cash).toFixed(2)>>
-<br>Game Design Document: https://docs.google.com/document/d/1LIVm4eylJ_1YTUdhYx_K6K-_H0sQ3r1WelZ_44poASs/edit?usp=sharing
-<br>
 <br>
 <<if $showStartingExplanation == 1>>
 	<br>@@.orange;TODO: add some starting shop options here.@@
@@ -17,18 +15,14 @@
 <<elseif $ourStore.fluffies.length > 1>>
 	You have $ourStore.fluffies.length fluffies already.
 <</if>>
-<br>
-<br>//[[Lets hunt for some ferals!|Fluffy Intro][$outShopping = false]]// @@.orange;WIP: Not enabled at this time.@@
-<br>
-<br>//[[Lets go Shopping|Fluffy Intro][$outShopping = true]]//
-
+/%<br>//[[Lets hunt for some ferals!|Fluffy Intro][$outShopping = false]]// @@.orange;WIP: Not enabled at this time.@@%/
 <<BaseFluffy "MALE">>
 <<set _Granddad = clone($activeFluffy)>>
 <<BaseFluffy "FEMALE">>
 <<set _Grandmom = clone($activeFluffy)>>
-
-<<if $outShopping>>
-	<hr>
+<<if !$outShopping>>
+<br>//[[Lets go Shopping|Fluffy Intro][$outShopping = true]]//
+<<elseif $outShopping>>
 	<br>You find this fluffy:
 	<hr>
 	<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
@@ -38,21 +32,18 @@
 	<<FluffyDesc>>
 	<br><<They>> would cost 
 	<<switch $activeFluffy.breed>>
-	<<case "earthy" "earthy*" "earthy**">>
-		<<set _price = $earthPrice.mart>>
-		¤$earthPrice.mart.
-	<<case "unicorn" "unicorn*" "unicorn**">>
-		<<set _price = $unicornPrice.mart>>
-		¤$unicornPrice.mart.
-	<<case "pegasus" "pegasus*" "pegasus**">>
-		<<set _price = $pegasusPrice.mart>>
-		¤$pegasusPrice.mart.
-	<<case "alicorn" "alicorn*" "alicorn**">>
-		<<set _price = $alicornPrice.mart>>
-		¤$alicornPrice.deluxe.
+		<<case "unicorn">>
+			<<set _price = Number($unicornPrice.mart).toFixed(2)>>
+		<<case "pegasus">>
+			<<set _price = Number($pegasusPrice.mart).toFixed(2)>>
+		<<case "alicorn">>
+			<<set _price = Number($alicornPrice.deluxe).toFixed(2)>>
+		<<default>>
+			<<set _price = Number($earthPrice.mart).toFixed(2)>>
 	<</switch>>
+	¤_price.
 	<hr>[[Keep Looking|Fluffy Intro][$customDad = "", $customMom = "", $showStartingExplanation = 0]]  | 
-	<<if $cash >= _price>>
+	<<if Number($cash) >= Number(_price)>>
 	 [[Add to the cart|Fluffy Intro][$cash-= _price, $customDad = "", $customMom = "", $showStartingExplanation = 0, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
 	<<else>>//You lack the necessary funds to buy this fluffy.// | 
 	<</if>>
