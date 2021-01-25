@@ -25,14 +25,20 @@
 		<<set $mom = $ourStore.fluffies[_ef]>>
 		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
 
-		<<if !$mom.pregnant && !$mom.nursing>> 
-			<br>$mom.name and $dad.name have special hugs.
-			<br>enf enf enf
-		
-			<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
-			<<set $mom.pregnant = true>>
-			<<set $mom.dueDate = $week + random(3, 4)>>
-			<<set $mom.litter = _litter>>
+		<<if !$mom.pregnant && !$mom.nursing>>
+			<<if $ourStore.fluffies.length > $ourStore.shelter>>
+				<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
+				<br>huhuhu
+				<<set $mom.pregnant = false>>
+			<<else>>
+				<br>$mom.name and $dad.name have special hugs.
+				<br>enf enf enf
+				
+				<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+				<<set $mom.pregnant = true>>
+				<<set $mom.dueDate = $week + random(3, 4)>>
+				<<set $mom.litter = _litter>>
+			<</if>>
 		<<elseif $mom.pregnant && Number($mom.dueDate) < Number($week)>>
 			<br>$mom.name is giving birth.
 			<br>SKREEEEE BIGGGEST POOOPIES
@@ -46,11 +52,13 @@
 			<</for>>
 
 			<<set $mom.litter = 0>>
+			<<set $mom.dueDate = -1>>
 			<<set $mom.pregnant = false>>
 			<<set $mom.nursing = true>>
 			<<set $mom.nursingTime = $week + 5>>
 		<<elseif $mom.nursing && Number($mom.nursingTime) < Number($week)>>
 			 <<set $mom.nursing = false>>
+			 <<set $mom.pregnant = false>>
 			 <br>$mom.name is no longer nursing.
 		<</if>>
 	<</if>>

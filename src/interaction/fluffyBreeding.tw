@@ -8,7 +8,7 @@
 <<if $breedStal < 0 || $breedMare < 0>>
 	<br>Possible mates for  $activeFluffy.name:
 	<hr>
-	
+
 	<<if ($activeFluffy.ageWeeks + ($activeFluffy * 52)) < $activeFluffy.maturity>>
 		<br><br>@@.red;Foal $activeFluffy.ID - selected for breeding@@<br><br>
 	<<elseif $activeFluffy.gender == "male">>
@@ -18,22 +18,15 @@
 	<<else>>
 		<br><br>@@.red;Invalid Gender found $activeFluffy.ID - " <<print $activeFluffy.gender>> "@@<br><br>
 	<</if>>
-	
+<<capture _bf>>
 	<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
-	
-		<<set _fluff = $ourStore.fluffies[_bf]>>
-		
 		<<if $ourStore.fluffies[_bf].gender != $activeFluffy.gender && ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) >= $ourStore.fluffies[_bf].maturity>>
-			@@.green;_fluff.name@@ <<shortDesc _fluff>>
-			<<if $ourStore.fluffies[_bf].gender == "male">>
-				<<set $breedStal = $ourStore.fluffies[_bf].ID>>
-			<<else>>
-				<<set $breedMare = $ourStore.fluffies[_bf].ID>>
-			<</if>>
-			<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Set Special Friend|Fluffy Breeding]]
+			@@.green;$ourStore.fluffies[_bf].name@@ <<shortDesc $ourStore.fluffies[_bf]>>
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding]]>><<if $ourStore.fluffies[_bf].gender == "male">><<set $breedStal = _bf>><<else>><<set $breedMare = _bf>><</if>><</link>>			
 			<hr>
 		<</if>>
 	<</for>>
+<</capture>>
 <<else>>
 <br>$ourStore.fluffies[$breedStal].name and $ourStore.fluffies[$breedMare].name are now special friends.
 <br>
