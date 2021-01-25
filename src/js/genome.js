@@ -2,7 +2,7 @@
  * Library that contains objects that represent genomes (a.k.a. gene strings),
  * as well as their composite genes and alleles.
  * 
- * Orignal code from https://github.com/armatronic
+ * Original code from https://github.com/armatronic
  * 
  */
 
