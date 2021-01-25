@@ -2,30 +2,64 @@
 
 <<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
 
+
+/%
+ % Check for breeding pairs, and make some babies.
+ % need to change this to a preg status change
+%/
 <<for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++>>
+	<<set $ourStore.fluffies[_ef].ageWeeks++>>
+	
+	<<if Number($ourStore.fluffies[_ef].ageWeeks) > 52>>
+		<<set $ourStore.fluffies[_ef].ageWeeks = 0>>
+		<<set $ourStore.fluffies[_ef].age++>>
+	<</if>>
+
+	<<if Number($ourStore.fluffies[_ef].maxAge) < Number($ourStore.fluffies[_ef].age)>>
+		<<if random(0, 1) == 1>>
+			$ourStore.fluffies[_ef].name does not wake up.  ( $ourStore.fluffies[_ef].age /  $ourStore.fluffies[_ef].maxAge years old)
+		<</if>>
+	<</if>>
+
 	<<if $ourStore.fluffies[_ef].specialFriend != -1 && $ourStore.fluffies[_ef].gender == "female">>
 		<<set $mom = $ourStore.fluffies[_ef]>>
 		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
+
+		<<if !$mom.pregnant && !$mom.nursing>> 
+			<br>$mom.name and $dad.name have special hugs.
+			<br>enf enf enf
 		
-		<br>$mom.name and $dad.name have special hugs.
-		<br>enf enf enf
-		
-		<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
-		<br>_litter foals
+			<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+			<<set $mom.pregnant = true>>
+			<<set $mom.dueDate = $week + random(3, 4)>>
+			<<set $mom.litter = _litter>>
+		<<elseif $mom.pregnant && Number($mom.dueDate) > Number($week)>>
+			<br>$mom.name is giving birth.
+			<br>SKREEEEE BIGGGEST POOOPIES
 
+			<<for _fo = 0; _fo < $mom.litter; _fo++>>
+				<<breedFluffies $mom $dad>>
+				<br>Foal#<<print _f+1>> <<FluffyDesc>>
+				<hr>
+				<<set $activeFluffy.ID = $ourStore.fluffies.length>>
+				<<run $ourStore.fluffies.push($activeFluffy)>>
+			<</for>>
 
-		<<for _fo = 0; _fo < _litter; _fo++>>
-			<<breedFluffies $mom $dad>>
-			<br>Foal#<<print _f+1>> <<FluffyDesc>>
-			<hr>
-			<<set $activeFluffy.ID = $ourStore.fluffies.length>>
-			<<run $ourStore.fluffies.push($activeFluffy)>>
-
-		<</for>>
+			<<set $mom.litter = 0>>
+			<<set $mom.pregnant = false>>
+			<<set $mom.nursing = true>>
+			<<set $mom.nursingTime = $week + 5>>
+		<<elseif $mom.nursing && Number($mom.nursingTime) < Number($week)>>
+			 <<set $mom.nursing = false>>
+			 <br>$mom.name is no longer nursing.
+		<</if>>
 	<</if>>
 <</for>>
 
-
+/%
+ % Advance the date
+%/
+<<set $week++>>
 
 <br>@@.orange;THE END.@@
 <br>
