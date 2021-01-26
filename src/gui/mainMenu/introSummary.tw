@@ -1,14 +1,29 @@
 :: Intro Summary [nobr]
 
+/* **********
+ * introSummary.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Options for game settings that modify prices/difficutly and lock/unlock some content
+ *
+ *********** */
+
 You may review your settings before clicking "Continue" to begin.
 
-<br>
-<br>__''World Settings''__
+<br><br>__''World Settings''__
 
+/* 1 is the default value, so display a reset option if any have been modified */
 <<if ($economy != 1) || ($alicornRarity != 1) || ($alicornMonster != 1) || ($pooBaby != 1) || ($smartySyndrom != 1)>>
 	//[[restore defaults|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//
 <</if>>
 
+
+/* ***
+ * Economy setting.
+ *	Affects overall prices for fluffies.
+ *** */
 <br>
 <br>In the years since the BioToys known as Fluffies were released from HasBio labs, the world has been greatly changed by this new addition.
 <br>@@.orange;In this world, Fluffies are: @@
@@ -24,6 +39,10 @@ You may review your settings before clicking "Continue" to begin.
 	[[Easier|Intro Summary][$economy = 1]]
 <</if>>
 
+/* ***
+ * Alicorn rarity .
+ *	Affects both price and impacts which genes express Alicorns.
+ *** */
 <br> 
 <br>Fluffies have four breeds.  The most common, “Earthies” have no special features.  Less common are “Pegasi”, with (non functional) wings, and “Unicorns”, with small horns. The rarest breed is the Alicorn, having both wings and a horn.
 <br>@@.orange;In this world, Alicorns are @@
@@ -39,6 +58,13 @@ You may review your settings before clicking "Continue" to begin.
 	[[More Common|Intro Summary][$alicornRarity = 1]]
 <</if>>
 
+ 
+ /* ***
+ * Alicorn treatment.
+ *	Affects price and controls events related to alicorn abuse/abandomment.
+ *
+ * TODO: BETA: need to implement alicorn related events.
+ *** */
 <br>
 <br>Fluffies are known to reject Alicorns as “monsters”, abandoning or killing them, making an already rare breed even rarer. <br>@@.orange;This 'monster' treament is @@
 <br>
@@ -53,6 +79,13 @@ You may review your settings before clicking "Continue" to begin.
 	[[Easier|Intro Summary][$alicornMonster = 1]]
 <</if>>
 
+
+/* ***
+ * Poopie Babies
+ *	Controls events reated to abuse of brown fluffies.
+ *
+ * TODO: BETA: need to implement related events.
+ *** */
 <br>
 <br>Fluffies are also known to reject babies with ‘bad colors’, especially greens and browns - so called ‘poopy babies’.  
 <br>@@.orange;This ‘poopie babbeh’ treatment is @@
@@ -68,6 +101,12 @@ You may review your settings before clicking "Continue" to begin.
 	[[Easier|Intro Summary][$pooBaby = 1]]
 <</if>>
 
+/* ***
+ * Poopie Babies
+ *	Controls events reated to Smarties.  Must be set to 2 to enable the more extreme content (enf babbies, rape etc.)
+ *
+ * TODO: BETA: need to implement related events.
+ *** */
 <br>
 <br>Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour and can even result in a fluffy attacking humans and foals!
 <br>@@.orange;Smarty Syndrome is @@
@@ -84,8 +123,14 @@ You may review your settings before clicking "Continue" to begin.
 <</if>>
 <br>
 
+/* ***
+ * Move to the shop setup, reseting value defaults in case we come back during setup
+ * Base shop points on the settings selected - higher settings = harder game = less points.
+ *
+ * Cheat mode starts with lots more points and enabled debug mode for testing.
+ *** */
 <br>
-<br>[[Continue|Shop Intro][$showStartingExplanation = 1, $customDad = "", $customMom = "", $outShopping = false, $storePoints = (11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100]]
+<br>[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100)]]
 <br>
 <br>
-[[Cheat Start|Shop Intro][$storePoints = (11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000, $ourStore.fluffies = [], $showStartingExplanation = 1, $customDad = "", $customMom = "", $outShopping = false]] | //Intended for debugging: may have unexpected effects//
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debug = true]] | //Intended for debugging: may have unexpected effects//

@@ -1,11 +1,36 @@
 :: Fluffy Intro [nobr]
-<br>
+
+/* **********
+ * fluffyIntro.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Buys initial fluffies for the player
+ *
+ *	TODO: ALPHA: enable hunting for ferals in adition to shopping
+ *
+ *********** */
+
+/* Round the cash to 2 decimal places */
 <<set $cash = Number($cash).toFixed(2)>>
-<br>
+
+/* ***
+ *	Setup our base mother and father - all fluffies will ultimatly stem from these two
+ *	
+ *	They have preset genes with one each Domiante and Recesive trait, so have the highest diversity and can spawn any possible combination.
+ *** */
+<<BaseFluffy "MALE">>
+<<set _Granddad = clone($activeFluffy)>>
+<<BaseFluffy "FEMALE">>
+<<set _Grandmom = clone($activeFluffy)>>
+
+/* Show starting information on the first load, but hide it afterwards. */
 <<if $showStartingExplanation == 1>>
 	<br>@@.orange;TODO: add some starting shop options here.@@
 	<br>
 	<br>You will need to get at least a pair of fluffies to start breeding with.  You could go hunting for some ferals, risking whatever health issues they may have, or you can pick up some from the local //Fluffy Mart// to pick some up for a more reliable option.
+	<<set $showStartingExplanation = 0>>
 <</if>>
 <br><span id="cash-line">You have ¤$cash to spend, but will need to save some for weekly expenses.</span>
 <br>
@@ -16,19 +41,17 @@
 	You have $ourStore.fluffies.length fluffies already.
 <</if>>
 
-<<BaseFluffy "MALE">>
-<<set _Granddad = clone($activeFluffy)>>
-<<BaseFluffy "FEMALE">>
-<<set _Grandmom = clone($activeFluffy)>>
-
+	/* ***
+	 *	Create a child and display it.
+	 *** */
+	<br>
 	<br>You find this fluffy:
 	<hr>
 	<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 	<<newFromGene $testChild>>	
 	<<set _shopFluffy = clone($activeFluffy)>>
-
 	<<FluffyDesc>>
-	<br><<They>> would cost 
+	<<They>> would cost 
 	<<switch $activeFluffy.breed>>
 		<<case "unicorn">>
 			<<set _price = Number($unicornPrice.mart).toFixed(2)>>
@@ -40,12 +63,9 @@
 			<<set _price = Number($earthPrice.mart).toFixed(2)>>
 	<</switch>>
 	¤_price.
-	<hr>[[Keep Looking|Fluffy Intro][$customDad = "", $customMom = "", $showStartingExplanation = 0]]  | 
+	<hr>[[Keep Looking|Fluffy Intro]]  | 
 	<<if Number($cash) >= Number(_price)>>
-	 [[Add to the cart|Fluffy Intro][$cash-= _price, $customDad = "", $customMom = "", $showStartingExplanation = 0, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
+	 [[Add to the cart|Fluffy Intro][$cash-= _price, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
 	<<else>>//You lack the necessary funds to buy this fluffy.// | 
 	<</if>>
 	 [[End Shopping|Food Intro]]
-
-<br>
-<br>//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//
