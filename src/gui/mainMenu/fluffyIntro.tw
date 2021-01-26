@@ -15,20 +15,18 @@
 <<elseif $ourStore.fluffies.length > 1>>
 	You have $ourStore.fluffies.length fluffies already.
 <</if>>
-/%<br>//[[Lets hunt for some ferals!|Fluffy Intro][$outShopping = false]]// @@.orange;WIP: Not enabled at this time.@@%/
+
 <<BaseFluffy "MALE">>
 <<set _Granddad = clone($activeFluffy)>>
 <<BaseFluffy "FEMALE">>
 <<set _Grandmom = clone($activeFluffy)>>
-<<if !$outShopping>>
-<br>//[[Lets go Shopping|Fluffy Intro][$outShopping = true]]//
-<<elseif $outShopping>>
+
 	<br>You find this fluffy:
 	<hr>
 	<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 	<<newFromGene $testChild>>	
 	<<set _shopFluffy = clone($activeFluffy)>>
-<br><<print _shopFluffy.genes>>
+
 	<<FluffyDesc>>
 	<br><<They>> would cost 
 	<<switch $activeFluffy.breed>>
@@ -48,80 +46,6 @@
 	<<else>>//You lack the necessary funds to buy this fluffy.// | 
 	<</if>>
 	 [[End Shopping|Food Intro]]
-	<br>
-	<br>
-	<br>
-	<hr>
-	<br>//[[Click to re-roll all genes.|Fluffy Intro][$customDad = "", $customMom = ""]]//
-	<br>
-	<br>Generates a random fluffy family..
-	<br>Code wise, it starts with 2 genetically 'average' grand-parents, who are used to generate 2 random parents.  Those are then used to create several foals.
-	<br>The specific genes will not be visible latter, but are printed now to ensure the details match up.
-	<br>Genetic information and physical features for the generated family are shown below, largely for testing the generator and display.
-	<br>
-	<br>** or * after the breed marks that it was changed due to the alicorn rarity selection.
-	<br>
 
-	<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-	<<newFromGene $testChild>>
-	<<run $activeFluffy.genes.setGender("male")>>
-	<<set $activeFluffy.gender = "male">>
-	
-	<<if $customDad == "">>
-		<<set $dad = clone($activeFluffy)>>
-		<<set $customDad = $dad.genes.toString()>>
-		<br>Father Genome: <<textbox "$customDad" $customDad "Fluffy Intro">> Press Enter to set a custom Genome - @@.red;Warning: no validation for custom genes yet!@@
-	<<else>>
-		<br>Father Genome: <<textbox "$customDad" $customDad "Fluffy Intro">> Press Enter to set a custom Genome - @@.red;Warning: no validation for custom genes yet!@@
-		<<set $test = Genome.fromString($customDad)>>
-		<<newFromGene $test>>
-		<<run $activeFluffy.genes.setGender("male")>>
-		<<set $activeFluffy.gender = "male">>
-		<<set $dad = clone($activeFluffy)>>
-	<</if>>
-	
-	<br>Father genome is: <<print $dad.genes>>
-	<<Focus $dad>>
-	<<FluffyDesc>>
-	<hr>
-	<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-	<<newFromGene $testChild>>
-	<<run $activeFluffy.genes.setGender("female")>>
-	<<set $activeFluffy.gender = "female">>
-	
-	<<if $customMom == "">>
-		<<set $mom = clone($activeFluffy)>>
-		<<set $customMom = $mom.genes.toString()>>
-		<br>Mother Genome: <<textbox "$customMom" $customMom "Fluffy Intro">> Press Enter to set a custom Genome - @@.red;Warning: no validation for custom genes yet!@@
-	<<else>>
-		<br>Mother Genome: <<textbox "$customMom" $customMom "Fluffy Intro">> Press Enter to set a custom Genome - @@.red;Warning: no validation for custom genes yet!@@
-		<<set $test = Genome.fromString($customMom)>>
-		<<newFromGene $test>>
-		<<set $mom = clone($activeFluffy)>>
-		<<run $mom.genes.setGender("female")>>
-		<<set $mom.gender = "female">>
-	<</if>>
-	
-	<<run $mom.genes.setGender("female")>>
-	<<set $mom.gender = "female">>
-	<br>Mother genome is: <<print $mom.genes>>
-	<<Focus $mom>>
-	<<FluffyDesc>>
-	<hr>
-	<<breedFluffies $mom $dad>>
-	<br>Foal1 genome is: <<print $activeFluffy.genes>>
-	<<FluffyDesc>>
-	<br>
-	<hr>
-	<<breedFluffies $mom $dad>>
-	<br>Foal2 genome is: <<print $activeFluffy.genes>>
-	<<FluffyDesc>>
-	<br>
-	<hr>
-	<<breedFluffies $mom $dad>>
-	<br>Foal3 genome is: <<print $activeFluffy.genes>>
-	<<FluffyDesc>>
-	<br>
-<</if>>
-
+<br>
 <br>//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//
