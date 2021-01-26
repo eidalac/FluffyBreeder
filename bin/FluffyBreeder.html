@@ -2399,7 +2399,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100)]]
 &lt;br&gt;
 &lt;br&gt;
-[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debug = true]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="7" name="Shop Intro" tags="nobr" position="850,100" size="100,100">/* **********
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="7" name="Shop Intro" tags="nobr" position="850,100" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -2515,7 +2515,21 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;//Interact with your fluffies.//
 &lt;br&gt;//Buy supplies.//
 &lt;br&gt;//Upgrade the shop.//
-&lt;br&gt;</tw-passagedata><tw-passagedata pid="9" name="StoryCaption" tags="" position="1100,100" size="100,100">\
+&lt;br&gt;</tw-passagedata><tw-passagedata pid="9" name="StoryCaption" tags="" position="1100,100" size="100,100">/* **********
+ *	storyCaption.tw
+ *
+ *	Package: FluffyBreeder
+ *	Format: Twine2 (Sugarcube 2)
+ *
+ *	Controls the display on the sidebar.
+ *
+ *********** */
+
+
+/* ***
+ *	Controls the main dislay based on the passage/UI set
+ *** */
+\
 &lt;&lt;set _Pass = passage()&gt;&gt;\
 &lt;&lt;if _Pass == &quot;Encyclopedia&quot;&gt;&gt;
 &lt;&lt;elseif _Pass == &quot;Intro Summary&quot;&gt;&gt;\
@@ -2545,6 +2559,9 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;&lt;nobr&gt;&gt;
  
 
+/* ***
+ *	Copied from FreeCities for future use
+ *** */
 &lt;br&gt;@@.green;Rep@@ |
 &lt;&lt;set $rep = Math.clamp(Math.trunc($rep), 0, 20000)&gt;&gt;
 &lt;span id=&quot;rep&quot;&gt;
@@ -2667,7 +2684,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 	//FCE:// [[$encyclopedia|Encyclopedia][$nextButton = &quot;Back&quot;, $nextLink = _Pass]]
 &lt;&lt;/if&gt;&gt;
 	&lt;br&gt;&lt;br&gt;
-&lt;&lt;if ($debugMode == 1)&gt;&gt;
+&lt;&lt;if ($debugMode == true)&gt;&gt;
 	Debugging
 	&lt;br&gt;
 	&lt;&lt;link &quot;Display Variables&quot;&gt;&gt;&lt;&lt;checkvars&gt;&gt;&lt;&lt;/link&gt;&gt;
@@ -2705,7 +2722,7 @@ a text-based fluffy management game
 /* **********
  *	Enables debug mode
  *********** */
-&lt;&lt;set $debug = false&gt;&gt;
+&lt;&lt;set $debugMode = false&gt;&gt;
 
 /* **********
  *	Sets the starting week, month, day and year.
@@ -2823,10 +2840,14 @@ a text-based fluffy management game
 }
 &gt;&gt;
 
+/* Used when setting a breeding pair up */
 &lt;&lt;set $breedMare = -1&gt;&gt;
 &lt;&lt;set $breedStal = -1&gt;&gt;
 
-/* This needs to be broken down into individual files that can be added to StoryInit instead. */
+/* **********
+ *	All things imported from Freecities
+ *	mostly do not do anything but will be used for future development
+ *********** */
 
 &lt;&lt;if ndef $saveImported&gt;&gt;
 	&lt;&lt;set $saveImported = 0&gt;&gt;
@@ -2906,13 +2927,24 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
+ * endWeek.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * This runs on the end of the week, so triggers time advacement, status updates and random events.
+ *
+ *********** */
+
+&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
 
-/%
- % Check for breeding pairs, and make some babies.
- % need to change this to a preg status change
-%/
+/* ***
+ *	Check for breeding pairs, and make some babies.
+ *	need to change this to a preg status change
+ *** */
+
 &lt;&lt;for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++&gt;&gt;
 	&lt;&lt;set $ourStore.fluffies[_ef].ageWeeks++&gt;&gt;
 	
@@ -2933,6 +2965,7 @@ profitsTotal: 0
 
 		&lt;&lt;if !$mom.pregnant &amp;&amp; !$mom.nursing&gt;&gt;
 			&lt;&lt;if $ourStore.fluffies.length &gt; $ourStore.shelter&gt;&gt;
+				/* Work around for now to limit population */
 				&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
 				&lt;br&gt;huhuhu
 				&lt;&lt;set $mom.pregnant = false&gt;&gt;
@@ -2962,10 +2995,14 @@ profitsTotal: 0
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			&lt;&lt;set $mom.nursing = true&gt;&gt;
 			&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
-		&lt;&lt;elseif $mom.nursing &amp;&amp; Number($mom.nursingTime) &lt; Number($week)&gt;&gt;
-			 &lt;&lt;set $mom.nursing = false&gt;&gt;
-			 &lt;&lt;set $mom.pregnant = false&gt;&gt;
-			 &lt;br&gt;$mom.name is no longer nursing.
+		&lt;&lt;elseif $mom.nursing&gt;&gt;
+			&lt;&lt;if Number($mom.nursingTime) &lt; Number($week)&gt;&gt;
+			 	&lt;&lt;set $mom.nursing = false&gt;&gt;
+			 	&lt;&lt;set $mom.pregnant = false&gt;&gt;
+			 	&lt;br&gt;$mom.name is no longer nursing.
+			 &lt;&lt;/if&gt;&gt;
+			 
+			 &lt;br&gt;$mom.name is nursing foals.
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/for&gt;&gt;
@@ -2975,33 +3012,22 @@ profitsTotal: 0
 %/
 &lt;&lt;set $week++&gt;&gt;
 
-&lt;br&gt;@@.orange;THE END.@@
-&lt;br&gt;
-&lt;br&gt;.. of what has been coded so far.
-&lt;br&gt;
-&lt;br&gt;
-&lt;br&gt;@@.yellow;Developers TODO list.@@
-&lt;br&gt;
-&lt;br&gt;
- &lt;ol&gt;
- &lt;li&gt;Get breeding running to test genes/illness/inbreeding.&lt;/li&gt;
- &lt;li&gt;Check for genes linked to illness/still births/inbreed.&lt;/li&gt;
- &lt;li&gt;Clean up the buying of starting fluffies.&lt;/li&gt;
- &lt;li&gt;Enable feral hunting.&lt;/li&gt;
- &lt;li&gt;Other inherited traits ala CK2/CK3 https://ck3.paradoxwikis.com/Traits&lt;/li&gt;
- &lt;li&gt;Non genetic traits fluffies can aquire.ala CK2/CK3 https://ck3.paradoxwikis.com/Traits&lt;/li&gt;
- &lt;li&gt;Add validation for inserting custom genes for a fluffy generation&lt;/li&gt;
- &lt;li&gt;Include a debug menu/option for the above&lt;/li&gt;
- &lt;li&gt;Some PC customization (at least what the fluffies will call you).&lt;/li&gt;
- &lt;li&gt;Player stats: Reputation, Training XP, Abuse XP, Hugbox XP, Abuse Reputation, Hugbox Reputation, stress&lt;/li&gt;
- &lt;li&gt;Outline code for weekly events.&lt;/li&gt;
- &lt;li&gt;Make this page do ... things.&lt;/li&gt;
- &lt;/ol&gt;
- &lt;br&gt;
 
 &lt;br&gt;//[[Back to Week Start|Week Start]]//
 &lt;br&gt;
-&lt;br&gt;//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//</tw-passagedata><tw-passagedata pid="12" name="Fluffy Breeding" tags="nobr" position="225,225" size="100,100">&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
+&lt;br&gt;//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//</tw-passagedata><tw-passagedata pid="12" name="Fluffy Breeding" tags="nobr" position="225,225" size="100,100">/* **********
+ * fluffyBreeding.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Sets breeding pairs
+ *
+ *	Todo: add a way to break up fluffies
+ *
+ *********** */
+
+&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
 &lt;br&gt;
 &lt;br&gt;
 
@@ -3036,7 +3062,19 @@ profitsTotal: 0
 
 &lt;&lt;set $ourStore.fluffies[$breedStal].specialFriend = $breedMare&gt;&gt;
 &lt;&lt;set $ourStore.fluffies[$breedMare].specialFriend = $breedStal&gt;&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="Fluffy List" tags="nobr" position="350,225" size="100,100">&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="Fluffy List" tags="nobr" position="350,225" size="100,100">/* **********
+ * fluffyList.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Lists all the store fluffies
+ *
+ *	Todo: sorting options.
+ *
+ *********** */
+
+&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;&lt;set $nextButton to &quot;Back to the shop.&quot;, $nextLink to $returnTo&gt;&gt;
@@ -3087,7 +3125,19 @@ profitsTotal: 0
 &lt;&lt;/if&gt;&gt;
 %/
 &lt;&lt;set $activeFluffy = 0, _fluff = 0&gt;&gt;
-&lt;&lt;/capture&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Name Fluffy" tags="nobr" position="475,225" size="100,100">&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
+&lt;&lt;/capture&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Name Fluffy" tags="nobr" position="475,225" size="100,100">/* **********
+ * nameFluffy.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	can rename a fluffy
+ *
+ *	Todo: expand with general interations and more details.
+ *
+ *********** */
+
+&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
 &lt;br&gt;
 &lt;br&gt;
 &lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
@@ -3097,24 +3147,49 @@ profitsTotal: 0
 &lt;br&gt;What do you want to name this fluffy?  // Press Enter to set a name - @@.red;Warning: no input validate currently!@@
 &lt;br&gt;&lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Name Fluffy&quot;&gt;&gt; 
 
-&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="description widgets" tags="widget nobr" position="600,225" size="100,100">&lt;&lt;widget &quot;MainLinks&quot;&gt;&gt;
+&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="description widgets" tags="widget nobr" position="600,225" size="100,100">/* **********
+ * descriptionWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Widgets for info display
+ *
+ *********** */
 
-&lt;center&gt;
-&lt;&lt;switch $personalAttention&gt;&gt;
-&lt;&lt;case &quot;business&quot;&gt;&gt;You plan to focus on business this week.
-&lt;&lt;case &quot;trading&quot;&gt;&gt;This week you will learn trading.
-&lt;&lt;case &quot;warfare&quot;&gt;&gt;This week you will learn modern combat tactics.
-&lt;&lt;case &quot;engineering&quot;&gt;&gt;This week you will learn engineering.
-&lt;&lt;case &quot;medicine&quot;&gt;&gt;This week you will learn medicine.
-&lt;&lt;default&gt;&gt;
-&lt;&lt;/switch&gt;&gt;
+/* ***
+ *	Called as &lt;&lt;MainLinks&gt;&gt;
+ *	Displays your focus for this week and a link to change focus
+ *
+ *	Todo: Not currently enabled
+ *** */
+&lt;&lt;widget &quot;MainLinks&quot;&gt;&gt;
+	&lt;center&gt;
+	&lt;&lt;switch $personalAttention&gt;&gt;
+		&lt;&lt;case &quot;business&quot;&gt;&gt;You plan to focus on business this week.
+		&lt;&lt;case &quot;trading&quot;&gt;&gt;This week you will learn trading.
+		&lt;&lt;case &quot;warfare&quot;&gt;&gt;This week you will learn modern combat tactics.
+		&lt;&lt;case &quot;engineering&quot;&gt;&gt;This week you will learn engineering.
+		&lt;&lt;case &quot;medicine&quot;&gt;&gt;This week you will learn medicine.
+		&lt;&lt;default&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
 
-&lt;span id=&quot;managePA&quot;&gt;&lt;strong&gt;&lt;&lt;link &quot;Change plans&quot;&gt;&gt;&lt;&lt;goto &quot;Personal Attention Select&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[A]@@
-
+	&lt;span id=&quot;managePA&quot;&gt;&lt;strong&gt;&lt;&lt;link &quot;Change plans&quot;&gt;&gt;&lt;&lt;goto &quot;Personal Attention Select&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[A]@@
 &lt;&lt;/widget&gt;&gt;
 
 
+/* ***
+ *	Called as &lt;&lt;inlineColor $color&gt;&gt;
+ *	Returns the string colored as an HTML color.
+ *** */
+&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Called as &lt;&lt;FluffyDesc&gt;&gt;
+ *	Targets &amp;activeFluffy
+ *
+ *	Displays a detailed decription of the fluffy.
+ *** */
 &lt;&lt;widget &quot;FluffyDesc&quot;&gt;&gt;
 	$activeFluffy.name is a $activeFluffy.gender $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes. 
@@ -3124,12 +3199,13 @@ profitsTotal: 0
 	&lt;br&gt;Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
 &lt;&lt;/widget&gt;&gt;
 
-/%
- Call as &lt;&lt;shortDesc $fluffy&gt;&gt;
-	Calling this widget will create a summary for the passed fluffy
-	It should be preceeded by the fluffy selection link.
-%/
-
+/* ***
+ *	Call as &lt;&lt;shortDesc $fluffy&gt;&gt;
+ *	Calling this widget will create a summary for the passed fluffy
+ *	It should be preceeded by the fluffy selection link.
+ *
+ *	Displays a condensed diplay of fluffy information
+ *** */
 &lt;&lt;widget &quot;shortDesc&quot;&gt;&gt;
 	&lt;&lt;set _fluffy = $args[0]&gt;&gt;
 
@@ -3138,11 +3214,23 @@ profitsTotal: 0
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother ... Father ... Children ... &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $ourStore.fluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if _fluffy.pregnant&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="fluffy creation widgets" tags="widget nobr" position="725,225" size="100,100">/%
-	Base Fluffy Template.
-	Call as &lt;&lt;BaseFluffy&gt;&gt;
-%/
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="fluffy creation widgets" tags="widget nobr" position="725,225" size="100,100">/* **********
+ * fluffyCreationWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Contains widgets/macros for generating a fluffy.
+ *
+ *********** */
 
+
+/* ***
+ *	Base Fluffy Template.
+ *	Call as &lt;&lt;BaseFluffy $gender&gt;&gt;
+ *
+ *	Creates a male or female fluffy from the baseline genome.
+ *** */
 &lt;&lt;widget &quot;BaseFluffy&quot;&gt;&gt;
 	&lt;&lt;if ($args[0].toUpperCase() == &quot;MALE&quot;)&gt;&gt;
 		&lt;&lt;set _geneSTR = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e&quot;&gt;&gt;
@@ -3197,7 +3285,11 @@ profitsTotal: 0
 	&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
-
+/* ***
+ *	Call as &lt;&lt;newFromGene $gene&gt;&gt;
+ *
+ *	Creates a new fluffy from an existing genome.
+ *** */
 &lt;&lt;widget &quot;newFromGene&quot;&gt;&gt;
 	&lt;&lt;if $args.length == true&gt;&gt;
 
@@ -3291,12 +3383,24 @@ profitsTotal: 0
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;Focus $fluffy&gt;&gt;
+ *
+ *	Sets the target as $activefluffy.
+ *** */
 &lt;&lt;widget &quot;Focus&quot;&gt;&gt;
 	&lt;&lt;if $args.length == true&gt;&gt;
 		&lt;&lt;set $activeFluffy = $args[0]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;breedFluffies $parent2, $parent2&gt;&gt;
+ *
+ *	Creates a new gene from these parrents, then generates a child from that genome.
+ *
+ *	Sets the resulting child to $activeFluffy
+ *** */
 &lt;&lt;widget &quot;breedFluffies&quot;&gt;&gt;
 	&lt;&lt;if $args.length != 2&gt;&gt;
 		&lt;br&gt;&lt;br&gt;@@.red; breedFluffies called without 2 parents.@@&lt;br&gt;&lt;br&gt;
@@ -3316,6 +3420,11 @@ profitsTotal: 0
 	&lt;&lt;newFoal&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;newFoal&gt;&gt;
+ *
+ *	Changes size information to refelet a newborn.
+ *** */
 &lt;&lt;widget &quot;newFoal&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 	&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
@@ -3328,14 +3437,20 @@ profitsTotal: 0
 	&lt;&lt;set $fID++&gt;&gt;
 	&lt;&lt;set $activeFluffy.ID = $fID&gt;&gt;
 	&lt;&lt;set $allFluffies[$fID] = $activeFluffy&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="misc widgets" tags="nobr widget" position="850,225" size="100,100">/* **********
+ * miscWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Various Widgets
+ *
+ *********** */
 
-&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="misc widgets" tags="nobr widget" position="850,225" size="100,100">/* TODO: Modularize. */
-
-/%
- Call as &lt;&lt;UpdateNextButton&gt;&gt;
- Allows for dynamic updating of the next button in the storyCaption (left side-bar) for events that disable the button until user makes a selection
-%/
+/* ***
+ *	Call as &lt;&lt;UpdateNextButton&gt;&gt;
+ *	Allows for dynamic updating of the next button in the storyCaption (left side-bar) for events that disable the button until user makes a selection
+ *** */
 &lt;&lt;widget &quot;UpdateNextButton&quot;&gt;&gt;
 	&lt;&lt;replace &quot;#nextButton&quot;&gt;&gt;
 		&lt;strong&gt;&lt;&lt;link &quot;$nextButton&quot;&gt;&gt; /* must use link so spacebar shortcut will work */
@@ -3400,6 +3515,10 @@ profitsTotal: 0
 
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;SidebarDate&gt;&gt;
+ *	Displays date for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarDate&quot;&gt;&gt;
 	&lt;&lt;if $cheatMode&gt;&gt;_Pass&lt;br&gt;&lt;&lt;/if&gt;&gt;
 	&lt;span id=&quot;week&quot;&gt;&#39;&#39;Week $week&#39;&#39;&lt;/span&gt;
@@ -3416,6 +3535,10 @@ profitsTotal: 0
 	&lt;br&gt;
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;SidebarWeather&gt;&gt;
+ *	Displays weather for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarWeather&quot;&gt;&gt;
 	&lt;&lt;if $weatherToday.severity == 1&gt;&gt;
 		//@@.cyan;$weatherToday.name@@//
@@ -3428,7 +3551,10 @@ profitsTotal: 0
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
-
+/* ***
+ *	Call as &lt;&lt;SidebarCash&gt;
+ *	Displays case for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarCash&quot;&gt;&gt;
 	&lt;&lt;set $cash = Math.trunc($cash)&gt;&gt;
 	&lt;span id=&quot;cash&quot;&gt;
@@ -3480,7 +3606,10 @@ profitsTotal: 0
 	&lt;&lt;/if&gt;&gt;¤$costs
 &lt;&lt;/widget&gt;&gt;
 
-
+/* ***
+ *	Call as &lt;&lt;SidebarFluffies&gt;&gt;
+ *	Displays fluffies for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarFluffies&quot;&gt;&gt;
 	&lt;&lt;set _SF = $ourStore.fluffies.length&gt;&gt;
 	&lt;&lt;set $ourStore.stallions = 0, $ourStore.mares = 0,  $ourStore.foals = 0&gt;&gt; 
@@ -3507,12 +3636,20 @@ profitsTotal: 0
 	&lt;br&gt;($ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@)
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;SidebarStore&gt;&gt;
+ *	Displays store info for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarStore&quot;&gt;&gt;
 	&lt;br&gt;@@.pink;Store@@
 	&lt;br&gt;$ourStore.shelter @@.cyan;Shelter@@ | $ourStore.display @@.cyan;Display@@
 	&lt;br&gt;$ourStore.space @@.cyan;Space@@ | $ourStore.storage @@.cyan;Storage@@
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Call as &lt;&lt;SidebarFeed&gt;&gt;
+ *	Displays food info for the sidebar
+ *** */
 &lt;&lt;widget &quot;SidebarFood&quot;&gt;&gt;
 	&lt;br&gt;@@.pink;Food@@ | &lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality) + ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality) + ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality) + ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; /  $ourStore.storage
 	&lt;br&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; @@.cyan;Kibble@@ | &lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; @@.cyan;Forumla@@
@@ -3536,7 +3673,17 @@ profitsTotal: 0
 		&lt;/span&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="pronoun widgets" tags="widget nobr" position="975,225" size="100,100">&lt;&lt;widget &quot;they&quot;&gt;&gt;&lt;&lt;if $activeFluffy.gender eq &quot;male&quot;&gt;&gt;he&lt;&lt;elseif $activeFluffy.gender eq &quot;female&quot;&gt;&gt;she&lt;&lt;else&gt;&gt;they&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="pronoun widgets" tags="widget nobr" position="975,225" size="100,100">/* **********
+ * pronounWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Changes pronouns based on the gender of $activefluffy
+ *
+ *********** */
+
+&lt;&lt;widget &quot;they&quot;&gt;&gt;&lt;&lt;if $activeFluffy.gender eq &quot;male&quot;&gt;&gt;he&lt;&lt;elseif $activeFluffy.gender eq &quot;female&quot;&gt;&gt;she&lt;&lt;else&gt;&gt;they&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 &lt;&lt;widget &quot;them&quot;&gt;&gt;&lt;&lt;if $activeFluffy.gender eq &quot;male&quot;&gt;&gt;him&lt;&lt;elseif $activeFluffy.gender eq &quot;female&quot;&gt;&gt;her&lt;&lt;else&gt;&gt;them&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 &lt;&lt;widget &quot;themself&quot;&gt;&gt;&lt;&lt;if $activeFluffy.gender eq &quot;male&quot;&gt;&gt;himself&lt;&lt;elseif $activeFluffy.gender eq &quot;female&quot;&gt;&gt;herself&lt;&lt;else&gt;&gt;themself&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 &lt;&lt;widget &quot;themselves&quot;&gt;&gt;&lt;&lt;if $activeFluffy.gender eq &quot;male&quot;&gt;&gt;themselves&lt;&lt;elseif $activeFluffy.gender eq &quot;female&quot;&gt;&gt;themselves&lt;&lt;else&gt;&gt;themselves&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;

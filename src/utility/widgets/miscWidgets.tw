@@ -1,11 +1,19 @@
 :: misc widgets [nobr widget]
 
-/* TODO: Modularize. */
+/* **********
+ * miscWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Various Widgets
+ *
+ *********** */
 
-/%
- Call as <<UpdateNextButton>>
- Allows for dynamic updating of the next button in the storyCaption (left side-bar) for events that disable the button until user makes a selection
-%/
+/* ***
+ *	Call as <<UpdateNextButton>>
+ *	Allows for dynamic updating of the next button in the storyCaption (left side-bar) for events that disable the button until user makes a selection
+ *** */
 <<widget "UpdateNextButton">>
 	<<replace "#nextButton">>
 		<strong><<link "$nextButton">> /* must use link so spacebar shortcut will work */
@@ -70,6 +78,10 @@
 
 <</widget>>
 
+/* ***
+ *	Call as <<SidebarDate>>
+ *	Displays date for the sidebar
+ *** */
 <<widget "SidebarDate">>
 	<<if $cheatMode>>_Pass<br><</if>>
 	<span id="week">''Week $week''</span>
@@ -86,6 +98,10 @@
 	<br>
 <</widget>>
 
+/* ***
+ *	Call as <<SidebarWeather>>
+ *	Displays weather for the sidebar
+ *** */
 <<widget "SidebarWeather">>
 	<<if $weatherToday.severity == 1>>
 		//@@.cyan;$weatherToday.name@@//
@@ -98,7 +114,10 @@
 	<</if>>
 <</widget>>
 
-
+/* ***
+ *	Call as <<SidebarCash>
+ *	Displays case for the sidebar
+ *** */
 <<widget "SidebarCash">>
 	<<set $cash = Math.trunc($cash)>>
 	<span id="cash">
@@ -150,7 +169,10 @@
 	<</if>>¤$costs
 <</widget>>
 
-
+/* ***
+ *	Call as <<SidebarFluffies>>
+ *	Displays fluffies for the sidebar
+ *** */
 <<widget "SidebarFluffies">>
 	<<set _SF = $ourStore.fluffies.length>>
 	<<set $ourStore.stallions = 0, $ourStore.mares = 0,  $ourStore.foals = 0>> 
@@ -177,12 +199,20 @@
 	<br>($ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@)
 <</widget>>
 
+/* ***
+ *	Call as <<SidebarStore>>
+ *	Displays store info for the sidebar
+ *** */
 <<widget "SidebarStore">>
 	<br>@@.pink;Store@@
 	<br>$ourStore.shelter @@.cyan;Shelter@@ | $ourStore.display @@.cyan;Display@@
 	<br>$ourStore.space @@.cyan;Space@@ | $ourStore.storage @@.cyan;Storage@@
 <</widget>>
 
+/* ***
+ *	Call as <<SidebarFeed>>
+ *	Displays food info for the sidebar
+ *** */
 <<widget "SidebarFood">>
 	<br>@@.pink;Food@@ | <<print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality) + ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality) + ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality) + ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)>> /  $ourStore.storage
 	<br><<print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)>> @@.cyan;Kibble@@ | <<print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)>> @@.cyan;Forumla@@

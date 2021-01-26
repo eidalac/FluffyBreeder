@@ -1,12 +1,23 @@
 :: End Week [nobr]
 
+/* **********
+ * endWeek.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * This runs on the end of the week, so triggers time advacement, status updates and random events.
+ *
+ *********** */
+
 <<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
 
 
-/%
- % Check for breeding pairs, and make some babies.
- % need to change this to a preg status change
-%/
+/* ***
+ *	Check for breeding pairs, and make some babies.
+ *	need to change this to a preg status change
+ *** */
+
 <<for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++>>
 	<<set $ourStore.fluffies[_ef].ageWeeks++>>
 	
@@ -27,6 +38,7 @@
 
 		<<if !$mom.pregnant && !$mom.nursing>>
 			<<if $ourStore.fluffies.length > $ourStore.shelter>>
+				/* Work around for now to limit population */
 				<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
 				<br>huhuhu
 				<<set $mom.pregnant = false>>
@@ -56,10 +68,14 @@
 			<<set $mom.pregnant = false>>
 			<<set $mom.nursing = true>>
 			<<set $mom.nursingTime = $week + 5>>
-		<<elseif $mom.nursing && Number($mom.nursingTime) < Number($week)>>
-			 <<set $mom.nursing = false>>
-			 <<set $mom.pregnant = false>>
-			 <br>$mom.name is no longer nursing.
+		<<elseif $mom.nursing>>
+			<<if Number($mom.nursingTime) < Number($week)>>
+			 	<<set $mom.nursing = false>>
+			 	<<set $mom.pregnant = false>>
+			 	<br>$mom.name is no longer nursing.
+			 <</if>>
+			 
+			 <br>$mom.name is nursing foals.
 		<</if>>
 	<</if>>
 <</for>>
@@ -69,29 +85,6 @@
 %/
 <<set $week++>>
 
-<br>@@.orange;THE END.@@
-<br>
-<br>.. of what has been coded so far.
-<br>
-<br>
-<br>@@.yellow;Developers TODO list.@@
-<br>
-<br>
- <ol>
- <li>Get breeding running to test genes/illness/inbreeding.</li>
- <li>Check for genes linked to illness/still births/inbreed.</li>
- <li>Clean up the buying of starting fluffies.</li>
- <li>Enable feral hunting.</li>
- <li>Other inherited traits ala CK2/CK3 https://ck3.paradoxwikis.com/Traits</li>
- <li>Non genetic traits fluffies can aquire.ala CK2/CK3 https://ck3.paradoxwikis.com/Traits</li>
- <li>Add validation for inserting custom genes for a fluffy generation</li>
- <li>Include a debug menu/option for the above</li>
- <li>Some PC customization (at least what the fluffies will call you).</li>
- <li>Player stats: Reputation, Training XP, Abuse XP, Hugbox XP, Abuse Reputation, Hugbox Reputation, stress</li>
- <li>Outline code for weekly events.</li>
- <li>Make this page do ... things.</li>
- </ol>
- <br>
 
 <br>//[[Back to Week Start|Week Start]]//
 <br>

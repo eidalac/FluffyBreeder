@@ -1,10 +1,22 @@
 :: fluffy creation widgets [widget nobr]
 
-/%
-	Base Fluffy Template.
-	Call as <<BaseFluffy>>
-%/
+/* **********
+ * fluffyCreationWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Contains widgets/macros for generating a fluffy.
+ *
+ *********** */
 
+
+/* ***
+ *	Base Fluffy Template.
+ *	Call as <<BaseFluffy $gender>>
+ *
+ *	Creates a male or female fluffy from the baseline genome.
+ *** */
 <<widget "BaseFluffy">>
 	<<if ($args[0].toUpperCase() == "MALE")>>
 		<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e">>
@@ -59,7 +71,11 @@
 	>>
 <</widget>>
 
-
+/* ***
+ *	Call as <<newFromGene $gene>>
+ *
+ *	Creates a new fluffy from an existing genome.
+ *** */
 <<widget "newFromGene">>
 	<<if $args.length == true>>
 
@@ -153,12 +169,24 @@
 	<</if>>
 <</widget>>
 
+/* ***
+ *	Call as <<Focus $fluffy>>
+ *
+ *	Sets the target as $activefluffy.
+ *** */
 <<widget "Focus">>
 	<<if $args.length == true>>
 		<<set $activeFluffy = $args[0]>>
 	<</if>>
 <</widget>>
 
+/* ***
+ *	Call as <<breedFluffies $parent2, $parent2>>
+ *
+ *	Creates a new gene from these parrents, then generates a child from that genome.
+ *
+ *	Sets the resulting child to $activeFluffy
+ *** */
 <<widget "breedFluffies">>
 	<<if $args.length != 2>>
 		<br><br>@@.red; breedFluffies called without 2 parents.@@<br><br>
@@ -178,6 +206,11 @@
 	<<newFoal>>
 <</widget>>
 
+/* ***
+ *	Call as <<newFoal>>
+ *
+ *	Changes size information to refelet a newborn.
+ *** */
 <<widget "newFoal">>
 	<<set $activeFluffy.age = 0>>
 	<<set $activeFluffy.ageWeeks = 0>>
@@ -192,7 +225,7 @@
 	<<set $allFluffies[$fID] = $activeFluffy>>
 <</widget>>
 
-<<widget "inlineColor">><<- "@@color:"+$args[0]+";"+$args[0]>><</widget>>
+
 
 
 

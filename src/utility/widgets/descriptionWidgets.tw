@@ -1,23 +1,48 @@
 :: description widgets [widget nobr]
 
+/* **********
+ * descriptionWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Widgets for info display
+ *
+ *********** */
+
+/* ***
+ *	Called as <<MainLinks>>
+ *	Displays your focus for this week and a link to change focus
+ *
+ *	Todo: Not currently enabled
+ *** */
 <<widget "MainLinks">>
+	<center>
+	<<switch $personalAttention>>
+		<<case "business">>You plan to focus on business this week.
+		<<case "trading">>This week you will learn trading.
+		<<case "warfare">>This week you will learn modern combat tactics.
+		<<case "engineering">>This week you will learn engineering.
+		<<case "medicine">>This week you will learn medicine.
+		<<default>>
+	<</switch>>
 
-<center>
-<<switch $personalAttention>>
-<<case "business">>You plan to focus on business this week.
-<<case "trading">>This week you will learn trading.
-<<case "warfare">>This week you will learn modern combat tactics.
-<<case "engineering">>This week you will learn engineering.
-<<case "medicine">>This week you will learn medicine.
-<<default>>
-<</switch>>
-
-<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@
-
+	<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@
 <</widget>>
 
 
+/* ***
+ *	Called as <<inlineColor $color>>
+ *	Returns the string colored as an HTML color.
+ *** */
+<<widget "inlineColor">><<- "@@color:"+$args[0]+";"+$args[0]>><</widget>>
 
+/* ***
+ *	Called as <<FluffyDesc>>
+ *	Targets &activeFluffy
+ *
+ *	Displays a detailed decription of the fluffy.
+ *** */
 <<widget "FluffyDesc">>
 	$activeFluffy.name is a $activeFluffy.gender $activeFluffy.breed.
 	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat, <<inlineColor $activeFluffy.mColor>> mane and <<inlineColor $activeFluffy.eColor>> eyes. 
@@ -27,12 +52,13 @@
 	<br>Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
 <</widget>>
 
-/%
- Call as <<shortDesc $fluffy>>
-	Calling this widget will create a summary for the passed fluffy
-	It should be preceeded by the fluffy selection link.
-%/
-
+/* ***
+ *	Call as <<shortDesc $fluffy>>
+ *	Calling this widget will create a summary for the passed fluffy
+ *	It should be preceeded by the fluffy selection link.
+ *
+ *	Displays a condensed diplay of fluffy information
+ *** */
 <<widget "shortDesc">>
 	<<set _fluffy = $args[0]>>
 
