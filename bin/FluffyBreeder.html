@@ -759,7 +759,6 @@ Genome.prototype.toString = function() {
  * @return Gene
  */
 Genome.prototype.getGender = function() {
-	return this.elementAt(0);
 	return Genome.fromString(this.elementAt(0).toString());
 };
 
@@ -790,7 +789,7 @@ Genome.prototype.getLength = function() {
 /**
  * Sets the gender gene to male or female (used for random generation).
  *
- * @param string new_gender string of either Male or Female.
+ * @param string new_gender string of either Male or Female, X/X or X/Y.
  */
 Genome.prototype.setGender = function(new_gender) {
 	new_gender = new_gender.toLowerCase();
@@ -838,6 +837,27 @@ Genome.prototype.triplePhenotype = function(index, gene_string) {
 	 * Combinations are:
 	 * A/A, A/a, a/A, a/a and B/B, B/b, b/B, b/b
 	 * **/
+//console.log("gene checked = " +geneOne[0].toUpperCase())
+//console.log("containment check = " + parts.includes(geneOne[0].toUpperCase()))
+	// Check for any genes that do not match the profile
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[0].toUpperCase()) || !parts.includes(geneThree[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[1].toUpperCase()) || !parts.includes(geneThree[1].toUpperCase())) {
+		return -1;
+	}
 
 	// We only care if 1) one is A or 2) both are a (2 is default, so we only need to test for 1)
 	if (parts[0] == geneOne[0] || parts[0] == geneOne[1]) {
@@ -934,6 +954,39 @@ Genome.prototype.getLength = function() {
  */
 Genome.prototype.getLengthGene = function() {
 	return Genome.fromString(this.elementAt(1).toString() + ";" + this.elementAt(2).toString() + ";" + this.elementAt(3).toString());
+};
+
+/**
+ * Sets the Length gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setLength = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+console.log("test check 1 = " +  new_gene)
+	switch (test_gene.triplePhenotype(0, "A/B/C")) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[1] = new_gene.substring(0, 3);
+		this.genes[2] = new_gene.substring(4, 7);
+		this.genes[3] = new_gene.substring(8, 11);
+		return true;
+	case -1:
+	default:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	}
 };
 
 /**
@@ -3125,7 +3178,126 @@ profitsTotal: 0
 &lt;&lt;/if&gt;&gt;
 %/
 &lt;&lt;set $activeFluffy = 0, _fluff = 0&gt;&gt;
-&lt;&lt;/capture&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Name Fluffy" tags="nobr" position="475,225" size="100,100">/* **********
+&lt;&lt;/capture&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Gene Lab" tags="nobr" position="475,225" size="100,100">/* **********
+ *	geneLab.tw
+ *
+ *	Package: FluffyBreeder
+ *	Format: Twine2 (Sugarcube 2)
+ *
+ *	Debug options for directly editing a fluffies genetics.
+ *
+ *********** */
+ 
+&lt;&lt;set $nextButton to &quot;Exit Lab&quot;, $nextLink to &quot;Name Fluffy&quot;&gt;&gt;
+
+/* Since the Javascript elements do not save, first ensure our genome is set from the string */
+&lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
+
+You are editing the genes of:
+&lt;br&gt;&lt;span id=&quot;desc&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;/span&gt;
+&lt;hr&gt;Gender: 
+&lt;span id=&quot;gender&quot;&gt;
+	&lt;&lt;if String($activeFluffy.genes.getGender()) == &quot;XX&quot;&gt;&gt;XX (Female)
+	&lt;&lt;else&gt;&gt;XY (Male)
+	&lt;&lt;/if&gt;&gt;
+&lt;/span&gt;
+&lt;&lt;link &quot;Female&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XX (Female)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; |
+&lt;&lt;link &quot;Male&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XY (Male)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt;
+
+&lt;br&gt;Length: 
+&lt;&lt;set _lString = $activeFluffy.genes.getLengthGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;length&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+	&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt;
+&lt;/span&gt;
+&lt;br&gt;
+&lt;div id=&quot;l-form&quot;&gt;
+&lt;&lt;textbox &#39;_lString&#39; _lString&gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _lString to _lString.trim()&gt;&gt;
+	&lt;&lt;set _testGene to Genome.fromString(_lString)&gt;&gt;
+	&lt;&lt;if $activeFluffy.genes.setLength(_lString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;&lt;br&gt;Invalid gene!&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		
+		/* Clip out the random factor from the results*/
+		&lt;&lt;run $activeFluffy.lengthAdd = Number($activeFluffy.maxLength) - Number($activeFluffy.length)&gt;&gt;
+		&lt;&lt;run $activeFluffy.length = Number($activeFluffy.genes.getLength()) + Number($activeFluffy.lengthAdd)&gt;&gt;
+		&lt;&lt;run $activeFluffy.maxLength = Number($activeFluffy.length) + Number($activeFluffy.lengthAdd)&gt;&gt;
+		
+		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;Gene set.  Length = &lt;&lt;print $activeFluffy.length&gt;&gt;&lt;br&gt; &lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#length&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | &lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; | &lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+
+&lt;span id=&quot;l-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/*
+&lt;br&gt;
+&lt;&lt;link _lString1&gt;&gt;
+	&lt;&lt;if _lString1 == _lString1.toUpperCase()&gt;&gt;&lt;&lt;set _lString1 = _lString1.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString1 = _lString1.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; /
+
+&lt;&lt;link _lString2&gt;&gt;
+	&lt;&lt;if _lString2 == _lString2.toUpperCase()&gt;&gt;&lt;&lt;set _lString2 = _lString2.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString2 = _lString2.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; ;
+
+&lt;&lt;link _lString3&gt;&gt;
+	&lt;&lt;if _lString3 == _lString3.toUpperCase()&gt;&gt;&lt;&lt;set _lString3 = _lString3.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString3 = _lString3.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; /
+
+&lt;&lt;link _lString4&gt;&gt;
+	&lt;&lt;if _lString4 == _lString4.toUpperCase()&gt;&gt;&lt;&lt;set _lString4 = _lString4.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString4 = _lString4.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; ;
+
+&lt;&lt;link _lString5&gt;&gt;
+	&lt;&lt;if _lString5 == _lString5.toUpperCase()&gt;&gt;&lt;&lt;set _lString5 = _lString5.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString5 = _lString5.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; /
+
+&lt;&lt;link _lString6&gt;&gt;
+	&lt;&lt;if _lString6 == _lString6.toUpperCase()&gt;&gt;&lt;&lt;set _lString6 = _lString6.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString6 = _lString6.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
+		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
+		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
+		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt; ;
+*/
+
+
+&lt;br&gt;
+/*&lt;&lt;link &quot;Update Genome with current settings&quot; &quot;Gene Lab&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;*/
+
+&lt;br&gt;
+[[Exit the Lab|Name Fluffy]]</tw-passagedata><tw-passagedata pid="15" name="Name Fluffy" tags="nobr" position="600,225" size="100,100">/* **********
  * nameFluffy.tw
  *
  * Package: FluffyBreeder
@@ -3147,7 +3319,15 @@ profitsTotal: 0
 &lt;br&gt;What do you want to name this fluffy?  // Press Enter to set a name - @@.red;Warning: no input validate currently!@@
 &lt;br&gt;&lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Name Fluffy&quot;&gt;&gt; 
 
-&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="description widgets" tags="widget nobr" position="600,225" size="100,100">/* **********
+&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+&lt;br&gt;
+
+/* ***
+ *	Debug option to enter a genetic editing mode.
+ *** */
+&lt;&lt;if $debugMode == true&gt;&gt;
+	[[Enter the Gene Lab|Gene Lab]]
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="description widgets" tags="widget nobr" position="725,225" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -3214,7 +3394,7 @@ profitsTotal: 0
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother ... Father ... Children ... &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $ourStore.fluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if _fluffy.pregnant&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="fluffy creation widgets" tags="widget nobr" position="725,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="fluffy creation widgets" tags="widget nobr" position="850,225" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -3437,7 +3617,7 @@ profitsTotal: 0
 	&lt;&lt;set $fID++&gt;&gt;
 	&lt;&lt;set $activeFluffy.ID = $fID&gt;&gt;
 	&lt;&lt;set $allFluffies[$fID] = $activeFluffy&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="misc widgets" tags="nobr widget" position="850,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="misc widgets" tags="nobr widget" position="975,225" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -3673,7 +3853,12 @@ profitsTotal: 0
 		&lt;/span&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="pronoun widgets" tags="widget nobr" position="975,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;
+
+
+&lt;&lt;widget flipCase&gt;&gt;
+	&lt;&lt;if $args[0] == $args[0].toUpperCase()&gt;&gt;&lt;&lt;set $args[0] = $args[0].toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $args[0] = $args[0].toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="pronoun widgets" tags="widget nobr" position="1100,225" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

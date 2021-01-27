@@ -1,0 +1,122 @@
+::Gene Lab [nobr]
+
+/* **********
+ *	geneLab.tw
+ *
+ *	Package: FluffyBreeder
+ *	Format: Twine2 (Sugarcube 2)
+ *
+ *	Debug options for directly editing a fluffies genetics.
+ *
+ *********** */
+ 
+<<set $nextButton to "Exit Lab", $nextLink to "Name Fluffy">>
+
+/* Since the Javascript elements do not save, first ensure our genome is set from the string */
+<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+
+You are editing the genes of:
+<br><span id="desc"><<FluffyDesc>></span>
+<hr>Gender: 
+<span id="gender">
+	<<if String($activeFluffy.genes.getGender()) == "XX">>XX (Female)
+	<<else>>XY (Male)
+	<</if>>
+</span>
+<<link "Female">><<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">><<replace "#gender">>XX (Female)<</replace>><<replace "#desc">><<FluffyDesc>><</replace>><</link>> |
+<<link "Male">><<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">><<replace "#gender">>XY (Male)<</replace>><<replace "#desc">><<FluffyDesc>><</replace>><</link>>
+
+<br>Length: 
+<<set _lString = $activeFluffy.genes.getLengthGene().toString() + ";">>
+<span id="length">
+	<<print $activeFluffy.genes.getLength()>> cm | 
+	<<print $activeFluffy.genes.getLengthDesc()>>
+</span>
+<br>
+<div id="l-form">
+<<textbox '_lString' _lString>>
+<<button "Enter">>
+	<<set _lString to _lString.trim()>>
+	<<set _testGene to Genome.fromString(_lString)>>
+	<<if $activeFluffy.genes.setLength(_lString) == false>>
+		<<replace "#l-form-error">><br>Invalid gene!<</replace>>
+	<<else>>
+		<<run $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+		
+		/* Clip out the random factor from the results*/
+		<<run $activeFluffy.lengthAdd = Number($activeFluffy.maxLength) - Number($activeFluffy.length)>>
+		<<run $activeFluffy.length = Number($activeFluffy.genes.getLength()) + Number($activeFluffy.lengthAdd)>>
+		<<run $activeFluffy.maxLength = Number($activeFluffy.length) + Number($activeFluffy.lengthAdd)>>
+		
+		<<replace "#l-form-error">>Gene set.  Length = <<print $activeFluffy.length>><br> <<print $activeFluffy.genes.toString()>><</replace>>
+		<<replace "#length">><<print $activeFluffy.genes.getLength()>> cm | <<print $activeFluffy.genes.getLengthDesc()>> | <<print $activeFluffy.genes.getLength()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><</replace>>
+	<</if>>
+<</button>>
+
+<span id="l-form-error"></span>
+</div>
+
+/*
+<br>
+<<link _lString1>>
+	<<if _lString1 == _lString1.toUpperCase()>><<set _lString1 = _lString1.toLowerCase()>><<else>><<set _lString1 = _lString1.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> /
+
+<<link _lString2>>
+	<<if _lString2 == _lString2.toUpperCase()>><<set _lString2 = _lString2.toLowerCase()>><<else>><<set _lString2 = _lString2.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> ;
+
+<<link _lString3>>
+	<<if _lString3 == _lString3.toUpperCase()>><<set _lString3 = _lString3.toLowerCase()>><<else>><<set _lString3 = _lString3.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> /
+
+<<link _lString4>>
+	<<if _lString4 == _lString4.toUpperCase()>><<set _lString4 = _lString4.toLowerCase()>><<else>><<set _lString4 = _lString4.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> ;
+
+<<link _lString5>>
+	<<if _lString5 == _lString5.toUpperCase()>><<set _lString5 = _lString5.toLowerCase()>><<else>><<set _lString5 = _lString5.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> /
+
+<<link _lString6>>
+	<<if _lString6 == _lString6.toUpperCase()>><<set _lString6 = _lString6.toLowerCase()>><<else>><<set _lString6 = _lString6.toUpperCase()>><</if>>
+	<<replace "#length">>
+		<<print $activeFluffy.genes.getLength()>> cm | 
+		<<print $activeFluffy.genes.getLengthDesc()>> |
+		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
+	<</replace>>
+<</link>> ;
+*/
+
+
+<br>
+/*<<link "Update Genome with current settings" "Gene Lab">><</link>>*/
+
+<br>
+[[Exit the Lab|Name Fluffy]]

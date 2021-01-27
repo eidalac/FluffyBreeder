@@ -394,7 +394,6 @@ Genome.prototype.toString = function() {
  * @return Gene
  */
 Genome.prototype.getGender = function() {
-	return this.elementAt(0);
 	return Genome.fromString(this.elementAt(0).toString());
 };
 
@@ -425,7 +424,7 @@ Genome.prototype.getLength = function() {
 /**
  * Sets the gender gene to male or female (used for random generation).
  *
- * @param string new_gender string of either Male or Female.
+ * @param string new_gender string of either Male or Female, X/X or X/Y.
  */
 Genome.prototype.setGender = function(new_gender) {
 	new_gender = new_gender.toLowerCase();
@@ -473,6 +472,27 @@ Genome.prototype.triplePhenotype = function(index, gene_string) {
 	 * Combinations are:
 	 * A/A, A/a, a/A, a/a and B/B, B/b, b/B, b/b
 	 * **/
+//console.log("gene checked = " +geneOne[0].toUpperCase())
+//console.log("containment check = " + parts.includes(geneOne[0].toUpperCase()))
+	// Check for any genes that do not match the profile
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[0].toUpperCase()) || !parts.includes(geneThree[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[1].toUpperCase()) || !parts.includes(geneThree[1].toUpperCase())) {
+		return -1;
+	}
 
 	// We only care if 1) one is A or 2) both are a (2 is default, so we only need to test for 1)
 	if (parts[0] == geneOne[0] || parts[0] == geneOne[1]) {
@@ -569,6 +589,39 @@ Genome.prototype.getLength = function() {
  */
 Genome.prototype.getLengthGene = function() {
 	return Genome.fromString(this.elementAt(1).toString() + ";" + this.elementAt(2).toString() + ";" + this.elementAt(3).toString());
+};
+
+/**
+ * Sets the Length gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setLength = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+console.log("test check 1 = " +  new_gene)
+	switch (test_gene.triplePhenotype(0, "A/B/C")) {
+	case 0:
+	case 1:
+	case 2:
+	case 3:
+	case 4:
+	case 5:
+	case 6:
+	case 7:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[1] = new_gene.substring(0, 3);
+		this.genes[2] = new_gene.substring(4, 7);
+		this.genes[3] = new_gene.substring(8, 11);
+		return true;
+	case -1:
+	default:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	}
 };
 
 /**
