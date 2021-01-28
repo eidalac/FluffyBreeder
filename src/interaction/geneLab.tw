@@ -56,8 +56,17 @@ You are editing the genes of:
 		
 		/* Clip out the random factor from the results*/
 		<<run $activeFluffy.maxLength = Number($activeFluffy.genes.getLength() + $activeFluffy.lengthAdd).toFixed(2)>>
-		<<run $activeFluffy.length = Number(random($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)>>
-		
+		<<run $activeFluffy.length = Number(randomFloat($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)>>
+
+		/* Update height and weight as they are dependent on length*/
+		<<run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)>>
+		<<run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)>>
+		<<run $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)>>
+
+		<<run $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()>>
+		<<run $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)>>
+		<<run $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)>>
+
 		/* And update the page */
 		<<replace "#l-form-error">>Gene set.  Length = <<print $activeFluffy.length>><br> <</replace>>
 		<<replace "#length">><<print $activeFluffy.genes.getLength()>> cm | <<print $activeFluffy.genes.getLengthDesc()>> | <<print $activeFluffy.genes.getLength()>><</replace>>
@@ -95,7 +104,7 @@ Height:
 		/* Clip out the random factor from the results*/
 		<<run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)>>
 		<<run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)>>
-		<<run $activeFluffy.height = Number(random($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)>>
+		<<run $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)>>
 
 		/* And update the page */
 		<<replace "#h-form-error">>Gene set.  Height = <<print $activeFluffy.height>><br> <</replace>>
@@ -107,6 +116,44 @@ Height:
 <span id="h-form-error"></span>
 </div>
 
+/* ***
+ *	Weight
+ * 
+ *	much as before, only 2 genes:
+ *** */
+Weight: 
+<<set _wString  = $activeFluffy.genes.getWeightGene().toString() + ";">>
+<span id="weight">
+	<<print $activeFluffy.genes.getWeight()>> cm | 
+	<<print $activeFluffy.genes.getWeightDesc()>>
+</span>
+
+<div id="w-form">
+<<textbox '_wString ' _wString >>
+<<button "Enter">>
+	<<set _wString  to _wString .trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $activeFluffy.genes.setWeight(_wString ) == false>>
+		<<replace "#w-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<run $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+		
+		/* Clip out the random factor from the results*/
+		<<run $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()>>
+		<<run $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)>>
+		<<run $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)>>
+
+		/* And update the page */
+		<<replace "#w-form-error">>Gene set.  Weight = <<print $activeFluffy.weight>><br> <</replace>>
+		<<replace "#weight">><<print $activeFluffy.genes.getWeight()>> cm | <<print $activeFluffy.genes.getWeightDesc()>> | <<print $activeFluffy.genes.getWeight()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="w-form-error"></span>
+</div>
 
 <br>
 [[Exit the Lab|Name Fluffy]]

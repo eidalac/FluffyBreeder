@@ -866,6 +866,26 @@ Genome.prototype.getWeight = function() {
 	}
 }
 
+
+/**
+ * Sets the Weight gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setWeight = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "G/H")) {
+	case -1:
+		return false;
+	default:
+		this.genes[6] = new_gene.substring(0, 3);
+		this.genes[7] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
 /**
  * Retrieves the gene determining adult Weight
  *
