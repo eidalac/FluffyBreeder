@@ -965,27 +965,19 @@ Genome.prototype.getLengthGene = function() {
  */
 Genome.prototype.setLength = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
-console.log("test check 1 = " +  new_gene)
+//console.log("test check 1 = " +  new_gene)
 	switch (test_gene.triplePhenotype(0, "A/B/C")) {
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
 		// we matched a valid gene, continue.
 //console.log("test check 2 = true")
 		this.genes[1] = new_gene.substring(0, 3);
 		this.genes[2] = new_gene.substring(4, 7);
 		this.genes[3] = new_gene.substring(8, 11);
 		return true;
-	case -1:
-	default:
-		 // gene string does not match, abort.
-//console.log("test check 2 = false")
-		return false;
 	}
 };
 
@@ -1050,7 +1042,20 @@ Genome.prototype.doublePhenotype = function(index, gene_string) {
 	 * Combinations are:
 	 * A/A, A/a, a/A, a/a and B/B, B/b, b/B, b/b
 	 * **/
-
+	// Check for any genes that do not match the profile
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	
 	// default is mixed case, so just check if both are upper case or both are lower:
 	if (parts[0] == geneOne[0] && parts[0] == geneOne[1]) {
 		// Both upper case.
@@ -1127,6 +1132,30 @@ Genome.prototype.getHeight = function() {
 		return -1;
 	}
 }
+
+/**
+ * Sets the Height gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setHeight = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+// console.log("test check 1 = " +  new_gene)
+	switch (test_gene.doublePhenotype(0, "E/F")) {
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[4] = new_gene.substring(0, 3);
+		this.genes[5] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining adult size (Height).
@@ -3194,16 +3223,25 @@ profitsTotal: 0
 &lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
 
 You are editing the genes of:
-&lt;br&gt;&lt;span id=&quot;desc&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;/span&gt;
+&lt;br&gt;&lt;span id=&quot;desc&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;/span&gt;
+
+/* ***
+ *	Gender, the easy one.  Click a link, swap gender.
+ *** */
 &lt;hr&gt;Gender: 
 &lt;span id=&quot;gender&quot;&gt;
 	&lt;&lt;if String($activeFluffy.genes.getGender()) == &quot;XX&quot;&gt;&gt;XX (Female)
 	&lt;&lt;else&gt;&gt;XY (Male)
 	&lt;&lt;/if&gt;&gt;
 &lt;/span&gt;
-&lt;&lt;link &quot;Female&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XX (Female)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; |
-&lt;&lt;link &quot;Male&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XY (Male)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt;
+&lt;&lt;link &quot;Female&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XX (Female)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; |
+&lt;&lt;link &quot;Male&quot;&gt;&gt;&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;&lt;&lt;replace &quot;#gender&quot;&gt;&gt;XY (Male)&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt;
 
+/* ***
+ *	Length
+ * 
+ *	More complex, 3 genes and a random factor on top of that
+ *** */
 &lt;br&gt;Length: 
 &lt;&lt;set _lString = $activeFluffy.genes.getLengthGene().toString() + &quot;;&quot;&gt;&gt;
 &lt;span id=&quot;length&quot;&gt;
@@ -3215,86 +3253,67 @@ You are editing the genes of:
 &lt;&lt;textbox &#39;_lString&#39; _lString&gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _lString to _lString.trim()&gt;&gt;
-	&lt;&lt;set _testGene to Genome.fromString(_lString)&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
 	&lt;&lt;if $activeFluffy.genes.setLength(_lString) == false&gt;&gt;
-		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;&lt;br&gt;Invalid gene!&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
 		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
 		
 		/* Clip out the random factor from the results*/
-		&lt;&lt;run $activeFluffy.lengthAdd = Number($activeFluffy.maxLength) - Number($activeFluffy.length)&gt;&gt;
-		&lt;&lt;run $activeFluffy.length = Number($activeFluffy.genes.getLength()) + Number($activeFluffy.lengthAdd)&gt;&gt;
-		&lt;&lt;run $activeFluffy.maxLength = Number($activeFluffy.length) + Number($activeFluffy.lengthAdd)&gt;&gt;
+		&lt;&lt;run $activeFluffy.maxLength = Number($activeFluffy.genes.getLength() + $activeFluffy.lengthAdd).toFixed(2)&gt;&gt;
+		&lt;&lt;run $activeFluffy.length = Number(random($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)&gt;&gt;
 		
-		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;Gene set.  Length = &lt;&lt;print $activeFluffy.length&gt;&gt;&lt;br&gt; &lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		/* And update the page */
+		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;Gene set.  Length = &lt;&lt;print $activeFluffy.length&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#length&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | &lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; | &lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt;&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/button&gt;&gt;
-
+/* Form for error messages to display*/
 &lt;span id=&quot;l-form-error&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
 
-/*
-&lt;br&gt;
-&lt;&lt;link _lString1&gt;&gt;
-	&lt;&lt;if _lString1 == _lString1.toUpperCase()&gt;&gt;&lt;&lt;set _lString1 = _lString1.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString1 = _lString1.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; /
+/* ***
+ *	Height
+ * 
+ *	much as before, only 2 genes:
+ *** */
+Height: 
+&lt;&lt;set _hString = $activeFluffy.genes.getHeightGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;height&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getHeight()&gt;&gt; cm | 
+	&lt;&lt;print $activeFluffy.genes.getHeightDesc()&gt;&gt;
+&lt;/span&gt;
 
-&lt;&lt;link _lString2&gt;&gt;
-	&lt;&lt;if _lString2 == _lString2.toUpperCase()&gt;&gt;&lt;&lt;set _lString2 = _lString2.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString2 = _lString2.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; ;
+&lt;div id=&quot;h-form&quot;&gt;
+&lt;&lt;textbox &#39;_hString&#39; _hString&gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _hString to _hString.trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setHeight(_hString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#h-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		
+		/* Clip out the random factor from the results*/
+		&lt;&lt;run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)&gt;&gt;
+		&lt;&lt;run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
+		&lt;&lt;run $activeFluffy.height = Number(random($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)&gt;&gt;
 
-&lt;&lt;link _lString3&gt;&gt;
-	&lt;&lt;if _lString3 == _lString3.toUpperCase()&gt;&gt;&lt;&lt;set _lString3 = _lString3.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString3 = _lString3.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; /
+		/* And update the page */
+		&lt;&lt;replace &quot;#h-form-error&quot;&gt;&gt;Gene set.  Height = &lt;&lt;print $activeFluffy.height&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#height&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getHeight()&gt;&gt; cm | &lt;&lt;print $activeFluffy.genes.getHeightDesc()&gt;&gt; | &lt;&lt;print $activeFluffy.genes.getHeight()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error messages to display*/
+&lt;span id=&quot;h-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
 
-&lt;&lt;link _lString4&gt;&gt;
-	&lt;&lt;if _lString4 == _lString4.toUpperCase()&gt;&gt;&lt;&lt;set _lString4 = _lString4.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString4 = _lString4.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; ;
-
-&lt;&lt;link _lString5&gt;&gt;
-	&lt;&lt;if _lString5 == _lString5.toUpperCase()&gt;&gt;&lt;&lt;set _lString5 = _lString5.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString5 = _lString5.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; /
-
-&lt;&lt;link _lString6&gt;&gt;
-	&lt;&lt;if _lString6 == _lString6.toUpperCase()&gt;&gt;&lt;&lt;set _lString6 = _lString6.toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set _lString6 = _lString6.toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;&lt;replace &quot;#length&quot;&gt;&gt;
-		&lt;&lt;print $activeFluffy.genes.getLength()&gt;&gt; cm | 
-		&lt;&lt;print $activeFluffy.genes.getLengthDesc()&gt;&gt; |
-		&lt;&lt;print _lString1 + &quot;/&quot; + _lString2 + &quot;;&quot; + _lString3 + &quot;/&quot; + _lString4 + &quot;;&quot; + _lString5 + &quot;/&quot; + _lString6&gt;&gt;
-	&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/link&gt;&gt; ;
-*/
-
-
-&lt;br&gt;
-/*&lt;&lt;link &quot;Update Genome with current settings&quot; &quot;Gene Lab&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;*/
 
 &lt;br&gt;
 [[Exit the Lab|Name Fluffy]]</tw-passagedata><tw-passagedata pid="15" name="Name Fluffy" tags="nobr" position="600,225" size="100,100">/* **********
@@ -3493,7 +3512,6 @@ You are editing the genes of:
 			length: Number(random((_L*0.85),_L)).toFixed(2),
 			maxLength: _L,
 			lengthAdd: _l, 
-			height: 0,
 			maxHeight: _H,
 			height: Number(random((_H*0.95),_H)).toFixed(2),
 			heightMulti: $args[0].getHeight() + _h,

@@ -600,27 +600,19 @@ Genome.prototype.getLengthGene = function() {
  */
 Genome.prototype.setLength = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
-console.log("test check 1 = " +  new_gene)
+//console.log("test check 1 = " +  new_gene)
 	switch (test_gene.triplePhenotype(0, "A/B/C")) {
-	case 0:
-	case 1:
-	case 2:
-	case 3:
-	case 4:
-	case 5:
-	case 6:
-	case 7:
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
 		// we matched a valid gene, continue.
 //console.log("test check 2 = true")
 		this.genes[1] = new_gene.substring(0, 3);
 		this.genes[2] = new_gene.substring(4, 7);
 		this.genes[3] = new_gene.substring(8, 11);
 		return true;
-	case -1:
-	default:
-		 // gene string does not match, abort.
-//console.log("test check 2 = false")
-		return false;
 	}
 };
 
@@ -685,7 +677,20 @@ Genome.prototype.doublePhenotype = function(index, gene_string) {
 	 * Combinations are:
 	 * A/A, A/a, a/A, a/a and B/B, B/b, b/B, b/b
 	 * **/
-
+	// Check for any genes that do not match the profile
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	
 	// default is mixed case, so just check if both are upper case or both are lower:
 	if (parts[0] == geneOne[0] && parts[0] == geneOne[1]) {
 		// Both upper case.
@@ -762,6 +767,30 @@ Genome.prototype.getHeight = function() {
 		return -1;
 	}
 }
+
+/**
+ * Sets the Height gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setHeight = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+// console.log("test check 1 = " +  new_gene)
+	switch (test_gene.doublePhenotype(0, "E/F")) {
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[4] = new_gene.substring(0, 3);
+		this.genes[5] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining adult size (Height).

@@ -16,16 +16,25 @@
 <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 
 You are editing the genes of:
-<br><span id="desc"><<FluffyDesc>></span>
+<br><span id="desc"><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>></span>
+
+/* ***
+ *	Gender, the easy one.  Click a link, swap gender.
+ *** */
 <hr>Gender: 
 <span id="gender">
 	<<if String($activeFluffy.genes.getGender()) == "XX">>XX (Female)
 	<<else>>XY (Male)
 	<</if>>
 </span>
-<<link "Female">><<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">><<replace "#gender">>XX (Female)<</replace>><<replace "#desc">><<FluffyDesc>><</replace>><</link>> |
-<<link "Male">><<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">><<replace "#gender">>XY (Male)<</replace>><<replace "#desc">><<FluffyDesc>><</replace>><</link>>
+<<link "Female">><<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">><<replace "#gender">>XX (Female)<</replace>><<replace "#desc">><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>><</replace>><</link>> |
+<<link "Male">><<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">><<replace "#gender">>XY (Male)<</replace>><<replace "#desc">><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>><</replace>><</link>>
 
+/* ***
+ *	Length
+ * 
+ *	More complex, 3 genes and a random factor on top of that
+ *** */
 <br>Length: 
 <<set _lString = $activeFluffy.genes.getLengthGene().toString() + ";">>
 <span id="length">
@@ -37,86 +46,67 @@ You are editing the genes of:
 <<textbox '_lString' _lString>>
 <<button "Enter">>
 	<<set _lString to _lString.trim()>>
-	<<set _testGene to Genome.fromString(_lString)>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
 	<<if $activeFluffy.genes.setLength(_lString) == false>>
-		<<replace "#l-form-error">><br>Invalid gene!<</replace>>
+		<<replace "#l-form-error">>@@.orange;Invalid gene!@@<</replace>>
 	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
 		<<run $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 		
 		/* Clip out the random factor from the results*/
-		<<run $activeFluffy.lengthAdd = Number($activeFluffy.maxLength) - Number($activeFluffy.length)>>
-		<<run $activeFluffy.length = Number($activeFluffy.genes.getLength()) + Number($activeFluffy.lengthAdd)>>
-		<<run $activeFluffy.maxLength = Number($activeFluffy.length) + Number($activeFluffy.lengthAdd)>>
+		<<run $activeFluffy.maxLength = Number($activeFluffy.genes.getLength() + $activeFluffy.lengthAdd).toFixed(2)>>
+		<<run $activeFluffy.length = Number(random($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)>>
 		
-		<<replace "#l-form-error">>Gene set.  Length = <<print $activeFluffy.length>><br> <<print $activeFluffy.genes.toString()>><</replace>>
+		/* And update the page */
+		<<replace "#l-form-error">>Gene set.  Length = <<print $activeFluffy.length>><br> <</replace>>
 		<<replace "#length">><<print $activeFluffy.genes.getLength()>> cm | <<print $activeFluffy.genes.getLengthDesc()>> | <<print $activeFluffy.genes.getLength()>><</replace>>
-		<<replace "#desc">><<FluffyDesc>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>><</replace>>
 	<</if>>
 <</button>>
-
+/* Form for error messages to display*/
 <span id="l-form-error"></span>
 </div>
 
-/*
-<br>
-<<link _lString1>>
-	<<if _lString1 == _lString1.toUpperCase()>><<set _lString1 = _lString1.toLowerCase()>><<else>><<set _lString1 = _lString1.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> /
+/* ***
+ *	Height
+ * 
+ *	much as before, only 2 genes:
+ *** */
+Height: 
+<<set _hString = $activeFluffy.genes.getHeightGene().toString() + ";">>
+<span id="height">
+	<<print $activeFluffy.genes.getHeight()>> cm | 
+	<<print $activeFluffy.genes.getHeightDesc()>>
+</span>
 
-<<link _lString2>>
-	<<if _lString2 == _lString2.toUpperCase()>><<set _lString2 = _lString2.toLowerCase()>><<else>><<set _lString2 = _lString2.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> ;
+<div id="h-form">
+<<textbox '_hString' _hString>>
+<<button "Enter">>
+	<<set _hString to _hString.trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $activeFluffy.genes.setHeight(_hString) == false>>
+		<<replace "#h-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<run $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+		
+		/* Clip out the random factor from the results*/
+		<<run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)>>
+		<<run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)>>
+		<<run $activeFluffy.height = Number(random($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)>>
 
-<<link _lString3>>
-	<<if _lString3 == _lString3.toUpperCase()>><<set _lString3 = _lString3.toLowerCase()>><<else>><<set _lString3 = _lString3.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> /
+		/* And update the page */
+		<<replace "#h-form-error">>Gene set.  Height = <<print $activeFluffy.height>><br> <</replace>>
+		<<replace "#height">><<print $activeFluffy.genes.getHeight()>> cm | <<print $activeFluffy.genes.getHeightDesc()>> | <<print $activeFluffy.genes.getHeight()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $activeFluffy.genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="h-form-error"></span>
+</div>
 
-<<link _lString4>>
-	<<if _lString4 == _lString4.toUpperCase()>><<set _lString4 = _lString4.toLowerCase()>><<else>><<set _lString4 = _lString4.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> ;
-
-<<link _lString5>>
-	<<if _lString5 == _lString5.toUpperCase()>><<set _lString5 = _lString5.toLowerCase()>><<else>><<set _lString5 = _lString5.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> /
-
-<<link _lString6>>
-	<<if _lString6 == _lString6.toUpperCase()>><<set _lString6 = _lString6.toLowerCase()>><<else>><<set _lString6 = _lString6.toUpperCase()>><</if>>
-	<<replace "#length">>
-		<<print $activeFluffy.genes.getLength()>> cm | 
-		<<print $activeFluffy.genes.getLengthDesc()>> |
-		<<print _lString1 + "/" + _lString2 + ";" + _lString3 + "/" + _lString4 + ";" + _lString5 + "/" + _lString6>>
-	<</replace>>
-<</link>> ;
-*/
-
-
-<br>
-/*<<link "Update Genome with current settings" "Gene Lab">><</link>>*/
 
 <br>
 [[Exit the Lab|Name Fluffy]]
