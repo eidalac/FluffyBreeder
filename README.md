@@ -25,7 +25,7 @@ Nothing that takes place in this work of FICTION should be replicated in any for
 
 “Fluffy Ponies (Equus ferus caballus hasbioidae) are small creatures with fluffy bodies, childish speech, and low cognitive intelligence. Generally depicted as simple creatures literally designed to love and play, they are a subset of the My Little Pony: Friendship is Magic fandom. ”
 
-The short version is they were a gag/joke created related to the My Little Pony fandom, but has been around long enough to be its own entity.  
+The short version is they were a gag/joke created related to the My Little Pony fandom, but has been around long enough to be its own entity.   
 
 For more information see: https://the-fluffybooru-fluffydex.fandom.com/wiki/The_FluffyBooru_Fluffydex_Wiki 
 https://www.fluffycommunity.com/
