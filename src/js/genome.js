@@ -963,6 +963,25 @@ Genome.prototype.getMaxAge = function() {
 }
 
 /**
+ * Sets the Age gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setMaxAge = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "J/K")) {
+	case -1:
+		return false;
+	default:
+		this.genes[8] = new_gene.substring(0, 3);
+		this.genes[9] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
  * Retrieves the gene determining maximum age
  *
  * This is defined as genes 8 and 9 (J/j;K/k).
@@ -1070,6 +1089,24 @@ Genome.prototype.getFertilityDesc = function() {
 	}
 };
 
+/**
+ * Sets the Fertility gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setFertility = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "M/N")) {
+	case -1:
+		return false;
+	default:
+		this.genes[10] = new_gene.substring(0, 3);
+		this.genes[11] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining age of maturity.
@@ -1108,6 +1145,25 @@ Genome.prototype.getMaturity = function() {
 		return -1;
 	}
 }
+
+/**
+ * Sets the Maturity gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setMaturity = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "S/X")) {
+	case -1:
+		return false;
+	default:
+		this.genes[12] = new_gene.substring(0, 3);
+		this.genes[13] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining Maturity
@@ -1180,12 +1236,35 @@ Genome.prototype.breedPhenotype = function(index, gene_string) {
 	parts[0] = parts[0].toUpperCase();
 	parts[1] = parts[1].toUpperCase();
 	parts[2] = parts[2].toUpperCase();
-	parts[3] = parts[3].toLowerCase();
+	parts[3] = parts[3].toUpperCase();
 	
 	// Get the genes
 	var geneOne = this.elementAt(index).toString().split('/');		// {[E], [e]}
 	var geneTwo = this.elementAt(index+1).toString().split('/');	// {[P], [a]}
 	var geneThree = this.elementAt(index+2).toString().split('/');	// {[U], [a]}
+
+	
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[0].toUpperCase()) || !parts.includes(geneThree[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[1].toUpperCase()) || !parts.includes(geneThree[1].toUpperCase())) {
+		return -1;
+	}
+	
+	// We need this upper for the check above, but lower case otherwise.  it's complicated.  this is all so very complicated.
+	parts[3] = parts[3].toLowerCase();
 	
 	// Two of these are only upper case, one is only lower, and only one can be in either state.
 	
@@ -1278,6 +1357,27 @@ Genome.prototype.getBreedString = function() {
 		return "UNDEFINED BREED";
 	}
 };
+
+/**
+ * Sets the Breed gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setBreed = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.breedPhenotype(0, "E/P/U/a")) {
+	case -1:
+		return false;
+	default:
+		this.genes[14] = new_gene.substring(0, 3);
+		this.genes[15] = new_gene.substring(4, 7);
+		this.genes[16] = new_gene.substring(8, 11);
+		return true;
+	}
+};
+
 
 /******************************************************
  * COLOR SHIT THIS IS GOING TO BE LARGE 
@@ -1583,9 +1683,63 @@ Genome.prototype.getGeneColor = function(index) {
 	case "BBYYrROO":
 		geneString = "Navy";
 		break;
+	default:
+		return "INVALID COLOR";
 	}
 	
 	return Results + " " + geneString; 
+};
+
+/**
+ * Sets the color gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[17] = new_gene.substring(0, 3);
+		this.genes[18] = new_gene.substring(4, 7);
+		this.genes[19] = new_gene.substring(8, 11);
+		this.genes[20] = new_gene.substring(12, 15);
+		this.genes[21] = new_gene.substring(16, 19);
+		return true;
+	}
+};
+
+Genome.prototype.setManeColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[22] = new_gene.substring(0, 3);
+		this.genes[23] = new_gene.substring(4, 7);
+		this.genes[24] = new_gene.substring(8, 11);
+		this.genes[25] = new_gene.substring(12, 15);
+		this.genes[26] = new_gene.substring(16, 19);
+		return true;
+	}
+};
+
+Genome.prototype.setEyeColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[27] = new_gene.substring(0, 3);
+		this.genes[28] = new_gene.substring(4, 7);
+		this.genes[29] = new_gene.substring(8, 11);
+		this.genes[30] = new_gene.substring(12, 15);
+		this.genes[31] = new_gene.substring(16, 19);
+		return true;
+	}
 };
 
 /**

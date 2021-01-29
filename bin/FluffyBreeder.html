@@ -1328,6 +1328,25 @@ Genome.prototype.getMaxAge = function() {
 }
 
 /**
+ * Sets the Age gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setMaxAge = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "J/K")) {
+	case -1:
+		return false;
+	default:
+		this.genes[8] = new_gene.substring(0, 3);
+		this.genes[9] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
  * Retrieves the gene determining maximum age
  *
  * This is defined as genes 8 and 9 (J/j;K/k).
@@ -1435,6 +1454,24 @@ Genome.prototype.getFertilityDesc = function() {
 	}
 };
 
+/**
+ * Sets the Fertility gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setFertility = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "M/N")) {
+	case -1:
+		return false;
+	default:
+		this.genes[10] = new_gene.substring(0, 3);
+		this.genes[11] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining age of maturity.
@@ -1473,6 +1510,25 @@ Genome.prototype.getMaturity = function() {
 		return -1;
 	}
 }
+
+/**
+ * Sets the Maturity gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setMaturity = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "S/X")) {
+	case -1:
+		return false;
+	default:
+		this.genes[12] = new_gene.substring(0, 3);
+		this.genes[13] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining Maturity
@@ -1545,12 +1601,35 @@ Genome.prototype.breedPhenotype = function(index, gene_string) {
 	parts[0] = parts[0].toUpperCase();
 	parts[1] = parts[1].toUpperCase();
 	parts[2] = parts[2].toUpperCase();
-	parts[3] = parts[3].toLowerCase();
+	parts[3] = parts[3].toUpperCase();
 	
 	// Get the genes
 	var geneOne = this.elementAt(index).toString().split('/');		// {[E], [e]}
 	var geneTwo = this.elementAt(index+1).toString().split('/');	// {[P], [a]}
 	var geneThree = this.elementAt(index+2).toString().split('/');	// {[U], [a]}
+
+	
+	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[0].toUpperCase()) || !parts.includes(geneTwo[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[0].toUpperCase()) || !parts.includes(geneThree[0].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneOne[1].toUpperCase()) || !parts.includes(geneOne[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneTwo[1].toUpperCase()) || !parts.includes(geneTwo[1].toUpperCase())) {
+		return -1;
+	}
+	if (!parts.includes(geneThree[1].toUpperCase()) || !parts.includes(geneThree[1].toUpperCase())) {
+		return -1;
+	}
+	
+	// We need this upper for the check above, but lower case otherwise.  it's complicated.  this is all so very complicated.
+	parts[3] = parts[3].toLowerCase();
 	
 	// Two of these are only upper case, one is only lower, and only one can be in either state.
 	
@@ -1643,6 +1722,27 @@ Genome.prototype.getBreedString = function() {
 		return "UNDEFINED BREED";
 	}
 };
+
+/**
+ * Sets the Breed gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setBreed = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.breedPhenotype(0, "E/P/U/a")) {
+	case -1:
+		return false;
+	default:
+		this.genes[14] = new_gene.substring(0, 3);
+		this.genes[15] = new_gene.substring(4, 7);
+		this.genes[16] = new_gene.substring(8, 11);
+		return true;
+	}
+};
+
 
 /******************************************************
  * COLOR SHIT THIS IS GOING TO BE LARGE 
@@ -1948,9 +2048,63 @@ Genome.prototype.getGeneColor = function(index) {
 	case "BBYYrROO":
 		geneString = "Navy";
 		break;
+	default:
+		return "INVALID COLOR";
 	}
 	
 	return Results + " " + geneString; 
+};
+
+/**
+ * Sets the color gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[17] = new_gene.substring(0, 3);
+		this.genes[18] = new_gene.substring(4, 7);
+		this.genes[19] = new_gene.substring(8, 11);
+		this.genes[20] = new_gene.substring(12, 15);
+		this.genes[21] = new_gene.substring(16, 19);
+		return true;
+	}
+};
+
+Genome.prototype.setManeColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[22] = new_gene.substring(0, 3);
+		this.genes[23] = new_gene.substring(4, 7);
+		this.genes[24] = new_gene.substring(8, 11);
+		this.genes[25] = new_gene.substring(12, 15);
+		this.genes[26] = new_gene.substring(16, 19);
+		return true;
+	}
+};
+
+Genome.prototype.setEyeColor = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.getGeneColor(0)) {
+	case "INVALID COLOR":
+		return false;
+	default:
+		this.genes[27] = new_gene.substring(0, 3);
+		this.genes[28] = new_gene.substring(4, 7);
+		this.genes[29] = new_gene.substring(8, 11);
+		this.genes[30] = new_gene.substring(12, 15);
+		this.genes[31] = new_gene.substring(16, 19);
+		return true;
+	}
 };
 
 /**
@@ -3278,20 +3432,20 @@ You are editing the genes of:
 		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
-		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
 		
 		/* Clip out the random factor from the results*/
-		&lt;&lt;run $activeFluffy.maxLength = Number($activeFluffy.genes.getLength() + $activeFluffy.lengthAdd).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.length = Number(randomFloat($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.maxLength = Number($activeFluffy.genes.getLength() + $activeFluffy.lengthAdd).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.length = Number(randomFloat($activeFluffy.maxLength * 0.85, $activeFluffy.maxLength)).toFixed(2)&gt;&gt;
 
 		/* Update height and weight as they are dependent on length*/
-		&lt;&lt;run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)&gt;&gt;
 
-		&lt;&lt;run $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()&gt;&gt;
-		&lt;&lt;run $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()&gt;&gt;
+		&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)&gt;&gt;
 
 		/* And update the page */
 		&lt;&lt;replace &quot;#l-form-error&quot;&gt;&gt;Gene set.  Length = &lt;&lt;print $activeFluffy.length&gt;&gt; cm&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -3324,12 +3478,12 @@ Height:
 		&lt;&lt;replace &quot;#h-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
-		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
 		
 		/* Clip out the random factor from the results*/
-		&lt;&lt;run $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.heightMulti = Number($activeFluffy.genes.getHeight() + $activeFluffy.heightAdd).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.maxHeight = Number($activeFluffy.heightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.height = Number(randomFloat($activeFluffy.maxHeight * 0.95, $activeFluffy.maxHeight)).toFixed(2)&gt;&gt;
 
 		/* And update the page */
 		&lt;&lt;replace &quot;#h-form-error&quot;&gt;&gt;Gene set.  Height = &lt;&lt;print $activeFluffy.height&gt;&gt; cm&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -3362,12 +3516,12 @@ Weight:
 		&lt;&lt;replace &quot;#w-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
-		&lt;&lt;run $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
 		
 		/* Clip out the random factor from the results*/
-		&lt;&lt;run $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()&gt;&gt;
-		&lt;&lt;run $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
-		&lt;&lt;run $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.weightMulti = $activeFluffy.genes.getWeight()&gt;&gt;
+		&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.weightMulti * $activeFluffy.length).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.weight = Number(randomFloat($activeFluffy.maxWeight * 0.79, $activeFluffy.maxWeight)).toFixed(2)&gt;&gt;
 
 		/* And update the page */
 		&lt;&lt;replace &quot;#w-form-error&quot;&gt;&gt;Gene set.  Weight = &lt;&lt;print $activeFluffy.weight&gt;&gt; KG&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -3377,6 +3531,272 @@ Weight:
 &lt;&lt;/button&gt;&gt;
 /* Form for error messages to display*/
 &lt;span id=&quot;w-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/* ***
+ *	Age
+ * 
+ *** */
+Max Age: 
+&lt;&lt;set _aString  = $activeFluffy.genes.getMaxAgeGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;age&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getMaxAge()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;a-form&quot;&gt;
+&lt;&lt;textbox &#39;_aString &#39; _aString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _aString  to _aString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setMaxAge(_aString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#a-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+		
+		&lt;&lt;set $activeFluffy.maxAge = $activeFluffy.genes.getMaxAge()&gt;&gt;
+
+		/* And update the page */
+		&lt;&lt;replace &quot;#a-form-error&quot;&gt;&gt;Gene set.  Max Lifepsan = &lt;&lt;print $activeFluffy.maxAge&gt;&gt; years&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#age&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getMaxAge()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error messages to display*/
+&lt;span id=&quot;a-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/* ***
+ *	Fertility
+ *** */
+Fertility: 
+&lt;&lt;set _fString  = $activeFluffy.genes.getFertilityGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;fertility&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getFertilityDesc()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;f-form&quot;&gt;
+&lt;&lt;textbox &#39;_fString &#39; _fString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _fString  to _fString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setFertility(_fString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#f-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.maxFertility = Number($activeFluffy.genes.getFertility() + $activeFluffy.fertilityAdd).toFixed(0)&gt;&gt;
+		&lt;&lt;set $activeFluffy.fertility = Number($activeFluffy.genes.getFertility()).toFixed(0)&gt;&gt;
+
+		/* And update the pfertility */
+		&lt;&lt;replace &quot;#f-form-error&quot;&gt;&gt;Gene set.  Fertility = &lt;&lt;print $activeFluffy.fertility&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fertility&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getFertilityDesc()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;f-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/* ***
+ *	Maturity
+ *** */
+Maturity: 
+&lt;&lt;set _mString  = $activeFluffy.genes.getMaturityGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;maturity&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getMaturityDesc()&gt;&gt; Months
+&lt;/span&gt;
+
+&lt;div id=&quot;m-form&quot;&gt;
+&lt;&lt;textbox &#39;_mString &#39; _mString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _mString  to _mString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setMaturity(_mString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#m-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.maxMaturity = Number($activeFluffy.genes.getMaturity() + $activeFluffy.maturityAdd).toFixed(0)&gt;&gt;
+		&lt;&lt;set $activeFluffy.maturity = Number($activeFluffy.genes.getMaturity()).toFixed(0)&gt;&gt;
+
+		/* And update the pmaturity */
+		&lt;&lt;replace &quot;#m-form-error&quot;&gt;&gt;Gene set.  Maturity = &lt;&lt;print $activeFluffy.maturity&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#maturity&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getMaturityDesc()&gt;&gt; Months&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;m-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Breed
+ *** */
+Breed: 
+&lt;&lt;set _bString  = $activeFluffy.genes.getBreed().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;breed&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getBreedString()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;b-form&quot;&gt;
+&lt;&lt;textbox &#39;_bString &#39; _bString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _bString  to _bString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setBreed(_bString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#b-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.breed = $activeFluffy.genes.getBreedString().toLowerCase()&gt;&gt;
+		
+		/* Alicorn checks: */
+		&lt;&lt;switch $alicornRarity&gt;&gt;
+		&lt;&lt;case 0&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toLowerCase() == &quot;alicorn&quot; or $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;switch random(0, 5)&gt;&gt;
+				&lt;&lt;case 0 1&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
+				&lt;&lt;case 2 3&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
+				&lt;&lt;case 4&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;earthy&quot;&gt;&gt;
+				&lt;&lt;case 5&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;/switch&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+
+		/* And update the breed */
+		&lt;&lt;replace &quot;#b-form-error&quot;&gt;&gt;Gene set.  Breed = &lt;&lt;print $activeFluffy.breed&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#breed&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getBreedString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;b-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Coat Color
+ *** */
+Coat Color: 
+&lt;&lt;set _ccString  = $activeFluffy.genes.getCoatColor().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;ccolor&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getCoatColorString()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;cc-form&quot;&gt;
+&lt;&lt;textbox &#39;_ccString &#39; _ccString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _ccString  to _ccString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setCoatColor(_ccString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;Gene set.  Coat = &lt;&lt;print $activeFluffy.cColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#ccolor&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getCoatColorString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;cc-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/* ***
+ *	Mane Color
+ *** */
+Mane Color: 
+&lt;&lt;set _mcString  = $activeFluffy.genes.getManeColor().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;mcolor&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getManeColorString()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;mc-form&quot;&gt;
+&lt;&lt;textbox &#39;_mcString &#39; _mcString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _mcString  to _mcString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setManeColor(_mcString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;Gene set.  Mane Color = &lt;&lt;print $activeFluffy.mColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#mcolor&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getManeColorString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;mc-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Eye Color
+ *** */
+Eye Color: 
+&lt;&lt;set _ecString  = $activeFluffy.genes.getEyeColor().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;ecolor&quot;&gt;
+	&lt;&lt;print $activeFluffy.genes.getEyeColorString()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;ec-form&quot;&gt;
+&lt;&lt;textbox &#39;_ecString &#39; _ecString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _ecString  to _ecString .trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $activeFluffy.genes.setEyeColor(_ecString ) == false&gt;&gt;
+		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+		&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;Gene set.  Eye Color = &lt;&lt;print $activeFluffy.eColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#ecolor&quot;&gt;&gt;&lt;&lt;print $activeFluffy.genes.getEyeColorString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $activeFluffy.genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;ec-form-error&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
 
 &lt;br&gt;
