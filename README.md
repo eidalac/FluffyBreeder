@@ -1,3 +1,7 @@
+# Current Build:
+https://github.com/eidalac/FluffyBreeder/releases/download/00.00.10/FluffyBreeder.html
+
+
 # FluffyBreeder
 A text baseed fluffy breeding game
 
@@ -48,7 +52,7 @@ The exception to this is if the player suffers high levels of stress, which may 
 
 5. How to play
 
-The current build is at https://github.com/eidalac/FluffyBreeder/releases/tag/00.00.01
+The current build is at https://github.com/eidalac/FluffyBreeder/releases/tag/00.00.10
 
 Download and lauch FluffyBreeder.html
 
