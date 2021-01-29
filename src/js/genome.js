@@ -1824,6 +1824,26 @@ Genome.prototype.getStrongGene = function() {
 	return Genome.fromString(this.elementAt(32).toString() + ";" + this.elementAt(33).toString());
 };
 
+/**
+ * Sets the Strong gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setStrong = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "S/T")) {
+	case -1:
+		return false;
+	default:
+		this.genes[32] = new_gene.substring(0, 3);
+		this.genes[33] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+
 
 /**
  * Retrieves the gene determining the Energy stat.
@@ -1844,6 +1864,25 @@ Genome.prototype.getEnergy = function() {
 Genome.prototype.getEnergyGene = function() {
 	return Genome.fromString(this.elementAt(34).toString() + ";" + this.elementAt(35).toString());
 };
+/**
+ * Sets the Energy gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setEnergy = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "E/N")) {
+	case -1:
+		return false;
+	default:
+		this.genes[34] = new_gene.substring(0, 3);
+		this.genes[35] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
 
 
 /**
@@ -1864,7 +1903,24 @@ Genome.prototype.getCharm= function() {
 Genome.prototype.getCharmGene = function() {
 	return Genome.fromString(this.elementAt(36).toString() + ";" + this.elementAt(37).toString());
 };
-
+/**
+ * Sets the Charm gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCharm = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "C/H")) {
+	case -1:
+		return false;
+	default:
+		this.genes[36] = new_gene.substring(0, 3);
+		this.genes[37] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining the Thinking stat.
@@ -1884,7 +1940,24 @@ Genome.prototype.getThinking = function() {
 Genome.prototype.getThinkingGene = function() {
 	return Genome.fromString(this.elementAt(38).toString() + ";" + this.elementAt(39).toString());
 };
-
+/**
+ * Sets the Thinking gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setThinking = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "T/H")) {
+	case -1:
+		return false;
+	default:
+		this.genes[38] = new_gene.substring(0, 3);
+		this.genes[39] = new_gene.substring(4, 7);
+		return true;
+	}
+};
 
 /**
  * Retrieves the gene determining the Learning stat.
@@ -1904,3 +1977,61 @@ Genome.prototype.getLearning= function() {
 Genome.prototype.getLearningGene = function() {
 	return Genome.fromString(this.elementAt(40).toString() + ";" + this.elementAt(41).toString());
 };
+/**
+ * Sets the Learning gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setLearning = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "L/E")) {
+	case -1:
+		return false;
+	default:
+		this.genes[40] = new_gene.substring(0, 3);
+		this.genes[41] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+
+
+/**
+ * Retrieves the inbreeding test gene.
+ * This is defined as genes 42, 43 (#;#).
+ *
+ * @return Int
+ */
+Genome.prototype.getInbreedingGene = function() {
+	return Genome.fromString(this.elementAt(42).toString());
+}
+
+/**
+ * Sets the inbreeding gene. 
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setInbreeding = function(new_gene) {
+	//var test_gene = Genome.fromString(new_gene);
+	
+	var new_gene = new_gene.replace(";", "");
+	var parts = new_gene.split('/');
+//console.log("gene checked = " + parts + " " + parts.length)
+	if (parts.length != 2)
+		return false;
+	
+	if (Number.isInteger(Number(parts[0])) && Number.isInteger(Number(parts[1]))) {
+		//console.log("true gene = " + parts)
+		this.genes[42] = parts[0] + "/" + parts[1];
+		return true;
+	} else {
+		//console.log("false gene = " + parts)
+		return false;
+	}
+};
+
+
