@@ -1,19 +1,16 @@
-:: Fluffy Intro [nobr]
+:: Buy Fluffies [nobr]
 
 /* **********
- * fluffyIntro.tw
+ * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
  * Format: Twine2 (Sugarcube 2)
  *
- * Buys initial fluffies for the player
- *
- *	TODO: ALPHA: enable hunting for ferals in adition to shopping
+ * Buys fluffies at a fluffy mart.
  *
  *********** */
 
-/* Round the cash to 2 decimal places */
-<<set $cash = Number($cash).toFixed(2)>>
+<<set $nextButton to "End Shoping", $nextLink to "Week Start">>
 
 /* ***
  *	Setup our base mother and father - all fluffies will ultimatly stem from these two
@@ -25,13 +22,8 @@
 <<BaseFluffy "FEMALE">>
 <<set _Grandmom = clone($activeFluffy)>>
 
-/* Show starting information on the first load, but hide it afterwards. */
-<<if $showStartingExplanation == 1>>
-	<br>@@.orange;TODO: add some starting shop options here.@@
-	<br>
-	<br>You will need to get at least a pair of fluffies to start breeding with.  You could go hunting for some ferals, risking whatever health issues they may have, or you can pick up some from the local //Fluffy Mart// to pick some up for a more reliable option.
-	<<set $showStartingExplanation = 0>>
-<</if>>
+<br>Welcome to fluffy mart, do you see anything you like?
+
 <br><span id="cash-line">You have ¤$cash to spend, but will need to save some for weekly expenses.</span>
 <br>
 <<if $ourStore.fluffies.length == false>>
@@ -66,9 +58,9 @@
 			<<set _price = Number($earthPrice.mart).toFixed(2)>>
 	<</switch>>
 	¤_price.
-	<hr>[[Keep Looking|Fluffy Intro]]  | 
+	<hr>[[Keep Looking|Buy Fluffies]]  | 
 	<<if Number($cash) >= Number(_price)>>
-	 [[Add to the cart|Fluffy Intro][$cash-= _price, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
+	 [[Add to the cart|Buy Fluffies][$cash-= _price, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
 	<<else>>//You lack the necessary funds to buy this fluffy.// | 
 	<</if>>
-	 [[End Shopping|Food Intro]]
+	 [[End Shopping|Week Start]]
