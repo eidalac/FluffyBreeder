@@ -56,12 +56,18 @@
 		
 		/* Don't generate alicorns at a shop or mill*/
 		<<for>>
+<<run console.log("Fluffy shopping gene test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
 			<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 			<<newFromGene $testChild>>
-			<<if $activeFluffy.breed == "alicorn" && $shop == "mart" || $shop == "mill">>
-				<<run console.log("alicorn regenerated in fluffy mart")>>
-				<<continue>>
+			<<if $activeFluffy.breed == "alicorn">>
+				<<if $shop == "mart" || $shop == "mill">>
+					<<run console.log("alicorn regenerated in fluffy mart")>>
+					<<continue>>
+				<<else>>
+					<<break>>
+				<</if>>
 			<<else>>
+<<run console.log("Fluffy shopping gene test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
 				<<break>>
 			<</if>>
 		<</for>>
@@ -75,7 +81,7 @@
 		 /* Pick a random defect gene, remove it from the list, check if it's defective and if it is, up the defect cont*/
 		 <<for $defenctIndex.length > 0>>
 		 	<<set _ri = $defenctIndex.pluck()>>
-	<<run console.log("Fluffy mart gene test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
+	<<run console.log("Fluffy shopping gene test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
 		 	<<if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
 		 	 && $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
 		 	 	<<run console.log("Fluffy mart defect found: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
@@ -89,6 +95,10 @@
 		 	 		<<run $activeFluffy.genes.clearDefect(_ri)>>
 		 	 	<<else>>
 		 	 		<<set _defectCount++>>
+		 	 	<</if>>
+		 	 	
+		 	 	<<if $defenctIndex.length < 1>>
+		 	 		<<break>>
 		 	 	<</if>>
 		 	 <</if>>
 		 <</for>>

@@ -3294,12 +3294,18 @@ profitsTotal: 0
 		
 		/* Don&#39;t generate alicorns at a shop or mill*/
 		&lt;&lt;for&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 			&lt;&lt;newFromGene $testChild&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed == &quot;alicorn&quot; &amp;&amp; $shop == &quot;mart&quot; || $shop == &quot;mill&quot;&gt;&gt;
-				&lt;&lt;run console.log(&quot;alicorn regenerated in fluffy mart&quot;)&gt;&gt;
-				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed == &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;if $shop == &quot;mart&quot; || $shop == &quot;mill&quot;&gt;&gt;
+					&lt;&lt;run console.log(&quot;alicorn regenerated in fluffy mart&quot;)&gt;&gt;
+					&lt;&lt;continue&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;break&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 				&lt;&lt;break&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
@@ -3313,7 +3319,7 @@ profitsTotal: 0
 		 /* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
 		 &lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
 		 	&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
-	&lt;&lt;run console.log(&quot;Fluffy mart gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+	&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 		 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
 		 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
 		 	 	&lt;&lt;run console.log(&quot;Fluffy mart defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
@@ -3327,6 +3333,10 @@ profitsTotal: 0
 		 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
 		 	 	&lt;&lt;else&gt;&gt;
 		 	 		&lt;&lt;set _defectCount++&gt;&gt;
+		 	 	&lt;&lt;/if&gt;&gt;
+		 	 	
+		 	 	&lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
+		 	 		&lt;&lt;break&gt;&gt;
 		 	 	&lt;&lt;/if&gt;&gt;
 		 	 &lt;&lt;/if&gt;&gt;
 		 &lt;&lt;/for&gt;&gt;
