@@ -2812,7 +2812,8 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;&lt;&lt;SidebarCash&gt;&gt;
 &lt;br&gt;
 &lt;br&gt;&lt;&lt;SidebarFluffies&gt;&gt;
-&lt;br&gt;[[Check the Fluffies|Fluffy List]].
+&lt;br&gt;[[Check the Fluffies|Fluffy List][$listType = &quot;All&quot;]].
+&lt;br&gt;[[Check displays|Fluffy List][$listType = &quot;Display&quot;]].
 &lt;br&gt;
 &lt;br&gt;&lt;&lt;SidebarFood&gt;&gt;
 &lt;br&gt;[[Buy Food|Buy Food]].
@@ -4010,18 +4011,20 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;capture _fl&gt;&gt;
 
 &lt;&lt;for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++&gt;&gt;
-	&lt;&lt;if $ourStore.fluffies[_fl].onDisplay == true&gt;&gt;
+	&lt;&lt;if $ourStore.fluffies[_fl].onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;elseif $ourStore.fluffies[_fl].sold == true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;elseif $ourStore.fluffies[_fl].dead == true&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;elseif $ourStore.fluffies[_fl].onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _fluff = $ourStore.fluffies[_fl]&gt;&gt;
 	
 		[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_fl]]] &lt;&lt;shortDesc _fluff&gt;&gt;
 		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
-		| [[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]] 
+		| &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][$ourStore.fluffies[_fl].onDisplay = false]]&lt;&lt;/if&gt;&gt; 
 		&lt;&lt;set $ourStore.fluffies[_fl] = _fluff&gt;&gt;
 		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -5290,7 +5293,7 @@ Inbreeding:
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 
-	&lt;br&gt;@@.pink;[[Total Fluffies|Fluffy List]]@@ | $ourStore.fluffies.length /  $ourStore.shelter
+	&lt;br&gt;@@.pink;[[Total Fluffies|Fluffy List]]@@ | &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt;/  $ourStore.shelter
 	&lt;br&gt;($ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@)
 &lt;&lt;/widget&gt;&gt;
 

@@ -22,18 +22,20 @@
 <<capture _fl>>
 
 <<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
-	<<if $ourStore.fluffies[_fl].onDisplay == true>>
+	<<if $ourStore.fluffies[_fl].onDisplay == true && $listType != "Display">>
 		<<continue>>
 	<<elseif $ourStore.fluffies[_fl].sold == true>>
 		<<continue>>
 	<<elseif $ourStore.fluffies[_fl].dead == true>>
+		<<continue>>
+	<<elseif $ourStore.fluffies[_fl].onDisplay == false && $listType == "Display">>
 		<<continue>>
 	<<else>>
 		<<set _fluff = $ourStore.fluffies[_fl]>>
 	
 		[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_fl]]] <<shortDesc _fluff>>
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
-		| [[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]] 
+		| <<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]]<<else>>[[Take off Display|Fluffy List][$ourStore.fluffies[_fl].onDisplay = false]]<</if>> 
 		<<set $ourStore.fluffies[_fl] = _fluff>>
 		<hr>
 	<</if>>
