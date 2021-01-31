@@ -17,10 +17,23 @@
 <br>
 <<set $nextButton to "CONTINUE.", $nextLink to "Fluffy List">>
 
-<<FluffyDesc>>
+<span id="fluffy-name">
+	<<FluffyDesc>>
+</span>
 
-<br>What do you want to name this fluffy?  // Press Enter to set a name - @@.red;Warning: no input validate currently!@@
-<br><<textbox "$activeFluffy.name" $activeFluffy.name "Name Fluffy">> 
+<br>What do you want to name this fluffy? 
+
+<div id="name-form">
+	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Name Fluffy">>
+	<<button "Rename">>
+		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
+		<<replace "#fluffy-name">><<FluffyDesc>><</replace>>
+<</button>>
+/* Form for error message to display*/
+<span id="form-error"></span>
+</div>
+
+
 
 <<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
 <br>
@@ -31,3 +44,7 @@
 <<if $debugMode == true>>
 	[[Enter the Gene Lab|Gene Lab]]
 <</if>>
+
+
+/* Sidebar link for mobile users */
+<<SidebarButton>>
