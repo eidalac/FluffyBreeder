@@ -1,5 +1,5 @@
 # Current Build:
-https://github.com/eidalac/FluffyBreeder/releases/download/00.00.10/FluffyBreeder.html
+https://github.com/eidalac/FluffyBreeder/releases/download/v00.00.24-prealpha/FluffyBreeder.html
 
 # Design Document:
 https://docs.google.com/document/d/1LIVm4eylJ_1YTUdhYx_K6K-_H0sQ3r1WelZ_44poASs/edit?usp=sharing
