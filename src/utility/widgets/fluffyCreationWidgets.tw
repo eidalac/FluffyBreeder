@@ -57,6 +57,8 @@
 		eColor: "Violet",
 		mother: -1,
 		father: -1,
+		trust: 0,
+		training: 0,
 		strong: 3,
 		energy: 3,
 		charm: 3,
@@ -66,7 +68,10 @@
 		children: [],
 		specialFriend: -1,
 		pregnant: false,
-		nursing: false		
+		nursing: false,
+		onDisplay: false,
+		sold: false,
+		dead: false
 	}
 	>>
 <</widget>>
@@ -119,6 +124,10 @@
 			cColor: $args[0].getCoatColorString(),
 			mColor: $args[0].getManeColorString(),
 			eColor: $args[0].getEyeColorString(),
+			mother: -1,
+			father: -1,
+			trust: 0,
+			training: 0,
 			strong: $args[0].getStrong(),
 			energy: $args[0].getEnergy(),
 			charm: $args[0].getCharm(),
@@ -128,7 +137,10 @@
 			children: [],
 			specialFriend: -1,
 			pregnant: false,
-			nursing: false		
+			nursing: false,
+			onDisplay: false,
+			sold: false,
+			dead: false
 		} >>
 
 		<<set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))>>
@@ -199,9 +211,9 @@
 	<<set $childGene = _mom.genes.breedWithGenome(_dad.genes)>>
 
 	<<newFromGene $childGene>>
-	
+
 	<<set $activeFluffy.mother = _mom.ID>>
-	<<set $activeFluffy.dad = _dad.ID>>
+	<<set $activeFluffy.father = _dad.ID>>
 	<<newFoal>>
 <</widget>>
 

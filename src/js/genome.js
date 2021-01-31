@@ -2035,3 +2035,92 @@ Genome.prototype.setInbreeding = function(new_gene) {
 };
 
 
+/**
+ * Clears a defect gene - sets one or both allees to uper case, so long a they are not both lower.
+ *
+ * @param int index - the starting index of the gene
+ * 
+ */
+Genome.prototype.clearDefect = function(index) {
+	var parts;
+
+	switch (index) {
+	case 12:
+		// length
+		index = 3;
+		parts = this.genes[3].toString().split('/');
+		break;
+	case 20: 
+		// height
+		index = 5;
+		parts = this.genes[5].toString().split('/');
+		break;
+	case 28: 
+		// weight
+		index = 7;
+		parts = this.genes[7].toString().split('/');
+		break;
+	case 36: 
+		//age
+		index = 9;
+		parts = this.genes[9].toString().split('/');
+		break;
+	case 44: 
+		// fertility
+		index = 11;
+		parts = this.genes[11].toString().split('/');
+		break;
+	case 52: 
+		// matiruty
+		index = 13;
+		parts = this.genes[13].toString().split('/');
+		break;
+	case 80: 
+		index = 20;
+		parts = this.genes[20].toString().split('/');
+		break;
+	case 100: 
+		index = 25;
+		parts = this.genes[25].toString().split('/');
+		break;
+	case 120: 
+		index = 30;
+		parts = this.genes[30].toString().split('/');
+		break;
+	case 84: 
+		index = 21;
+		parts = this.genes[21].toString().split('/');
+		break;
+	case 104: 
+		index = 26;
+		parts = this.genes[26].toString().split('/');
+		break;
+	case 124: 
+		index = 31;
+		parts = this.genes[31].toString().split('/');
+		break;
+	}
+
+	
+	var ran = Math.floor(((Math.random() * 2) + 1));
+	
+console.log("clear defects parts = " + parts[0] + " " + parts[1] + " " + ran)
+
+	switch (ran) {
+	case 1:
+		parts[0] = parts[0].toUpperCase(); 
+		break;
+	case 2:
+		parts[1] = parts[1].toUpperCase();
+		break;
+	case 3:
+		parts[0] = parts[0].toUpperCase(); 
+		parts[1] = parts[1].toUpperCase();
+		break;
+	}
+
+	this.genes[index] = parts[0] + "/" + parts[1];
+
+console.log("cleared defects parts = " + this.genes[index])
+
+};

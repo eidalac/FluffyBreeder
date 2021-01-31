@@ -1,0 +1,71 @@
+::Fluffy Selling [nobr]
+
+/* **********
+ * fluffyselling.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Set a fluffy as being on sale.
+ *
+ *********** */
+
+<<set $ui = "main">>
+<br>
+<br>
+
+<<FluffyDesc>>
+<br>
+<<if $ourStore.onDisplay >= $ourStore.display>>
+	<br>You have no space to put more fluffies on display right now.
+<<elseif $activeFluffy.pregnant == true>>
+	<br>You will have to wait till $activeFluffy.name is not rearing foals.
+<<elseif $activeFluffy.nursing == true>>
+	<br>You will have to wait till $activeFluffy.name is finished nursing foals.
+<<else>>
+
+	/* Clear both special friends flag, ending breeding*/
+	<<if $activeFluffy.specialFriend != -1>>
+		<br><<print $ourStore.fluffies[$activeFluffy.specialFriend].name>> and $activeFluffy.name are no longer special friends.
+		<br>@@.cyan;HUHUHU WORST SADIES.@@
+			
+		<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set $activeFluffy.specialFriend = -1>>
+<<run console.log("Display check 1: " + $activeFluffy.specialFriend)>>
+	<</if>>
+	
+	<br>You move $activeFluffy.name to the display area for sale.
+	<<set $activeFluffy.onDisplay = true>>
+
+<<run console.log("Display check 2: " + $activeFluffy.onDisplay)>>
+
+	<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
+<</if>>
+
+<<capture _fl>>
+<br>
+<br>Fluffies on display:
+<hr>
+<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
+	<<if $ourStore.fluffies[_fl].onDisplay != true>>
+		<<continue>>
+	<<elseif $ourStore.fluffies[_fl].sold == true>>
+		<<continue>>
+	<<elseif $ourStore.fluffies[_fl].dead == true>>
+		<<continue>>
+	<<else>>
+		<<set _fluff = $ourStore.fluffies[_fl]>>
+
+		[[_fluff.name|Name Fluffy]] <<shortDesc _fluff>>
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Remove from Display|Fluffy Breeding]]>>
+			<<set _fluff.onDisplay = false>>
+			<<set $ourStore.fluffies[_fl] = _fluff>>
+		<</link>>
+		<hr>
+	<</if>>
+<</for>>
+
+<</capture>>
+
+/* Sidebar link for mobile users */
+<<SidebarButton>>

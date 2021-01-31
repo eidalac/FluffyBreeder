@@ -12,13 +12,46 @@
 
 <<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
 
+/* ***
+ *	Caculate expenses
+ *** */
+<<set $costs = $ourStore.storage + $ourStore.display + $ourStore.shelter + $ourStore.space>>
+<<set $cashLastWeek = $cash>>
+<<set $cash = Number($cash - $costs)>>
+
+<br>Upkeep this week was $costs.
 
 /* ***
- *	Check for breeding pairs, and make some babies.
- *	need to change this to a preg status change
+ *	Caculate stress
  *** */
+<<set _stressor = 1.00>>
+<<set $stressUp = 0>> 
+<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
+
+<<if _count < 10>>
+	<<set _stressor = 1.00>>
+<<else>>
+	<<set _stressor = 90 + _count >>
+	<<set _stressor = (_stressor/ 100)>>
+<</if>>
+
+<<set $stressUp = Math.round(_stressor * _count)>>
+<br>Stress this week was $stressUp.
+
+<<set $stress = $stress + $stressUp>>
+
+
+
 
 <<for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++>>
+	<<if $ourStore.fluffies[_ef].sold == true>>
+		<<continue>>
+	<</if>>
+	
+	<<if $ourStore.fluffies[_ef].dead == true>>
+		<<continue>>
+	<</if>>
+
 	<<set $ourStore.fluffies[_ef].ageWeeks++>>
 	
 	<<if Number($ourStore.fluffies[_ef].ageWeeks) > 52>>
@@ -26,18 +59,81 @@
 		<<set $ourStore.fluffies[_ef].age++>>
 	<</if>>
 
+	/* ***
+	 *	Remove fluffies that die due to old age.
+	 *** */
 	<<if Number($ourStore.fluffies[_ef].maxAge) < Number($ourStore.fluffies[_ef].age)>>
 		<<if random(0, 1) == 1>>
-			$ourStore.fluffies[_ef].name does not wake up.  ( $ourStore.fluffies[_ef].age /  $ourStore.fluffies[_ef].maxAge years old)
+			<br>$ourStore.fluffies[_ef].name does not wake up.  ( $ourStore.fluffies[_ef].age /  $ourStore.fluffies[_ef].maxAge years old)
+			<br>
+			<<set $ourStore.fluffies[_ef].dead = true>>
+			<<set $ourStore.fluffies[_ef].onDisplay = false>>
+			<<set $ourStore.fluffies[_ef].pregnant = false>>
+			<<set $ourStore.fluffies[_ef].nursing = false>>
+			<<set _count-->>
+			
+			<<if $ourStore.fluffies[_ef].specialFriend != -1>>
+				<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+				<<set $activeFluffy.specialFriend = -1>>
+			<</if>>
+			
+			<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
+		<</if>>
+	
+		<<continue>>
+	<</if>>
+
+
+	/* ***
+	 *	Sell any display fluffies
+	 *
+	 *	Todo: This should be semi random and have non fixed prices.
+	 *** */
+	<<if $ourStore.fluffies[_ef].onDisplay == true>>
+		<<if random(0, 1) == 1>>
+			<<set _price = 0>>
+
+			<<switch $ourStore.fluffies[_ef]>>
+				<<case "unicorn">>
+					<<set _price = 2* Number($unicornPrice.deluxe).toFixed(2)>>
+				<<case "pegasus">>
+					<<set _price = 2 * Number($pegasusPrice.deluxe).toFixed(2)>>
+				<<case "alicorn">>
+					<<set _price = 2 * Number($alicornPrice.deluxe).toFixed(2)>>
+				<<default>>
+					<<set _price = 2 * Number($earthPrice.deluxe).toFixed(2)>>
+			<</switch>>
+
+			<br>$ourStore.fluffies[_ef].name was sold for _price
+			<<set $cash += Number(_price)>>
+			<br>
+
+			<<set $ourStore.fluffies[_ef].sold = true>>
+			<<set $ourStore.fluffies[_ef].onDisplay = false>>
+			<<set $ourStore.fluffies[_ef].pregnant = false>>
+			<<set $ourStore.fluffies[_ef].nursing = false>>
+			<<set _count-->>
+		
+			<<if $ourStore.fluffies[_ef].specialFriend != -1>>
+				<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+				<<set $activeFluffy.specialFriend = -1>>
+			<</if>>
+		
+			<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
+			<<continue>>
 		<</if>>
 	<</if>>
 
+	/* ***
+	 *	Check for breeding pairs, and make some babies.
+	 *	need to change this to a preg status change
+	 *** */
 	<<if $ourStore.fluffies[_ef].specialFriend != -1 && $ourStore.fluffies[_ef].gender == "female">>
 		<<set $mom = $ourStore.fluffies[_ef]>>
 		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
 
 		<<if !$mom.pregnant && !$mom.nursing>>
-			<<if $ourStore.fluffies.length > $ourStore.shelter>>
+			<<if _count > $ourStore.shelter>>
 				/* Work around for now to limit population */
 				<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
 				<br>huhuhu
@@ -48,18 +144,22 @@
 				
 				<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
 				<<set $mom.pregnant = true>>
-				<<set $mom.dueDate = $week + random(3, 4)>>
+				<<set $mom.dueDate = $week + random(5, 6)>>
 				<<set $mom.litter = _litter>>
 			<</if>>
 		<<elseif $mom.pregnant && Number($mom.dueDate) < Number($week)>>
-			<br>$mom.name is giving birth.
+			<br>$mom.name is giving birth to $mom.litter foals.
 			<br>SKREEEEE BIGGGEST POOOPIES
+			<br>
 
 			<<for _fo = 0; _fo < $mom.litter; _fo++>>
 				<<breedFluffies $mom $dad>>
 				<br>Foal#<<print _f+1>> <<FluffyDesc>>
 				<hr>
+
 				<<set $activeFluffy.ID = $ourStore.fluffies.length>>
+				<<set $mom.children.push($activeFluffy.ID)>>
+				<<set $dad.children.push($activeFluffy.ID)>>
 				<<run $ourStore.fluffies.push($activeFluffy)>>
 			<</for>>
 
@@ -68,6 +168,8 @@
 			<<set $mom.pregnant = false>>
 			<<set $mom.nursing = true>>
 			<<set $mom.nursingTime = $week + 5>>
+			<<set $ourStore.fluffies[$mom.ID] = $mom>>
+			<<set $ourStore.fluffies[$dad.ID] = $dad>>
 		<<elseif $mom.nursing>>
 			<<if Number($mom.nursingTime) < Number($week)>>
 			 	<<set $mom.nursing = false>>
@@ -76,6 +178,7 @@
 			 <</if>>
 			 
 			 <br>$mom.name is nursing foals.
+			 <<set $ourStore.fluffies[$mom.ID] = $mom>>
 		<</if>>
 	<</if>>
 <</for>>

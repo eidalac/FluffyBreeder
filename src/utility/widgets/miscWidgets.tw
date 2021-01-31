@@ -119,7 +119,7 @@
  *	Displays case for the sidebar
  *** */
 <<widget "SidebarCash">>
-	<<set $cash = Math.trunc($cash)>>
+	<<set $cash = Number($cash).toFixed(2)>>
 	<span id="cash">
 	<<if $cash > 0>>
 		@@.yellowgreen;Cash@@
@@ -129,44 +129,7 @@
 	| ''¤''$cash
 	</span>
 	<br>
-	<<if _Pass == "Main">>
-		<<set _TCash2 = ($cash-$cashLastWeek)>>
-		<span id="oldcash">
-		<<if _TCash2 < 0>>
-			(@@.red;_TCash2@@
-		<<else>>
-			(@@.yellowgreen;+_TCash2@@
-		<</if>>
-		</span>
-		since last week)
-		<<if ($cheatMode) && ($cheatModeM)>>
-			<<set _TCash1 = $cash>>
-			<<textbox "$cash" $cash>>
-			<<link "Apply">>
-			<<set $cash = Math.trunc(Number($cash) || _TCash1), $cheater = 1>>
-			<<replace "#cash">>
-			<<if $cash > 0>>
-				@@.yellowgreen;Cash@@
-			<<else>>
-				__@@.red;Cash@@__
-			<</if>>
-			| ''¤''$cash
-			<</replace>>
-			<<set _TCash2 = ($cash-$cashLastWeek)>>
-			<<replace "#oldcash">>
-			<<if _TCash2 < 0>>
-				(@@.red;_TCash2@@
-			<<else>>
-				(@@.yellowgreen;+_TCash2@@
-			<</if>>
-			<</replace>>
-			since last week)
-			<</link>>
-		<</if>>
-		<br>[[Upkeep|Costs Budget]] |
-	<<else>>
-		<br>Upkeep |
-	<</if>>¤$costs
+	<br>Upkeep | ¤$costs
 <</widget>>
 
 /* ***
@@ -183,7 +146,14 @@
 				<br><br>@@.red;Duplicate fluffy ID $ourStore.fluffies[$i].ID at index $i - $ourStore.fluffies[$i].name and index _i - $ourStore.fluffies[_i].name@@<br><br>
 			<</if>>
 		<</for>>
-		
+
+		<<if $ourStore.fluffies[$i].sold == true>>
+			<<continue>>
+		<</if>>
+		<<if $ourStore.fluffies[$i].dead == true>>
+			<<continue>>
+		<</if>>
+
 		<<if ($ourStore.fluffies[$i].ageWeeks + ($ourStore.fluffies[$i].age * 52)) < $ourStore.fluffies[$i].maturity>>
 			<<set $ourStore.foals++>>
 		<<elseif $ourStore.fluffies[$i].gender == "male">>
@@ -242,3 +212,4 @@
 <<widget flipCase>>
 	<<if $args[0] == $args[0].toUpperCase()>><<set $args[0] = $args[0].toLowerCase()>><<else>><<set $args[0] = $args[0].toUpperCase()>><</if>>
 <</widget>>
+

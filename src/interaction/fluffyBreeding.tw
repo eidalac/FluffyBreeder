@@ -8,8 +8,6 @@
  *
  * Sets breeding pairs
  *
- *	Todo: add a way to break up fluffies
- *
  *********** */
 
 <<set $ui = "main">>
@@ -18,6 +16,18 @@
 
 <<FluffyDesc>>
 <br>
+<<if $activeFluffy.specialFriend != -1>>
+	<br>Is special friends with <<print $ourStore.fluffies[$activeFluffy.specialFriend].name>>.
+	<<link [[Break up |Fluffy Breeding]]>>
+		/* Clear both special friends flag, ending breeding*/
+		<br>$ourStore.fluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+		<br>@@.cyan;HUHUHU WORST SADIES.@@
+		
+		<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set $activeFluffy.specialFriend = -1>>
+	<</link>>
+<</if>>
+
 <<if $breedStal < 0 || $breedMare < 0>>
 	<br>Possible mates for  $activeFluffy.name:
 	<hr>
@@ -44,6 +54,9 @@
 <br>$ourStore.fluffies[$breedStal].name and $ourStore.fluffies[$breedMare].name are now special friends.
 <br>
 <br> SPECIAL HUGS NOW
+<br>
+/* Sidebar link for mobile users */
+<<SidebarButton>>
 
 <<set $ourStore.fluffies[$breedStal].specialFriend = $breedMare>>
 <<set $ourStore.fluffies[$breedMare].specialFriend = $breedStal>>

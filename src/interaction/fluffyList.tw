@@ -22,46 +22,23 @@
 <<capture _fl>>
 
 <<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
-
-	<<set _fluff = $ourStore.fluffies[_fl]>>
-
-	[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_fl]]] <<shortDesc _fluff>>
-	<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
-	<<set $ourStore.fluffies[_fl] = _fluff>>
-	<hr>
-
-/%
-	<<if $ourStore.fluffies[$i].gender == "female" && !$ourStore.fluffies[$i].pregnant && !$ourStore.fluffies[$i].nursing && $ourStore.fluffies[$i].specialFriend == -1>>
-		<<run _eMare.push($ourStore.fluffies[$i])>>
-	<</if>>
+	<<if $ourStore.fluffies[_fl].onDisplay == true>>
+		<<continue>>
+	<<elseif $ourStore.fluffies[_fl].sold == true>>
+		<<continue>>
+	<<elseif $ourStore.fluffies[_fl].dead == true>>
+		<<continue>>
+	<<else>>
+		<<set _fluff = $ourStore.fluffies[_fl]>>
 	
-	<<if $ourStore.fluffies[$i].gender == "male" && $ourStore.fluffies[$i].specialFriend == -1>>
-		<<run _eStal.push($ourStore.fluffies[$i])>>
+		[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_fl]]] <<shortDesc _fluff>>
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
+		| [[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]] 
+		<<set $ourStore.fluffies[_fl] = _fluff>>
+		<hr>
 	<</if>>
-%/
-	
 <</for>>
 
-/%
-<<if _eMare.length>>
-	<hr>
-	<<for _f to 0; _f lt _eMare.length; _f++>>
-		<<set _tID = _eMare[_f].ID>>
-		[[_eMare[_f].name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_tID]]] <<shortDesc _eMare[_f]>>
-		<<set $ourStore.fluffies[_tID] = _eMare[$i]>>
-		<hr>
-	<</for>>
-<</if>>
-
-<<if _eStal.length>>
-	<<for _f to 0; _f lt _eStal.length; _f++>>
-		<<set _tID = _eStal[_f].ID>>
-		[[_eStal[_f].name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_tID]]]], <<shortDesc _eStal[_f]>>
-		<<set $ourStore.fluffies[_tID] = _eStal[_f]>>
-		<hr>
-	<</for>>
-<</if>>
-%/
 <<set $activeFluffy = 0, _fluff = 0>>
 <</capture>>
 
