@@ -3750,6 +3750,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 &lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
+&lt;&lt;run console.log(&quot;hi?&quot;)&gt;&gt;
+
 /* ***
  *	Caculate expenses
  *** */
@@ -3779,9 +3781,10 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;set $stress = $stress + $stressUp&gt;&gt;
 
 
-
+&lt;&lt;run console.log(&quot;Breeding test 0: &quot;)&gt;&gt;
 
 &lt;&lt;for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + $ourStore.fluffies[_ef].specialFriend + &quot; | &quot; + $ourStore.fluffies[_ef].gender)&gt;&gt;
 	&lt;&lt;if $ourStore.fluffies[_ef].sold == true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -3912,6 +3915,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 
+&lt;&lt;run console.log(&quot;Breeding test 1: &quot; + $ourStore.fluffies[_ef].specialFriend + &quot; | &quot; + $ourStore.fluffies[_ef].gender)&gt;&gt;
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
@@ -3920,14 +3924,16 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1 &amp;&amp; $ourStore.fluffies[_ef].gender == &quot;female&quot;&gt;&gt;
 		&lt;&lt;set $mom = $ourStore.fluffies[_ef]&gt;&gt;
 		&lt;&lt;set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]&gt;&gt;
-
-		&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing != 0&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 2: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
+		&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing == 0&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 3: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
 			&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
 				/* Work around for now to limit population */
 				&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
 				&lt;br&gt;huhuhu
 				&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			&lt;&lt;else&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 4: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
 				&lt;br&gt;$mom.name and $dad.name have special hugs.
 				&lt;br&gt;enf enf enf
 				

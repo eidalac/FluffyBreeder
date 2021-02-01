@@ -12,6 +12,8 @@
 
 <<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
 
+<<run console.log("hi?")>>
+
 /* ***
  *	Caculate expenses
  *** */
@@ -41,9 +43,10 @@
 <<set $stress = $stress + $stressUp>>
 
 
-
+<<run console.log("Breeding test 0: ")>>
 
 <<for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++>>
+<<run console.log("Breeding test 0.1: " + $ourStore.fluffies[_ef].specialFriend + " | " + $ourStore.fluffies[_ef].gender)>>
 	<<if $ourStore.fluffies[_ef].sold == true>>
 		<<continue>>
 	<</if>>
@@ -174,6 +177,7 @@
 <<run console.log("Foal nursing test 3: " + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))>>
 	 <</if>>
 
+<<run console.log("Breeding test 1: " + $ourStore.fluffies[_ef].specialFriend + " | " + $ourStore.fluffies[_ef].gender)>>
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
@@ -182,14 +186,16 @@
 	<<if $ourStore.fluffies[_ef].specialFriend != -1 && $ourStore.fluffies[_ef].gender == "female">>
 		<<set $mom = $ourStore.fluffies[_ef]>>
 		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
-
-		<<if !$mom.pregnant && $mom.nursing != 0>>
+<<run console.log("Breeding test 2: " + $mom.nursing + " | " + $mom.pregnant)>>
+		<<if !$mom.pregnant && $mom.nursing == 0>>
+<<run console.log("Breeding test 3: " + $mom.nursing + " | " + $mom.pregnant)>>
 			<<if _count > $ourStore.shelter>>
 				/* Work around for now to limit population */
 				<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
 				<br>huhuhu
 				<<set $mom.pregnant = false>>
 			<<else>>
+<<run console.log("Breeding test 4: " + $mom.nursing + " | " + $mom.pregnant)>>
 				<br>$mom.name and $dad.name have special hugs.
 				<br>enf enf enf
 				
