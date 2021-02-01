@@ -69,7 +69,7 @@
 			<<set $ourStore.fluffies[_ef].dead = true>>
 			<<set $ourStore.fluffies[_ef].onDisplay = false>>
 			<<set $ourStore.fluffies[_ef].pregnant = false>>
-			<<set $ourStore.fluffies[_ef].nursing = false>>
+			<<set $ourStore.fluffies[_ef].nursing = 0>>
 			<<set _count-->>
 			
 			<<if $ourStore.fluffies[_ef].specialFriend != -1>>
@@ -110,7 +110,7 @@
 			<<set $ourStore.fluffies[_ef].sold = true>>
 			<<set $ourStore.fluffies[_ef].onDisplay = false>>
 			<<set $ourStore.fluffies[_ef].pregnant = false>>
-			<<set $ourStore.fluffies[_ef].nursing = false>>
+			<<set $ourStore.fluffies[_ef].nursing = 0>>
 			<<set _count-->>
 		
 			<<if $ourStore.fluffies[_ef].specialFriend != -1>>
@@ -161,6 +161,17 @@
 			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * _gain).toFixed(3)>>
 			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)>>
 	 	<</if>>
+<<run console.log("Foal nursing test 1: " + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))>>
+		<<if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) > 0.2>>	 	
+	 		<<set $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing-->>
+<<run console.log("Foal nursing test 2: " + $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing)>>
+			<br><<print $ourStore.fluffies[_ef].name>> is ready for solid food.
+			
+	 		<<if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0>>
+	 			<br><<print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name>> is done nursing.
+	 		<</if>> 
+	 	<</if>>
+<<run console.log("Foal nursing test 3: " + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))>>
 	 <</if>>
 
 
@@ -172,7 +183,7 @@
 		<<set $mom = $ourStore.fluffies[_ef]>>
 		<<set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]>>
 
-		<<if !$mom.pregnant && !$mom.nursing>>
+		<<if !$mom.pregnant && $mom.nursing != 0>>
 			<<if _count > $ourStore.shelter>>
 				/* Work around for now to limit population */
 				<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
@@ -206,20 +217,22 @@
 				<<run $ourStore.fluffies.push($activeFluffy)>>
 			<</for>>
 
+			<<set $mom.nursing = $mom.litter>>
 			<<set $mom.litter = 0>>
 			<<set $mom.dueDate = -1>>
 			<<set $mom.pregnant = false>>
-			<<set $mom.nursing = true>>
 			<<set $mom.nursingTime = $week + 5>>
 			<<set $ourStore.fluffies[$mom.ID] = $mom>>
 			<<set $ourStore.fluffies[$dad.ID] = $dad>>
-		<<elseif $mom.nursing>>
+
+		<<elseif $mom.nursing > 0>>
+/*
 			<<if Number($mom.nursingTime) < Number($week)>>
-			 	<<set $mom.nursing = false>>
+			 	<<set $mom.nursing = 0>>
 			 	<<set $mom.pregnant = false>>
 			 	<br>$mom.name is no longer nursing.
 			 <</if>>
-			 
+*/	 
 			 <br>$mom.name is nursing foals.
 			 <<set $ourStore.fluffies[$mom.ID] = $mom>>
 		<</if>>

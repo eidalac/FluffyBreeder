@@ -3807,7 +3807,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $ourStore.fluffies[_ef].dead = true&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].onDisplay = false&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].pregnant = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].nursing = false&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
 			&lt;&lt;set _count--&gt;&gt;
 			
 			&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
@@ -3848,7 +3848,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $ourStore.fluffies[_ef].sold = true&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].onDisplay = false&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].pregnant = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].nursing = false&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
 			&lt;&lt;set _count--&gt;&gt;
 		
 			&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
@@ -3899,6 +3899,17 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * _gain).toFixed(3)&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal nursing test 1: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
+		&lt;&lt;if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) &gt; 0.2&gt;&gt;	 	
+	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing--&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing)&gt;&gt;
+			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[_ef].name&gt;&gt; is ready for solid food.
+			
+	 		&lt;&lt;if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0&gt;&gt;
+	 			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name&gt;&gt; is done nursing.
+	 		&lt;&lt;/if&gt;&gt; 
+	 	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 
 
@@ -3910,7 +3921,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;&lt;set $mom = $ourStore.fluffies[_ef]&gt;&gt;
 		&lt;&lt;set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]&gt;&gt;
 
-		&lt;&lt;if !$mom.pregnant &amp;&amp; !$mom.nursing&gt;&gt;
+		&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing != 0&gt;&gt;
 			&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
 				/* Work around for now to limit population */
 				&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
@@ -3944,20 +3955,22 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 				&lt;&lt;run $ourStore.fluffies.push($activeFluffy)&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 
+			&lt;&lt;set $mom.nursing = $mom.litter&gt;&gt;
 			&lt;&lt;set $mom.litter = 0&gt;&gt;
 			&lt;&lt;set $mom.dueDate = -1&gt;&gt;
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
-			&lt;&lt;set $mom.nursing = true&gt;&gt;
 			&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[$dad.ID] = $dad&gt;&gt;
-		&lt;&lt;elseif $mom.nursing&gt;&gt;
+
+		&lt;&lt;elseif $mom.nursing &gt; 0&gt;&gt;
+/*
 			&lt;&lt;if Number($mom.nursingTime) &lt; Number($week)&gt;&gt;
-			 	&lt;&lt;set $mom.nursing = false&gt;&gt;
+			 	&lt;&lt;set $mom.nursing = 0&gt;&gt;
 			 	&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			 	&lt;br&gt;$mom.name is no longer nursing.
 			 &lt;&lt;/if&gt;&gt;
-			 
+*/	 
 			 &lt;br&gt;$mom.name is nursing foals.
 			 &lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -4097,7 +4110,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;br&gt;You have no space to put more fluffies on display right now.
 &lt;&lt;elseif $activeFluffy.pregnant == true&gt;&gt;
 	&lt;br&gt;You will have to wait till $activeFluffy.name is not rearing foals.
-&lt;&lt;elseif $activeFluffy.nursing == true&gt;&gt;
+&lt;&lt;elseif $activeFluffy.nursing != 0&gt;&gt;
 	&lt;br&gt;You will have to wait till $activeFluffy.name is finished nursing foals.
 &lt;&lt;else&gt;&gt;
 
@@ -5006,7 +5019,7 @@ Inbreeding:
 		children: [],
 		specialFriend: -1,
 		pregnant: false,
-		nursing: false,
+		nursing: 0,
 		onDisplay: false,
 		sold: false,
 		dead: false,
@@ -5076,7 +5089,7 @@ Inbreeding:
 			children: [],
 			specialFriend: -1,
 			pregnant: false,
-			nursing: false,
+			nursing: 0,
 			onDisplay: false,
 			sold: false,
 			dead: false,
