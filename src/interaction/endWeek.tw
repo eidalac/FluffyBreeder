@@ -83,7 +83,6 @@
 		<<continue>>
 	<</if>>
 
-
 	/* ***
 	 *	Sell any display fluffies
 	 *
@@ -125,6 +124,47 @@
 	<</if>>
 
 	/* ***
+	 *	Grow foals.
+	 *** */
+	 <<if $ourStore.fluffies[_ef].age == 0 && Number($ourStore.fluffies[_ef].ageWeeks) <= Number($ourStore.fluffies[_ef].maturity)>>
+	 	
+		/*<<set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)>>*/
+		/*<<set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)>>*/
+		<<if Number($ourStore.fluffies[_ef].ageWeeks) == 1>>
+			<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.0786).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2500).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2500).toFixed(3)>>
+	 	<<elseif Number($ourStore.fluffies[_ef].ageWeeks) == 2>>
+	 		<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1286).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2800).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2800).toFixed(3)>>
+	 	<<elseif Number($ourStore.fluffies[_ef].ageWeeks) == 3>>
+	 		<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1586).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3000).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3000).toFixed(3)>>
+	 	 <<elseif Number($ourStore.fluffies[_ef].ageWeeks) == 4>>
+	 		<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1986).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3100).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3100).toFixed(3)>>
+	 	<<elseif Number($ourStore.fluffies[_ef].ageWeeks) == 5>>
+	 		<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.2186).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3200).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3200).toFixed(3)>>
+	 	<<elseif Number($ourStore.fluffies[_ef].ageWeeks) != 0 && Number($ourStore.fluffies[_ef].ageWeeks) < 45>>
+	 		<<set _gain = 0.2186>>
+	 		<<set _multi = $ourStore.fluffies[_ef].ageWeeks - 5>>
+	 		<<set _multi = Number(_multi).toFixed(3) * Number(0.02).toFixed(3)>>
+	 		<<set _gain = _gain + _multi>>
+	 		<<set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * _gain).toFixed(3)>>
+	 		
+	 		<<set _gain = _gain + 0.05>>
+			<<set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * _gain).toFixed(3)>>
+			<<set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)>>
+	 	<</if>>
+	 <</if>>
+
+
+	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
@@ -146,6 +186,7 @@
 				<<set $mom.pregnant = true>>
 				<<set $mom.dueDate = $week + random(5, 6)>>
 				<<set $mom.litter = _litter>>
+				<<set $mom.preWeight = $mom.weight>>
 			<</if>>
 		<<elseif $mom.pregnant && Number($mom.dueDate) < Number($week)>>
 			<br>$mom.name is giving birth to $mom.litter foals.
@@ -157,6 +198,8 @@
 				<br>Foal#<<print _f+1>> <<FluffyDesc>>
 				<hr>
 
+				/* This will get updated before the end week process compeltes, so start at -1 */
+				<<set $activeFluffy.ageWeeks = -1>>
 				<<set $activeFluffy.ID = $ourStore.fluffies.length>>
 				<<set $mom.children.push($activeFluffy.ID)>>
 				<<set $dad.children.push($activeFluffy.ID)>>

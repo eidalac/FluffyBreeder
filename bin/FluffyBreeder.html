@@ -3821,7 +3821,6 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-
 	/* ***
 	 *	Sell any display fluffies
 	 *
@@ -3863,6 +3862,47 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
+	 *	Grow foals.
+	 *** */
+	 &lt;&lt;if $ourStore.fluffies[_ef].age == 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt;= Number($ourStore.fluffies[_ef].maturity)&gt;&gt;
+	 	
+		/*&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;*/
+		/*&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;*/
+		&lt;&lt;if Number($ourStore.fluffies[_ef].ageWeeks) == 1&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.0786).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2500).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2500).toFixed(3)&gt;&gt;
+	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 2&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1286).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2800).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2800).toFixed(3)&gt;&gt;
+	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 3&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1586).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3000).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3000).toFixed(3)&gt;&gt;
+	 	 &lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 4&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1986).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3100).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3100).toFixed(3)&gt;&gt;
+	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 5&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.2186).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3200).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3200).toFixed(3)&gt;&gt;
+	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) != 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt; 45&gt;&gt;
+	 		&lt;&lt;set _gain = 0.2186&gt;&gt;
+	 		&lt;&lt;set _multi = $ourStore.fluffies[_ef].ageWeeks - 5&gt;&gt;
+	 		&lt;&lt;set _multi = Number(_multi).toFixed(3) * Number(0.02).toFixed(3)&gt;&gt;
+	 		&lt;&lt;set _gain = _gain + _multi&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * _gain).toFixed(3)&gt;&gt;
+	 		
+	 		&lt;&lt;set _gain = _gain + 0.05&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * _gain).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)&gt;&gt;
+	 	&lt;&lt;/if&gt;&gt;
+	 &lt;&lt;/if&gt;&gt;
+
+
+	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
@@ -3884,6 +3924,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 				&lt;&lt;set $mom.pregnant = true&gt;&gt;
 				&lt;&lt;set $mom.dueDate = $week + random(5, 6)&gt;&gt;
 				&lt;&lt;set $mom.litter = _litter&gt;&gt;
+				&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;elseif $mom.pregnant &amp;&amp; Number($mom.dueDate) &lt; Number($week)&gt;&gt;
 			&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
@@ -3895,6 +3936,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 				&lt;br&gt;Foal#&lt;&lt;print _f+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
 				&lt;hr&gt;
 
+				/* This will get updated before the end week process compeltes, so start at -1 */
+				&lt;&lt;set $activeFluffy.ageWeeks = -1&gt;&gt;
 				&lt;&lt;set $activeFluffy.ID = $ourStore.fluffies.length&gt;&gt;
 				&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
 				&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
@@ -4934,6 +4977,7 @@ Inbreeding:
 		heightMulti: 0.59,
 		heightAdd: 0.00,
 		weight: 3.135,
+		preWeight: 3.135,
 		maxWeight: 3.135,
 		weightMulti: 0.095,
 		maxAge: 10,
@@ -5039,6 +5083,8 @@ Inbreeding:
 			traits: []
 		} &gt;&gt;
 
+		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
+		
 		&lt;&lt;set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))&gt;&gt;
 		&lt;&lt;set $activeFluffy.age = Math.round(_rAge/52)&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)&gt;&gt;
