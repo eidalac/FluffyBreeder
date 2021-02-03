@@ -2,7 +2,7 @@
 
 # Find and insert current commit
 COMMIT=$(git rev-list HEAD --count)
-sed -i 's/COMMIT/$COMMIT/' ./src/init/storyInit.tw
+sed -i "s/COMMIT/$COMMIT/" ./src/init/storyInit.tw
 
 # run sanity check unless explicitly specified not to
 if [ "${1}" != "--insane" ]
@@ -10,7 +10,7 @@ then
   ./sanityCheck
 fi
 
-./devTools/tweeGo_current/tweego -o bin/FluffyBreeder.html src
+./devTools/tweeGo/tweego_nix64 -o bin/FluffyBreeder.html src
 
 # Revert current commit insertion in ./src/init/storyInit.tw for next compilation
 git checkout -- ./src/init/storyInit.tw

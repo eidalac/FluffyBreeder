@@ -43,7 +43,13 @@
 	<</if>>
 <<capture _bf>>
 	<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
-		<<if $ourStore.fluffies[_bf].gender != $activeFluffy.gender && ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) >= $ourStore.fluffies[_bf].maturity>>
+		<<if $ourStore.fluffies[_bf].onDisplay>>
+			<<continue>>
+		<<elseif $ourStore.fluffies[_bf].sold>>
+			<<continue>>
+		<<elseif $ourStore.fluffies[_bf].dead>>
+			<<continue>>
+		<<elseif $ourStore.fluffies[_bf].gender != $activeFluffy.gender && ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) >= $ourStore.fluffies[_bf].maturity>>
 			@@.green;$ourStore.fluffies[_bf].name@@ <<shortDesc $ourStore.fluffies[_bf]>>
 			<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding]]>><<if $ourStore.fluffies[_bf].gender == "male">><<set $breedStal = _bf>><<else>><<set $breedMare = _bf>><</if>><</link>>			
 			<hr>

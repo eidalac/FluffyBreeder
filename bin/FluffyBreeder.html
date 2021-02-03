@@ -3027,7 +3027,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.00.10&quot;, $releaseID = COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.00.24&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3867,10 +3867,36 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	/* ***
 	 *	Grow foals.
 	 *** */
-	 &lt;&lt;if $ourStore.fluffies[_ef].age == 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt;= Number($ourStore.fluffies[_ef].maturity)&gt;&gt;
+	 &lt;&lt;if $ourStore.fluffies[_ef].age == 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt;= 44&gt;&gt;
+	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
+	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(($ourStore.fluffies[_ef].ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
+	 	&lt;&lt;set _newW =  Number($ourStore.fluffies[_ef].maxWeight * _newWMulti)&gt;&gt;
+	 	&lt;&lt;set _newL = _newW / $ourStore.fluffies[_ef].weightMulti&gt;&gt;
+	 	&lt;&lt;set _newH = _newL * ($ourStore.fluffies[_ef].heightMulti)&gt;&gt;
 	 	
+	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
+	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+	 	
+	 	
+
+&lt;&lt;run console.log(&quot;Foal growth Test 0: age &quot; + $ourStore.fluffies[_ef].ageWeeks)&gt;&gt;	 	
+&lt;&lt;run console.log(&quot;Foal growth Test 0: TestW = &quot; + _newW)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: TestL = &quot; + Number($ourStore.fluffies[_ef].maxLength * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))))&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: TestH = &quot; + Number($ourStore.fluffies[_ef].maxHeight * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))))&gt;&gt;
+
+	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number(_newW).toFixed(3)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxLength * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxHeight * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Foal growth Test 0: weight = &quot; + $ourStore.fluffies[_ef].weight)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: height = &quot; + $ourStore.fluffies[_ef].height)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: length = &quot; + $ourStore.fluffies[_ef].length)&gt;&gt;
+
 		/*&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;*/
 		/*&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;*/
+/*
 		&lt;&lt;if Number($ourStore.fluffies[_ef].ageWeeks) == 1&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.0786).toFixed(3)&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2500).toFixed(3)&gt;&gt;
@@ -3903,6 +3929,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Foal nursing test 1: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
+
+*/
 		&lt;&lt;if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) &gt; 0.2&gt;&gt;	 	
 	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing--&gt;&gt;
 &lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing)&gt;&gt;
@@ -3921,32 +3949,43 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
-	&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1 &amp;&amp; $ourStore.fluffies[_ef].gender == &quot;female&quot;&gt;&gt;
+	&lt;&lt;if $ourStore.fluffies[_ef].gender == &quot;female&quot;&gt;&gt;
 		&lt;&lt;set $mom = $ourStore.fluffies[_ef]&gt;&gt;
-		&lt;&lt;set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]&gt;&gt;
-&lt;&lt;run console.log(&quot;Breeding test 2: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-		&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing == 0&gt;&gt;
-&lt;&lt;run console.log(&quot;Breeding test 3: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-			&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
+		
+		&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
+			&lt;&lt;set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]&gt;&gt;
+			
+			&lt;&lt;run console.log(&quot;Breeding test 2: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
+			
+			&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing == 0&gt;&gt;
+				&lt;&lt;run console.log(&quot;Breeding test 3: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
+				&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
 				/* Work around for now to limit population */
-				&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
-				&lt;br&gt;huhuhu
-				&lt;&lt;set $mom.pregnant = false&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-&lt;&lt;run console.log(&quot;Breeding test 4: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-				&lt;br&gt;$mom.name and $dad.name have special hugs.
-				&lt;br&gt;enf enf enf
+					&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
+					&lt;br&gt;huhuhu
+					&lt;&lt;set $mom.pregnant = false&gt;&gt;
 				
-				&lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
-				&lt;&lt;set $mom.pregnant = true&gt;&gt;
-				&lt;&lt;set $mom.dueDate = $week + random(5, 6)&gt;&gt;
-				&lt;&lt;set $mom.litter = _litter&gt;&gt;
-				&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run console.log(&quot;Breeding test 4: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
+					&lt;br&gt;$mom.name and $dad.name have special hugs.
+					&lt;br&gt;enf enf enf
+				
+					&lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+					&lt;&lt;set $mom.pregnant = true&gt;&gt;
+					&lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
+					&lt;&lt;set $mom.dueDate = $week + random(5, 6)&gt;&gt;
+					&lt;&lt;set $mom.litter = _litter&gt;&gt;
+					&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;elseif $mom.pregnant &amp;&amp; Number($mom.dueDate) &lt; Number($week)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;if $mom.pregnant &amp;&amp; Number($mom.dueDate) &lt; Number($week)&gt;&gt;
 			&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
 			&lt;br&gt;SKREEEEE BIGGGEST POOOPIES
 			&lt;br&gt;
+			
+			&lt;&lt;set $dad = $ourStore.fluffies[$mom.pregnantBy]&gt;&gt;
 
 			&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
 				&lt;&lt;breedFluffies $mom $dad&gt;&gt;
@@ -3965,18 +4004,12 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $mom.litter = 0&gt;&gt;
 			&lt;&lt;set $mom.dueDate = -1&gt;&gt;
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
+			&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
 			&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
 			&lt;&lt;set $ourStore.fluffies[$dad.ID] = $dad&gt;&gt;
 
 		&lt;&lt;elseif $mom.nursing &gt; 0&gt;&gt;
-/*
-			&lt;&lt;if Number($mom.nursingTime) &lt; Number($week)&gt;&gt;
-			 	&lt;&lt;set $mom.nursing = 0&gt;&gt;
-			 	&lt;&lt;set $mom.pregnant = false&gt;&gt;
-			 	&lt;br&gt;$mom.name is no longer nursing.
-			 &lt;&lt;/if&gt;&gt;
-*/	 
 			 &lt;br&gt;$mom.name is nursing foals.
 			 &lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -4034,7 +4067,13 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;capture _bf&gt;&gt;
 	&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
-		&lt;&lt;if $ourStore.fluffies[_bf].gender != $activeFluffy.gender &amp;&amp; ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) &gt;= $ourStore.fluffies[_bf].maturity&gt;&gt;
+		&lt;&lt;if $ourStore.fluffies[_bf].onDisplay&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;elseif $ourStore.fluffies[_bf].sold&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;elseif $ourStore.fluffies[_bf].dead&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;elseif $ourStore.fluffies[_bf].gender != $activeFluffy.gender &amp;&amp; ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) &gt;= $ourStore.fluffies[_bf].maturity&gt;&gt;
 			@@.green;$ourStore.fluffies[_bf].name@@ &lt;&lt;shortDesc $ourStore.fluffies[_bf]&gt;&gt;
 			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding]]&gt;&gt;&lt;&lt;if $ourStore.fluffies[_bf].gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _bf&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _bf&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
 			&lt;hr&gt;
@@ -5025,6 +5064,7 @@ Inbreeding:
 		children: [],
 		specialFriend: -1,
 		pregnant: false,
+		pregnantBy: -1,
 		nursing: 0,
 		onDisplay: false,
 		sold: false,
@@ -5095,6 +5135,7 @@ Inbreeding:
 			children: [],
 			specialFriend: -1,
 			pregnant: false,
+			pregnantBy: -1,
 			nursing: 0,
 			onDisplay: false,
 			sold: false,
