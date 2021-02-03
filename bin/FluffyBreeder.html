@@ -3027,7 +3027,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.00.24&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.00.24&quot;, $releaseID = $$COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3860,6 +3860,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;/if&gt;&gt;
 		
 			&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+			&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].ID] = $ourStore.fluffies[_ef]&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4067,6 +4068,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;capture _bf&gt;&gt;
 	&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
+&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + $ourStore.fluffies[_bf].name + &quot; | &quot; + $ourStore.fluffies[_bf].onDisplay + &quot; | &quot; + $ourStore.fluffies[_bf].sold)&gt;&gt;
 		&lt;&lt;if $ourStore.fluffies[_bf].onDisplay&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;elseif $ourStore.fluffies[_bf].sold&gt;&gt;
