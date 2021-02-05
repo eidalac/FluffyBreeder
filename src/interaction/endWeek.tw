@@ -54,12 +54,19 @@
 	<<if $ourStore.fluffies[_ef].dead == true>>
 		<<continue>>
 	<</if>>
+	
+	/* some logic checking */
+	<<if $ourStore.fluffies[_ef].nursing < 0>>
+		<<set $ourStore.fluffies[_ef].nursing = 0>>
+		<<set $ourStore.fluffies[_ef.ID] = _ef>>
+	<</if>>
 
 	<<set $ourStore.fluffies[_ef].ageWeeks++>>
 	
 	<<if Number($ourStore.fluffies[_ef].ageWeeks) > 52>>
 		<<set $ourStore.fluffies[_ef].ageWeeks = 0>>
 		<<set $ourStore.fluffies[_ef].age++>>
+		<<set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]>>
 	<</if>>
 
 	/* ***
@@ -203,6 +210,9 @@
 	 		<<if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0>>
 	 			<br><<print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name>> is done nursing.
 	 		<</if>> 
+	 		
+	 		<<set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]>>
+	 		<<set $ourStore.fluffies[$ourStore.fluffies[_ef].mother] = $ourStore.fluffies[$ourStore.fluffies[_ef].mother]>>
 	 	<</if>>
 <<run console.log("Foal nursing test 3: " + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))>>
 	 <</if>>

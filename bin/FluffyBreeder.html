@@ -3792,12 +3792,19 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;if $ourStore.fluffies[_ef].dead == true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	/* some logic checking */
+	&lt;&lt;if $ourStore.fluffies[_ef].nursing &lt; 0&gt;&gt;
+		&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
+		&lt;&lt;set $ourStore.fluffies[_ef.ID] = _ef&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;set $ourStore.fluffies[_ef].ageWeeks++&gt;&gt;
 	
 	&lt;&lt;if Number($ourStore.fluffies[_ef].ageWeeks) &gt; 52&gt;&gt;
 		&lt;&lt;set $ourStore.fluffies[_ef].ageWeeks = 0&gt;&gt;
 		&lt;&lt;set $ourStore.fluffies[_ef].age++&gt;&gt;
+		&lt;&lt;set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
@@ -3941,6 +3948,9 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 		&lt;&lt;if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0&gt;&gt;
 	 			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
+	 		
+	 		&lt;&lt;set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]&gt;&gt;
+	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother] = $ourStore.fluffies[$ourStore.fluffies[_ef].mother]&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
