@@ -3027,7 +3027,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.00.24&quot;, $releaseID = $$COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.00.24&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3932,10 +3932,11 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;run console.log(&quot;Foal nursing test 1: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
 
 */
-		&lt;&lt;if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) &gt; 0.2&gt;&gt;	 	
+		&lt;&lt;if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) &gt; 0.2 &amp;&amp; $ourStore.fluffies[_ef].weaned == false&gt;&gt; 	
 	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing--&gt;&gt;
 &lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing)&gt;&gt;
 			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[_ef].name&gt;&gt; is ready for solid food.
+			&lt;&lt;set $ourStore.fluffies[_ef].weaned = true&gt;&gt;
 			
 	 		&lt;&lt;if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0&gt;&gt;
 	 			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name&gt;&gt; is done nursing.
@@ -4048,8 +4049,13 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;br&gt;$ourStore.fluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
 		
-		&lt;&lt;set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;set _sf = $ourStore.fluffies[$activeFluffy.specialFriend]&gt;&gt;
+		
 		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
+		&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
+		
+		&lt;&lt;set $ourStore.fluffies[_sf.ID] = _sf&gt;&gt;
+		&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 	&lt;&lt;/link&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -4089,9 +4095,12 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;br&gt;
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Friend list test 2: $breedMare = &quot; + $breedMare + &quot; | $breedStal = &quot; + $breedStal + &quot; | &quot;)&gt;&gt;
 &lt;&lt;set $ourStore.fluffies[$breedStal].specialFriend = $breedMare&gt;&gt;
 &lt;&lt;set $ourStore.fluffies[$breedMare].specialFriend = $breedStal&gt;&gt;
+
+&lt;&lt;set $ourStore.fluffies[$breedStal] = $ourStore.fluffies[$breedStal]&gt;&gt;
+&lt;&lt;set $ourStore.fluffies[$breedMare] = $ourStore.fluffies[$breedMare]&gt;&gt;
 &lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Fluffy List" tags="nobr" position="475,225" size="100,100">/* **********
  * fluffyList.tw
  *
@@ -5071,6 +5080,7 @@ Inbreeding:
 		onDisplay: false,
 		sold: false,
 		dead: false,
+		weaned: true,
 		traits: []
 	}
 	&gt;&gt;
@@ -5142,6 +5152,7 @@ Inbreeding:
 			onDisplay: false,
 			sold: false,
 			dead: false,
+			weaned: true,
 			traits: []
 		} &gt;&gt;
 
@@ -5276,7 +5287,7 @@ Inbreeding:
 	&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.maxWeight * 0.0286).toFixed(3)&gt;&gt;
-		
+	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 &lt;&lt;widget &quot;rememberFluffy&quot;&gt;&gt;

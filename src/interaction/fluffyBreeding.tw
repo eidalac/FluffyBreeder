@@ -23,8 +23,13 @@
 		<br>$ourStore.fluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 		<br>@@.cyan;HUHUHU WORST SADIES.@@
 		
-		<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set _sf = $ourStore.fluffies[$activeFluffy.specialFriend]>>
+		
 		<<set $activeFluffy.specialFriend = -1>>
+		<<set _sf.specialFriend = -1>>
+		
+		<<set $ourStore.fluffies[_sf.ID] = _sf>>
+		<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
 	<</link>>
 <</if>>
 
@@ -64,7 +69,10 @@
 <br>
 /* Sidebar link for mobile users */
 <<SidebarButton>>
-
+<<run console.log("Friend list test 2: $breedMare = " + $breedMare + " | $breedStal = " + $breedStal + " | ")>>
 <<set $ourStore.fluffies[$breedStal].specialFriend = $breedMare>>
 <<set $ourStore.fluffies[$breedMare].specialFriend = $breedStal>>
+
+<<set $ourStore.fluffies[$breedStal] = $ourStore.fluffies[$breedStal]>>
+<<set $ourStore.fluffies[$breedMare] = $ourStore.fluffies[$breedMare]>>
 <</if>>
