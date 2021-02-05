@@ -5300,12 +5300,6 @@ Inbreeding:
 	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.maxWeight * 0.0286).toFixed(3)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-
-&lt;&lt;widget &quot;rememberFluffy&quot;&gt;&gt;
-	&lt;&lt;set $fID++&gt;&gt;
-	&lt;&lt;set $activeFluffy.ID = $fID&gt;&gt;
-	&lt;&lt;set $allFluffies[$fID] = $activeFluffy&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="misc widgets" tags="nobr widget" position="1225,225" size="100,100">/* **********
  * miscWidgets.tw
  *
@@ -5450,6 +5444,12 @@ Inbreeding:
 		&lt;&lt;for _i = $i + 1; _i &lt; _SF; _i++&gt;&gt;
 			&lt;&lt;if $ourStore.fluffies[$i].ID == $ourStore.fluffies[_i].ID&gt;&gt;
 				&lt;br&gt;&lt;br&gt;@@.red;Duplicate fluffy ID $ourStore.fluffies[$i].ID at index $i - $ourStore.fluffies[$i].name and index _i - $ourStore.fluffies[_i].name@@&lt;br&gt;&lt;br&gt;
+				&lt;&lt;set $ourStore.fluffies[_i].ID = _i&gt;&gt;
+				&lt;&lt;set $ourStore.fluffies[$i].ID = $i&gt;&gt;
+				
+				&lt;&lt;set $ourStore.fluffies[_i] = $ourStore.fluffies[_i]&gt;&gt;
+				&lt;&lt;set $ourStore.fluffies[$i] = $ourStore.fluffies[$i]&gt;&gt; 
+
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
 
