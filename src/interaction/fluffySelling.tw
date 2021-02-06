@@ -28,10 +28,10 @@
 
 	/* Clear both special friends flag, ending breeding*/
 	<<if $activeFluffy.specialFriend != -1>>
-		<br><<print $ourStore.fluffies[$activeFluffy.specialFriend].name>> and $activeFluffy.name are no longer special friends.
+		<br><<print $globalFluffies[$activeFluffy.specialFriend].name>> and $activeFluffy.name are no longer special friends.
 		<br>@@.cyan;HUHUHU WORST SADIES.@@
 			
-		<<set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
 		<<set $activeFluffy.specialFriend = -1>>
 <<run console.log("Display check 1: " + $activeFluffy.specialFriend)>>
 	<</if>>
@@ -41,7 +41,7 @@
 
 <<run console.log("Display check 2: " + $activeFluffy.onDisplay)>>
 
-	<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
+	<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 <</if>>
 
 <<capture _fl>>
@@ -49,19 +49,19 @@
 <br>Fluffies on display:
 <hr>
 <<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
-	<<if $ourStore.fluffies[_fl].onDisplay != true>>
+	<<set _listFluffy = $globalFluffies[$ourStore.fluffies[_fl]]>>
+
+	<<if _listFluffy.onDisplay != true>>
 		<<continue>>
-	<<elseif $ourStore.fluffies[_fl].sold == true>>
+	<<elseif _listFluffy.sold == true>>
 		<<continue>>
-	<<elseif $ourStore.fluffies[_fl].dead == true>>
+	<<elseif _listFluffy.dead == true>>
 		<<continue>>
 	<<else>>
-		<<set _fluff = $ourStore.fluffies[_fl]>>
-
-		[[_fluff.name|Name Fluffy]] <<shortDesc _fluff>>
+		[[_listFluffy.name|Name Fluffy]] <<shortDesc _listFluffy>>
 		<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Remove from Display|Fluffy Breeding]]>>
 			<<set _fluff.onDisplay = false>>
-			<<set $ourStore.fluffies[_fl] = _fluff>>
+			<<set $globalFluffies[_listFluffy.ID] = _listFluffy>>
 		<</link>>
 		<hr>
 	<</if>>

@@ -2735,6 +2735,8 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;/div&gt;
 
 
+
+
 /* ***
  *	Store stat selection
  *	Could not find a way to macro this due to the different variables/names - probably can be cleaned up but I couldn&#39;t figure that out.
@@ -2742,38 +2744,40 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
  *	Has options to buy/sell 1 or 10 units at a time in each stat and updates the display to show the selected value.
  *
  * TODO: BETA:  Place some sanity limits on how high any stat can go.
+ *
+  *	Limit to 750 for the time being.
  *** */
  
  /* Space, used for upgrade to the store */
 &lt;br&gt;
 &lt;br&gt;Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;/span&gt; How much space you have for upgrades. 
-( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.space++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0 &amp;&amp; $ourStore.space &lt; 750&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.space++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-]&quot;&gt;&gt;&lt;&lt;if $ourStore.space &gt; 0&gt;&gt;&lt;&lt;set $storePoints++&gt;&gt;&lt;&lt;set $ourStore.space--&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;/span&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.space +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9 &amp;&amp; $ourStore.space &lt; 741&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.space +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-10]&quot;&gt;&gt;&lt;&lt;if $ourStore.space &gt; 9&gt;&gt;&lt;&lt;set $storePoints +=10&gt;&gt;&lt;&lt;set $ourStore.space -=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
 
 /* Shelter, controls the maximum fluffy population you can support */
 &lt;br&gt;
 &lt;br&gt;Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;/span&gt; How many adult fluffies you can hold.
-( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.shelter++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&amp;&amp; $ourStore.shelter &lt; 750&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.shelter++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-]&quot;&gt;&gt;&lt;&lt;if $ourStore.shelter &gt; 0&gt;&gt;&lt;&lt;set $storePoints++&gt;&gt;&lt;&lt;set $ourStore.shelter--&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.shelter +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9 &amp;&amp; $ourStore.shelter &lt; 741&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.shelter +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-10]&quot;&gt;&gt;&lt;&lt;if $ourStore.shelter &gt; 9&gt;&gt;&lt;&lt;set $storePoints +=10&gt;&gt;&lt;&lt;set $ourStore.shelter -=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
 
 /* Display, controls how many fluffies you can have for sale during a week */
 &lt;br&gt;
 &lt;br&gt;Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;/span&gt; How many fluffies you can have for sale at once.
-( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.display++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0 &amp;&amp; $ourStore.display &lt; 750&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.display++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-]&quot;&gt;&gt;&lt;&lt;if $ourStore.display &gt; 0&gt;&gt;&lt;&lt;set $storePoints++&gt;&gt;&lt;&lt;set $ourStore.display--&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.display +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9 &amp;&amp; $ourStore.display &lt; 741&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.display +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-10]&quot;&gt;&gt;&lt;&lt;if $ourStore.display &gt; 9&gt;&gt;&lt;&lt;set $storePoints +=10&gt;&gt;&lt;&lt;set $ourStore.display -=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
 
 /* Storage, how much food you can store at a time. */
 &lt;br&gt;
 &lt;br&gt;Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;/span&gt; How much room you have for supplies (such as food)
-( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.storage++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 0&amp;&amp; $ourStore.storage &lt; 750&gt;&gt;&lt;&lt;set $storePoints--&gt;&gt;&lt;&lt;set $ourStore.storage++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-]&quot;&gt;&gt;&lt;&lt;if $ourStore.storage &gt; 0&gt;&gt;&lt;&lt;set $storePoints++&gt;&gt;&lt;&lt;set $ourStore.storage--&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.storage +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
+( &lt;&lt;link &quot;[+10]&quot;&gt;&gt;&lt;&lt;if $storePoints &gt; 9 &amp;&amp; $ourStore.storage &lt; 741&gt;&gt;&lt;&lt;set $storePoints -= 10&gt;&gt;&lt;&lt;set $ourStore.storage +=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; \
 | &lt;&lt;link &quot;[-10]&quot;&gt;&gt;&lt;&lt;if $ourStore.storage &gt; 9&gt;&gt;&lt;&lt;set $storePoints +=10&gt;&gt;&lt;&lt;set $ourStore.storage -=10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#stats-storage&quot;&gt;&gt;&lt;&lt;print $ourStore.storage&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;&lt;br&gt;You have @@.cyan; $storePoints .@@ points left.&lt;br&gt;Remaining points will become ¤&lt;&lt;print $storePoints+100&gt;&gt; cash.&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)&gt;&gt;.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
 
 /* ***
@@ -2811,7 +2815,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 /* Side bar info for mobile users */
 &lt;br&gt;&lt;&lt;SidebarCash&gt;&gt;
 &lt;br&gt;
-&lt;br&gt;&lt;&lt;SidebarFluffies&gt;&gt;
+&lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
 &lt;br&gt;[[Check the Fluffies|Fluffy List][$listType = &quot;All&quot;]].
 &lt;br&gt;[[Check displays|Fluffy List][$listType = &quot;Display&quot;]].
 &lt;br&gt;
@@ -2857,16 +2861,21 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 	&lt;&lt;SidebarDate&gt;&gt;
 	&lt;&lt;SidebarWeather&gt;&gt;
 	&lt;&lt;SidebarCash&gt;&gt;
+&lt;span id=&quot;fluffy-count&quot;&gt;
 	&lt;&lt;SidebarFluffies&gt;&gt;
-	&lt;&lt;SidebarStore&gt;&gt;
+&lt;/span&gt;
+&lt;&lt;SidebarStore&gt;&gt;
 &lt;&lt;elseif $ui == &quot;main&quot;&gt;&gt;\
 	&lt;&lt;SidebarDate&gt;&gt;
 	&lt;&lt;SidebarWeather&gt;&gt;
 	&lt;&lt;SidebarButton&gt;&gt;
 	&lt;&lt;SidebarCash&gt;&gt;
+&lt;span id=&quot;fluffy-count&quot;&gt;
 	&lt;&lt;SidebarFluffies&gt;&gt;
+&lt;/span&gt;
 	&lt;&lt;SidebarFood&gt;&gt;
 	&lt;&lt;SidebarStore&gt;&gt;
+
 &lt;&lt;nobr&gt;&gt;
  
 
@@ -3067,6 +3076,7 @@ a text-based fluffy management game
 
 /* default store information */
 &lt;&lt;set $fID = 0&gt;&gt;
+&lt;&lt;set $globalFluffies = []&gt;&gt;
 &lt;&lt;set $storeMales = 0&gt;&gt;
 &lt;&lt;set $storeFemales = 0&gt;&gt;
 &lt;&lt;set $storeFoals = 0&gt;&gt;
@@ -3165,8 +3175,6 @@ a text-based fluffy management game
 	&lt;&lt;set $saveImported = 0&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $saveImported == 0&gt;&gt;
-
 &lt;&lt;set $cheater = 0&gt;&gt;
 &lt;&lt;set $cash = 1000&gt;&gt;
 &lt;&lt;set $normalizedEvents = 0&gt;&gt;
@@ -3176,7 +3184,7 @@ a text-based fluffy management game
 &lt;&lt;set $imageChoice = 0&gt;&gt;
 &lt;&lt;set $seeVectorArtHighlights = 1&gt;&gt;
 
-&lt;&lt;include &quot;Init Rules&quot;&gt;&gt;
+/* &lt;&lt;include &quot;Init Rules&quot;&gt;&gt;*/
 
 &lt;&lt;set $lastWeeksFinances = {
 incomeSales: 0,
@@ -3396,7 +3404,25 @@ profitsTotal: 0
 		&lt;br&gt;It would cost @@.green;¤_price.@@
 		&lt;hr&gt;[[Keep Looking|Buy Fluffies]]  | 
 		&lt;&lt;if Number($cash) &gt;= Number(_price)&gt;&gt;
-		 	[[Add to the cart|Buy Fluffies][$cash-= _price, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
+			&lt;&lt;link &quot;Add to the cart&quot; &quot;Buy Fluffies&quot;&gt;&gt;
+				&lt;&lt;set $cash-= _price&gt;&gt;
+				
+				
+				/* Add to the global list and store list*/
+				&lt;&lt;set _shopFluffy.ID = $globalFluffies.length&gt;&gt;
+				&lt;&lt;run $globalFluffies.push(_shopFluffy)&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.push(_shopFluffy.ID)&gt;&gt;
+
+				&lt;&lt;if (_shopFluffy.ageWeeks + (_shopFluffy.age * 52) &lt; _shopFluffy.maturity)&gt;&gt;
+					&lt;&lt;set $ourStore.foals++&gt;&gt;
+				&lt;&lt;elseif _shopFluffy.gender == &quot;male&quot;&gt;&gt;
+					&lt;&lt;set $ourStore.stallions++&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $ourStore.mares++&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				
+				&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/link&gt;&gt; | 
 		&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
 			//You don&#39;t have enough room to take this fluffy.// | 
 		&lt;&lt;else&gt;&gt;
@@ -3423,11 +3449,11 @@ profitsTotal: 0
 
 &lt;span id=&quot;cash-line&quot;&gt;You have ¤$cash to spend, but will need to save some for weekly expenses.&lt;/span&gt;
 &lt;br&gt;
-&lt;&lt;if $ourStore.fluffies.length == false&gt;&gt;
-&lt;&lt;elseif $ourStore.fluffies.length == 1&gt;&gt;
+&lt;&lt;if ($ourStore.foals + $ourStore.mares + $ourStore.stallions) == 0&gt;&gt;
+&lt;&lt;elseif ($ourStore.foals + $ourStore.mares + $ourStore.stallions) == 1&gt;&gt;
 	You have one fluffy.
-&lt;&lt;elseif $ourStore.fluffies.length &gt; 1&gt;&gt;
-	You have $ourStore.fluffies.length fluffies.
+&lt;&lt;elseif ($ourStore.foals + $ourStore.mares + $ourStore.stallions) &gt; 1&gt;&gt;
+	You have &lt;&lt;print ($ourStore.foals + $ourStore.mares + $ourStore.stallions)&gt;&gt; fluffies.
 &lt;&lt;/if&gt;&gt;
 
 /* ***
@@ -3569,6 +3595,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.space &gt; 749&gt;&gt;
+			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 100&gt;&gt;
 			&lt;&lt;set $ourStore.space += 1&gt;&gt;
@@ -3581,6 +3609,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 	&lt;&lt;button &quot;Buy 10 (cost ¤1000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.space &gt; 740&gt;&gt;
+			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 10&gt;&gt;
@@ -3593,6 +3623,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 	&lt;&lt;button &quot;Buy 100 (cost ¤10000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.space &gt; 650&gt;&gt;
+			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 100&gt;&gt;
@@ -3614,6 +3646,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.shelter &gt; 749&gt;&gt;
+			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 100&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 1&gt;&gt;
@@ -3626,6 +3660,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 	&lt;&lt;button &quot;Buy 10 (cost ¤1000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.shelter &gt; 740&gt;&gt;
+			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 10&gt;&gt;
@@ -3638,6 +3674,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 	&lt;&lt;button &quot;Buy 100 (cost ¤10000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.shelter &gt; 650&gt;&gt;
+			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 100&gt;&gt;
@@ -3658,6 +3696,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.display &gt; 749&gt;&gt;
+			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 100&gt;&gt;
 			&lt;&lt;set $ourStore.display += 1&gt;&gt;
@@ -3670,6 +3710,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	&lt;&lt;button &quot;Buy 10 (cost ¤1000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.display &gt; 740&gt;&gt;
+			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 10&gt;&gt;
@@ -3682,6 +3724,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	&lt;&lt;button &quot;Buy 100 (cost ¤10000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.display &gt; 640&gt;&gt;
+			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 100&gt;&gt;
@@ -3701,6 +3745,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.storage &gt; 749&gt;&gt;
+			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 100&gt;&gt;
 			&lt;&lt;set $ourStore.storage += 1&gt;&gt;
@@ -3713,6 +3759,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;button &quot;Buy 10 (cost ¤1000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.storage &gt; 740&gt;&gt;
+			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
 			&lt;&lt;set $ourStore.storage += 10&gt;&gt;
@@ -3725,6 +3773,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;button &quot;Buy 100 (cost ¤10000)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
 			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $ourStore.storage &gt; 640&gt;&gt;
+			&lt;&lt;replace &quot;#storage-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
 			&lt;&lt;set $ourStore.storage += 100&gt;&gt;
@@ -3780,54 +3830,74 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 &lt;&lt;set $stress = $stress + $stressUp&gt;&gt;
 
+/* moving the count updates to here, to prevent double loops */
+&lt;&lt;set $ourStore.stallions = 0&gt;&gt;
+&lt;&lt;set $ourStore.mares = 0&gt;&gt;
+&lt;&lt;set $ourStore.foals = 0&gt;&gt; 
 
-&lt;&lt;run console.log(&quot;Breeding test 0: &quot;)&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 0: &quot; + $ourStore.fluffies)&gt;&gt;
 
-&lt;&lt;for _ef to 0; _ef lt $ourStore.fluffies.length; _ef++&gt;&gt;
-&lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + $ourStore.fluffies[_ef].specialFriend + &quot; | &quot; + $ourStore.fluffies[_ef].gender)&gt;&gt;
-	&lt;&lt;if $ourStore.fluffies[_ef].sold == true&gt;&gt;
+/* ***
+ * $ourStore.fluffies is just a list of what global IDs are still in the store.
+ * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
+ *
+ *** */
+&lt;&lt;for _ef = 0; _ef &lt; $ourStore.fluffies.length; _ef++&gt;&gt;
+	&lt;&lt;set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]&gt;&gt;
+		
+&lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + _thisFluffy.name + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
+
+	/* remove these from the list */
+	/*
+	&lt;&lt;if _thisFluffy.sold == true&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if $ourStore.fluffies[_ef].dead == true&gt;&gt;
+	&lt;&lt;if _thisFluffy.dead == true&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
+*/
 	/* some logic checking */
-	&lt;&lt;if $ourStore.fluffies[_ef].nursing &lt; 0&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[_ef.ID] = _ef&gt;&gt;
+	&lt;&lt;if _thisFluffy.nursing &lt; 0&gt;&gt;
+		&lt;&lt;set _thisFluffy.nursing = 0&gt;&gt;
+		&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;set $ourStore.fluffies[_ef].ageWeeks++&gt;&gt;
 	
-	&lt;&lt;if Number($ourStore.fluffies[_ef].ageWeeks) &gt; 52&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[_ef].ageWeeks = 0&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[_ef].age++&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]&gt;&gt;
+	/* Age up a week. */
+	&lt;&lt;set _thisFluffy.ageWeeks++&gt;&gt;
+	
+	/* turn 52 weeks into a year */
+	&lt;&lt;if Number(_thisFluffy.ageWeeks) &gt; 52&gt;&gt;
+		&lt;&lt;set _thisFluffy.ageWeeks = 0&gt;&gt;
+		&lt;&lt;set _thisFluffy.age++&gt;&gt;
+		&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	&lt;&lt;if Number($ourStore.fluffies[_ef].maxAge) &lt; Number($ourStore.fluffies[_ef].age)&gt;&gt;
+	&lt;&lt;if Number(_thisFluffy.maxAge) &lt; Number(_thisFluffy.age)&gt;&gt;
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
-			&lt;br&gt;$ourStore.fluffies[_ef].name does not wake up.  ( $ourStore.fluffies[_ef].age /  $ourStore.fluffies[_ef].maxAge years old)
+			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; does not wake up.  (_thisFluffy.age /  _thisFluffy.maxAge years old)
 			&lt;br&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].dead = true&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].onDisplay = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].pregnant = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
-			&lt;&lt;set _count--&gt;&gt;
+			&lt;&lt;set _thisFluffy.dead = true&gt;&gt;
+			&lt;&lt;set _thisFluffy.onDisplay = false&gt;&gt;
+			&lt;&lt;set _thisFluffy.pregnant = false&gt;&gt;
+			&lt;&lt;set _thisFluffy.nursing = 0&gt;&gt;
 			
-			&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
-				&lt;&lt;set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
-				&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
+			&lt;&lt;if _thisFluffy.specialFriend != -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_thisFluffy.specialFriend].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_thisFluffy.specialFriend] = $globalFluffies[_thisFluffy.specialFriend]&gt;&gt;
+				&lt;&lt;set _thisFluffy.specialFriend = -1&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 			
-			&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+			&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-	
+&lt;&lt;run console.log(&quot;dead test 1 &quot; + $ourStore.fluffies)&gt;&gt;		
+		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
+&lt;&lt;run console.log(&quot;dead test 2 &quot; + $ourStore.fluffies)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
@@ -3836,11 +3906,11 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 *
 	 *	Todo: This should be semi random and have non fixed prices.
 	 *** */
-	&lt;&lt;if $ourStore.fluffies[_ef].onDisplay == true&gt;&gt;
+	&lt;&lt;if _thisFluffy.onDisplay == true&gt;&gt;
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;&lt;set _price = 0&gt;&gt;
 
-			&lt;&lt;switch $ourStore.fluffies[_ef]&gt;&gt;
+			&lt;&lt;switch _thisFluffy.breed&gt;&gt;
 				&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
 					&lt;&lt;set _price = 2* Number($unicornPrice.deluxe).toFixed(2)&gt;&gt;
 				&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
@@ -3851,121 +3921,107 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 					&lt;&lt;set _price = 2 * Number($earthPrice.deluxe).toFixed(2)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 
-			&lt;br&gt;$ourStore.fluffies[_ef].name was sold for _price
+			&lt;br&gt;_thisFluffy.name was sold for _price
 			&lt;&lt;set $cash += Number(_price)&gt;&gt;
 			&lt;br&gt;
+&lt;&lt;run console.log(&quot;Sell Test 0 &quot; + _ef + &quot; | &quot; + _thisFluffy.name)&gt;&gt;
+			&lt;&lt;set _thisFluffy.sold = true&gt;&gt;
+			&lt;&lt;set _thisFluffy.onDisplay = false&gt;&gt;
+			&lt;&lt;set _thisFluffy.pregnant = false&gt;&gt;
+			&lt;&lt;set _thisFluffy.nursing = 0&gt;&gt;
 
-			&lt;&lt;set $ourStore.fluffies[_ef].sold = true&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].onDisplay = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].pregnant = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].nursing = 0&gt;&gt;
-			&lt;&lt;set _count--&gt;&gt;
-		
-			&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
-				&lt;&lt;set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
-				&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
+			&lt;&lt;if _thisFluffy.specialFriend != -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_thisFluffy.specialFriend].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_thisFluffy.specialFriend] = $globalFluffies[_thisFluffy.specialFriend]&gt;&gt;
+				&lt;&lt;set _thisFluffy.specialFriend = -1&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		
-			&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].ID] = $ourStore.fluffies[_ef]&gt;&gt;
+&lt;&lt;run console.log(&quot;Sell Test 1 &quot; + $ourStore.fluffies.length)&gt;&gt;			
+			&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
+&lt;&lt;run console.log(&quot;Sell Test 2 &quot; + $ourStore.fluffies.length)&gt;&gt;
+&lt;&lt;run console.log(&quot;Sell Test 3 &quot; + $ourStore.fluffies)&gt;&gt;
+&lt;&lt;run console.log(&quot;Sell Test 4 &quot; + $globalFluffies[0].name + &quot; | &quot; + $globalFluffies[1].name + &quot; | &quot;+ $globalFluffies[2].name)&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
+&lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + (_thisFluffy.ageWeeks + (_thisFluffy.age * 52)) + &quot; gender = &quot; + _thisFluffy.gender)&gt;&gt;
+
 	/* ***
 	 *	Grow foals.
 	 *** */
-	 &lt;&lt;if $ourStore.fluffies[_ef].age == 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt;= 44&gt;&gt;
+	 &lt;&lt;if _thisFluffy.age == 0 &amp;&amp; Number(_thisFluffy.ageWeeks) &lt;= 44&gt;&gt;
+	 	/* ***
+	 	*	Update counts for the sidebar
+	 	*** */
+	 	&lt;&lt;set $ourStore.foals++&gt;&gt;
+&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
+	 	
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
-	 	&lt;&lt;set _newWMulti = Number(($ourStore.fluffies[_ef].ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
 	 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
-	 	&lt;&lt;set _newW =  Number($ourStore.fluffies[_ef].maxWeight * _newWMulti)&gt;&gt;
-	 	&lt;&lt;set _newL = _newW / $ourStore.fluffies[_ef].weightMulti&gt;&gt;
-	 	&lt;&lt;set _newH = _newL * ($ourStore.fluffies[_ef].heightMulti)&gt;&gt;
+	 	&lt;&lt;set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)&gt;&gt;
+	 	&lt;&lt;set _newL = _newW / _thisFluffy.weightMulti&gt;&gt;
+	 	&lt;&lt;set _newH = _newL * (_thisFluffy.heightMulti)&gt;&gt;
 	 	
 	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
 	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
 	 	
 	 	
 
-&lt;&lt;run console.log(&quot;Foal growth Test 0: age &quot; + $ourStore.fluffies[_ef].ageWeeks)&gt;&gt;	 	
+&lt;&lt;run console.log(&quot;Foal growth Test 0: age &quot; + _thisFluffy.ageWeeks)&gt;&gt;	 	
 &lt;&lt;run console.log(&quot;Foal growth Test 0: TestW = &quot; + _newW)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: TestL = &quot; + Number($ourStore.fluffies[_ef].maxLength * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))))&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: TestH = &quot; + Number($ourStore.fluffies[_ef].maxHeight * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))))&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: TestL = &quot; + Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: TestH = &quot; + Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))&gt;&gt;
 
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number(_newW).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxLength * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxHeight * (_lMultiBase + ($ourStore.fluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+	 		&lt;&lt;set _thisFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+			&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+			&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Foal growth Test 0: weight = &quot; + $ourStore.fluffies[_ef].weight)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: height = &quot; + $ourStore.fluffies[_ef].height)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: length = &quot; + $ourStore.fluffies[_ef].length)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: weight = &quot; + _thisFluffy.weight)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: height = &quot; + _thisFluffy.height)&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal growth Test 0: length = &quot; + _thisFluffy.length)&gt;&gt;
 
-		/*&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;*/
-		/*&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;*/
-/*
-		&lt;&lt;if Number($ourStore.fluffies[_ef].ageWeeks) == 1&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.0786).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2500).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2500).toFixed(3)&gt;&gt;
-	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 2&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1286).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.2800).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.2800).toFixed(3)&gt;&gt;
-	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 3&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1586).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3000).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3000).toFixed(3)&gt;&gt;
-	 	 &lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 4&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.1986).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3100).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3100).toFixed(3)&gt;&gt;
-	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) == 5&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * 0.2186).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * 0.3200).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * 0.3200).toFixed(3)&gt;&gt;
-	 	&lt;&lt;elseif Number($ourStore.fluffies[_ef].ageWeeks) != 0 &amp;&amp; Number($ourStore.fluffies[_ef].ageWeeks) &lt; 45&gt;&gt;
-	 		&lt;&lt;set _gain = 0.2186&gt;&gt;
-	 		&lt;&lt;set _multi = $ourStore.fluffies[_ef].ageWeeks - 5&gt;&gt;
-	 		&lt;&lt;set _multi = Number(_multi).toFixed(3) * Number(0.02).toFixed(3)&gt;&gt;
-	 		&lt;&lt;set _gain = _gain + _multi&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[_ef].weight = Number($ourStore.fluffies[_ef].maxWeight * _gain).toFixed(3)&gt;&gt;
-	 		
-	 		&lt;&lt;set _gain = _gain + 0.05&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].height = Number($ourStore.fluffies[_ef].maxHeight * _gain).toFixed(3)&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_ef].length = Number($ourStore.fluffies[_ef].maxLength * _gain).toFixed(3)&gt;&gt;
-	 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal nursing test 1: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
 
-*/
-		&lt;&lt;if ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight) &gt; 0.2 &amp;&amp; $ourStore.fluffies[_ef].weaned == false&gt;&gt; 	
-	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing--&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing)&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[_ef].name&gt;&gt; is ready for solid food.
-			&lt;&lt;set $ourStore.fluffies[_ef].weaned = true&gt;&gt;
+		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.2 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
+	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother].nursing--&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $globalFluffies[_thisFluffy.mother].nursing)&gt;&gt;
+			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; is ready for solid food.
+			&lt;&lt;set _thisFluffy.weaned = true&gt;&gt;
 			
-	 		&lt;&lt;if $ourStore.fluffies[$ourStore.fluffies[_ef].mother].nursing == 0&gt;&gt;
-	 			&lt;br&gt;&lt;&lt;print $ourStore.fluffies[$ourStore.fluffies[_ef].mother].name&gt;&gt; is done nursing.
+	 		&lt;&lt;if $globalFluffies[_thisFluffy.mother].nursing == 0&gt;&gt;
+	 			&lt;br&gt;&lt;&lt;print $globalFluffies[_thisFluffy.mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
 	 		
-	 		&lt;&lt;set $ourStore.fluffies[_ef] = $ourStore.fluffies[_ef]&gt;&gt;
-	 		&lt;&lt;set $ourStore.fluffies[$ourStore.fluffies[_ef].mother] = $ourStore.fluffies[$ourStore.fluffies[_ef].mother]&gt;&gt;
+	 		&lt;&lt;set _thisFluffy = _thisFluffy&gt;&gt;
+	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + ($ourStore.fluffies[_ef].weight / $ourStore.fluffies[_ef].maxWeight))&gt;&gt;
-	 &lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + (_thisFluffy.weight / _thisFluffy.maxWeight))&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Breeding test 1: &quot; + $ourStore.fluffies[_ef].specialFriend + &quot; | &quot; + $ourStore.fluffies[_ef].gender)&gt;&gt;
+	/* ***
+	 *	Update counts for the sidebar
+	 *** */
+	&lt;&lt;elseif _thisFluffy.gender == &quot;male&quot;&gt;&gt;
+		&lt;&lt;set $ourStore.stallions++&gt;&gt;
+&lt;&lt;run console.log(&quot;Count test 1: Stallions =  &quot; + $ourStore.stallions + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $ourStore.mares++&gt;&gt;
+&lt;&lt;run console.log(&quot;Count test 1: Mares =  &quot; + $ourStore.mares + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+
+&lt;&lt;run console.log(&quot;Breeding test 1: &quot; + _thisFluffy.specialFriend + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
-	&lt;&lt;if $ourStore.fluffies[_ef].gender == &quot;female&quot;&gt;&gt;
-		&lt;&lt;set $mom = $ourStore.fluffies[_ef]&gt;&gt;
+	&lt;&lt;if _thisFluffy.gender == &quot;female&quot;&gt;&gt;
+		&lt;&lt;set $mom = _thisFluffy&gt;&gt;
 		
-		&lt;&lt;if $ourStore.fluffies[_ef].specialFriend != -1&gt;&gt;
-			&lt;&lt;set $dad = $ourStore.fluffies[$ourStore.fluffies[_ef].specialFriend]&gt;&gt;
+		&lt;&lt;if _thisFluffy.specialFriend != -1&gt;&gt;
+			&lt;&lt;set $dad = $globalFluffies[_thisFluffy.specialFriend]&gt;&gt;
 			
 			&lt;&lt;run console.log(&quot;Breeding test 2: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
 			
@@ -3997,7 +4053,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;br&gt;SKREEEEE BIGGGEST POOOPIES
 			&lt;br&gt;
 			
-			&lt;&lt;set $dad = $ourStore.fluffies[$mom.pregnantBy]&gt;&gt;
+			&lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
 
 			&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
 				&lt;&lt;breedFluffies $mom $dad&gt;&gt;
@@ -4006,10 +4062,11 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 				/* This will get updated before the end week process compeltes, so start at -1 */
 				&lt;&lt;set $activeFluffy.ageWeeks = -1&gt;&gt;
-				&lt;&lt;set $activeFluffy.ID = $ourStore.fluffies.length&gt;&gt;
+				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 				&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
 				&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.push($activeFluffy)&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+				&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 
 			&lt;&lt;set $mom.nursing = $mom.litter&gt;&gt;
@@ -4018,12 +4075,12 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
 			&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[$dad.ID] = $dad&gt;&gt;
+			&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+			&lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
 
 		&lt;&lt;elseif $mom.nursing &gt; 0&gt;&gt;
 			 &lt;br&gt;$mom.name is nursing foals.
-			 &lt;&lt;set $ourStore.fluffies[$mom.ID] = $mom&gt;&gt;
+			 &lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/for&gt;&gt;
@@ -4053,19 +4110,19 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;FluffyDesc&gt;&gt;
 &lt;br&gt;
 &lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
-	&lt;br&gt;Is special friends with &lt;&lt;print $ourStore.fluffies[$activeFluffy.specialFriend].name&gt;&gt;.
+	&lt;br&gt;Is special friends with &lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt;.
 	&lt;&lt;link [[Break up |Fluffy Breeding]]&gt;&gt;
 		/* Clear both special friends flag, ending breeding*/
-		&lt;br&gt;$ourStore.fluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+		&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
 		
-		&lt;&lt;set _sf = $ourStore.fluffies[$activeFluffy.specialFriend]&gt;&gt;
+		&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 		
 		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 		&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
 		
-		&lt;&lt;set $ourStore.fluffies[_sf.ID] = _sf&gt;&gt;
-		&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;set $globalFluffies[_sf.ID] = _sf&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 	&lt;&lt;/link&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -4084,33 +4141,35 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;capture _bf&gt;&gt;
 	&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
-&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + $ourStore.fluffies[_bf].name + &quot; | &quot; + $ourStore.fluffies[_bf].onDisplay + &quot; | &quot; + $ourStore.fluffies[_bf].sold)&gt;&gt;
-		&lt;&lt;if $ourStore.fluffies[_bf].onDisplay&gt;&gt;
+		&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
+		
+&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + _listFluff.name + &quot; | &quot; + _listFluff.onDisplay + &quot; | &quot; + _listFluff.sold)&gt;&gt;
+		&lt;&lt;if _listFluff.onDisplay&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif $ourStore.fluffies[_bf].sold&gt;&gt;
+		&lt;&lt;elseif _listFluff.sold&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif $ourStore.fluffies[_bf].dead&gt;&gt;
+		&lt;&lt;elseif _listFluff.dead&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif $ourStore.fluffies[_bf].gender != $activeFluffy.gender &amp;&amp; ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) &gt;= $ourStore.fluffies[_bf].maturity&gt;&gt;
-			@@.green;$ourStore.fluffies[_bf].name@@ &lt;&lt;shortDesc $ourStore.fluffies[_bf]&gt;&gt;
-			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding]]&gt;&gt;&lt;&lt;if $ourStore.fluffies[_bf].gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _bf&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _bf&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
+		&lt;&lt;elseif _listFluff.gender != $activeFluffy.gender &amp;&amp; (_listFluff.ageWeeks + (_listFluff.age * 52)) &gt;= _listFluff.maturity&gt;&gt;
+			@@.green;_listFluff.name@@ &lt;&lt;shortDesc _listFluff&gt;&gt;
+			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding]]&gt;&gt;&lt;&lt;if _listFluff.gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _bf&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _bf&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
 			&lt;hr&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
 &lt;&lt;else&gt;&gt;
-&lt;br&gt;$ourStore.fluffies[$breedStal].name and $ourStore.fluffies[$breedMare].name are now special friends.
+&lt;br&gt;&lt;&lt;print $globalFluffies[$ourStore.fluffies[$breedStal]].name&gt;&gt; and &lt;&lt;print $globalFluffies[$ourStore.fluffies[$breedMare]].name&gt;&gt; are now special friends.
 &lt;br&gt;
 &lt;br&gt; SPECIAL HUGS NOW
 &lt;br&gt;
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;
 &lt;&lt;run console.log(&quot;Friend list test 2: $breedMare = &quot; + $breedMare + &quot; | $breedStal = &quot; + $breedStal + &quot; | &quot;)&gt;&gt;
-&lt;&lt;set $ourStore.fluffies[$breedStal].specialFriend = $breedMare&gt;&gt;
-&lt;&lt;set $ourStore.fluffies[$breedMare].specialFriend = $breedStal&gt;&gt;
+&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedStal]].specialFriend = $breedMare&gt;&gt;
+&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedMare]].specialFriend = $breedStal&gt;&gt;
 
-&lt;&lt;set $ourStore.fluffies[$breedStal] = $ourStore.fluffies[$breedStal]&gt;&gt;
-&lt;&lt;set $ourStore.fluffies[$breedMare] = $ourStore.fluffies[$breedMare]&gt;&gt;
+&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedStal]] = $globalFluffies[$ourStore.fluffies[$breedStal]]&gt;&gt;
+&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedMare]] = $globalFluffies[$ourStore.fluffies[$breedMare]]&gt;&gt;
 &lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Fluffy List" tags="nobr" position="475,225" size="100,100">/* **********
  * fluffyList.tw
  *
@@ -4129,30 +4188,37 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;set $nextButton to &quot;Back to the shop.&quot;, $nextLink to $returnTo&gt;&gt;
 &lt;&lt;set _eMare = [], _eStal = []&gt;&gt;
 
+&lt;&lt;run console.log(&quot;List test 0: &quot; + $ourStore.fluffies.length + &quot; | &quot; + $globalFluffies.length)&gt;&gt;
 
-&lt;&lt;capture _fl&gt;&gt;
+&lt;&lt;capture _fl, _fluff&gt;&gt;
 
 &lt;&lt;for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++&gt;&gt;
-	&lt;&lt;if $ourStore.fluffies[_fl].onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+	&lt;&lt;set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
+&lt;&lt;run console.log(&quot;List test 0.1: &quot; + $ourStore.fluffies.length + &quot; | &quot; + $globalFluffies.length)&gt;&gt;
+	&lt;&lt;if _fluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+&lt;&lt;run console.log(&quot;List test 0.2&quot;)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif $ourStore.fluffies[_fl].sold == true&gt;&gt;
+	&lt;&lt;elseif _fluff.sold == true&gt;&gt;
+&lt;&lt;run console.log(&quot;List test 0.3&quot;)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif $ourStore.fluffies[_fl].dead == true&gt;&gt;
+	&lt;&lt;elseif _fluff.dead == true&gt;&gt;
+&lt;&lt;run console.log(&quot;List test 0.4&quot;)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif $ourStore.fluffies[_fl].onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+	&lt;&lt;elseif _fluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+&lt;&lt;run console.log(&quot;List test 0.5&quot;)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _fluff = $ourStore.fluffies[_fl]&gt;&gt;
-	
-		[[_fluff.name|Name Fluffy][$activeFluffy = $ourStore.fluffies[_fl]]] &lt;&lt;shortDesc _fluff&gt;&gt;
-		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl], $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
-		| &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $ourStore.fluffies[_fl]]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][$ourStore.fluffies[_fl].onDisplay = false]]&lt;&lt;/if&gt;&gt; 
-		&lt;&lt;set $ourStore.fluffies[_fl] = _fluff&gt;&gt;
+
+&lt;&lt;run console.log(&quot;List test 1: &quot; + _fluff.name + &quot; | &quot; + _fl)&gt;&gt;
+
+		[[_fluff.name|Name Fluffy][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
+		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
+		| &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt; 
+		&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;
 		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
-&lt;&lt;set $activeFluffy = 0, _fluff = 0&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
 
 /* Sidebar link for mobile users */
@@ -4184,10 +4250,10 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 	/* Clear both special friends flag, ending breeding*/
 	&lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
-		&lt;br&gt;&lt;&lt;print $ourStore.fluffies[$activeFluffy.specialFriend].name&gt;&gt; and $activeFluffy.name are no longer special friends.
+		&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt; and $activeFluffy.name are no longer special friends.
 		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
 			
-		&lt;&lt;set $ourStore.fluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
 		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 &lt;&lt;run console.log(&quot;Display check 1: &quot; + $activeFluffy.specialFriend)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4197,7 +4263,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 &lt;&lt;run console.log(&quot;Display check 2: &quot; + $activeFluffy.onDisplay)&gt;&gt;
 
-	&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;capture _fl&gt;&gt;
@@ -4205,19 +4271,19 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;br&gt;Fluffies on display:
 &lt;hr&gt;
 &lt;&lt;for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++&gt;&gt;
-	&lt;&lt;if $ourStore.fluffies[_fl].onDisplay != true&gt;&gt;
+	&lt;&lt;set _listFluffy = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
+
+	&lt;&lt;if _listFluffy.onDisplay != true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif $ourStore.fluffies[_fl].sold == true&gt;&gt;
+	&lt;&lt;elseif _listFluffy.sold == true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif $ourStore.fluffies[_fl].dead == true&gt;&gt;
+	&lt;&lt;elseif _listFluffy.dead == true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _fluff = $ourStore.fluffies[_fl]&gt;&gt;
-
-		[[_fluff.name|Name Fluffy]] &lt;&lt;shortDesc _fluff&gt;&gt;
+		[[_listFluffy.name|Name Fluffy]] &lt;&lt;shortDesc _listFluffy&gt;&gt;
 		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Remove from Display|Fluffy Breeding]]&gt;&gt;
 			&lt;&lt;set _fluff.onDisplay = false&gt;&gt;
-			&lt;&lt;set $ourStore.fluffies[_fl] = _fluff&gt;&gt;
+			&lt;&lt;set $globalFluffies[_listFluffy.ID] = _listFluffy&gt;&gt;
 		&lt;&lt;/link&gt;&gt;
 		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4936,7 +5002,7 @@ Inbreeding:
 
 
 
-&lt;&lt;set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 &lt;br&gt;
 
 /* ***
@@ -5013,10 +5079,10 @@ Inbreeding:
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat | &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane | &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $ourStore.fluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
-	 Father &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $ourStore.fluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
-	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $ourStore.fluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children &lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;@@.cyan;&lt;&lt;print  $ourStore.fluffies[_fluffy.children[_i]].name&gt;&gt;@@ &lt;&lt;/for&gt;&gt;
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
+	 Father &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
+	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children &lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;@@.cyan;&lt;&lt;print  $globalFluffies[_fluffy.children[_i]].name&gt;&gt;@@ &lt;&lt;/for&gt;&gt;
 	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="fluffy creation widgets" tags="widget nobr" position="1100,225" size="100,100">/* **********
  * fluffyCreationWidgets.tw
@@ -5049,6 +5115,7 @@ Inbreeding:
 		weekAcquired: 0,
 		origin: 0,
 		ID: 0,
+		sID: 0,
 		gender: &quot;&quot;,
 		length: 33,
 		maxLength: 33,
@@ -5122,6 +5189,7 @@ Inbreeding:
 			weekAcquired: 0,
 			origin: 0,
 			ID: -1,
+			sID: -1,
 			gender: $args[0].getGenderString().toLowerCase(),
 			length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
 			maxLength: _L,
@@ -5437,40 +5505,6 @@ Inbreeding:
  *	Displays fluffies for the sidebar
  *** */
 &lt;&lt;widget &quot;SidebarFluffies&quot;&gt;&gt;
-	&lt;&lt;set _SF = $ourStore.fluffies.length&gt;&gt;
-	&lt;&lt;set $ourStore.stallions = 0, $ourStore.mares = 0,  $ourStore.foals = 0&gt;&gt; 
-	
-	&lt;&lt;for $i to 0; $i lt _SF; $i++&gt;&gt;
-		&lt;&lt;for _i = $i + 1; _i &lt; _SF; _i++&gt;&gt;
-			&lt;&lt;if $ourStore.fluffies[$i].ID == $ourStore.fluffies[_i].ID&gt;&gt;
-				&lt;br&gt;&lt;br&gt;@@.red;Duplicate fluffy ID $ourStore.fluffies[$i].ID at index $i - $ourStore.fluffies[$i].name and index _i - $ourStore.fluffies[_i].name@@&lt;br&gt;&lt;br&gt;
-				&lt;&lt;set $ourStore.fluffies[_i].ID = _i&gt;&gt;
-				&lt;&lt;set $ourStore.fluffies[$i].ID = $i&gt;&gt;
-				
-				&lt;&lt;set $ourStore.fluffies[_i] = $ourStore.fluffies[_i]&gt;&gt;
-				&lt;&lt;set $ourStore.fluffies[$i] = $ourStore.fluffies[$i]&gt;&gt; 
-
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
-
-		&lt;&lt;if $ourStore.fluffies[$i].sold == true&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $ourStore.fluffies[$i].dead == true&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		&lt;&lt;if ($ourStore.fluffies[$i].ageWeeks + ($ourStore.fluffies[$i].age * 52)) &lt; $ourStore.fluffies[$i].maturity&gt;&gt;
-			&lt;&lt;set $ourStore.foals++&gt;&gt;
-		&lt;&lt;elseif $ourStore.fluffies[$i].gender == &quot;male&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.stallions++&gt;&gt;
-		&lt;&lt;elseif $ourStore.fluffies[$i].gender == &quot;female&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.mares++&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;br&gt;@@.red;Invalid Gender found $ourStore.fluffies[$i].ID at index $i - &quot; $ourStore.fluffies[$i].gender &quot;@@&lt;br&gt;&lt;br&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
-
 	&lt;br&gt;@@.pink;[[Total Fluffies|Fluffy List]]@@ | &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt;/  $ourStore.shelter
 	&lt;br&gt;($ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@)
 &lt;&lt;/widget&gt;&gt;

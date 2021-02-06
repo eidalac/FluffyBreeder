@@ -17,19 +17,19 @@
 <<FluffyDesc>>
 <br>
 <<if $activeFluffy.specialFriend != -1>>
-	<br>Is special friends with <<print $ourStore.fluffies[$activeFluffy.specialFriend].name>>.
+	<br>Is special friends with <<print $globalFluffies[$activeFluffy.specialFriend].name>>.
 	<<link [[Break up |Fluffy Breeding]]>>
 		/* Clear both special friends flag, ending breeding*/
-		<br>$ourStore.fluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+		<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 		<br>@@.cyan;HUHUHU WORST SADIES.@@
 		
-		<<set _sf = $ourStore.fluffies[$activeFluffy.specialFriend]>>
+		<<set _sf = $globalFluffies[$activeFluffy.specialFriend]>>
 		
 		<<set $activeFluffy.specialFriend = -1>>
 		<<set _sf.specialFriend = -1>>
 		
-		<<set $ourStore.fluffies[_sf.ID] = _sf>>
-		<<set $ourStore.fluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<set $globalFluffies[_sf.ID] = _sf>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 	<</link>>
 <</if>>
 
@@ -48,31 +48,33 @@
 	<</if>>
 <<capture _bf>>
 	<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
-<<run console.log("Friend list test 1: " + $ourStore.fluffies[_bf].name + " | " + $ourStore.fluffies[_bf].onDisplay + " | " + $ourStore.fluffies[_bf].sold)>>
-		<<if $ourStore.fluffies[_bf].onDisplay>>
+		<<set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
+		
+<<run console.log("Friend list test 1: " + _listFluff.name + " | " + _listFluff.onDisplay + " | " + _listFluff.sold)>>
+		<<if _listFluff.onDisplay>>
 			<<continue>>
-		<<elseif $ourStore.fluffies[_bf].sold>>
+		<<elseif _listFluff.sold>>
 			<<continue>>
-		<<elseif $ourStore.fluffies[_bf].dead>>
+		<<elseif _listFluff.dead>>
 			<<continue>>
-		<<elseif $ourStore.fluffies[_bf].gender != $activeFluffy.gender && ($ourStore.fluffies[_bf].ageWeeks + ($ourStore.fluffies[_bf].age * 52)) >= $ourStore.fluffies[_bf].maturity>>
-			@@.green;$ourStore.fluffies[_bf].name@@ <<shortDesc $ourStore.fluffies[_bf]>>
-			<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding]]>><<if $ourStore.fluffies[_bf].gender == "male">><<set $breedStal = _bf>><<else>><<set $breedMare = _bf>><</if>><</link>>			
+		<<elseif _listFluff.gender != $activeFluffy.gender && (_listFluff.ageWeeks + (_listFluff.age * 52)) >= _listFluff.maturity>>
+			@@.green;_listFluff.name@@ <<shortDesc _listFluff>>
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding]]>><<if _listFluff.gender == "male">><<set $breedStal = _bf>><<else>><<set $breedMare = _bf>><</if>><</link>>			
 			<hr>
 		<</if>>
 	<</for>>
 <</capture>>
 <<else>>
-<br>$ourStore.fluffies[$breedStal].name and $ourStore.fluffies[$breedMare].name are now special friends.
+<br><<print $globalFluffies[$ourStore.fluffies[$breedStal]].name>> and <<print $globalFluffies[$ourStore.fluffies[$breedMare]].name>> are now special friends.
 <br>
 <br> SPECIAL HUGS NOW
 <br>
 /* Sidebar link for mobile users */
 <<SidebarButton>>
 <<run console.log("Friend list test 2: $breedMare = " + $breedMare + " | $breedStal = " + $breedStal + " | ")>>
-<<set $ourStore.fluffies[$breedStal].specialFriend = $breedMare>>
-<<set $ourStore.fluffies[$breedMare].specialFriend = $breedStal>>
+<<set $globalFluffies[$ourStore.fluffies[$breedStal]].specialFriend = $breedMare>>
+<<set $globalFluffies[$ourStore.fluffies[$breedMare]].specialFriend = $breedStal>>
 
-<<set $ourStore.fluffies[$breedStal] = $ourStore.fluffies[$breedStal]>>
-<<set $ourStore.fluffies[$breedMare] = $ourStore.fluffies[$breedMare]>>
+<<set $globalFluffies[$ourStore.fluffies[$breedStal]] = $globalFluffies[$ourStore.fluffies[$breedStal]]>>
+<<set $globalFluffies[$ourStore.fluffies[$breedMare]] = $globalFluffies[$ourStore.fluffies[$breedMare]]>>
 <</if>>

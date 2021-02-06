@@ -137,40 +137,6 @@
  *	Displays fluffies for the sidebar
  *** */
 <<widget "SidebarFluffies">>
-	<<set _SF = $ourStore.fluffies.length>>
-	<<set $ourStore.stallions = 0, $ourStore.mares = 0,  $ourStore.foals = 0>> 
-	
-	<<for $i to 0; $i lt _SF; $i++>>
-		<<for _i = $i + 1; _i < _SF; _i++>>
-			<<if $ourStore.fluffies[$i].ID == $ourStore.fluffies[_i].ID>>
-				<br><br>@@.red;Duplicate fluffy ID $ourStore.fluffies[$i].ID at index $i - $ourStore.fluffies[$i].name and index _i - $ourStore.fluffies[_i].name@@<br><br>
-				<<set $ourStore.fluffies[_i].ID = _i>>
-				<<set $ourStore.fluffies[$i].ID = $i>>
-				
-				<<set $ourStore.fluffies[_i] = $ourStore.fluffies[_i]>>
-				<<set $ourStore.fluffies[$i] = $ourStore.fluffies[$i]>> 
-
-			<</if>>
-		<</for>>
-
-		<<if $ourStore.fluffies[$i].sold == true>>
-			<<continue>>
-		<</if>>
-		<<if $ourStore.fluffies[$i].dead == true>>
-			<<continue>>
-		<</if>>
-
-		<<if ($ourStore.fluffies[$i].ageWeeks + ($ourStore.fluffies[$i].age * 52)) < $ourStore.fluffies[$i].maturity>>
-			<<set $ourStore.foals++>>
-		<<elseif $ourStore.fluffies[$i].gender == "male">>
-			<<set $ourStore.stallions++>>
-		<<elseif $ourStore.fluffies[$i].gender == "female">>
-			<<set $ourStore.mares++>>
-		<<else>>
-			<br><br>@@.red;Invalid Gender found $ourStore.fluffies[$i].ID at index $i - " $ourStore.fluffies[$i].gender "@@<br><br>
-		<</if>>
-	<</for>>
-
 	<br>@@.pink;[[Total Fluffies|Fluffy List]]@@ | <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>>/  $ourStore.shelter
 	<br>($ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@)
 <</widget>>

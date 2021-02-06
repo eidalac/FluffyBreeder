@@ -157,7 +157,25 @@
 		<br>It would cost @@.green;¤_price.@@
 		<hr>[[Keep Looking|Buy Fluffies]]  | 
 		<<if Number($cash) >= Number(_price)>>
-		 	[[Add to the cart|Buy Fluffies][$cash-= _price, _shopFluffy.ID = $ourStore.fluffies.length, $ourStore.fluffies.push(_shopFluffy)]]  | 
+			<<link "Add to the cart" "Buy Fluffies">>
+				<<set $cash-= _price>>
+				
+				
+				/* Add to the global list and store list*/
+				<<set _shopFluffy.ID = $globalFluffies.length>>
+				<<run $globalFluffies.push(_shopFluffy)>>
+				<<run $ourStore.fluffies.push(_shopFluffy.ID)>>
+
+				<<if (_shopFluffy.ageWeeks + (_shopFluffy.age * 52) < _shopFluffy.maturity)>>
+					<<set $ourStore.foals++>>
+				<<elseif _shopFluffy.gender == "male">>
+					<<set $ourStore.stallions++>>
+				<<else>>
+					<<set $ourStore.mares++>>
+				<</if>>
+				
+				<<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
+			<</link>> | 
 		<<elseif _count > $ourStore.shelter>>
 			//You don't have enough room to take this fluffy.// | 
 		<<else>>

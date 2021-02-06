@@ -46,12 +46,13 @@ $GREP "<<[^<>]*[^,\"\[{"$'\r]\r'"\?$" -- 'src/*' | myprint "MissingClosingAngleB
 # Check for too many >>>.  e.g.: <</if>>>
 $GREP "<<[^<>]*[<>]\?[^<>]*>>>" -- "src/*.tw" | myprint "TooManyAngleBrackets"
 # Check for wrong capitalization on 'activeslave' and other common typos
-$GREP -e "\$act" --and --not -e "\$\(activeFluffy)" -- "src/*" | myprint "WrongCapitilization"
+$GREP -e "\$act" --and --not -e "\$\(activeSlave\|activeArcology\|activeStandard\|activeOrgan\|activeLimbs\)" -- "src/*" | myprint "WrongCapitilization"
 $GREP  "\(csae\|[a-z] She \|attepmts\|youreslf\|advnaces\)" -- 'src/*' | myprint "SpellCheck"
+$GREP "\$slave\[" -- 'src/*' | myprint "ShouldBeSlaves"
 # Check for strange spaces e.g.  $slaves[$i]. lips
-$GREP "\$ourStore.fluffies\[\$i\]\. " -- 'src/*' | myprint "MissingPropertyAfterSlaves"
+$GREP "\$slaves\[\$i\]\. " -- 'src/*' | myprint "MissingPropertyAfterSlaves"
 # Check using refreshmentType instead of refreshment
-
+$GREP "\$PC.refreshmentType[^ =]" -- 'src/*' | myprint "ShouldBeRefreshment"
 # Check, e.g., <<//if>>
 $GREP "<</[a-zA-Z]*[^a-zA-Z<>]\+[a-zA-Z]*>>" -- 'src/*' | myprint "DoubleSlash"
 # Check, e.g.  <<else $foo==4
@@ -59,13 +60,13 @@ $GREP "<<else >\?[^>]" -- 'src/*' | myprint "ShouldBeElseIf"
 # Check, e.g., =to
 $GREP -P "=to(?!String)"  -- 'src/*' | myprint "EqualAndTo"
 # Check doing  $slaves.foo instead of $slaves[i].foo
-
+$GREP -e "[$]slaves[.]"  --and --not -e '[$]slaves[.]\(length\|random\|map\|filter\|deleteAt\|push\|find\|forEach\)' -- 'src/*' | myprint "MissingSlavesIndex"
 # Try to check for accidentally mixing slaves[] and activeSlave.  This can have a lot of false matches, but has caught a lot of bugs so it's worth the pain
-
+$GREP -e "activeSlave[.]" --and -e "slaves\[..\?\][.]" --and --not -e '[.]ID' --and --not -e 'slaves\[..\?\][.]\(slaveName\|slaveSurname\|actualAge\|relation\|assignment\|age\|devotion\|trust\|vagina\|mother\|father\)' -- 'src/*' | myprint "MaybeAccidentalMixingOfSlavesAndActiveSlave"
 # Check, e.g.  <<set foo == 4>>
 $GREP "<<set[^{>=]*==" -- 'src/*' | myprint "DoubleEqualsInSet"
 # Check for, e.g   <<if slaves[foo]>>
-$GREP "<<\([^>]\|[^>]>[^>]\)*[^$]ourStore.fluffies\[" -- 'src/*' | myprint "MissingDollar"
+$GREP "<<\([^>]\|[^>]>[^>]\)*[^$]slaves\[" -- 'src/*' | myprint "MissingDollar"
 # Check for missing $ or _ in variable name:
 $GREP -e "<<[a-zA-Z]\([^>\"]\|[^>]>[^>]\|\"[^\"]*\"\)* [a-zA-Z]\+ * =" -- src/*.tw | myprint "MissingDollar2"
 # Check for missing command, e.g.  <<foo =
@@ -83,7 +84,12 @@ $GREP -i -E "\Wan (b|c|d|f|g|j|k|l|m|n|p|q|r|s|t|v|w|x|y|z)\w." -- src/*.tw | gr
 $GREP -i "\w$\w" -- src/*.tw | myprint "VarSignMidWord"
 
 # Check that we do not have any variables that we use only once.   e.g.     $onlyUsedOnce
-
+# Ignore  *Careers, *Names, *Nationalities, *Surnames
+(
+cd src/
+cat $(find . -name "*.tw" ) | tr -c '$a-zA-Z' '\n' | sed -n '/^[$]/p' | grep -vE "(Nationalities|Surnames|Names|Careers)" | sort | uniq -u | sed 's/^[$]/-e[$]/' | sed 's/$/\\\\W/' | xargs -r git grep -n --color | myprint "OnlyUsedOnce"
+cat $(find . -name "*.tw" ) | tr -c '.$a-zA-Z[]_' '\n' | sed 's/SugarCube\.State\.variables\./$/g' | sed -n -e 's/^[$]\(activeSlave\|\(slaves\|tanks\)\[[^]]*\]*\)[.]\([a-zA-Z]*\).*$/[.]\3/p' | sort | uniq -u |sed 's/^\(.*\)$/-e\1\\\\\b/'  | xargs -r git grep -n --color | myprint "SlaveAttributeUsedOnce"
+)
 
 # Check that all the tags are properly opened and closed
 git ls-files "src/*.tw" | xargs -d '\n' ./devTools/check.py
