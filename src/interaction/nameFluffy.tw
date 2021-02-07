@@ -20,30 +20,56 @@
 <span id="fluffy-name">
 	<<FluffyDesc>>
 </span>
-
-<br>What do you want to name this fluffy? 
-
-<div id="name-form">
-	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Name Fluffy">>
-	<<button "Rename">>
-		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
-		<<replace "#fluffy-name">><<FluffyDesc>><</replace>>
-<</button>>
-/* Form for error message to display*/
-<span id="form-error"></span>
-</div>
-
-
-
-<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-<br>
+<hr>
 
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
 <<if $debugMode == true>>
 	[[Enter the Gene Lab|Gene Lab]]
+	<hr>
 <</if>>
+
+<div id="name-form">
+	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Name Fluffy">>
+	<<button "Rename">>
+		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<replace "#fluffy-name">><<FluffyDesc>><</replace>>
+<</button>>
+/* Form for error message to display*/
+<span id="form-error"></span>
+</div>
+<div id="breed-form">
+
+<<run console.log("Details test 0: $activeFluffy.specialFriend  = " + $activeFluffy.specialFriend + " | $activeFluffy.name = " + $activeFluffy.name + " | ")>>
+
+<<capture _nSF>> 
+Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][$nextButton = "Back", $nextLink = "Fluffy List", $breedMare = -1, $breedStal = -1]]<<else>><<set _nSF = $globalFluffies[$activeFluffy.specialFriend]>>[[$globalFluffies[$activeFluffy.specialFriend].name|Name Fluffy][$activeFluffy = _nSF]].
+<<button "Break Up">>
+	/* Clear both special friends flag, ending breeding*/
+	<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+	<br>@@.cyan;HUHUHU WORST SADIES.@@
+		
+	<<set _sf = $globalFluffies[$activeFluffy.specialFriend]>>
+	<<set $activeFluffy.specialFriend = -1>>
+	<<set _sf.specialFriend = -1>>
+		
+	<<set $globalFluffies[_sf.ID] = _sf>>
+	<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		
+	<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>
+	<<replace "#breed-message">><br><<print _sf.name>> and $activeFluffy.name are no longer special friends.<br>@@.cyan;HUHUHU WORST SADIES.@@<</replace>>
+	<</button>>
+<</if>>
+<</capture>>
+</div>
+/* Form for error message to display*/
+<span id="breed-message"></span>
+
+
+
+
 
 
 /* Sidebar link for mobile users */

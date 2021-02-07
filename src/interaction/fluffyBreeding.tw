@@ -36,45 +36,53 @@
 <<if $breedStal < 0 || $breedMare < 0>>
 	<br>Possible mates for  $activeFluffy.name:
 	<hr>
-
-	<<if ($activeFluffy.ageWeeks + ($activeFluffy * 52)) < $activeFluffy.maturity>>
-		<br><br>@@.red;Foal $activeFluffy.ID - selected for breeding@@<br><br>
-	<<elseif $activeFluffy.gender == "male">>
+<<run console.log("Friend list test 0: Age " + ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)))>>
+	<<if $activeFluffy.gender == "male">>
 		<<set $breedStal = $activeFluffy.ID>>
 	<<elseif $activeFluffy.gender == "female">>
 		<<set $breedMare = $activeFluffy.ID>>
 	<<else>>
 		<br><br>@@.red;Invalid Gender found $activeFluffy.ID - " <<print $activeFluffy.gender>> "@@<br><br>
 	<</if>>
-<<capture _bf>>
-	<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
-		<<set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-		
-<<run console.log("Friend list test 1: " + _listFluff.name + " | " + _listFluff.onDisplay + " | " + _listFluff.sold)>>
-		<<if _listFluff.onDisplay>>
-			<<continue>>
-		<<elseif _listFluff.sold>>
-			<<continue>>
-		<<elseif _listFluff.dead>>
-			<<continue>>
-		<<elseif _listFluff.gender != $activeFluffy.gender && (_listFluff.ageWeeks + (_listFluff.age * 52)) >= _listFluff.maturity>>
-			@@.green;_listFluff.name@@ <<shortDesc _listFluff>>
-			<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding]]>><<if _listFluff.gender == "male">><<set $breedStal = _bf>><<else>><<set $breedMare = _bf>><</if>><</link>>			
-			<hr>
-		<</if>>
-	<</for>>
-<</capture>>
+	
+	<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)) < $activeFluffy.maturity>>
+		<br><br>@@.red;$activeFluffy.name is too young for breeding@@<br><br>
+	<<else>>
+		<<capture _listFluff>>
+			<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
+				<<set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
+			
+	<<run console.log("Friend list test 1: " + _listFluff.name + " | " + _listFluff.onDisplay + " | " + _listFluff.sold)>>
+				<<if _listFluff.onDisplay>>
+					<<continue>>
+				<<elseif _listFluff.sold>>
+					<<continue>>
+				<<elseif _listFluff.dead>>
+					<<continue>>
+				<<elseif (_listFluff.ageWeeks + (_listFluff.age * 52)) < _listFluff.maturity>>
+					<<continue>>
+				<<elseif _listFluff.gender != $activeFluffy.gender && (_listFluff.ageWeeks + (_listFluff.age * 52)) >= _listFluff.maturity>>
+	<<run console.log("Friend list test 1.1: " + _listFluff.ID + " | " + (_listFluff.ageWeeks + (_listFluff.age * 52)))>>
+					@@.green;_listFluff.name@@ <<shortDesc _listFluff>>
+					<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding][$activeFluffy = _listFluff]]>><<if _listFluff.gender == "male">><<set $breedStal = _listFluff.ID>><<else>><<set $breedMare = _listFluff.ID>><</if>><</link>>			
+					<hr>
+				<</if>>
+			<</for>>
+		<</capture>>
+	<</if>>
 <<else>>
-<br><<print $globalFluffies[$ourStore.fluffies[$breedStal]].name>> and <<print $globalFluffies[$ourStore.fluffies[$breedMare]].name>> are now special friends.
-<br>
-<br> SPECIAL HUGS NOW
-<br>
+	<br><<print $globalFluffies[$breedStal].name>> and <<print $globalFluffies[$breedMare].name>> are now special friends.
+	<br>
+	<br> SPECIAL HUGS NOW
+	<br>
+	<<run console.log("Friend list test 2: $breedMare = " + $breedMare + " | $breedStal = " + $breedStal + " | ")>>
+	<<set $globalFluffies[$breedStal].specialFriend = $breedMare>>
+	<<set $globalFluffies[$breedMare].specialFriend = $breedStal>>
+	
+	<<set $globalFluffies[$breedStal] = $globalFluffies[$breedStal]>>
+	<<set $globalFluffies[$breedMare] = $globalFluffies[$breedMare]>>
+	<<set $breedStal = -1, $breedMare = -1>>
+<</if>>
+
 /* Sidebar link for mobile users */
 <<SidebarButton>>
-<<run console.log("Friend list test 2: $breedMare = " + $breedMare + " | $breedStal = " + $breedStal + " | ")>>
-<<set $globalFluffies[$ourStore.fluffies[$breedStal]].specialFriend = $breedMare>>
-<<set $globalFluffies[$ourStore.fluffies[$breedMare]].specialFriend = $breedStal>>
-
-<<set $globalFluffies[$ourStore.fluffies[$breedStal]] = $globalFluffies[$ourStore.fluffies[$breedStal]]>>
-<<set $globalFluffies[$ourStore.fluffies[$breedMare]] = $globalFluffies[$ourStore.fluffies[$breedMare]]>>
-<</if>>

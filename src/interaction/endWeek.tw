@@ -45,7 +45,37 @@
 /* moving the count updates to here, to prevent double loops */
 <<set $ourStore.stallions = 0>>
 <<set $ourStore.mares = 0>>
-<<set $ourStore.foals = 0>> 
+<<set $ourStore.foals = 0>>
+
+
+/* ***
+ *	Update counts for the sidebar
+ *** */
+<<for _ef = 0; _ef < $ourStore.fluffies.length; _ef++>>
+	<<set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]>>
+
+	/* Age up a week. */
+	<<set _thisFluffy.ageWeeks++>>
+
+<<run console.log("Count test 0: age (weeks) =  " + _thisFluffy.ageWeeks + " | age (years) = " + _thisFluffy.age + " | gender =  " + _thisFluffy.gender)>>
+
+	/* < 1 year old */
+	<<if Number(_thisFluffy.age) == 0>>
+		<<if Number(_thisFluffy.ageWeeks) <= _thisFluffy.maturity>>
+			<<set $ourStore.foals++>>
+			<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
+			<<continue>>
+		<</if>>
+	<</if>>
+
+	<<if _thisFluffy.gender == "male">>
+		<<set $ourStore.stallions++>>
+		<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
+	<<else>>
+		<<set $ourStore.mares++>>
+		<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
+	<</if>>
+<</for>> 
 
 <<run console.log("Breeding test 0: " + $ourStore.fluffies)>>
 
@@ -53,33 +83,18 @@
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
  * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
  *
- *** */
+ *** */ 
 <<for _ef = 0; _ef < $ourStore.fluffies.length; _ef++>>
 	<<set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]>>
 		
 <<run console.log("Breeding test 0.1: " + _thisFluffy.name + " | " + _thisFluffy.gender)>>
 
-	/* remove these from the list */
-	/*
-	<<if _thisFluffy.sold == true>>
-		<<run $ourStore.fluffies.delete(_ef)>>
-		<<continue>>
-	<</if>>
-	
-	<<if _thisFluffy.dead == true>>
-		<<run $ourStore.fluffies.delete(_ef)>>
-		<<continue>>
-	<</if>>
-*/
 	/* some logic checking */
 	<<if _thisFluffy.nursing < 0>>
 		<<set _thisFluffy.nursing = 0>>
 		<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
 	<</if>>
-	
-	/* Age up a week. */
-	<<set _thisFluffy.ageWeeks++>>
-	
+
 	/* turn 52 weeks into a year */
 	<<if Number(_thisFluffy.ageWeeks) > 52>>
 		<<set _thisFluffy.ageWeeks = 0>>
@@ -108,8 +123,14 @@
 			<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
 		<</if>>
 <<run console.log("dead test 1 " + $ourStore.fluffies)>>		
-		<<run $ourStore.fluffies.delete(_ef)>>
+		<<run $ourStore.fluffies.delete(_thisFluffy.ID)>>
 <<run console.log("dead test 2 " + $ourStore.fluffies)>>
+
+		<<if _thisFluffy.gender == "male">>
+			<<set $ourStore.stallions-->>
+		<<else>>
+			<<set $ourStore.mares-->>
+		<</if>>
 		<<continue>>
 	<</if>>
 
@@ -149,10 +170,19 @@
 			<</if>>
 <<run console.log("Sell Test 1 " + $ourStore.fluffies.length)>>			
 			<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
-			<<run $ourStore.fluffies.delete(_ef)>>
+			<<run $ourStore.fluffies.delete(_thisFluffy.ID)>>
 <<run console.log("Sell Test 2 " + $ourStore.fluffies.length)>>
 <<run console.log("Sell Test 3 " + $ourStore.fluffies)>>
 <<run console.log("Sell Test 4 " + $globalFluffies[0].name + " | " + $globalFluffies[1].name + " | "+ $globalFluffies[2].name)>>
+
+
+			<<if Number(_thisFluffy.age) == 0 && Number(_thisFluffy.ageWeeks) <= _thisFluffy.maturity>>
+				<<set $ourStore.foals-->>
+			<<elseif _thisFluffy.gender == "male">>
+				<<set $ourStore.stallions-->>
+			<<else>>
+				<<set $ourStore.mares-->>
+			<</if>>
 			<<continue>>
 		<</if>>
 	<</if>>
@@ -163,12 +193,6 @@
 	 *	Grow foals.
 	 *** */
 	 <<if _thisFluffy.age == 0 && Number(_thisFluffy.ageWeeks) <= 44>>
-	 	/* ***
-	 	*	Update counts for the sidebar
-	 	*** */
-	 	<<set $ourStore.foals++>>
-<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
-	 	
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
 	 	<<set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)>>
@@ -179,26 +203,15 @@
 	 	
 	 	<<set _lMultiBase = 0.22>>
 	 	<<set _lMultiAdd = 0.0177>>
-	 	
-	 	
 
-<<run console.log("Foal growth Test 0: age " + _thisFluffy.ageWeeks)>>	 	
-<<run console.log("Foal growth Test 0: TestW = " + _newW)>>
-<<run console.log("Foal growth Test 0: TestL = " + Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))>>
-<<run console.log("Foal growth Test 0: TestH = " + Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))>>
-
-	 		<<set _thisFluffy.weight = Number(_newW).toFixed(3)>>
-			<<set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
-			<<set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
-
-<<run console.log("Foal growth Test 0: weight = " + _thisFluffy.weight)>>
-<<run console.log("Foal growth Test 0: height = " + _thisFluffy.height)>>
-<<run console.log("Foal growth Test 0: length = " + _thisFluffy.length)>>
+	 	<<set _thisFluffy.weight = Number(_newW).toFixed(3)>>
+		<<set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
+		<<set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
 
 
 		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.2 && _thisFluffy.weaned == false>> 	
 	 		<<set $globalFluffies[_thisFluffy.mother].nursing-->>
-<<run console.log("Foal nursing test 2: " + $globalFluffies[_thisFluffy.mother].nursing)>>
+
 			<br><<print _thisFluffy.name>> is ready for solid food.
 			<<set _thisFluffy.weaned = true>>
 			
@@ -209,17 +222,6 @@
 	 		<<set _thisFluffy = _thisFluffy>>
 	 		<<set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]>>
 	 	<</if>>
-<<run console.log("Foal nursing test 3: " + (_thisFluffy.weight / _thisFluffy.maxWeight))>>
-
-	/* ***
-	 *	Update counts for the sidebar
-	 *** */
-	<<elseif _thisFluffy.gender == "male">>
-		<<set $ourStore.stallions++>>
-<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
-	<<else>>
-		<<set $ourStore.mares++>>
-<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
 	<</if>>
 
 
@@ -272,8 +274,7 @@
 				<br>Foal#<<print _f+1>> <<FluffyDesc>>
 				<hr>
 
-				/* This will get updated before the end week process compeltes, so start at -1 */
-				<<set $activeFluffy.ageWeeks = -1>>
+				<<set $activeFluffy.ageWeeks = 0>>
 				<<set $activeFluffy.ID = $globalFluffies.length>>
 				<<set $mom.children.push($activeFluffy.ID)>>
 				<<set $dad.children.push($activeFluffy.ID)>>

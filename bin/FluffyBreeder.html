@@ -3833,7 +3833,37 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 /* moving the count updates to here, to prevent double loops */
 &lt;&lt;set $ourStore.stallions = 0&gt;&gt;
 &lt;&lt;set $ourStore.mares = 0&gt;&gt;
-&lt;&lt;set $ourStore.foals = 0&gt;&gt; 
+&lt;&lt;set $ourStore.foals = 0&gt;&gt;
+
+
+/* ***
+ *	Update counts for the sidebar
+ *** */
+&lt;&lt;for _ef = 0; _ef &lt; $ourStore.fluffies.length; _ef++&gt;&gt;
+	&lt;&lt;set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]&gt;&gt;
+
+	/* Age up a week. */
+	&lt;&lt;set _thisFluffy.ageWeeks++&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Count test 0: age (weeks) =  &quot; + _thisFluffy.ageWeeks + &quot; | age (years) = &quot; + _thisFluffy.age + &quot; | gender =  &quot; + _thisFluffy.gender)&gt;&gt;
+
+	/* &lt; 1 year old */
+	&lt;&lt;if Number(_thisFluffy.age) == 0&gt;&gt;
+		&lt;&lt;if Number(_thisFluffy.ageWeeks) &lt;= _thisFluffy.maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals++&gt;&gt;
+			&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if _thisFluffy.gender == &quot;male&quot;&gt;&gt;
+		&lt;&lt;set $ourStore.stallions++&gt;&gt;
+		&lt;&lt;run console.log(&quot;Count test 1: Stallions =  &quot; + $ourStore.stallions + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $ourStore.mares++&gt;&gt;
+		&lt;&lt;run console.log(&quot;Count test 1: Mares =  &quot; + $ourStore.mares + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/for&gt;&gt; 
 
 &lt;&lt;run console.log(&quot;Breeding test 0: &quot; + $ourStore.fluffies)&gt;&gt;
 
@@ -3841,33 +3871,18 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
  * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
  *
- *** */
+ *** */ 
 &lt;&lt;for _ef = 0; _ef &lt; $ourStore.fluffies.length; _ef++&gt;&gt;
 	&lt;&lt;set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]&gt;&gt;
 		
 &lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + _thisFluffy.name + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
 
-	/* remove these from the list */
-	/*
-	&lt;&lt;if _thisFluffy.sold == true&gt;&gt;
-		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	&lt;&lt;if _thisFluffy.dead == true&gt;&gt;
-		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-*/
 	/* some logic checking */
 	&lt;&lt;if _thisFluffy.nursing &lt; 0&gt;&gt;
 		&lt;&lt;set _thisFluffy.nursing = 0&gt;&gt;
 		&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
-	/* Age up a week. */
-	&lt;&lt;set _thisFluffy.ageWeeks++&gt;&gt;
-	
+
 	/* turn 52 weeks into a year */
 	&lt;&lt;if Number(_thisFluffy.ageWeeks) &gt; 52&gt;&gt;
 		&lt;&lt;set _thisFluffy.ageWeeks = 0&gt;&gt;
@@ -3896,8 +3911,14 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;dead test 1 &quot; + $ourStore.fluffies)&gt;&gt;		
-		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_thisFluffy.ID)&gt;&gt;
 &lt;&lt;run console.log(&quot;dead test 2 &quot; + $ourStore.fluffies)&gt;&gt;
+
+		&lt;&lt;if _thisFluffy.gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions--&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
@@ -3937,10 +3958,19 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Sell Test 1 &quot; + $ourStore.fluffies.length)&gt;&gt;			
 			&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
-			&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.delete(_thisFluffy.ID)&gt;&gt;
 &lt;&lt;run console.log(&quot;Sell Test 2 &quot; + $ourStore.fluffies.length)&gt;&gt;
 &lt;&lt;run console.log(&quot;Sell Test 3 &quot; + $ourStore.fluffies)&gt;&gt;
 &lt;&lt;run console.log(&quot;Sell Test 4 &quot; + $globalFluffies[0].name + &quot; | &quot; + $globalFluffies[1].name + &quot; | &quot;+ $globalFluffies[2].name)&gt;&gt;
+
+
+			&lt;&lt;if Number(_thisFluffy.age) == 0 &amp;&amp; Number(_thisFluffy.ageWeeks) &lt;= _thisFluffy.maturity&gt;&gt;
+				&lt;&lt;set $ourStore.foals--&gt;&gt;
+			&lt;&lt;elseif _thisFluffy.gender == &quot;male&quot;&gt;&gt;
+				&lt;&lt;set $ourStore.stallions--&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $ourStore.mares--&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -3951,12 +3981,6 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 *	Grow foals.
 	 *** */
 	 &lt;&lt;if _thisFluffy.age == 0 &amp;&amp; Number(_thisFluffy.ageWeeks) &lt;= 44&gt;&gt;
-	 	/* ***
-	 	*	Update counts for the sidebar
-	 	*** */
-	 	&lt;&lt;set $ourStore.foals++&gt;&gt;
-&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
-	 	
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
 	 	&lt;&lt;set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
@@ -3967,26 +3991,15 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 	
 	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
 	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
-	 	
-	 	
 
-&lt;&lt;run console.log(&quot;Foal growth Test 0: age &quot; + _thisFluffy.ageWeeks)&gt;&gt;	 	
-&lt;&lt;run console.log(&quot;Foal growth Test 0: TestW = &quot; + _newW)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: TestL = &quot; + Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: TestH = &quot; + Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))))&gt;&gt;
-
-	 		&lt;&lt;set _thisFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
-			&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-			&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Foal growth Test 0: weight = &quot; + _thisFluffy.weight)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: height = &quot; + _thisFluffy.height)&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal growth Test 0: length = &quot; + _thisFluffy.length)&gt;&gt;
+	 	&lt;&lt;set _thisFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+		&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+		&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 
 
 		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.2 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother].nursing--&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal nursing test 2: &quot; + $globalFluffies[_thisFluffy.mother].nursing)&gt;&gt;
+
 			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; is ready for solid food.
 			&lt;&lt;set _thisFluffy.weaned = true&gt;&gt;
 			
@@ -3997,17 +4010,6 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	 		&lt;&lt;set _thisFluffy = _thisFluffy&gt;&gt;
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Foal nursing test 3: &quot; + (_thisFluffy.weight / _thisFluffy.maxWeight))&gt;&gt;
-
-	/* ***
-	 *	Update counts for the sidebar
-	 *** */
-	&lt;&lt;elseif _thisFluffy.gender == &quot;male&quot;&gt;&gt;
-		&lt;&lt;set $ourStore.stallions++&gt;&gt;
-&lt;&lt;run console.log(&quot;Count test 1: Stallions =  &quot; + $ourStore.stallions + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set $ourStore.mares++&gt;&gt;
-&lt;&lt;run console.log(&quot;Count test 1: Mares =  &quot; + $ourStore.mares + &quot; | &quot; + _thisFluffy.ID + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 
@@ -4060,8 +4062,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 				&lt;br&gt;Foal#&lt;&lt;print _f+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
 				&lt;hr&gt;
 
-				/* This will get updated before the end week process compeltes, so start at -1 */
-				&lt;&lt;set $activeFluffy.ageWeeks = -1&gt;&gt;
+				&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
 				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 				&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
 				&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
@@ -4129,48 +4130,56 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;if $breedStal &lt; 0 || $breedMare &lt; 0&gt;&gt;
 	&lt;br&gt;Possible mates for  $activeFluffy.name:
 	&lt;hr&gt;
-
-	&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy * 52)) &lt; $activeFluffy.maturity&gt;&gt;
-		&lt;br&gt;&lt;br&gt;@@.red;Foal $activeFluffy.ID - selected for breeding@@&lt;br&gt;&lt;br&gt;
-	&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
+&lt;&lt;run console.log(&quot;Friend list test 0: Age &quot; + ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)))&gt;&gt;
+	&lt;&lt;if $activeFluffy.gender == &quot;male&quot;&gt;&gt;
 		&lt;&lt;set $breedStal = $activeFluffy.ID&gt;&gt;
 	&lt;&lt;elseif $activeFluffy.gender == &quot;female&quot;&gt;&gt;
 		&lt;&lt;set $breedMare = $activeFluffy.ID&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;&lt;br&gt;@@.red;Invalid Gender found $activeFluffy.ID - &quot; &lt;&lt;print $activeFluffy.gender&gt;&gt; &quot;@@&lt;br&gt;&lt;br&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;capture _bf&gt;&gt;
-	&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
-		&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
-		
-&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + _listFluff.name + &quot; | &quot; + _listFluff.onDisplay + &quot; | &quot; + _listFluff.sold)&gt;&gt;
-		&lt;&lt;if _listFluff.onDisplay&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif _listFluff.sold&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif _listFluff.dead&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif _listFluff.gender != $activeFluffy.gender &amp;&amp; (_listFluff.ageWeeks + (_listFluff.age * 52)) &gt;= _listFluff.maturity&gt;&gt;
-			@@.green;_listFluff.name@@ &lt;&lt;shortDesc _listFluff&gt;&gt;
-			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding]]&gt;&gt;&lt;&lt;if _listFluff.gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _bf&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _bf&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
-			&lt;hr&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
-&lt;&lt;/capture&gt;&gt;
+	
+	&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)) &lt; $activeFluffy.maturity&gt;&gt;
+		&lt;br&gt;&lt;br&gt;@@.red;$activeFluffy.name is too young for breeding@@&lt;br&gt;&lt;br&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;capture _listFluff&gt;&gt;
+			&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
+				&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
+			
+	&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + _listFluff.name + &quot; | &quot; + _listFluff.onDisplay + &quot; | &quot; + _listFluff.sold)&gt;&gt;
+				&lt;&lt;if _listFluff.onDisplay&gt;&gt;
+					&lt;&lt;continue&gt;&gt;
+				&lt;&lt;elseif _listFluff.sold&gt;&gt;
+					&lt;&lt;continue&gt;&gt;
+				&lt;&lt;elseif _listFluff.dead&gt;&gt;
+					&lt;&lt;continue&gt;&gt;
+				&lt;&lt;elseif (_listFluff.ageWeeks + (_listFluff.age * 52)) &lt; _listFluff.maturity&gt;&gt;
+					&lt;&lt;continue&gt;&gt;
+				&lt;&lt;elseif _listFluff.gender != $activeFluffy.gender &amp;&amp; (_listFluff.ageWeeks + (_listFluff.age * 52)) &gt;= _listFluff.maturity&gt;&gt;
+	&lt;&lt;run console.log(&quot;Friend list test 1.1: &quot; + _listFluff.ID + &quot; | &quot; + (_listFluff.ageWeeks + (_listFluff.age * 52)))&gt;&gt;
+					@@.green;_listFluff.name@@ &lt;&lt;shortDesc _listFluff&gt;&gt;
+					&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding][$activeFluffy = _listFluff]]&gt;&gt;&lt;&lt;if _listFluff.gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _listFluff.ID&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _listFluff.ID&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
+					&lt;hr&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;/capture&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;else&gt;&gt;
-&lt;br&gt;&lt;&lt;print $globalFluffies[$ourStore.fluffies[$breedStal]].name&gt;&gt; and &lt;&lt;print $globalFluffies[$ourStore.fluffies[$breedMare]].name&gt;&gt; are now special friends.
-&lt;br&gt;
-&lt;br&gt; SPECIAL HUGS NOW
-&lt;br&gt;
-/* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;
-&lt;&lt;run console.log(&quot;Friend list test 2: $breedMare = &quot; + $breedMare + &quot; | $breedStal = &quot; + $breedStal + &quot; | &quot;)&gt;&gt;
-&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedStal]].specialFriend = $breedMare&gt;&gt;
-&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedMare]].specialFriend = $breedStal&gt;&gt;
+	&lt;br&gt;&lt;&lt;print $globalFluffies[$breedStal].name&gt;&gt; and &lt;&lt;print $globalFluffies[$breedMare].name&gt;&gt; are now special friends.
+	&lt;br&gt;
+	&lt;br&gt; SPECIAL HUGS NOW
+	&lt;br&gt;
+	&lt;&lt;run console.log(&quot;Friend list test 2: $breedMare = &quot; + $breedMare + &quot; | $breedStal = &quot; + $breedStal + &quot; | &quot;)&gt;&gt;
+	&lt;&lt;set $globalFluffies[$breedStal].specialFriend = $breedMare&gt;&gt;
+	&lt;&lt;set $globalFluffies[$breedMare].specialFriend = $breedStal&gt;&gt;
+	
+	&lt;&lt;set $globalFluffies[$breedStal] = $globalFluffies[$breedStal]&gt;&gt;
+	&lt;&lt;set $globalFluffies[$breedMare] = $globalFluffies[$breedMare]&gt;&gt;
+	&lt;&lt;set $breedStal = -1, $breedMare = -1&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
-&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedStal]] = $globalFluffies[$ourStore.fluffies[$breedStal]]&gt;&gt;
-&lt;&lt;set $globalFluffies[$ourStore.fluffies[$breedMare]] = $globalFluffies[$ourStore.fluffies[$breedMare]]&gt;&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Fluffy List" tags="nobr" position="475,225" size="100,100">/* **********
+/* Sidebar link for mobile users */
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Fluffy List" tags="nobr" position="475,225" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -4212,12 +4221,14 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;run console.log(&quot;List test 1: &quot; + _fluff.name + &quot; | &quot; + _fl)&gt;&gt;
 
 		[[_fluff.name|Name Fluffy][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
-		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | [interact with] | [set food] | [train]
-		| &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt; 
+		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
+		&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt; 
 		&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;
 		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/for&gt;&gt;
+
+
 
 &lt;&lt;/capture&gt;&gt;
 
@@ -4281,8 +4292,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		[[_listFluffy.name|Name Fluffy]] &lt;&lt;shortDesc _listFluffy&gt;&gt;
-		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Remove from Display|Fluffy Breeding]]&gt;&gt;
-			&lt;&lt;set _fluff.onDisplay = false&gt;&gt;
+		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Remove from Display|Fluffy List]]&gt;&gt;
+			&lt;&lt;set _listFluffy.onDisplay = false&gt;&gt;
 			&lt;&lt;set $globalFluffies[_listFluffy.ID] = _listFluffy&gt;&gt;
 		&lt;&lt;/link&gt;&gt;
 		&lt;hr&gt;
@@ -4987,30 +4998,56 @@ Inbreeding:
 &lt;span id=&quot;fluffy-name&quot;&gt;
 	&lt;&lt;FluffyDesc&gt;&gt;
 &lt;/span&gt;
-
-&lt;br&gt;What do you want to name this fluffy? 
-
-&lt;div id=&quot;name-form&quot;&gt;
-	&lt;br&gt;Name: &lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Name Fluffy&quot;&gt;&gt;
-	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
-		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
-&lt;/div&gt;
-
-
-
-&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-&lt;br&gt;
+&lt;hr&gt;
 
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
 &lt;&lt;if $debugMode == true&gt;&gt;
 	[[Enter the Gene Lab|Gene Lab]]
+	&lt;hr&gt;
 &lt;&lt;/if&gt;&gt;
+
+&lt;div id=&quot;name-form&quot;&gt;
+	&lt;br&gt;Name: &lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Name Fluffy&quot;&gt;&gt;
+	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div id=&quot;breed-form&quot;&gt;
+
+&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
+
+&lt;&lt;capture _nSF&gt;&gt; 
+Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back&quot;, $nextLink = &quot;Fluffy List&quot;, $breedMare = -1, $breedStal = -1]]&lt;&lt;else&gt;&gt;&lt;&lt;set _nSF = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;[[$globalFluffies[$activeFluffy.specialFriend].name|Name Fluffy][$activeFluffy = _nSF]].
+&lt;&lt;button &quot;Break Up&quot;&gt;&gt;
+	/* Clear both special friends flag, ending breeding*/
+	&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+	&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		
+	&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+	&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
+	&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
+		
+	&lt;&lt;set $globalFluffies[_sf.ID] = _sf&gt;&gt;
+	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		
+	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _sf.name&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;/capture&gt;&gt;
+&lt;/div&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
+
+
+
+
 
 
 /* Sidebar link for mobile users */
