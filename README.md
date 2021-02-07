@@ -4,6 +4,9 @@ https://github.com/eidalac/FluffyBreeder/releases/download/v00.00.24-prealpha/Fl
 # Design Document:
 https://docs.google.com/document/d/1LIVm4eylJ_1YTUdhYx_K6K-_H0sQ3r1WelZ_44poASs/edit?usp=sharing
 
+#Discord:
+https://discord.gg/jWVsxJA4R8
+
 # FluffyBreeder
 A text baseed fluffy breeding game
 

@@ -16,42 +16,89 @@
 <br>
 <br>
 <<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
-<<set _eMare = [], _eStal = []>>
 
-<<run console.log("List test 0: " + $ourStore.fluffies.length + " | " + $globalFluffies.length)>>
+/* Since we are going over the list anyway, we can make sure this is current.*/
+<<set $ourStore.stallions = 0>>
+<<set $ourStore.mares = 0>>
+<<set $ourStore.foals = 0>>
+
+/* Upate this after the list is counted */
+<span id="list-count"></span>
+<br>
+<span id="list-sort">Sort by: 
+<<switch $listType>>
+	<<case "Foals">>
+		//Foals only//
+	<<case "Mares">>
+		//Mares only//
+	<<case "Stallions">>
+		//Stallions only//
+	<<case "Display">>
+		//On Sale Fluffies only//
+	<<default>>
+		//All fluffies not on display//
+<</switch>>
+</span>
+<br>
+[[All|Fluffy List][$listType = "All"]] | 
+[[Foals|Fluffy List][$listType = "Foals"]] | 
+[[Mares|Fluffy List][$listType = "Mares"]] | 
+[[Stallions|Fluffy List][$listType = "Stallions"]] | 
+[[Display|Fluffy List][$listType = "Display"]] |
+
+<hr>
+
+
+
 
 <<capture _fl, _fluff>>
 
-<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
-	<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
-<<run console.log("List test 0.1: " + $ourStore.fluffies.length + " | " + $globalFluffies.length)>>
-	<<if _fluff.onDisplay == true && $listType != "Display">>
-<<run console.log("List test 0.2")>>
-		<<continue>>
-	<<elseif _fluff.sold == true>>
-<<run console.log("List test 0.3")>>
-		<<continue>>
-	<<elseif _fluff.dead == true>>
-<<run console.log("List test 0.4")>>
-		<<continue>>
-	<<elseif _fluff.onDisplay == false && $listType == "Display">>
-<<run console.log("List test 0.5")>>
-		<<continue>>
-	<<else>>
+	<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
+		<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
 
-<<run console.log("List test 1: " + _fluff.name + " | " + _fl)>>
+		/* < 1 year old */
+		<<if Number(_fluff.age) == 0 &&  Number(_fluff.ageWeeks) <= _fluff.maturity>>
+			<<set $ourStore.foals++>>
+			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+				<<continue>>
+			<</if>>
+		<<elseif _fluff.gender == "male">>
+			<<set $ourStore.stallions++>>
+			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+				<<continue>>
+			<</if>>
+		<<else>>
+			<<set $ourStore.mares++>>
 
-		[[_fluff.name|Name Fluffy][$activeFluffy = _fluff]] <<shortDesc _fluff>>
-		<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
-		<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]]<<else>>[[Take off Display|Fluffy List][_fluff.onDisplay = false]]<</if>> 
-		<<set $globalFluffies[_fluff.ID] = _fluff>>
-		<hr>
-	<</if>>
-<</for>>
+			<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+				<<continue>>
+			<</if>>
+		<</if>>
 
-
-
+		<<if _fluff.onDisplay == true && $listType != "Display">>
+			<<continue>>
+		<<elseif _fluff.onDisplay == false && $listType == "Display">>
+			<<continue>>
+		<<else>>
+	
+			[[_fluff.name|Name Fluffy][$activeFluffy = _fluff]] <<shortDesc _fluff>>
+			<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
+			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]]<<else>>[[Take off Display|Fluffy List][_fluff.onDisplay = false]]<</if>> 
+			<<set $globalFluffies[_fluff.ID] = _fluff>>
+			<hr>
+		<</if>>
+	<</for>>
+	
 <</capture>>
+
+/* Update the sidebar */
+<<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
+
+/* Update the page count */
+/*<<replace "#list-count">><</replace>>*/
+
+/* Update the page count */
+<<timed 100ms>><<replace "#list-count">><br>The store has $ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@ (<<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total)<</replace>><</timed>>
 
 /* Sidebar link for mobile users */
 <<SidebarButton>>

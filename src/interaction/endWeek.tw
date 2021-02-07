@@ -268,7 +268,7 @@
 			<br>
 			
 			<<set $dad = $globalFluffies[$mom.pregnantBy]>>
-
+<<run console.log("Breeding test 5: " + $globalFluffies.length)>>
 			<<for _fo = 0; _fo < $mom.litter; _fo++>>
 				<<breedFluffies $mom $dad>>
 				<br>Foal#<<print _f+1>> <<FluffyDesc>>
@@ -280,8 +280,13 @@
 				<<set $dad.children.push($activeFluffy.ID)>>
 				<<run $ourStore.fluffies.push($activeFluffy.ID)>>
 				<<run $globalFluffies.push($activeFluffy)>>
-			<</for>>
+				
+				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+				
+				<<set $ourStore.foals++>>
 
+			<</for>>
+<<run console.log("Breeding test 6: " + $globalFluffies.length)>>
 			<<set $mom.nursing = $mom.litter>>
 			<<set $mom.litter = 0>>
 			<<set $mom.dueDate = -1>>
