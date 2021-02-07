@@ -3177,6 +3177,7 @@ a text-based fluffy management game
 
 &lt;&lt;set $cheater = 0&gt;&gt;
 &lt;&lt;set $cash = 1000&gt;&gt;
+&lt;&lt;set $actions = 5&gt;&gt;
 &lt;&lt;set $normalizedEvents = 0&gt;&gt;
 &lt;&lt;set $autosave = 1&gt;&gt;
 &lt;&lt;set $seeAge = 1&gt;&gt;
@@ -3403,7 +3404,7 @@ profitsTotal: 0
 		&lt;&lt;/switch&gt;&gt;
 		&lt;br&gt;It would cost @@.green;¤_price.@@
 		&lt;hr&gt;[[Keep Looking|Buy Fluffies]]  | 
-		&lt;&lt;if Number($cash) &gt;= Number(_price)&gt;&gt;
+		&lt;&lt;if Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
 			&lt;&lt;link &quot;Add to the cart&quot; &quot;Buy Fluffies&quot;&gt;&gt;
 				&lt;&lt;set $cash-= _price&gt;&gt;
 				
@@ -4090,6 +4091,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
  % Advance the date
 %/
 &lt;&lt;set $week++&gt;&gt;
+&lt;&lt;set $actions = 5&gt;&gt;
 
 
 &lt;br&gt;//[[Back to Week Start|Week Start]]//
@@ -5046,7 +5048,40 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
 
 
-
+&lt;br&gt;
+&lt;div id=&quot;play-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Play with &quot; + $activeFluffy.name&gt;&gt;
+&lt;&lt;button _desc&gt;&gt;
+	&lt;&lt;if $actions &gt; 0&gt;&gt;
+		&lt;&lt;set $stress -= 10&gt;&gt;
+		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;play-msg&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;br&gt;
+&lt;div id=&quot;train-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Train &quot; + $activeFluffy.name&gt;&gt; 
+&lt;&lt;button _desc&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;train-msg&quot;&gt;&lt;/span&gt;
+@@.orange;Not implemented.@@
+&lt;/div&gt;
+&lt;br&gt;
+&lt;div id=&quot;abuse-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Abuse &quot; + $activeFluffy.name&gt;&gt; 
+&lt;&lt;button _desc&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;abuse-msg&quot;&gt;&lt;/span&gt;
+@@.orange;Not implemented.@@
+&lt;/div&gt;
 
 
 
@@ -5535,6 +5570,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;/span&gt;
 	&lt;br&gt;
 	&lt;br&gt;Upkeep | ¤$costs
+	&lt;br&gt;Stress | $stress
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
