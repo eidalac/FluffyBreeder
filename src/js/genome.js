@@ -1425,20 +1425,21 @@ Genome.prototype.getGeneColor = function(index) {
 	Results += geneFive[0];
 	Results += geneFive[1];
 	
-	// get the intensity from gene W
-	switch (Results) {
-	case "WW":
-		//Results = "bright ";
-		//break;
-	case "ww":
-		//Results = "dark ";
-		//break;
-	default:
-		Results = "";
-		break;
+	// check for Melanism/Albinism
+	if (geneString.substring(0,2) == "BB" && Results == "WW") {
+		return "Black";
 	}
-	// now the bastard monster switch
 	
+	if (geneString.substring(6,8) == "oo" && Results == "ww") {
+		// eyes
+		if (index == 27)
+			return "Pink";
+		else
+			return "White";
+	}
+	
+
+	// now the bastard monster switch
 	switch (geneString) {
 	case "bByyrRoO":
 		geneString = "Gold";
@@ -1489,7 +1490,7 @@ Genome.prototype.getGeneColor = function(index) {
 		geneString = "Purple";
 		break;
 	case "bBYYRRoO":
-		geneString = "Magenta";
+		geneString = "PaleVioletRed";
 		break;
 	case "bBYYRROO":
 		geneString = "Fuchsia";
@@ -1687,7 +1688,7 @@ Genome.prototype.getGeneColor = function(index) {
 		return "INVALID COLOR";
 	}
 	
-	return Results + " " + geneString; 
+	return geneString; 
 };
 
 /**
