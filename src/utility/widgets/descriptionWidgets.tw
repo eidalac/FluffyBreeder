@@ -35,7 +35,20 @@
  *	Called as <<inlineColor $color>>
  *	Returns the string colored as an HTML color.
  *** */
-<<widget "inlineColor">><<- "@@color:"+$args[0]+";"+$args[0]>><</widget>>
+<<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@border:4px solid "+$args[0]+";"+$args[0]>><</if>><</widget>>
+
+
+
+<<widget statValue>>
+	<<set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning>>
+<<run console.log("Stat Test 1: " + _avg)>>
+	<<set _avg = Number(Number(_avg) / 5).toFixed(2)>>
+<<run console.log("Stat Test 2: " + _avg)>>
+	<<set _avg++>>
+<<run console.log("Stat Test 3: " + _avg)>>
+	<<set $activeFluffy.statBonus = Number(_avg / 4).toFixed(2)>>
+	
+<</widget>>
 
 /* ***
  *	Called as <<FluffyDesc>>
@@ -44,12 +57,40 @@
  *	Displays a detailed decription of the fluffy.
  *** */
 <<widget "FluffyDesc">>
+
+	<<colorValue>>
+	<<statValue>>
+	
 	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
 	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat, <<inlineColor $activeFluffy.mColor>> mane and <<inlineColor $activeFluffy.eColor>> eyes. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
 	<br>Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
+	<br> Color Bonus: $activeFluffy.colorBonus. 
+	<br> Stat Bonus: $activeFluffy.statBonus.
+	
+	<<set _price = Number($activeFluffy.training)>>
+<<run console.log("Price test 1: " + _price)>>
+	<<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
+<<run console.log("Price test 2: " + _price)>>
+	<<switch $activeFluffy.breed>>
+		<<case "unicorn">>
+			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+		<<case "pegasus">>
+			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+		<<case "alicorn">>
+			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+		<<default>>
+			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+	<</switch>>
+	
+	<<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
+<<run console.log("Price test 5: " + _price)>>
+	<<set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)>>
+<<run console.log("Price test 6: " + _price)>>
+	<br>[Price: _price]
+	
 <</widget>>
 
 /* ***

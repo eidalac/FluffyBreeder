@@ -1426,11 +1426,11 @@ Genome.prototype.getGeneColor = function(index) {
 	Results += geneFive[1];
 	
 	// check for Melanism/Albinism
-	if (geneString.substring(0,2) == "BB" && Results == "WW") {
+	if (geneString == "BBYYRROO" && Results == "WW") {
 		return "Black";
 	}
 	
-	if (geneString.substring(6,8) == "oo" && Results == "ww") {
+	if (geneString == "bbyyrroo" && Results == "ww") {
 		// eyes
 		if (index == 27)
 			return "Pink";
@@ -1553,16 +1553,16 @@ Genome.prototype.getGeneColor = function(index) {
 		geneString = "Coral";
 		break;
 	case "BByYRRoo":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRRoO":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRROO":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRRoo":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bByYrROO":
 		geneString = "SpringGreen";

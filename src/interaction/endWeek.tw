@@ -23,24 +23,6 @@
 
 <br>Upkeep this week was $costs.
 
-/* ***
- *	Caculate stress
- *** */
-<<set _stressor = 1.00>>
-<<set $stressUp = 0>> 
-<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
-
-<<if _count < 10>>
-	<<set _stressor = 1.00>>
-<<else>>
-	<<set _stressor = 90 + _count >>
-	<<set _stressor = (_stressor/ 100)>>
-<</if>>
-
-<<set $stressUp = Math.round(_stressor * _count)>>
-<br>Stress this week was $stressUp.
-
-<<set $stress = $stress + $stressUp>>
 
 /* moving the count updates to here, to prevent double loops */
 <<set $ourStore.stallions = 0>>
@@ -79,6 +61,27 @@
 
 <<run console.log("Breeding test 0: " + $ourStore.fluffies)>>
 
+
+/* ***
+ *	Caculate stress
+ *** */
+<<set _stressor = 1.00>>
+<<set $stressUp = 0>> 
+<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
+
+<<if _count < 10>>
+	<<set _stressor = 1.00>>
+<<else>>
+	<<set _stressor = 90 + _count >>
+	<<set _stressor = (_stressor/ 100)>>
+<</if>>
+
+<<set $stressUp = Math.round(_stressor * _count)>>
+<br>Stress this week was $stressUp.
+
+<<set $stress = $stress + $stressUp>>
+
+
 /* ***
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
  * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
@@ -105,7 +108,7 @@
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	<<if Number(_thisFluffy.maxAge) < Number(_thisFluffy.age)>>
+	<<if Number(_thisFluffy.maxAge) <= Number(_thisFluffy.age)>>
 		<<if random(0, 1) == 1>>
 			<br><<print _thisFluffy.name>> does not wake up.  (_thisFluffy.age /  _thisFluffy.maxAge years old)
 			<br>
@@ -143,16 +146,26 @@
 		<<if random(0, 1) == 1>>
 			<<set _price = 0>>
 
+			<<set _price = Number(_thisFluffy.training)>>
+<<run console.log("Price test 1: " + _price)>>
+			<<set _price = Number(_price) + Number(Number(_thisFluffy.trust/10))>>
+<<run console.log("Price test 2: " + _price)>>
 			<<switch _thisFluffy.breed>>
 				<<case "unicorn">>
-					<<set _price = 2* Number($unicornPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
 				<<case "pegasus">>
-					<<set _price = 2 * Number($pegasusPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
 				<<case "alicorn">>
-					<<set _price = 2 * Number($alicornPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
 				<<default>>
-					<<set _price = 2 * Number($earthPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
 			<</switch>>
+			
+			<<set _price = Number(Number(_price) * Number(_thisFluffy.statBonus)).toFixed(2)>>
+		<<run console.log("Price test 5: " + _price)>>
+			<<set _price = Number(_price * _thisFluffy.colorBonus).toFixed(2)>>
+		<<run console.log("Price test 6: " + _price)>>
+
 
 			<br>_thisFluffy.name was sold for _price
 			<<set $cash += Number(_price)>>
@@ -307,7 +320,7 @@
  % Advance the date
 %/
 <<set $week++>>
-<<set $actions = 5>>
+<<set $actions = 10>>
 
 
 <br>//[[Back to Week Start|Week Start]]//

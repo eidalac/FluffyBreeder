@@ -1,0 +1,180 @@
+:: Color Config [widget nobr]
+
+/* **********
+ * colorConfig.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Data for color configuration/pricing
+ *
+ *********** */
+
+
+  
+  
+/* ***
+ *	Color Value
+ *	Call as <<colorValue>>
+ *
+ *	Caculates the color value of $activeFluffy
+ *** */
+<<widget "colorValue">>
+	<<set _coatTier = "">>
+	<<set _maneTier = "">>
+	<<set _eyeTier = "">>
+	
+	<<set _coatGroup = "">>
+	<<set _maneGroup = "">>
+	<<set _eyeGroup = "">>
+	
+<<run console.log("Color Test 0: " + $activeFluffy.cColor + " " + $activeFluffy.mColor + " " + $activeFluffy.eColor)>>
+	
+	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	<<for _i = 0; _i < $Colors.length; _i++>>
+<<run console.log("Color Test 0.1: " + $activeFluffy.cColor + " " + $Colors[_i].Name)>>
+		<<if $activeFluffy.cColor == $Colors[_i].Name>>
+			<<set _coatTier = $Colors[_i].Tier>>
+			<<set _coatGroup = $Colors[_i].Group>>
+		<</if>>
+		<<if $activeFluffy.mColor == $Colors[_i].Name>>
+			<<set _maneTier = $Colors[_i].Tier>>
+			<<set _maneGroup = $Colors[_i].Group>>
+		<</if>>
+		<<if $activeFluffy.eColor == $Colors[_i].Name>>
+			<<set _eyeTier = $Colors[_i].Tier>>
+			<<set _eyeGroup = $Colors[_i].Group>>
+		<</if>>
+	<</for>>
+<<run console.log("Color Test 1: " + _coatTier + " " + _maneTier + " " + _eyeTier)>>
+	/* No matches found, bad*/
+	<<if _coatTier == "" || _coatGroup == "">>
+		<br>@@.red;No color match found for coat: <<print $activeFluffy.ID>>.
+	<</if>>
+	<<if _maneTier == "" || _maneGroup == "">>
+		<br>@@.red;No color match found for mane: <<print $activeFluffy.ID>>.
+	<</if>>
+	<<if _eyeTier == "" || _eyeGroup == "">>
+		<br>@@.red;No color match found for eye: <<print $activeFluffy.ID>>.
+	<</if>>	
+
+	/* One point per tier for eyes, 2 for mane and 3 for coat. */
+	<<set _colorBonus = 0>>
+	<<set _colorBonus = Number(_eyeTier)>>
+	<<set _colorBonus += (2 * _maneTier)>>
+	<<set _colorBonus += (3 * _coatTier)>>
+	
+	/* Divide by 6 to get the multplier (1-6) */
+	<<set _colorBonus = Number(_colorBonus / 12).toFixed(2)>>
+<<run console.log("Color Test 2: " + _colorBonus)>>
+
+	/* ***
+	 *	Complimentary pairs:
+	 *		Blue - Orange
+	 *		Red - Green
+	 *		Yellow - Purple
+	 *** */
+  
+	<<set _pairBonus = 0>>
+	
+	/* Colors match */
+	<<if _coatGroup == _maneGroup>>
+		<<set _pairBonus = 0.75>>
+	
+	/* Complimentary pair */
+	<<elseif _coatGroup == "Blue" && _maneGroup == "Orange">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Orange" && _maneGroup == "Blue">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Red" && _maneGroup == "Green">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Green" && _maneGroup == "Red">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Yellow" && _maneGroup == "Purple">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Purple" && _maneGroup == "Yellow">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Brown" && _maneGroup == "Brown">>
+		<<set _pairBonus = 0>>
+	<</if>>
+<<run console.log("Color Test 3: " + _pairBonus)>>
+	<<set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)>>
+	
+	/* Trending to high, try cutting down by 1 point overall.*/
+	/*<<set $activeFluffy.colorBonus-->>*/
+<<run console.log("Color Test 4: " + $activeFluffy.colorBonus )>>
+<</widget>>
+
+
+/* ***
+ *	Limit Color
+ *	Call as <<limitValue [low,] high>>
+ *
+ *	Limits the color tier of a generated fluffy ($activeFluffy) to a value >= low, <= high.
+ *	Used to limit the colors you can get from different sources.
+ *** */
+<<widget "limitColor">>
+	<<if !$args.length>>
+		<<run console.log("Limit Color called with no arguments.")>>
+	<<elseif $args.length > 2>>
+		<<run console.log("Limit Color called with too many arguments.")>>
+	<</if>>
+	
+	/* Some logic/sanity checking: */ 
+	<<if $args.length == 1>>	
+		<<set _low = 1>>
+		<<set _high = $args[0]>>
+	<<else>>
+		<<set _low = $args[0]>>
+		<<set _high = $args[1]>>
+	<</if>>
+	
+	<<if _high > _low>>
+		<<set _temp = _high>>
+		<<set _low = _high>>
+		<<set _high = _temp>>
+	<</if>>
+	
+	<<if _high > 5>>
+		<<set _high = 5>>
+	<</if>>
+	
+	<<if _low < 1>>
+		<<set _low = 1>>
+	<</if>>
+
+	/* Ignor eyes, only look at coat and mane */
+	<<set _cColors = $Colors>>
+	<<set _mColors = $Colors>>
+	
+	<<set _coatTier = "">>
+	<<set _maneTier = "">>
+	
+	<<set _coatGroup = "">>
+	<<set _maneGroup = "">>
+
+	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	<<for _i = 0; _i < $Colors.length; _i++>>
+	
+		/* Scrub any that are out of range */
+		<<if $Colors[_i].Tier > _high>>
+			<<run _cColors.deleteAt($Colors[_i])>>
+			<<run _mColors.deleteAt($Colors[_i])>>
+		<</if>>
+		<<if $Colors[_i].Tier < _low>>
+			<<run _cColors.deleteAt($Colors[_i])>>
+			<<run _mColors.deleteAt($Colors[_i])>>
+		<</if>>
+
+		<<if $activeFluffy.cColor == $Colors[_i].Name>>
+			<<set _coatTier = $Colors[_i].Tier>>
+		<</if>>
+		<<if $activeFluffy.mColor == $Colors[_i].Name>>
+			<<set _maneTier = $Colors[_i].Tier>>
+		<</if>>
+	<</for>>
+	
+	/* Now we have an arry for colors that are within the specified ranges.*/
+
+	
+<</widget>>

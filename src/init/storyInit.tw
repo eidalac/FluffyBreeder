@@ -25,7 +25,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 <<unset $releaseID>>
-<<set $ver = "00.01.31", $releaseID = $COMMIT>>
+<<set $ver = "00.01.41", $releaseID = $COMMIT>>
 <<if ndef $releaseID>><<set $releaseID = 1>><</if>>
 
 /* **********
@@ -155,6 +155,97 @@ a text-based fluffy management game
 <<set $breedMare = -1>>
 <<set $breedStal = -1>>
 
+
+ /* ***
+  *
+  *	In this system, fluffies have 81 possible gene configuration, with 63 possible colors at present.
+  *
+  *	Colors have a Tier (S,A,B,C,D,E,F) and a group (Blue,Yellow,Red,Green,Orange,Purple,Brown and Special)
+  *
+  *	The colors value is deterimed by the Tier, part (coat, mane, eyes), and if the groups are coplementary or not.
+  *
+  *	Complimentary pairs:
+  *	Blue - Orange
+  * Red - Green
+  * Yellow - Purple
+  *
+  *
+  *** */
+  
+/* [ Name, Tier, Group ]*/
+<<set $Colors = [
+ 	{	Name: "White", Tier: 6, Group: "S" },
+ 	{	Name: "Black", Tier: 6, Group: "S" },
+ 	
+ 	{	Name: "Gold", Tier: 5, Group: "Yellow" },
+ 	{	Name: "Lavender", Tier: 5, Group: "Blue" },
+ 	{	Name: "CornflowerBlue", Tier: 5, Group: "Blue" },
+ 	{	Name: "MidnightBlue", Tier: 5, Group: "Blue" },
+ 	{	Name: "Orchid", Tier: 5, Group: "Purple" },
+ 	{	Name: "SeaGreen", Tier: 5, Group: "Blue" },
+ 	{	Name: "BlueViolet", Tier: 5, Group: "Blue" },
+ 	{	Name: "RoyalBlue", Tier: 5, Group: "Blue" },
+ 	{	Name: "Violet", Tier: 5, Group: "Purple" },
+ 	{	Name: "SkyBlue", Tier: 5, Group: "Blue" },
+
+ 	{	Name: "PeachPuff", Tier: 5, Group: "Brown" },
+ 	{	Name: "Crimson", Tier: 5, Group: "Red" },
+ 	{	Name: "Plum", Tier: 4, Group: "Purple" },
+ 	{	Name: "Indigo", Tier: 4, Group: "Purple" },
+ 	{	Name: "Purple", Tier: 4, Group: "Purple" },
+ 	{	Name: "Coral", Tier: 4, Group: "Orange" },
+ 	{	Name: "Blue", Tier: 4, Group: "Blue" },
+ 	{	Name: "SteelBlue", Tier: 4, Group: "Blue" },
+ 	{	Name: "Navy", Tier: 4, Group: "Blue" },
+ 	{	Name: "Cornsilk", Tier: 4, Group: "Brown" },
+ 	{	Name: "Fuchsia", Tier: 4, Group: "Purple" },
+ 	
+ 	{	Name: "MediumVioletRed", Tier: 3, Group: "Red" },
+ 	{	Name: "Red", Tier: 3, Group: "Red" },
+	{	Name: "BlanchedAlmond", Tier: 3, Group: "Brown" },
+	{	Name: "ForestGreen", Tier: 3, Group: "Green" },
+	{	Name: "SpringGreen", Tier: 3, Group: "Green" },
+	{	Name: "RebeccaPurple", Tier: 3, Group: "Purple" },
+	{	Name: "PaleGoldenRod", Tier: 3, Group: "Yellow" },
+	{	Name: "SlateBlue", Tier: 3, Group: "Blue" },
+	{	Name: "Maroon", Tier: 3, Group: "Red" },
+	{	Name: "Pink", Tier: 3, Group: "Red" },
+	{	Name: "MediumPurple", Tier: 3, Group: "Purple" },
+	{	Name: "DeepPink", Tier: 3, Group: "Red" },
+	
+	{	Name: "HotPink", Tier: 2, Group: "Red" },
+	{	Name: "Green", Tier: 2, Group: "Green" },
+	{	Name: "Chocolate", Tier: 2, Group: "Brown" },
+	{	Name: "LightCoral", Tier: 2, Group: "Red" },
+	{	Name: "Sienna", Tier: 2, Group: "Brown" },
+	{	Name: "Tan", Tier: 2, Group: "Brown" },
+	{	Name: "DarkGoldenRod", Tier: 2, Group: "Brown" },
+	{	Name: "OrangeRed", Tier: 2, Group: "Orange" }, 
+	{	Name: "Thistle", Tier: 2, Group: "Purple" },
+	{	Name: "Salmon", Tier: 2, Group: "Red" },
+	{	Name: "DodgerBlue", Tier: 2, Group: "Blue" },
+	{	Name: "GreenYellow", Tier: 2, Group: "Green" },
+	{	Name: "PaleVioletRed", Tier: 2, Group: "Red" },
+
+	{	Name: "Brown", Tier: 1, Group: "Brown" },
+	{	Name: "BurlyWood", Tier: 1, Group: "Brown" },
+	{	Name: "SandyBrown", Tier: 1, Group: "Brown" },
+	{	Name: "IndianRed", Tier: 1, Group: "Red" },
+	{	Name: "FireBrick", Tier: 1, Group: "Red" },
+	{	Name: "Yellow", Tier: 1, Group: "Yellow" },
+	{	Name: "Tomato", Tier: 1, Group: "Orange" },
+	{	Name: "RosyBrown", Tier: 1, Group: "Brown" },
+	{	Name: "Chartreuse", Tier: 1, Group: "Green" },
+	{	Name: "Orange", Tier: 1, Group: "Orange" },
+	{	Name: "Khaki", Tier: 1, Group: "Brown" },
+	{	Name: "OliveDrab", Tier: 1, Group: "Green" },
+	{	Name: "Moccasin", Tier: 1, Group: "Brown" },
+	{	Name: "DarkSalmon", Tier: 1, Group: "Red" },	 
+	{	Name: "YellowGreen", Tier: 1, Group: "Yellow" }
+ ]>>
+
+
+
 /* **********
  *	All things imported from Freecities
  *	mostly do not do anything but will be used for future development
@@ -166,7 +257,7 @@ a text-based fluffy management game
 
 <<set $cheater = 0>>
 <<set $cash = 1000>>
-<<set $actions = 5>>
+<<set $actions = 10>>
 <<set $normalizedEvents = 0>>
 <<set $autosave = 1>>
 <<set $seeAge = 1>>

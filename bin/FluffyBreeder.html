@@ -198,6 +198,11 @@ button.accordion.active:before {
     -webkit-transition: none;
 }
 
+body {
+	color: #ddd;
+	background-color: #222;
+}
+
 .hidden {
 	display: none;
 }
@@ -1794,11 +1799,11 @@ Genome.prototype.getGeneColor = function(index) {
 	Results += geneFive[1];
 	
 	// check for Melanism/Albinism
-	if (geneString.substring(0,2) == "BB" && Results == "WW") {
+	if (geneString == "BBYYRROO" && Results == "WW") {
 		return "Black";
 	}
 	
-	if (geneString.substring(6,8) == "oo" && Results == "ww") {
+	if (geneString == "bbyyrroo" && Results == "ww") {
 		// eyes
 		if (index == 27)
 			return "Pink";
@@ -1921,16 +1926,16 @@ Genome.prototype.getGeneColor = function(index) {
 		geneString = "Coral";
 		break;
 	case "BByYRRoo":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRRoO":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRROO":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bbyyRRoo":
-		geneString = "orange";
+		geneString = "Orange";
 		break;
 	case "bByYrROO":
 		geneString = "SpringGreen";
@@ -2501,7 +2506,184 @@ console.log("cleared defects parts = " + this.genes[index])
  *
  * This contains the story title and unique ID, required for the Twee compiler
  *
- *********** */</tw-passagedata><tw-passagedata pid="2" name="Encyclopedia" tags="nobr" position="225,100" size="100,100">/* **********
+ *********** */</tw-passagedata><tw-passagedata pid="2" name="Color Config" tags="widget nobr" position="225,100" size="100,100">/* **********
+ * colorConfig.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Data for color configuration/pricing
+ *
+ *********** */
+
+
+  
+  
+/* ***
+ *	Color Value
+ *	Call as &lt;&lt;colorValue&gt;&gt;
+ *
+ *	Caculates the color value of $activeFluffy
+ *** */
+&lt;&lt;widget &quot;colorValue&quot;&gt;&gt;
+	&lt;&lt;set _coatTier = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _maneTier = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _eyeTier = &quot;&quot;&gt;&gt;
+	
+	&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _eyeGroup = &quot;&quot;&gt;&gt;
+	
+&lt;&lt;run console.log(&quot;Color Test 0: &quot; + $activeFluffy.cColor + &quot; &quot; + $activeFluffy.mColor + &quot; &quot; + $activeFluffy.eColor)&gt;&gt;
+	
+	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	&lt;&lt;for _i = 0; _i &lt; $Colors.length; _i++&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Test 0.1: &quot; + $activeFluffy.cColor + &quot; &quot; + $Colors[_i].Name)&gt;&gt;
+		&lt;&lt;if $activeFluffy.cColor == $Colors[_i].Name&gt;&gt;
+			&lt;&lt;set _coatTier = $Colors[_i].Tier&gt;&gt;
+			&lt;&lt;set _coatGroup = $Colors[_i].Group&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $activeFluffy.mColor == $Colors[_i].Name&gt;&gt;
+			&lt;&lt;set _maneTier = $Colors[_i].Tier&gt;&gt;
+			&lt;&lt;set _maneGroup = $Colors[_i].Group&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $activeFluffy.eColor == $Colors[_i].Name&gt;&gt;
+			&lt;&lt;set _eyeTier = $Colors[_i].Tier&gt;&gt;
+			&lt;&lt;set _eyeGroup = $Colors[_i].Group&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Test 1: &quot; + _coatTier + &quot; &quot; + _maneTier + &quot; &quot; + _eyeTier)&gt;&gt;
+	/* No matches found, bad*/
+	&lt;&lt;if _coatTier == &quot;&quot; || _coatGroup == &quot;&quot;&gt;&gt;
+		&lt;br&gt;@@.red;No color match found for coat: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if _maneTier == &quot;&quot; || _maneGroup == &quot;&quot;&gt;&gt;
+		&lt;br&gt;@@.red;No color match found for mane: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if _eyeTier == &quot;&quot; || _eyeGroup == &quot;&quot;&gt;&gt;
+		&lt;br&gt;@@.red;No color match found for eye: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
+	&lt;&lt;/if&gt;&gt;	
+
+	/* One point per tier for eyes, 2 for mane and 3 for coat. */
+	&lt;&lt;set _colorBonus = 0&gt;&gt;
+	&lt;&lt;set _colorBonus = Number(_eyeTier)&gt;&gt;
+	&lt;&lt;set _colorBonus += (2 * _maneTier)&gt;&gt;
+	&lt;&lt;set _colorBonus += (3 * _coatTier)&gt;&gt;
+	
+	/* Divide by 6 to get the multplier (1-6) */
+	&lt;&lt;set _colorBonus = Number(_colorBonus / 12).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Test 2: &quot; + _colorBonus)&gt;&gt;
+
+	/* ***
+	 *	Complimentary pairs:
+	 *		Blue - Orange
+	 *		Red - Green
+	 *		Yellow - Purple
+	 *** */
+  
+	&lt;&lt;set _pairBonus = 0&gt;&gt;
+	
+	/* Colors match */
+	&lt;&lt;if _coatGroup == _maneGroup&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.75&gt;&gt;
+	
+	/* Complimentary pair */
+	&lt;&lt;elseif _coatGroup == &quot;Blue&quot; &amp;&amp; _maneGroup == &quot;Orange&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Orange&quot; &amp;&amp; _maneGroup == &quot;Blue&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Red&quot; &amp;&amp; _maneGroup == &quot;Green&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Green&quot; &amp;&amp; _maneGroup == &quot;Red&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Yellow&quot; &amp;&amp; _maneGroup == &quot;Purple&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Purple&quot; &amp;&amp; _maneGroup == &quot;Yellow&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0.5&gt;&gt;
+	&lt;&lt;elseif _coatGroup == &quot;Brown&quot; &amp;&amp; _maneGroup == &quot;Brown&quot;&gt;&gt;
+		&lt;&lt;set _pairBonus = 0&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Test 3: &quot; + _pairBonus)&gt;&gt;
+	&lt;&lt;set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)&gt;&gt;
+	
+	/* Trending to high, try cutting down by 1 point overall.*/
+	/*&lt;&lt;set $activeFluffy.colorBonus--&gt;&gt;*/
+&lt;&lt;run console.log(&quot;Color Test 4: &quot; + $activeFluffy.colorBonus )&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+/* ***
+ *	Limit Color
+ *	Call as &lt;&lt;limitValue [low,] high&gt;&gt;
+ *
+ *	Limits the color tier of a generated fluffy ($activeFluffy) to a value &gt;= low, &lt;= high.
+ *	Used to limit the colors you can get from different sources.
+ *** */
+&lt;&lt;widget &quot;limitColor&quot;&gt;&gt;
+	&lt;&lt;if !$args.length&gt;&gt;
+		&lt;&lt;run console.log(&quot;Limit Color called with no arguments.&quot;)&gt;&gt;
+	&lt;&lt;elseif $args.length &gt; 2&gt;&gt;
+		&lt;&lt;run console.log(&quot;Limit Color called with too many arguments.&quot;)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	/* Some logic/sanity checking: */ 
+	&lt;&lt;if $args.length == 1&gt;&gt;	
+		&lt;&lt;set _low = 1&gt;&gt;
+		&lt;&lt;set _high = $args[0]&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _low = $args[0]&gt;&gt;
+		&lt;&lt;set _high = $args[1]&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if _high &gt; _low&gt;&gt;
+		&lt;&lt;set _temp = _high&gt;&gt;
+		&lt;&lt;set _low = _high&gt;&gt;
+		&lt;&lt;set _high = _temp&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if _high &gt; 5&gt;&gt;
+		&lt;&lt;set _high = 5&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if _low &lt; 1&gt;&gt;
+		&lt;&lt;set _low = 1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	/* Ignor eyes, only look at coat and mane */
+	&lt;&lt;set _cColors = $Colors&gt;&gt;
+	&lt;&lt;set _mColors = $Colors&gt;&gt;
+	
+	&lt;&lt;set _coatTier = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _maneTier = &quot;&quot;&gt;&gt;
+	
+	&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
+
+	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	&lt;&lt;for _i = 0; _i &lt; $Colors.length; _i++&gt;&gt;
+	
+		/* Scrub any that are out of range */
+		&lt;&lt;if $Colors[_i].Tier &gt; _high&gt;&gt;
+			&lt;&lt;run _cColors.deleteAt($Colors[_i])&gt;&gt;
+			&lt;&lt;run _mColors.deleteAt($Colors[_i])&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $Colors[_i].Tier &lt; _low&gt;&gt;
+			&lt;&lt;run _cColors.deleteAt($Colors[_i])&gt;&gt;
+			&lt;&lt;run _mColors.deleteAt($Colors[_i])&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;if $activeFluffy.cColor == $Colors[_i].Name&gt;&gt;
+			&lt;&lt;set _coatTier = $Colors[_i].Tier&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $activeFluffy.mColor == $Colors[_i].Name&gt;&gt;
+			&lt;&lt;set _maneTier = $Colors[_i].Tier&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
+	
+	/* Now we have an arry for colors that are within the specified ranges.*/
+
+	
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Encyclopedia" tags="nobr" position="350,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -2524,7 +2706,7 @@ console.log("cleared defects parts = " + this.genes[index])
 
 PLAYING
 
-**********/</tw-passagedata><tw-passagedata pid="3" name="Disclaimer" tags="nobr" position="350,100" size="100,100">/* **********
+**********/</tw-passagedata><tw-passagedata pid="4" name="Disclaimer" tags="nobr" position="475,100" size="100,100">/* **********
  * Disclaimer.tw
  *
  * Package: FluffyBreeder
@@ -2549,7 +2731,7 @@ PLAYING
 &lt;br&gt;
 
 /* Move to the next card */
-&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary]]</tw-passagedata><tw-passagedata pid="4" name="Intro Summary" tags="nobr" position="475,100" size="100,100">/* **********
+&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary]]</tw-passagedata><tw-passagedata pid="5" name="Intro Summary" tags="nobr" position="600,100" size="100,100">/* **********
  * introSummary.tw
  *
  * Package: FluffyBreeder
@@ -2682,7 +2864,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100)]]
 &lt;br&gt;
 &lt;br&gt;
-[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="5" name="Shop Intro" tags="nobr" position="600,100" size="100,100">/* **********
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="6" name="Shop Intro" tags="nobr" position="725,100" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -2710,7 +2892,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;&lt;set $earthPrice = { mill: Number($basePrice.earthy*$priceTeir.mill).toFixed(2), mart: Number($basePrice.earthy*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.earthy*$priceTeir.deluxe).toFixed(2) }&gt;&gt;
 &lt;&lt;set $unicornPrice = { mill: Number($basePrice.unicorn*$priceTeir.mill).toFixed(2), mart: Number($basePrice.unicorn*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.unicorn*$priceTeir.deluxe).toFixed(2) }&gt;&gt;
 &lt;&lt;set $pegasusPrice = { mill: Number($basePrice.pegasus*$priceTeir.mill).toFixed(2), mart: Number($basePrice.pegasus*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.pegasus*$priceTeir.deluxe).toFixed(2) }&gt;&gt;
-&lt;&lt;set $alicornPrice = { mill: -1, mart: -1, deluxe: Number($basePrice.alicorn*$priceTeir.deluxe).toFixed(2) }&gt;&gt;
+&lt;&lt;set $alicornPrice = { mill: Number($basePrice.alicorn*$priceTeir.mill).toFixed(2), mart: Number($basePrice.alicorn*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.alicorn*$priceTeir.deluxe).toFixed(2) }&gt;&gt;
 
 
 
@@ -2794,7 +2976,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
  *** */
 /*&lt;br&gt;&lt;br&gt;[[Get Fluffies|Fluffy Intro][$cash = Number($storePoints + 100)]]*/
 
-&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)]]</tw-passagedata><tw-passagedata pid="6" name="Week Start" tags="nobr" position="725,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.storage+$ourStore.display+$ourStore.shelter+$ourStore.space) / 10).toFixed(2)]]</tw-passagedata><tw-passagedata pid="7" name="Week Start" tags="nobr" position="850,100" size="100,100">/* **********
  * weekStart.tw
  *
  * Package: FluffyBreeder
@@ -2833,13 +3015,13 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;[[Improve the Store|Buy Upgrades]].
 &lt;br&gt;
-&lt;br&gt;Get Fluffies:
+&lt;br&gt;Get Fluffies: //@@.orange;Prices at Mill and Breeder are not calibrated correctly, but Fluffy Mart prices should be correct (or very near to it)//
 &lt;br&gt;[[Visit Fluffy Mart|Buy Fluffies][$shop = &quot;mart&quot;]].
 &lt;br&gt;[[Visit a Fluffy Mill|Buy Fluffies][$shop = &quot;mill&quot;]].
 &lt;br&gt;[[Visit a Fluffy Breeder|Buy Fluffies][$shop = &quot;breeder&quot;]].
 &lt;br&gt;[[Hunt Ferals|Buy Fluffies][$shop = &quot;feral&quot;]].
 &lt;br&gt;
-&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="7" name="StoryCaption" tags="" position="850,100" size="100,100">/* **********
+&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="StoryCaption" tags="" position="975,100" size="100,100">/* **********
  *	storyCaption.tw
  *
  *	Package: FluffyBreeder
@@ -3022,7 +3204,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 	&lt;br&gt;
 	&lt;&lt;link &quot;Bug Report&quot;&gt;&gt;&lt;&lt;bugreport&gt;&gt;&lt;&lt;/link&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="init" tags="nobr" position="975,100" size="100,100">/* **********
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="9" name="init" tags="nobr" position="1100,100" size="100,100">/* **********
   *	Fluffy Breeder
 a text-based fluffy management game
  *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
@@ -3047,7 +3229,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.31&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.41&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3177,6 +3359,97 @@ a text-based fluffy management game
 &lt;&lt;set $breedMare = -1&gt;&gt;
 &lt;&lt;set $breedStal = -1&gt;&gt;
 
+
+ /* ***
+  *
+  *	In this system, fluffies have 81 possible gene configuration, with 63 possible colors at present.
+  *
+  *	Colors have a Tier (S,A,B,C,D,E,F) and a group (Blue,Yellow,Red,Green,Orange,Purple,Brown and Special)
+  *
+  *	The colors value is deterimed by the Tier, part (coat, mane, eyes), and if the groups are coplementary or not.
+  *
+  *	Complimentary pairs:
+  *	Blue - Orange
+  * Red - Green
+  * Yellow - Purple
+  *
+  *
+  *** */
+  
+/* [ Name, Tier, Group ]*/
+&lt;&lt;set $Colors = [
+ 	{	Name: &quot;White&quot;, Tier: 6, Group: &quot;S&quot; },
+ 	{	Name: &quot;Black&quot;, Tier: 6, Group: &quot;S&quot; },
+ 	
+ 	{	Name: &quot;Gold&quot;, Tier: 5, Group: &quot;Yellow&quot; },
+ 	{	Name: &quot;Lavender&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;CornflowerBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;MidnightBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;Orchid&quot;, Tier: 5, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;SeaGreen&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;BlueViolet&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;RoyalBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;Violet&quot;, Tier: 5, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;SkyBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
+
+ 	{	Name: &quot;PeachPuff&quot;, Tier: 5, Group: &quot;Brown&quot; },
+ 	{	Name: &quot;Crimson&quot;, Tier: 5, Group: &quot;Red&quot; },
+ 	{	Name: &quot;Plum&quot;, Tier: 4, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;Indigo&quot;, Tier: 4, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;Purple&quot;, Tier: 4, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;Coral&quot;, Tier: 4, Group: &quot;Orange&quot; },
+ 	{	Name: &quot;Blue&quot;, Tier: 4, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;SteelBlue&quot;, Tier: 4, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;Navy&quot;, Tier: 4, Group: &quot;Blue&quot; },
+ 	{	Name: &quot;Cornsilk&quot;, Tier: 4, Group: &quot;Brown&quot; },
+ 	{	Name: &quot;Fuchsia&quot;, Tier: 4, Group: &quot;Purple&quot; },
+ 	
+ 	{	Name: &quot;MediumVioletRed&quot;, Tier: 3, Group: &quot;Red&quot; },
+ 	{	Name: &quot;Red&quot;, Tier: 3, Group: &quot;Red&quot; },
+	{	Name: &quot;BlanchedAlmond&quot;, Tier: 3, Group: &quot;Brown&quot; },
+	{	Name: &quot;ForestGreen&quot;, Tier: 3, Group: &quot;Green&quot; },
+	{	Name: &quot;SpringGreen&quot;, Tier: 3, Group: &quot;Green&quot; },
+	{	Name: &quot;RebeccaPurple&quot;, Tier: 3, Group: &quot;Purple&quot; },
+	{	Name: &quot;PaleGoldenRod&quot;, Tier: 3, Group: &quot;Yellow&quot; },
+	{	Name: &quot;SlateBlue&quot;, Tier: 3, Group: &quot;Blue&quot; },
+	{	Name: &quot;Maroon&quot;, Tier: 3, Group: &quot;Red&quot; },
+	{	Name: &quot;Pink&quot;, Tier: 3, Group: &quot;Red&quot; },
+	{	Name: &quot;MediumPurple&quot;, Tier: 3, Group: &quot;Purple&quot; },
+	{	Name: &quot;DeepPink&quot;, Tier: 3, Group: &quot;Red&quot; },
+	
+	{	Name: &quot;HotPink&quot;, Tier: 2, Group: &quot;Red&quot; },
+	{	Name: &quot;Green&quot;, Tier: 2, Group: &quot;Green&quot; },
+	{	Name: &quot;Chocolate&quot;, Tier: 2, Group: &quot;Brown&quot; },
+	{	Name: &quot;LightCoral&quot;, Tier: 2, Group: &quot;Red&quot; },
+	{	Name: &quot;Sienna&quot;, Tier: 2, Group: &quot;Brown&quot; },
+	{	Name: &quot;Tan&quot;, Tier: 2, Group: &quot;Brown&quot; },
+	{	Name: &quot;DarkGoldenRod&quot;, Tier: 2, Group: &quot;Brown&quot; },
+	{	Name: &quot;OrangeRed&quot;, Tier: 2, Group: &quot;Orange&quot; }, 
+	{	Name: &quot;Thistle&quot;, Tier: 2, Group: &quot;Purple&quot; },
+	{	Name: &quot;Salmon&quot;, Tier: 2, Group: &quot;Red&quot; },
+	{	Name: &quot;DodgerBlue&quot;, Tier: 2, Group: &quot;Blue&quot; },
+	{	Name: &quot;GreenYellow&quot;, Tier: 2, Group: &quot;Green&quot; },
+	{	Name: &quot;PaleVioletRed&quot;, Tier: 2, Group: &quot;Red&quot; },
+
+	{	Name: &quot;Brown&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;BurlyWood&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;SandyBrown&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;IndianRed&quot;, Tier: 1, Group: &quot;Red&quot; },
+	{	Name: &quot;FireBrick&quot;, Tier: 1, Group: &quot;Red&quot; },
+	{	Name: &quot;Yellow&quot;, Tier: 1, Group: &quot;Yellow&quot; },
+	{	Name: &quot;Tomato&quot;, Tier: 1, Group: &quot;Orange&quot; },
+	{	Name: &quot;RosyBrown&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;Chartreuse&quot;, Tier: 1, Group: &quot;Green&quot; },
+	{	Name: &quot;Orange&quot;, Tier: 1, Group: &quot;Orange&quot; },
+	{	Name: &quot;Khaki&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;OliveDrab&quot;, Tier: 1, Group: &quot;Green&quot; },
+	{	Name: &quot;Moccasin&quot;, Tier: 1, Group: &quot;Brown&quot; },
+	{	Name: &quot;DarkSalmon&quot;, Tier: 1, Group: &quot;Red&quot; },	 
+	{	Name: &quot;YellowGreen&quot;, Tier: 1, Group: &quot;Yellow&quot; }
+ ]&gt;&gt;
+
+
+
 /* **********
  *	All things imported from Freecities
  *	mostly do not do anything but will be used for future development
@@ -3188,7 +3461,7 @@ a text-based fluffy management game
 
 &lt;&lt;set $cheater = 0&gt;&gt;
 &lt;&lt;set $cash = 1000&gt;&gt;
-&lt;&lt;set $actions = 5&gt;&gt;
+&lt;&lt;set $actions = 10&gt;&gt;
 &lt;&lt;set $normalizedEvents = 0&gt;&gt;
 &lt;&lt;set $autosave = 1&gt;&gt;
 &lt;&lt;set $seeAge = 1&gt;&gt;
@@ -3259,7 +3532,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="9" name="Buy Fluffies" tags="nobr" position="1100,100" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="Buy Fluffies" tags="nobr" position="1225,100" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -3374,7 +3647,18 @@ profitsTotal: 0
 		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
 		&lt;&lt;set _shopFluffy = clone($activeFluffy)&gt;&gt;
 		&lt;&lt;FluffyDesc&gt;&gt;
-		&lt;&lt;They&gt;&gt; would cost 
+		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
+
+		&lt;&lt;colorValue&gt;&gt;
+		&lt;&lt;statValue&gt;&gt;
+	
+		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.training = 20&gt;&gt;
+			&lt;&lt;set $activeFluffy.trust = 40&gt;&gt;
+			&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
+			&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
 		&lt;&lt;switch $activeFluffy.breed&gt;&gt;
 			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
 				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
@@ -3382,7 +3666,7 @@ profitsTotal: 0
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($unicornPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -3391,15 +3675,15 @@ profitsTotal: 0
 					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($pegasusPrice.deluxe).toFixed(2)&gt;&gt;
+				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+					&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
 				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($alicornPrice.deluxe).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;default&gt;&gt;
@@ -3408,16 +3692,24 @@ profitsTotal: 0
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($earthPrice.mill).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set _price = Number($earthPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($earthPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
-		&lt;br&gt;It would cost @@.green;¤_price.@@
-		&lt;hr&gt;[[Keep Looking|Buy Fluffies]]  | 
-		&lt;&lt;if Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
+		
+		&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
+		&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
+		
+		@@.green;¤_price.@@
+		&lt;hr&gt;
+		[[Keep Looking|Buy Fluffies]]  | 
+		&lt;&lt;if $actions &lt; 1&gt;&gt;
+			//You are too tired for more shopping// | 
+		&lt;&lt;elseif Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
 			&lt;&lt;link &quot;Add to the cart&quot; &quot;Buy Fluffies&quot;&gt;&gt;
 				&lt;&lt;set $cash-= _price&gt;&gt;
+				&lt;&lt;set $actions--&gt;&gt;
 				
 				
 				/* Add to the global list and store list*/
@@ -3436,16 +3728,16 @@ profitsTotal: 0
 				&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/link&gt;&gt; | 
 		&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
-			//You don&#39;t have enough room to take this fluffy.// | 
+			//You don&#39;t have enough room to take this fluffy// | 
 		&lt;&lt;else&gt;&gt;
-			//You lack the necessary funds to buy this fluffy.// | 
+			//You lack the necessary funds to buy this fluffy// | 
 		&lt;&lt;/if&gt;&gt;
 		 [[End Shopping|Week Start]]
 /*
 &lt;&lt;/if&gt;&gt;
 
 [[End Shopping|Week Start]]
-*/</tw-passagedata><tw-passagedata pid="10" name="Buy Food" tags="nobr" position="1225,100" size="100,100">/* **********
+*/</tw-passagedata><tw-passagedata pid="11" name="Buy Food" tags="nobr" position="100,225" size="100,100">/* **********
  * Buy Food.tw
  *
  * Package: FluffyBreeder
@@ -3583,7 +3875,7 @@ profitsTotal: 0
 
 &lt;br&gt;&lt;br&gt;
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="Buy Upgrades" tags="nobr" position="100,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="Buy Upgrades" tags="nobr" position="225,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -3800,7 +4092,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;/div&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="End Week" tags="nobr" position="225,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="End Week" tags="nobr" position="350,225" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -3823,24 +4115,6 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 &lt;br&gt;Upkeep this week was $costs.
 
-/* ***
- *	Caculate stress
- *** */
-&lt;&lt;set _stressor = 1.00&gt;&gt;
-&lt;&lt;set $stressUp = 0&gt;&gt; 
-&lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
-
-&lt;&lt;if _count &lt; 10&gt;&gt;
-	&lt;&lt;set _stressor = 1.00&gt;&gt;
-&lt;&lt;else&gt;&gt;
-	&lt;&lt;set _stressor = 90 + _count &gt;&gt;
-	&lt;&lt;set _stressor = (_stressor/ 100)&gt;&gt;
-&lt;&lt;/if&gt;&gt;
-
-&lt;&lt;set $stressUp = Math.round(_stressor * _count)&gt;&gt;
-&lt;br&gt;Stress this week was $stressUp.
-
-&lt;&lt;set $stress = $stress + $stressUp&gt;&gt;
 
 /* moving the count updates to here, to prevent double loops */
 &lt;&lt;set $ourStore.stallions = 0&gt;&gt;
@@ -3879,6 +4153,27 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 &lt;&lt;run console.log(&quot;Breeding test 0: &quot; + $ourStore.fluffies)&gt;&gt;
 
+
+/* ***
+ *	Caculate stress
+ *** */
+&lt;&lt;set _stressor = 1.00&gt;&gt;
+&lt;&lt;set $stressUp = 0&gt;&gt; 
+&lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
+
+&lt;&lt;if _count &lt; 10&gt;&gt;
+	&lt;&lt;set _stressor = 1.00&gt;&gt;
+&lt;&lt;else&gt;&gt;
+	&lt;&lt;set _stressor = 90 + _count &gt;&gt;
+	&lt;&lt;set _stressor = (_stressor/ 100)&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;set $stressUp = Math.round(_stressor * _count)&gt;&gt;
+&lt;br&gt;Stress this week was $stressUp.
+
+&lt;&lt;set $stress = $stress + $stressUp&gt;&gt;
+
+
 /* ***
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
  * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
@@ -3905,7 +4200,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	&lt;&lt;if Number(_thisFluffy.maxAge) &lt; Number(_thisFluffy.age)&gt;&gt;
+	&lt;&lt;if Number(_thisFluffy.maxAge) &lt;= Number(_thisFluffy.age)&gt;&gt;
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; does not wake up.  (_thisFluffy.age /  _thisFluffy.maxAge years old)
 			&lt;br&gt;
@@ -3943,16 +4238,26 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;&lt;set _price = 0&gt;&gt;
 
+			&lt;&lt;set _price = Number(_thisFluffy.training)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 1: &quot; + _price)&gt;&gt;
+			&lt;&lt;set _price = Number(_price) + Number(Number(_thisFluffy.trust/10))&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 2: &quot; + _price)&gt;&gt;
 			&lt;&lt;switch _thisFluffy.breed&gt;&gt;
 				&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;set _price = 2* Number($unicornPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
 				&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;set _price = 2 * Number($pegasusPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
 				&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;set _price = 2 * Number($alicornPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
 				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _price = 2 * Number($earthPrice.deluxe).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
+			
+			&lt;&lt;set _price = Number(Number(_price) * Number(_thisFluffy.statBonus)).toFixed(2)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Price test 5: &quot; + _price)&gt;&gt;
+			&lt;&lt;set _price = Number(_price * _thisFluffy.colorBonus).toFixed(2)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
+
 
 			&lt;br&gt;_thisFluffy.name was sold for _price
 			&lt;&lt;set $cash += Number(_price)&gt;&gt;
@@ -4107,12 +4412,12 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
  % Advance the date
 %/
 &lt;&lt;set $week++&gt;&gt;
-&lt;&lt;set $actions = 5&gt;&gt;
+&lt;&lt;set $actions = 10&gt;&gt;
 
 
 &lt;br&gt;//[[Back to Week Start|Week Start]]//
 &lt;br&gt;
-&lt;br&gt;//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//</tw-passagedata><tw-passagedata pid="13" name="Fluffy Breeding" tags="nobr" position="350,225" size="100,100">/* **********
+&lt;br&gt;//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//</tw-passagedata><tw-passagedata pid="14" name="Fluffy Breeding" tags="nobr" position="475,225" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -4197,7 +4502,123 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;/if&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Fluffy List" tags="nobr" position="475,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Fluffy Interact" tags="nobr" position="600,225" size="100,100">/* **********
+ * fluffyInteract.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	can rename a fluffy
+ *
+ *	Todo: expand with general interations and more details.
+ *
+ *********** */
+
+&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
+&lt;br&gt;
+&lt;br&gt;
+&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
+
+&lt;span id=&quot;fluffy-name&quot;&gt;
+	&lt;&lt;FluffyDesc&gt;&gt;
+&lt;/span&gt;
+&lt;hr&gt;
+
+/* ***
+ *	Debug option to enter a genetic editing mode.
+ *** */
+&lt;&lt;if $debugMode == true&gt;&gt;
+	[[Enter the Gene Lab|Gene Lab]]
+	&lt;hr&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;div id=&quot;name-form&quot;&gt;
+	&lt;br&gt;Name: &lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Fluffy Interact&quot;&gt;&gt;
+	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;div id=&quot;breed-form&quot;&gt;
+
+&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
+
+&lt;&lt;capture _nSF&gt;&gt; 
+Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back&quot;, $nextLink = &quot;Fluffy List&quot;, $breedMare = -1, $breedStal = -1]]&lt;&lt;else&gt;&gt;&lt;&lt;set _nSF = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;[[$globalFluffies[$activeFluffy.specialFriend].name|Fluffy Interact][$activeFluffy = _nSF]].
+&lt;&lt;button &quot;Break Up&quot;&gt;&gt;
+	/* Clear both special friends flag, ending breeding*/
+	&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+	&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		
+	&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+	&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
+	&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
+		
+	&lt;&lt;set $globalFluffies[_sf.ID] = _sf&gt;&gt;
+	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		
+	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _sf.name&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;/capture&gt;&gt;
+&lt;/div&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
+
+
+&lt;br&gt;
+&lt;div id=&quot;play-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Play with &quot; + $activeFluffy.name&gt;&gt;
+&lt;&lt;button _desc&gt;&gt;
+	&lt;&lt;if $actions &gt; 0&gt;&gt;
+		&lt;&lt;set $stress -= 10&gt;&gt;
+		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;play-msg&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;br&gt;
+&lt;div id=&quot;train-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Train &quot; + $activeFluffy.name&gt;&gt; 
+&lt;&lt;button _desc&gt;&gt;
+	&lt;&lt;if $actions &gt; 0&gt;&gt;
+		&lt;&lt;set $stress += 1&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $activeFluffy.training++&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;train-msg&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+&lt;br&gt;
+&lt;div id=&quot;abuse-form&quot;&gt;
+&lt;&lt;set _desc = &quot;Abuse &quot; + $activeFluffy.name&gt;&gt; 
+&lt;&lt;button _desc&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;abuse-msg&quot;&gt;&lt;/span&gt;
+@@.orange;Not implemented.@@
+&lt;/div&gt;
+
+
+
+/* Sidebar link for mobile users */
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Fluffy List" tags="nobr" position="725,225" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -4278,7 +4699,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 	
-			[[_fluff.name|Name Fluffy][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
+			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
 			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
 			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt; 
 			&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;
@@ -4298,7 +4719,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has $ourStore.foals @@.cyan;Foals@@ $ourStore.mares @@.cyan;Mares@@ $ourStore.stallions @@.cyan;Stallions@@ (&lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total)&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Fluffy Selling" tags="nobr" position="600,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Fluffy Selling" tags="nobr" position="850,225" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -4321,7 +4742,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;elseif $activeFluffy.nursing != 0&gt;&gt;
 	&lt;br&gt;You will have to wait till $activeFluffy.name is finished nursing foals.
 &lt;&lt;elseif $activeFluffy.weaned == false&gt;&gt;
-	&lt;br&gt;You will have to wait till $activeFluffy.name weaned!
+	&lt;br&gt;You will have to wait till $activeFluffy.name is weaned!
 &lt;&lt;else&gt;&gt;
 
 	/* Clear both special friends flag, ending breeding*/
@@ -4336,6 +4757,9 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	
 	&lt;br&gt;You move $activeFluffy.name to the display area for sale.
 	&lt;&lt;set $activeFluffy.onDisplay = true&gt;&gt;
+	
+	&lt;&lt;colorValue&gt;&gt;
+	&lt;&lt;statValue&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Display check 2: &quot; + $activeFluffy.onDisplay)&gt;&gt;
 
@@ -4352,7 +4776,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;if _listFluffy.onDisplay != true&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		[[_listFluffy.name|Name Fluffy]] &lt;&lt;shortDesc _listFluffy&gt;&gt;
+		[[_listFluffy.name|Fluffy Interact]] &lt;&lt;shortDesc _listFluffy&gt;&gt;
 		&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Remove from Display|Fluffy List]]&gt;&gt;
 			&lt;&lt;set _listFluffy.onDisplay = false&gt;&gt;
 			&lt;&lt;set $globalFluffies[_listFluffy.ID] = _listFluffy&gt;&gt;
@@ -4364,7 +4788,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;/capture&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Gene Lab" tags="nobr" position="725,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="Gene Lab" tags="nobr" position="975,225" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -4374,7 +4798,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
  *
  *********** */
  
-&lt;&lt;set $nextButton to &quot;Exit Lab&quot;, $nextLink to &quot;Name Fluffy&quot;&gt;&gt;
+&lt;&lt;set $nextButton to &quot;Exit Lab&quot;, $nextLink to &quot;Fluffy Interact&quot;&gt;&gt;
 
 /* Since the Javascript elements do not save, first ensure our genome is set from the string */
 &lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
@@ -5039,113 +5463,7 @@ Inbreeding:
 
 
 &lt;br&gt;
-[[Exit the Lab|Name Fluffy]]</tw-passagedata><tw-passagedata pid="17" name="Name Fluffy" tags="nobr" position="850,225" size="100,100">/* **********
- * nameFluffy.tw
- *
- * Package: FluffyBreeder
- * Format: Twine2 (Sugarcube 2)
- *
- *	can rename a fluffy
- *
- *	Todo: expand with general interations and more details.
- *
- *********** */
-
-&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
-&lt;br&gt;
-&lt;br&gt;
-&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
-
-&lt;span id=&quot;fluffy-name&quot;&gt;
-	&lt;&lt;FluffyDesc&gt;&gt;
-&lt;/span&gt;
-&lt;hr&gt;
-
-/* ***
- *	Debug option to enter a genetic editing mode.
- *** */
-&lt;&lt;if $debugMode == true&gt;&gt;
-	[[Enter the Gene Lab|Gene Lab]]
-	&lt;hr&gt;
-&lt;&lt;/if&gt;&gt;
-
-&lt;div id=&quot;name-form&quot;&gt;
-	&lt;br&gt;Name: &lt;&lt;textbox &quot;$activeFluffy.name&quot; $activeFluffy.name &quot;Name Fluffy&quot;&gt;&gt;
-	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
-		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
-&lt;/div&gt;
-&lt;div id=&quot;breed-form&quot;&gt;
-
-&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
-
-&lt;&lt;capture _nSF&gt;&gt; 
-Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back&quot;, $nextLink = &quot;Fluffy List&quot;, $breedMare = -1, $breedStal = -1]]&lt;&lt;else&gt;&gt;&lt;&lt;set _nSF = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;[[$globalFluffies[$activeFluffy.specialFriend].name|Name Fluffy][$activeFluffy = _nSF]].
-&lt;&lt;button &quot;Break Up&quot;&gt;&gt;
-	/* Clear both special friends flag, ending breeding*/
-	&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-	&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
-		
-	&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
-	&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
-	&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
-		
-	&lt;&lt;set $globalFluffies[_sf.ID] = _sf&gt;&gt;
-	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		
-	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _sf.name&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;/button&gt;&gt;
-&lt;&lt;/if&gt;&gt;
-&lt;&lt;/capture&gt;&gt;
-&lt;/div&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
-
-
-&lt;br&gt;
-&lt;div id=&quot;play-form&quot;&gt;
-&lt;&lt;set _desc = &quot;Play with &quot; + $activeFluffy.name&gt;&gt;
-&lt;&lt;button _desc&gt;&gt;
-	&lt;&lt;if $actions &gt; 0&gt;&gt;
-		&lt;&lt;set $stress -= 10&gt;&gt;
-		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
-		&lt;&lt;set $actions--&gt;&gt;
-		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;play-msg&quot;&gt;&lt;/span&gt;
-&lt;/div&gt;
-&lt;br&gt;
-&lt;div id=&quot;train-form&quot;&gt;
-&lt;&lt;set _desc = &quot;Train &quot; + $activeFluffy.name&gt;&gt; 
-&lt;&lt;button _desc&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;train-msg&quot;&gt;&lt;/span&gt;
-@@.orange;Not implemented.@@
-&lt;/div&gt;
-&lt;br&gt;
-&lt;div id=&quot;abuse-form&quot;&gt;
-&lt;&lt;set _desc = &quot;Abuse &quot; + $activeFluffy.name&gt;&gt; 
-&lt;&lt;button _desc&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;abuse-msg&quot;&gt;&lt;/span&gt;
-@@.orange;Not implemented.@@
-&lt;/div&gt;
-
-
-
-/* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="description widgets" tags="widget nobr" position="975,225" size="100,100">/* **********
+[[Exit the Lab|Fluffy Interact]]</tw-passagedata><tw-passagedata pid="19" name="description widgets" tags="widget nobr" position="1100,225" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -5180,7 +5498,20 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
  *	Called as &lt;&lt;inlineColor $color&gt;&gt;
  *	Returns the string colored as an HTML color.
  *** */
-&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/widget&gt;&gt;
+&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;- &quot;@@border:4px solid &quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
+
+
+
+&lt;&lt;widget statValue&gt;&gt;
+	&lt;&lt;set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning&gt;&gt;
+&lt;&lt;run console.log(&quot;Stat Test 1: &quot; + _avg)&gt;&gt;
+	&lt;&lt;set _avg = Number(Number(_avg) / 5).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Stat Test 2: &quot; + _avg)&gt;&gt;
+	&lt;&lt;set _avg++&gt;&gt;
+&lt;&lt;run console.log(&quot;Stat Test 3: &quot; + _avg)&gt;&gt;
+	&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 4).toFixed(2)&gt;&gt;
+	
+&lt;&lt;/widget&gt;&gt;
 
 /* ***
  *	Called as &lt;&lt;FluffyDesc&gt;&gt;
@@ -5189,12 +5520,40 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
  *	Displays a detailed decription of the fluffy.
  *** */
 &lt;&lt;widget &quot;FluffyDesc&quot;&gt;&gt;
+
+	&lt;&lt;colorValue&gt;&gt;
+	&lt;&lt;statValue&gt;&gt;
+	
 	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes. 
 	&lt;br&gt;&lt;&lt;They&gt;&gt; is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
 	&lt;br&gt;Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
+	&lt;br&gt; Color Bonus: $activeFluffy.colorBonus. 
+	&lt;br&gt; Stat Bonus: $activeFluffy.statBonus.
+	
+	&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 1: &quot; + _price)&gt;&gt;
+	&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 2: &quot; + _price)&gt;&gt;
+	&lt;&lt;switch $activeFluffy.breed&gt;&gt;
+		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+	
+	&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 5: &quot; + _price)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
+	&lt;br&gt;[Price: _price]
+	
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -5215,7 +5574,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children &lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;@@.cyan;&lt;&lt;print  $globalFluffies[_fluffy.children[_i]].name&gt;&gt;@@ &lt;&lt;/for&gt;&gt;
 	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="fluffy creation widgets" tags="widget nobr" position="1100,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="fluffy creation widgets" tags="widget nobr" position="1225,225" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -5402,47 +5761,25 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;/switch&gt;&gt;
 
 	/* Pick a random trait:*/
-	&lt;&lt;switch random(0,9)&gt;&gt;
+	&lt;&lt;switch random(0,4)&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Bossy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.strong++&gt;&gt;
-			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-		&lt;&lt;case 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.strong++&gt;&gt;
-			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;set $activeFluffy.traits.push(&quot;Shy&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Sweet&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+			&lt;&lt;set $activeFluffy.traits.push(&quot;Lazy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Haughty&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
 		&lt;&lt;case 4&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Curious&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-		&lt;&lt;case 5&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Timid&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-		&lt;&lt;case 6&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Pensive&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
-			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-		&lt;&lt;case 7&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Indolent&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
-			&lt;&lt;set $activeFluffy.learning++&gt;&gt;	
-		&lt;&lt;case 8&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Rowdy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.strong++&gt;&gt;
+			&lt;&lt;set $activeFluffy.traits.push(&quot;Peppy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Playful&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.strong++&gt;&gt;
-			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 
 	&lt;&lt;else&gt;&gt;
@@ -5499,7 +5836,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.maxWeight * 0.0286).toFixed(3)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="misc widgets" tags="nobr widget" position="1225,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="misc widgets" tags="nobr widget" position="100,350" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -5683,7 +6020,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 &lt;&lt;widget flipCase&gt;&gt;
 	&lt;&lt;if $args[0] == $args[0].toUpperCase()&gt;&gt;&lt;&lt;set $args[0] = $args[0].toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $args[0] = $args[0].toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="pronoun widgets" tags="widget nobr" position="100,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="pronoun widgets" tags="widget nobr" position="225,350" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

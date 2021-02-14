@@ -1,7 +1,7 @@
-::Name Fluffy [nobr]
+::Fluffy Interact [nobr]
 
 /* **********
- * nameFluffy.tw
+ * fluffyInteract.tw
  *
  * Package: FluffyBreeder
  * Format: Twine2 (Sugarcube 2)
@@ -31,7 +31,7 @@
 <</if>>
 
 <div id="name-form">
-	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Name Fluffy">>
+	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Fluffy Interact">>
 	<<button "Rename">>
 		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
@@ -45,7 +45,7 @@
 <<run console.log("Details test 0: $activeFluffy.specialFriend  = " + $activeFluffy.specialFriend + " | $activeFluffy.name = " + $activeFluffy.name + " | ")>>
 
 <<capture _nSF>> 
-Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][$nextButton = "Back", $nextLink = "Fluffy List", $breedMare = -1, $breedStal = -1]]<<else>><<set _nSF = $globalFluffies[$activeFluffy.specialFriend]>>[[$globalFluffies[$activeFluffy.specialFriend].name|Name Fluffy][$activeFluffy = _nSF]].
+Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][$nextButton = "Back", $nextLink = "Fluffy List", $breedMare = -1, $breedStal = -1]]<<else>><<set _nSF = $globalFluffies[$activeFluffy.specialFriend]>>[[$globalFluffies[$activeFluffy.specialFriend].name|Fluffy Interact][$activeFluffy = _nSF]].
 <<button "Break Up">>
 	/* Clear both special friends flag, ending breeding*/
 	<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
@@ -76,6 +76,8 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<set $stress -= 10>>
 		<<if $stress < 0>><<set $stress = 0>><</if>>
 		<<set $actions-->>
+		<<set $activeFluffy.trust++>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#play-msg">><br>@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit <<print $activeFluffy.name>> heheheh!.@@<</replace>>
 	<<else>>
 		<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
@@ -88,10 +90,18 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 <div id="train-form">
 <<set _desc = "Train " + $activeFluffy.name>> 
 <<button _desc>>
+	<<if $actions > 0>>
+		<<set $stress += 1>>
+		<<set $actions-->>
+		<<set $activeFluffy.training++>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
+	<<else>>
+		<<replace "#train-msg">><br>You are too tired for training right now.<</replace>>
+	<</if>>
 <</button>>
 /* Form for error message to display*/
 <span id="train-msg"></span>
-@@.orange;Not implemented.@@
 </div>
 <br>
 <div id="abuse-form">

@@ -115,7 +115,18 @@
 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 		<<set _shopFluffy = clone($activeFluffy)>>
 		<<FluffyDesc>>
-		<<They>> would cost 
+		<br><<They>> would cost 
+
+		<<colorValue>>
+		<<statValue>>
+	
+		<<if $shop == "breeder">>
+			<<set $activeFluffy.training = 20>>
+			<<set $activeFluffy.trust = 40>>
+			<<set _price = Number($activeFluffy.training)>>
+			<<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
+		<</if>>
+	
 		<<switch $activeFluffy.breed>>
 			<<case "unicorn">>
 				<<if $shop == "mart">> 
@@ -123,7 +134,7 @@
 				<<elseif $shop == "mill">> 
 					<<set _price = Number($unicornPrice.mill).toFixed(2)>>
 				<<elseif $shop == "breeder">> 
-					<<set _price = Number($unicornPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
 				<<else>>
 					<<set _price = 0>>
 				<</if>>
@@ -132,15 +143,15 @@
 					<<set _price = Number($pegasusPrice.mart).toFixed(2)>>
 				<<elseif $shop == "mill">> 
 					<<set _price = Number($pegasusPrice.mill).toFixed(2)>>
-				<<elseif $shop == "breeder">> 
-					<<set _price = Number($pegasusPrice.deluxe).toFixed(2)>>
+				<<elseif $shop == "breeder">>
+					<<set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
 				<<else>>
 					<<set _price = 0>>
 				<</if>>
 			<<case "alicorn">>
 				<<if $shop == "breeder">> 
-					<<set _price = Number($alicornPrice.deluxe).toFixed(2)>>
-				<<else>>
+					<<set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
+					<<else>>
 					<<set _price = 0>>
 				<</if>>
 			<<default>>
@@ -149,16 +160,24 @@
 				<<elseif $shop == "mill">> 
 					<<set _price = Number($earthPrice.mill).toFixed(2)>>
 				<<elseif $shop == "breeder">>
-					<<set _price = Number($earthPrice.deluxe).toFixed(2)>>
+					<<set _price = Number(Number($earthPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
 				<<else>>
 					<<set _price = 0>>
 				<</if>>
 		<</switch>>
-		<br>It would cost @@.green;¤_price.@@
-		<hr>[[Keep Looking|Buy Fluffies]]  | 
-		<<if Number($cash) >= Number(_price)  || Number(_price) == 0>>
+		
+		<<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
+		<<set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)>>
+		
+		@@.green;¤_price.@@
+		<hr>
+		[[Keep Looking|Buy Fluffies]]  | 
+		<<if $actions < 1>>
+			//You are too tired for more shopping// | 
+		<<elseif Number($cash) >= Number(_price)  || Number(_price) == 0>>
 			<<link "Add to the cart" "Buy Fluffies">>
 				<<set $cash-= _price>>
+				<<set $actions-->>
 				
 				
 				/* Add to the global list and store list*/
@@ -177,9 +196,9 @@
 				<<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
 			<</link>> | 
 		<<elseif _count > $ourStore.shelter>>
-			//You don't have enough room to take this fluffy.// | 
+			//You don't have enough room to take this fluffy// | 
 		<<else>>
-			//You lack the necessary funds to buy this fluffy.// | 
+			//You lack the necessary funds to buy this fluffy// | 
 		<</if>>
 		 [[End Shopping|Week Start]]
 /*
