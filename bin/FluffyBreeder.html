@@ -3015,7 +3015,7 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;[[Improve the Store|Buy Upgrades]].
 &lt;br&gt;
-&lt;br&gt;Get Fluffies: //@@.orange;Prices at Mill and Breeder are not calibrated correctly, but Fluffy Mart prices should be correct (or very near to it)//
+&lt;br&gt;Get Fluffies: //@@.orange;Prices at Mill and Breeder are not calibrated correctly, but Fluffy Mart prices should be correct (or very near to it)@@//
 &lt;br&gt;[[Visit Fluffy Mart|Buy Fluffies][$shop = &quot;mart&quot;]].
 &lt;br&gt;[[Visit a Fluffy Mill|Buy Fluffies][$shop = &quot;mill&quot;]].
 &lt;br&gt;[[Visit a Fluffy Breeder|Buy Fluffies][$shop = &quot;breeder&quot;]].
@@ -3229,7 +3229,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.41&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.42&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3255,6 +3255,15 @@ a text-based fluffy management game
 &lt;&lt;set $alicornMonster = 1&gt;&gt; 
 &lt;&lt;set $pooBaby = 1&gt;&gt;
 &lt;&lt;set $smartySyndrom = 1&gt;&gt;
+
+/* **********
+ *	Default player stats
+ *********** */
+&lt;&lt;set $stress = 0&gt;&gt;
+&lt;&lt;set $training = 0&gt;&gt;
+&lt;&lt;set $hugbox = 0&gt;&gt;
+&lt;&lt;set $abuse = 0&gt;&gt;
+
 
 /* **********
  *	Default fluffy settings
@@ -4369,31 +4378,59 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 
 		&lt;&lt;if $mom.pregnant &amp;&amp; Number($mom.dueDate) &lt; Number($week)&gt;&gt;
 			&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
-			&lt;br&gt;SKREEEEE BIGGGEST POOOPIES
+			&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			&lt;br&gt;
 			
 			&lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
-&lt;&lt;run console.log(&quot;Breeding test 5: &quot; + $globalFluffies.length)&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 5: &quot; + $mom.litter)&gt;&gt;
 			&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
-				&lt;&lt;breedFluffies $mom $dad&gt;&gt;
-				&lt;br&gt;Foal#&lt;&lt;print _f+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
-				&lt;hr&gt;
+			
+				&lt;&lt;if $mom.fertility &lt; 1&gt;&gt;
+					&lt;&lt;set _diff = 35 - $mom.children.length&gt;&gt;
+				&lt;&lt;elseif $mom.fertility &lt; 2&gt;&gt;
+					&lt;&lt;set _diff = 55 - $mom.children.length&gt;&gt;
+				&lt;&lt;elseif $mom.fertility &lt; 3&gt;&gt;
+					&lt;&lt;set _diff = 75 - $mom.children.length&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _diff = 95 - $mom.children.length&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 
-				&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
-				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-				&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
-				&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
-				&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-				
-				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-				
-				&lt;&lt;set $ourStore.foals++&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 5.1: &quot; + _diff)&gt;&gt;
+				&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
+					&lt;br&gt;@@.cyan;Babeh?  Why no chirp?  Babeh need milkies...huhuhu am worstest mumma...@@
+					&lt;&lt;set $mom.stress += 25&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 5.2: &quot; + _diff)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+&lt;&lt;run console.log(&quot;Breeding test 5.3: &quot; + _diff)&gt;&gt;
+					&lt;&lt;breedFluffies $mom $dad&gt;&gt;
+					&lt;br&gt;Foal#&lt;&lt;print _f+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
+					&lt;hr&gt;
+	
+					&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+					&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
+					&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+					
+					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+					
+					&lt;&lt;set $ourStore.foals++&gt;&gt;
+					
+					&lt;&lt;set $mom.nursing++&gt;&gt;
+					&lt;&lt;set $mom.stress += 5&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 
 			&lt;&lt;/for&gt;&gt;
 &lt;&lt;run console.log(&quot;Breeding test 6: &quot; + $globalFluffies.length)&gt;&gt;
-			&lt;&lt;set $mom.nursing = $mom.litter&gt;&gt;
 			&lt;&lt;set $mom.litter = 0&gt;&gt;
+
+			&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
+				&lt;&lt;set $mom.fertility--&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $mom.stress += 50&gt;&gt;
+				&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $mom.dueDate = -1&gt;&gt;
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
@@ -4577,13 +4614,17 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;if $actions &gt; 0&gt;&gt;
 		&lt;&lt;set $stress -= 10&gt;&gt;
 		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
-		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $hugbox += 2&gt;&gt;
+		&lt;&lt;set $training += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;play-msg&quot;&gt;&lt;/span&gt;
@@ -4595,12 +4636,17 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;if $actions &gt; 0&gt;&gt;
 		&lt;&lt;set $stress += 1&gt;&gt;
 		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $hugbox += 1&gt;&gt;
+		&lt;&lt;set $training += 2&gt;&gt;
 		&lt;&lt;set $activeFluffy.training++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;train-msg&quot;&gt;&lt;/span&gt;
@@ -4609,10 +4655,24 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;div id=&quot;abuse-form&quot;&gt;
 &lt;&lt;set _desc = &quot;Abuse &quot; + $activeFluffy.name&gt;&gt; 
 &lt;&lt;button _desc&gt;&gt;
+	&lt;&lt;if $actions &gt; 0&gt;&gt;
+		&lt;&lt;set $stress -= 50&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $abuse += 2&gt;&gt;
+		&lt;&lt;set $training += 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.stress++&gt;&gt;
+		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for this right now.&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;abuse-msg&quot;&gt;&lt;/span&gt;
-@@.orange;Not implemented.@@
 &lt;/div&gt;
 
 
@@ -5650,7 +5710,8 @@ Inbreeding:
 		sold: false,
 		dead: false,
 		weaned: true,
-		traits: []
+		traits: [],
+		stress: 0
 	}
 	&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
@@ -5723,7 +5784,8 @@ Inbreeding:
 			sold: false,
 			dead: false,
 			weaned: true,
-			traits: []
+			traits: [],
+			stress: 0
 		} &gt;&gt;
 
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;

@@ -75,13 +75,17 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 	<<if $actions > 0>>
 		<<set $stress -= 10>>
 		<<if $stress < 0>><<set $stress = 0>><</if>>
-		<<set $actions-->>
+		<<set $hugbox += 2>>
+		<<set $training += 1>>
 		<<set $activeFluffy.trust++>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#play-msg">><br>@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit <<print $activeFluffy.name>> heheheh!.@@<</replace>>
 	<<else>>
 		<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
 	<</if>>
+
+	<<replace "#train-msg">><</replace>>
+	<<replace "#abuse-msg">><</replace>>
 <</button>>
 /* Form for error message to display*/
 <span id="play-msg"></span>
@@ -93,12 +97,17 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 	<<if $actions > 0>>
 		<<set $stress += 1>>
 		<<set $actions-->>
+		<<set $hugbox += 1>>
+		<<set $training += 2>>
 		<<set $activeFluffy.training++>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
 	<<else>>
 		<<replace "#train-msg">><br>You are too tired for training right now.<</replace>>
 	<</if>>
+	
+	<<replace "#abuse-msg">><</replace>>
+	<<replace "#play-msg">><</replace>>
 <</button>>
 /* Form for error message to display*/
 <span id="train-msg"></span>
@@ -107,10 +116,24 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 <div id="abuse-form">
 <<set _desc = "Abuse " + $activeFluffy.name>> 
 <<button _desc>>
+	<<if $actions > 0>>
+		<<set $stress -= 50>>
+		<<set $actions-->>
+		<<set $abuse += 2>>
+		<<set $training += 1>>
+		<<set $activeFluffy.stress++>>
+		<<set $activeFluffy.trust-->>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<replace "#abuse-msg">><br>@@.cyan;Huhuhu why hurt good fluffy?.@@<</replace>>
+	<<else>>
+		<<replace "#abuse-msg">><br>You are too tired for this right now.<</replace>>
+	<</if>>
+	
+	<<replace "#train-msg">><</replace>>
+	<<replace "#play-msg">><</replace>>
 <</button>>
 /* Form for error message to display*/
 <span id="abuse-msg"></span>
-@@.orange;Not implemented.@@
 </div>
 
 

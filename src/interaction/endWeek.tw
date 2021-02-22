@@ -277,31 +277,59 @@
 
 		<<if $mom.pregnant && Number($mom.dueDate) < Number($week)>>
 			<br>$mom.name is giving birth to $mom.litter foals.
-			<br>SKREEEEE BIGGGEST POOOPIES
+			<br>@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			<br>
 			
 			<<set $dad = $globalFluffies[$mom.pregnantBy]>>
-<<run console.log("Breeding test 5: " + $globalFluffies.length)>>
+<<run console.log("Breeding test 5: " + $mom.litter)>>
 			<<for _fo = 0; _fo < $mom.litter; _fo++>>
-				<<breedFluffies $mom $dad>>
-				<br>Foal#<<print _f+1>> <<FluffyDesc>>
-				<hr>
+			
+				<<if $mom.fertility < 1>>
+					<<set _diff = 35 - $mom.children.length>>
+				<<elseif $mom.fertility < 2>>
+					<<set _diff = 55 - $mom.children.length>>
+				<<elseif $mom.fertility < 3>>
+					<<set _diff = 75 - $mom.children.length>>
+				<<else>>
+					<<set _diff = 95 - $mom.children.length>>
+				<</if>>
 
-				<<set $activeFluffy.ageWeeks = 0>>
-				<<set $activeFluffy.ID = $globalFluffies.length>>
-				<<set $mom.children.push($activeFluffy.ID)>>
-				<<set $dad.children.push($activeFluffy.ID)>>
-				<<run $ourStore.fluffies.push($activeFluffy.ID)>>
-				<<run $globalFluffies.push($activeFluffy)>>
-				
-				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-				
-				<<set $ourStore.foals++>>
+<<run console.log("Breeding test 5.1: " + _diff)>>
+				<<if random(0, 100) >= _diff>>
+					<br>@@.cyan;Babeh?  Why no chirp?  Babeh need milkies...huhuhu am worstest mumma...@@
+					<<set $mom.stress += 25>>
+<<run console.log("Breeding test 5.2: " + _diff)>>
+				<<else>>
+<<run console.log("Breeding test 5.3: " + _diff)>>
+					<<breedFluffies $mom $dad>>
+					<br>Foal#<<print _f+1>> <<FluffyDesc>>
+					<hr>
+	
+					<<set $activeFluffy.ageWeeks = 0>>
+					<<set $activeFluffy.ID = $globalFluffies.length>>
+					<<set $mom.children.push($activeFluffy.ID)>>
+					<<set $dad.children.push($activeFluffy.ID)>>
+					<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+					<<run $globalFluffies.push($activeFluffy)>>
+					
+					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+					
+					<<set $ourStore.foals++>>
+					
+					<<set $mom.nursing++>>
+					<<set $mom.stress += 5>>
+				<</if>>
 
 			<</for>>
 <<run console.log("Breeding test 6: " + $globalFluffies.length)>>
-			<<set $mom.nursing = $mom.litter>>
 			<<set $mom.litter = 0>>
+
+			<<if $mom.fertility > 0>>
+				<<set $mom.fertility-->>
+			<<else>>
+				<<set $mom.stress += 50>>
+				<br>@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+			<</if>>
 			<<set $mom.dueDate = -1>>
 			<<set $mom.pregnant = false>>
 			<<set $mom.pregnantBy = -1>>
