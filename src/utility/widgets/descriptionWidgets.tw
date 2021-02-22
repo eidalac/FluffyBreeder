@@ -62,7 +62,7 @@
 	<<statValue>>
 	
 	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
-	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat, <<inlineColor $activeFluffy.mColor>> mane and <<inlineColor $activeFluffy.eColor>> eyes. 
+	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor>> eyes<</if>>. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
@@ -108,7 +108,8 @@
 		<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@ | ">> 
 	<</for>>
 	
-	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat | <<inlineColor _fluffy.mColor>> mane | <<inlineColor _fluffy.eColor>> eyes
+
+	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;Mother: <<if _fluffy.mother == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@<</if>> 

@@ -281,6 +281,7 @@
 			<br>$mom.name is giving birth to $mom.litter foals.
 			<br>@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			<br>
+			<hr>
 			
 			<<set $dad = $globalFluffies[$mom.pregnantBy]>>
 <<run console.log("Breeding test 5: " + $mom.litter)>>
@@ -295,16 +296,22 @@
 				<<else>>
 					<<set _diff = 95 - $mom.children.length>>
 				<</if>>
+				
+				<<breedFluffies $mom $dad>>
 
 <<run console.log("Breeding test 5.1: " + _diff)>>
 				<<if random(0, 100) >= _diff>>
-					<br>@@.cyan;Babeh?  Why no chirp?  Babeh need milkies...huhuhu am worstest mumma...@@
+					<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
+					<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
 					<<set $mom.stress += 25>>
+					<br>
+					<br>
+					<hr>
 <<run console.log("Breeding test 5.2: " + _diff)>>
 				<<else>>
 <<run console.log("Breeding test 5.3: " + _diff)>>
-					<<breedFluffies $mom $dad>>
-					<br>Foal#<<print _f+1>> <<FluffyDesc>>
+					
+					<br>Foal#<<print _fo+1>> <<FluffyDesc>>
 					<hr>
 	
 					<<set $activeFluffy.ageWeeks = 0>>

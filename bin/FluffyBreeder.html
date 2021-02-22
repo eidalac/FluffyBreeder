@@ -4382,6 +4382,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
 			&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			&lt;br&gt;
+			&lt;hr&gt;
 			
 			&lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
 &lt;&lt;run console.log(&quot;Breeding test 5: &quot; + $mom.litter)&gt;&gt;
@@ -4396,16 +4397,22 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _diff = 95 - $mom.children.length&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+				
+				&lt;&lt;breedFluffies $mom $dad&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Breeding test 5.1: &quot; + _diff)&gt;&gt;
 				&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
-					&lt;br&gt;@@.cyan;Babeh?  Why no chirp?  Babeh need milkies...huhuhu am worstest mumma...@@
+					&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
+					&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
 					&lt;&lt;set $mom.stress += 25&gt;&gt;
+					&lt;br&gt;
+					&lt;br&gt;
+					&lt;hr&gt;
 &lt;&lt;run console.log(&quot;Breeding test 5.2: &quot; + _diff)&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 &lt;&lt;run console.log(&quot;Breeding test 5.3: &quot; + _diff)&gt;&gt;
-					&lt;&lt;breedFluffies $mom $dad&gt;&gt;
-					&lt;br&gt;Foal#&lt;&lt;print _f+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
+					
+					&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
 					&lt;hr&gt;
 	
 					&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
@@ -5587,7 +5594,7 @@ Inbreeding:
 	&lt;&lt;statValue&gt;&gt;
 	
 	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.
-	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes. 
+	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 3&gt;&gt;, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt;&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 1&gt;&gt; and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;. 
 	&lt;br&gt;&lt;&lt;They&gt;&gt; is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
@@ -5633,7 +5640,8 @@ Inbreeding:
 		&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[_fluffy.children[_i]].name + &quot;@@ | &quot;&gt;&gt; 
 	&lt;&lt;/for&gt;&gt;
 	
-	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat | &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane | &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes
+
+	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother: &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
