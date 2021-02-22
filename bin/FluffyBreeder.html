@@ -4306,7 +4306,9 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	/* ***
 	 *	Grow foals.
 	 *** */
+&lt;&lt;run console.log(&quot;Growth test 0: age = &quot; + _thisFluffy.age)&gt;&gt;
 	 &lt;&lt;if _thisFluffy.age == 0 &amp;&amp; Number(_thisFluffy.ageWeeks) &lt;= 44&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test 0: weight = &quot; + _thisFluffy.weight + &quot; age = &quot; + _thisFluffy.ageWeeks)&gt;&gt;
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
 	 	&lt;&lt;set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
@@ -4322,8 +4324,8 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 		&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 		&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 
-
-		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.2 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
+&lt;&lt;run console.log(&quot;Growth test 1: weight % = &quot; + Number(_thisFluffy.weight / _thisFluffy.maxWeight))&gt;&gt;
+		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.14 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother].nursing--&gt;&gt;
 
 			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; is ready for solid food.
@@ -5624,16 +5626,22 @@ Inbreeding:
  *	Displays a condensed diplay of fluffy information
  *** */
 &lt;&lt;widget &quot;shortDesc&quot;&gt;&gt;
+&lt;&lt;capture _children&gt;&gt;
 	&lt;&lt;set _fluffy = $args[0]&gt;&gt;
-
+	&lt;&lt;set _children = &quot;&quot;&gt;&gt;
+	&lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;
+		&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[_fluffy.children[_i]].name + &quot;@@ | &quot;&gt;&gt; 
+	&lt;&lt;/for&gt;&gt;
+	
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat | &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane | &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
-	 Father &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
-	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend &lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children &lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;@@.cyan;&lt;&lt;print  $globalFluffies[_fluffy.children[_i]].name&gt;&gt;@@ &lt;&lt;/for&gt;&gt;
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother: &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
+	 Father: &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
+	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children: &lt;&lt;linkreplace &quot;_fluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;
 	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
+&lt;&lt;/capture&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="fluffy creation widgets" tags="widget nobr" position="1225,225" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *

@@ -205,7 +205,9 @@
 	/* ***
 	 *	Grow foals.
 	 *** */
+<<run console.log("Growth test 0: age = " + _thisFluffy.age)>>
 	 <<if _thisFluffy.age == 0 && Number(_thisFluffy.ageWeeks) <= 44>>
+<<run console.log("Growth test 0: weight = " + _thisFluffy.weight + " age = " + _thisFluffy.ageWeeks)>>
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
 	 	<<set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)>>
@@ -221,8 +223,8 @@
 		<<set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
 		<<set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
 
-
-		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.2 && _thisFluffy.weaned == false>> 	
+<<run console.log("Growth test 1: weight % = " + Number(_thisFluffy.weight / _thisFluffy.maxWeight))>>
+		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.14 && _thisFluffy.weaned == false>> 	
 	 		<<set $globalFluffies[_thisFluffy.mother].nursing-->>
 
 			<br><<print _thisFluffy.name>> is ready for solid food.
