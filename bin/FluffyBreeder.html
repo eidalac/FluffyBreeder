@@ -3646,6 +3646,27 @@ profitsTotal: 0
 		
 	&lt;&lt;run console.log(&quot;Fluffy mart defect count: &quot; + _defectCount)&gt;&gt;
 	
+		&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+			&lt;&lt;set $activeFluffy.ageWeeks = random(5, 38)&gt;&gt;
+			
+		 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
+		 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
+		 	&lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+		 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
+		 	&lt;&lt;set _newW =  Number($activeFluffy.maxWeight * _newWMulti)&gt;&gt;
+		 	&lt;&lt;set _newL = _newW / $activeFluffy.weightMulti&gt;&gt;
+		 	&lt;&lt;set _newH = _newL * ($activeFluffy.heightMulti)&gt;&gt;
+		 	
+		 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
+		 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+	
+		 	&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+			&lt;&lt;set $activeFluffy.height = Number($activeFluffymaxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+			&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+
+		&lt;&lt;/if&gt;&gt;
+		
 	
 		&lt;br&gt;
 		&lt;br&gt;You find this fluffy:
@@ -3670,6 +3691,8 @@ profitsTotal: 0
 	
 		&lt;&lt;switch $activeFluffy.breed&gt;&gt;
 			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+				&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
+				/*
 				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
@@ -3679,8 +3702,10 @@ profitsTotal: 0
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+				*/
 			&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
+				&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
+				/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
@@ -3688,14 +3713,19 @@ profitsTotal: 0
 					&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;*/
 			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+				/*
 				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+				*/
 			&lt;&lt;default&gt;&gt;
+				&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
+				/*
 				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
 				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
@@ -3705,11 +3735,17 @@ profitsTotal: 0
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _price = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+				*/
 		&lt;&lt;/switch&gt;&gt;
 		
 		&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
 		&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
-		
+
+		&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
+			&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+
 		@@.green;¤_price.@@
 		&lt;hr&gt;
 		[[Keep Looking|Buy Fluffies]]  | 
@@ -4267,6 +4303,16 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 			&lt;&lt;set _price = Number(_price * _thisFluffy.colorBonus).toFixed(2)&gt;&gt;
 		&lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
 
+	&lt;&lt;set _ageMulti = 1&gt;&gt;
+	
+	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; _thisFluffy.ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number((_thisFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 7: &quot; + _ageMulti)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
+
+			&lt;&lt;set _price = Number(_price * 2 / 3).toFixed(2)&gt;&gt;
 
 			&lt;br&gt;_thisFluffy.name was sold for _price
 			&lt;&lt;set $cash += Number(_price)&gt;&gt;
@@ -5621,6 +5667,15 @@ Inbreeding:
 &lt;&lt;run console.log(&quot;Price test 5: &quot; + _price)&gt;&gt;
 	&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
 &lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
+
+	&lt;&lt;set _ageMulti = 1&gt;&gt;
+	
+	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 7: &quot; + _ageMulti)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
 	&lt;br&gt;[Price: _price]
 	
 &lt;&lt;/widget&gt;&gt;
