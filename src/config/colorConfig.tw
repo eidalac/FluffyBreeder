@@ -32,7 +32,7 @@
 	
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
 	<<for _i = 0; _i < $Colors.length; _i++>>
-<<run console.log("Color Test 0.1: " + $activeFluffy.cColor + " " + $Colors[_i].Name)>>
+/*<<run console.log("Color Test 0.1: " + $activeFluffy.cColor + " " + $Colors[_i].Name)>>*/
 		<<if $activeFluffy.cColor == $Colors[_i].Name>>
 			<<set _coatTier = $Colors[_i].Tier>>
 			<<set _coatGroup = $Colors[_i].Group>>
@@ -46,7 +46,7 @@
 			<<set _eyeGroup = $Colors[_i].Group>>
 		<</if>>
 	<</for>>
-<<run console.log("Color Test 1: " + _coatTier + " " + _maneTier + " " + _eyeTier)>>
+/*<<run console.log("Color Test 1: " + _coatTier + " " + _maneTier + " " + _eyeTier)>>*/
 	/* No matches found, bad*/
 	<<if _coatTier == "" || _coatGroup == "">>
 		<br>@@.red;No color match found for coat: <<print $activeFluffy.ID>>.
@@ -66,7 +66,7 @@
 	
 	/* Divide by 6 to get the multplier (1-6) */
 	<<set _colorBonus = Number(_colorBonus / 12).toFixed(2)>>
-<<run console.log("Color Test 2: " + _colorBonus)>>
+/*<<run console.log("Color Test 2: " + _colorBonus)>>*/
 
 	/* ***
 	 *	Complimentary pairs:
@@ -79,7 +79,11 @@
 	
 	/* Colors match */
 	<<if _coatGroup == _maneGroup>>
-		<<set _pairBonus = 0.75>>
+		<<if _coatGroup == "Brown">>
+			<<set _pairBonus = 0>>
+		<<else>>
+			<<set _pairBonus = 0.75>>
+		<</if>>
 	
 	/* Complimentary pair */
 	<<elseif _coatGroup == "Blue" && _maneGroup == "Orange">>
@@ -97,12 +101,12 @@
 	<<elseif _coatGroup == "Brown" && _maneGroup == "Brown">>
 		<<set _pairBonus = 0>>
 	<</if>>
-<<run console.log("Color Test 3: " + _pairBonus)>>
+/*<<run console.log("Color Test 3: " + _pairBonus)>>*/
 	<<set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)>>
 	
 	/* Trending to high, try cutting down by 1 point overall.*/
 	/*<<set $activeFluffy.colorBonus-->>*/
-<<run console.log("Color Test 4: " + $activeFluffy.colorBonus )>>
+/*<<run console.log("Color Test 4: " + $activeFluffy.colorBonus )>>*/
 <</widget>>
 
 
@@ -119,62 +123,59 @@
 	<<elseif $args.length > 2>>
 		<<run console.log("Limit Color called with too many arguments.")>>
 	<</if>>
-	
+<<run console.log("Color Change test 0: " + $args[0] + " " + $args[1])>>
 	/* Some logic/sanity checking: */ 
 	<<if $args.length == 1>>	
 		<<set _low = 1>>
 		<<set _high = $args[0]>>
-	<<else>>
+	<<elseif $args[0] < $args[1]>>
 		<<set _low = $args[0]>>
 		<<set _high = $args[1]>>
+	<<else>>
+		<<set _low = $args[1]>>
+		<<set _high = $args[0]>>
 	<</if>>
 	
-	<<if _high > _low>>
-		<<set _temp = _high>>
-		<<set _low = _high>>
-		<<set _high = _temp>>
-	<</if>>
-	
-	<<if _high > 5>>
-		<<set _high = 5>>
+	<<if _high > 6>>
+		<<set _high = 6>>
 	<</if>>
 	
 	<<if _low < 1>>
 		<<set _low = 1>>
 	<</if>>
-
+<<run console.log("Color Change test 1: " + _low + " " + _high)>>
 	/* Ignor eyes, only look at coat and mane */
-	<<set _cColors = $Colors>>
-	<<set _mColors = $Colors>>
-	
-	<<set _coatTier = "">>
-	<<set _maneTier = "">>
-	
-	<<set _coatGroup = "">>
-	<<set _maneGroup = "">>
+	<<set _nColors = clone($Colors)>>
+<<run console.log("Color Change test 2: " + _nColors.length)>>
 
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
-	<<for _i = 0; _i < $Colors.length; _i++>>
-	
-		/* Scrub any that are out of range */
-		<<if $Colors[_i].Tier > _high>>
-			<<run _cColors.deleteAt($Colors[_i])>>
-			<<run _mColors.deleteAt($Colors[_i])>>
-		<</if>>
-		<<if $Colors[_i].Tier < _low>>
-			<<run _cColors.deleteAt($Colors[_i])>>
-			<<run _mColors.deleteAt($Colors[_i])>>
-		<</if>>
+	<<run _nColors.deleteWith(function (val) { 	return val.Tier < _low; })>>
+	<<run _nColors.deleteWith(function (val) { 	return val.Tier > _high; })>>
 
-		<<if $activeFluffy.cColor == $Colors[_i].Name>>
-			<<set _coatTier = $Colors[_i].Tier>>
-		<</if>>
-		<<if $activeFluffy.mColor == $Colors[_i].Name>>
-			<<set _maneTier = $Colors[_i].Tier>>
-		<</if>>
-	<</for>>
-	
+<<run console.log("Color Change test 2: " + _nColors.length)>>
 	/* Now we have an arry for colors that are within the specified ranges.*/
+	
+	/*  	have to set the genes... */
+ 	<<set _randomCoat = _nColors.random()>>
+	<<set _randomMane = _nColors.random()>>
 
+
+<<run console.log("Color Change test 0: " + $activeFluffy.cColor)>>
+<<run console.log("Color Change test 0: " + $activeFluffy.mColor)>>
+<<run console.log("Color Change test 0: " + _randomCoat.Name + " " + _randomCoat.Tier)>>
+<<run console.log("Color Change test 0: " + _randomMane.Name + " " + _randomMane.Tier)>>
+	
+	<<run $activeFluffy.genes.setManeColor(_randomMane.Gene)>>
+	<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene)>>
+	<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene)>>
+
+	<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+	<<set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()>>
+	<<set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()>>
+	<<set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()>>
+	
+
+<<run console.log("Color Change test 1: " + $activeFluffy.cColor)>>
+<<run console.log("Color Change test 1: " + $activeFluffy.mColor)>>
 	
 <</widget>>

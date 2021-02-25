@@ -1444,6 +1444,21 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bByyrRoO":
 		geneString = "Gold";
 		break;
+	case "bBYYrrOO":
+		geneString = "Lavender";
+		break;
+	case "bByyrroO":
+		geneString = "CornflowerBlue";
+		break;
+	case "BByYrROO":
+		geneString = "CornflowerBlue";
+		break;
+	case "bByYRROO":
+		geneString = "MidnightBlue";
+		break;
+	case "bBYYRRoo":
+		geneString = "Orchid";
+		break;
 	case "bbyyrROO":
 		geneString = "PeachPuff";
 		break;
@@ -1483,9 +1498,6 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bBYYrroO":
 		geneString = "Plum";
 		break;
-	case "bBYYrrOO":
-		geneString = "Lavender";
-		break;
 	case "bByYrRoo":
 		geneString = "Purple";
 		break;
@@ -1494,9 +1506,6 @@ Genome.prototype.getGeneColor = function(index) {
 		break;
 	case "bBYYRROO":
 		geneString = "Fuchsia";
-		break;
-	case "bBYYRRoo":
-		geneString = "Orchid";
 		break;
 	case "bBYYrRoO":
 		geneString = "OrangeRed";
@@ -1630,9 +1639,6 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bbYYRRoo":
 		geneString = "Cornsilk";
 		break;
-	case "bByyrroO":
-		geneString = "CornflowerBlue";
-		break;
 	case "bByyrrOO":
 		geneString = "BlueViolet";
 		break;
@@ -1672,14 +1678,8 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bByYRRoO":
 		geneString = "Blue";
 		break;
-	case "bByYRROO":
-		geneString = "MidnightBlue";
-		break;
 	case "bByYRRoo":
 		geneString = "RoyalBlue";
-		break;
-	case "BByYrROO":
-		geneString = "CornflowerBlue";
 		break;
 	case "BBYYrROO":
 		geneString = "Navy";

@@ -1817,6 +1817,21 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bByyrRoO":
 		geneString = "Gold";
 		break;
+	case "bBYYrrOO":
+		geneString = "Lavender";
+		break;
+	case "bByyrroO":
+		geneString = "CornflowerBlue";
+		break;
+	case "BByYrROO":
+		geneString = "CornflowerBlue";
+		break;
+	case "bByYRROO":
+		geneString = "MidnightBlue";
+		break;
+	case "bBYYRRoo":
+		geneString = "Orchid";
+		break;
 	case "bbyyrROO":
 		geneString = "PeachPuff";
 		break;
@@ -1856,9 +1871,6 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bBYYrroO":
 		geneString = "Plum";
 		break;
-	case "bBYYrrOO":
-		geneString = "Lavender";
-		break;
 	case "bByYrRoo":
 		geneString = "Purple";
 		break;
@@ -1867,9 +1879,6 @@ Genome.prototype.getGeneColor = function(index) {
 		break;
 	case "bBYYRROO":
 		geneString = "Fuchsia";
-		break;
-	case "bBYYRRoo":
-		geneString = "Orchid";
 		break;
 	case "bBYYrRoO":
 		geneString = "OrangeRed";
@@ -2003,9 +2012,6 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bbYYRRoo":
 		geneString = "Cornsilk";
 		break;
-	case "bByyrroO":
-		geneString = "CornflowerBlue";
-		break;
 	case "bByyrrOO":
 		geneString = "BlueViolet";
 		break;
@@ -2045,14 +2051,8 @@ Genome.prototype.getGeneColor = function(index) {
 	case "bByYRRoO":
 		geneString = "Blue";
 		break;
-	case "bByYRROO":
-		geneString = "MidnightBlue";
-		break;
 	case "bByYRRoo":
 		geneString = "RoyalBlue";
-		break;
-	case "BByYrROO":
-		geneString = "CornflowerBlue";
 		break;
 	case "BBYYrROO":
 		geneString = "Navy";
@@ -2538,7 +2538,7 @@ console.log("cleared defects parts = " + this.genes[index])
 	
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
 	&lt;&lt;for _i = 0; _i &lt; $Colors.length; _i++&gt;&gt;
-&lt;&lt;run console.log(&quot;Color Test 0.1: &quot; + $activeFluffy.cColor + &quot; &quot; + $Colors[_i].Name)&gt;&gt;
+/*&lt;&lt;run console.log(&quot;Color Test 0.1: &quot; + $activeFluffy.cColor + &quot; &quot; + $Colors[_i].Name)&gt;&gt;*/
 		&lt;&lt;if $activeFluffy.cColor == $Colors[_i].Name&gt;&gt;
 			&lt;&lt;set _coatTier = $Colors[_i].Tier&gt;&gt;
 			&lt;&lt;set _coatGroup = $Colors[_i].Group&gt;&gt;
@@ -2552,7 +2552,7 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;set _eyeGroup = $Colors[_i].Group&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
-&lt;&lt;run console.log(&quot;Color Test 1: &quot; + _coatTier + &quot; &quot; + _maneTier + &quot; &quot; + _eyeTier)&gt;&gt;
+/*&lt;&lt;run console.log(&quot;Color Test 1: &quot; + _coatTier + &quot; &quot; + _maneTier + &quot; &quot; + _eyeTier)&gt;&gt;*/
 	/* No matches found, bad*/
 	&lt;&lt;if _coatTier == &quot;&quot; || _coatGroup == &quot;&quot;&gt;&gt;
 		&lt;br&gt;@@.red;No color match found for coat: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
@@ -2572,7 +2572,7 @@ console.log("cleared defects parts = " + this.genes[index])
 	
 	/* Divide by 6 to get the multplier (1-6) */
 	&lt;&lt;set _colorBonus = Number(_colorBonus / 12).toFixed(2)&gt;&gt;
-&lt;&lt;run console.log(&quot;Color Test 2: &quot; + _colorBonus)&gt;&gt;
+/*&lt;&lt;run console.log(&quot;Color Test 2: &quot; + _colorBonus)&gt;&gt;*/
 
 	/* ***
 	 *	Complimentary pairs:
@@ -2585,7 +2585,11 @@ console.log("cleared defects parts = " + this.genes[index])
 	
 	/* Colors match */
 	&lt;&lt;if _coatGroup == _maneGroup&gt;&gt;
-		&lt;&lt;set _pairBonus = 0.75&gt;&gt;
+		&lt;&lt;if _coatGroup == &quot;Brown&quot;&gt;&gt;
+			&lt;&lt;set _pairBonus = 0&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _pairBonus = 0.75&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	
 	/* Complimentary pair */
 	&lt;&lt;elseif _coatGroup == &quot;Blue&quot; &amp;&amp; _maneGroup == &quot;Orange&quot;&gt;&gt;
@@ -2603,12 +2607,12 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;elseif _coatGroup == &quot;Brown&quot; &amp;&amp; _maneGroup == &quot;Brown&quot;&gt;&gt;
 		&lt;&lt;set _pairBonus = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Color Test 3: &quot; + _pairBonus)&gt;&gt;
+/*&lt;&lt;run console.log(&quot;Color Test 3: &quot; + _pairBonus)&gt;&gt;*/
 	&lt;&lt;set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)&gt;&gt;
 	
 	/* Trending to high, try cutting down by 1 point overall.*/
 	/*&lt;&lt;set $activeFluffy.colorBonus--&gt;&gt;*/
-&lt;&lt;run console.log(&quot;Color Test 4: &quot; + $activeFluffy.colorBonus )&gt;&gt;
+/*&lt;&lt;run console.log(&quot;Color Test 4: &quot; + $activeFluffy.colorBonus )&gt;&gt;*/
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -2625,63 +2629,60 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;elseif $args.length &gt; 2&gt;&gt;
 		&lt;&lt;run console.log(&quot;Limit Color called with too many arguments.&quot;)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
+&lt;&lt;run console.log(&quot;Color Change test 0: &quot; + $args[0] + &quot; &quot; + $args[1])&gt;&gt;
 	/* Some logic/sanity checking: */ 
 	&lt;&lt;if $args.length == 1&gt;&gt;	
 		&lt;&lt;set _low = 1&gt;&gt;
 		&lt;&lt;set _high = $args[0]&gt;&gt;
-	&lt;&lt;else&gt;&gt;
+	&lt;&lt;elseif $args[0] &lt; $args[1]&gt;&gt;
 		&lt;&lt;set _low = $args[0]&gt;&gt;
 		&lt;&lt;set _high = $args[1]&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _low = $args[1]&gt;&gt;
+		&lt;&lt;set _high = $args[0]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if _high &gt; _low&gt;&gt;
-		&lt;&lt;set _temp = _high&gt;&gt;
-		&lt;&lt;set _low = _high&gt;&gt;
-		&lt;&lt;set _high = _temp&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	&lt;&lt;if _high &gt; 5&gt;&gt;
-		&lt;&lt;set _high = 5&gt;&gt;
+	&lt;&lt;if _high &gt; 6&gt;&gt;
+		&lt;&lt;set _high = 6&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	&lt;&lt;if _low &lt; 1&gt;&gt;
 		&lt;&lt;set _low = 1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Color Change test 1: &quot; + _low + &quot; &quot; + _high)&gt;&gt;
 	/* Ignor eyes, only look at coat and mane */
-	&lt;&lt;set _cColors = $Colors&gt;&gt;
-	&lt;&lt;set _mColors = $Colors&gt;&gt;
-	
-	&lt;&lt;set _coatTier = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneTier = &quot;&quot;&gt;&gt;
-	
-	&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _nColors = clone($Colors)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Change test 2: &quot; + _nColors.length)&gt;&gt;
 
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
-	&lt;&lt;for _i = 0; _i &lt; $Colors.length; _i++&gt;&gt;
-	
-		/* Scrub any that are out of range */
-		&lt;&lt;if $Colors[_i].Tier &gt; _high&gt;&gt;
-			&lt;&lt;run _cColors.deleteAt($Colors[_i])&gt;&gt;
-			&lt;&lt;run _mColors.deleteAt($Colors[_i])&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $Colors[_i].Tier &lt; _low&gt;&gt;
-			&lt;&lt;run _cColors.deleteAt($Colors[_i])&gt;&gt;
-			&lt;&lt;run _mColors.deleteAt($Colors[_i])&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.Tier &lt; _low; })&gt;&gt;
+	&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.Tier &gt; _high; })&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.cColor == $Colors[_i].Name&gt;&gt;
-			&lt;&lt;set _coatTier = $Colors[_i].Tier&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.mColor == $Colors[_i].Name&gt;&gt;
-			&lt;&lt;set _maneTier = $Colors[_i].Tier&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
-	
+&lt;&lt;run console.log(&quot;Color Change test 2: &quot; + _nColors.length)&gt;&gt;
 	/* Now we have an arry for colors that are within the specified ranges.*/
+	
+	/*  	have to set the genes... */
+ 	&lt;&lt;set _randomCoat = _nColors.random()&gt;&gt;
+	&lt;&lt;set _randomMane = _nColors.random()&gt;&gt;
 
+
+&lt;&lt;run console.log(&quot;Color Change test 0: &quot; + $activeFluffy.cColor)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Change test 0: &quot; + $activeFluffy.mColor)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Change test 0: &quot; + _randomCoat.Name + &quot; &quot; + _randomCoat.Tier)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Change test 0: &quot; + _randomMane.Name + &quot; &quot; + _randomMane.Tier)&gt;&gt;
+	
+	&lt;&lt;run $activeFluffy.genes.setManeColor(_randomMane.Gene)&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setCoatColor(_randomCoat.Gene)&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setEyeColor(_nColors.random().Gene)&gt;&gt;
+
+	&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+	&lt;&lt;set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()&gt;&gt;
+	&lt;&lt;set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()&gt;&gt;
+	&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()&gt;&gt;
+	
+
+&lt;&lt;run console.log(&quot;Color Change test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+&lt;&lt;run console.log(&quot;Color Change test 1: &quot; + $activeFluffy.mColor)&gt;&gt;
 	
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Encyclopedia" tags="nobr" position="350,100" size="100,100">/* **********
  * encylopedia.tw
@@ -3386,77 +3387,78 @@ a text-based fluffy management game
   *** */
   
 /* [ Name, Tier, Group ]*/
+&lt;&lt;run console.log(&quot;Colors check 0&quot;)&gt;&gt;
 &lt;&lt;set $Colors = [
- 	{	Name: &quot;White&quot;, Tier: 6, Group: &quot;S&quot; },
- 	{	Name: &quot;Black&quot;, Tier: 6, Group: &quot;S&quot; },
+ 	{	Name: &quot;White&quot;, Tier: 6, Group: &quot;S&quot;, Gene: &quot;b/b;y/y;r/r;o/o;&quot; },
+ 	{	Name: &quot;Black&quot;, Tier: 6, Group: &quot;S&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
  	
- 	{	Name: &quot;Gold&quot;, Tier: 5, Group: &quot;Yellow&quot; },
- 	{	Name: &quot;Lavender&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;CornflowerBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;MidnightBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;Orchid&quot;, Tier: 5, Group: &quot;Purple&quot; },
- 	{	Name: &quot;SeaGreen&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;BlueViolet&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;RoyalBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
- 	{	Name: &quot;Violet&quot;, Tier: 5, Group: &quot;Purple&quot; },
- 	{	Name: &quot;SkyBlue&quot;, Tier: 5, Group: &quot;Blue&quot; },
-
- 	{	Name: &quot;PeachPuff&quot;, Tier: 5, Group: &quot;Brown&quot; },
- 	{	Name: &quot;Crimson&quot;, Tier: 5, Group: &quot;Red&quot; },
- 	{	Name: &quot;Plum&quot;, Tier: 4, Group: &quot;Purple&quot; },
- 	{	Name: &quot;Indigo&quot;, Tier: 4, Group: &quot;Purple&quot; },
- 	{	Name: &quot;Purple&quot;, Tier: 4, Group: &quot;Purple&quot; },
- 	{	Name: &quot;Coral&quot;, Tier: 4, Group: &quot;Orange&quot; },
- 	{	Name: &quot;Blue&quot;, Tier: 4, Group: &quot;Blue&quot; },
- 	{	Name: &quot;SteelBlue&quot;, Tier: 4, Group: &quot;Blue&quot; },
- 	{	Name: &quot;Navy&quot;, Tier: 4, Group: &quot;Blue&quot; },
- 	{	Name: &quot;Cornsilk&quot;, Tier: 4, Group: &quot;Brown&quot; },
- 	{	Name: &quot;Fuchsia&quot;, Tier: 4, Group: &quot;Purple&quot; },
+ 	{	Name: &quot;Gold&quot;, Tier: 5, Group: &quot;Yellow&quot;, Gene: &quot;b/B;y/y;r/R;o/O;&quot; },
+ 	{	Name: &quot;Lavender&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;Y/Y;r/r;o/o;&quot; },
+ 	{	Name: &quot;CornflowerBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;r/r;o/O;&quot; },
+ 	{	Name: &quot;MidnightBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;R/R;O/O;&quot; },
+ 	{	Name: &quot;Orchid&quot;, Tier: 5, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;R/R;o/o;&quot; },
+ 	{	Name: &quot;SeaGreen&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/b;Y/Y;r/r;o/O;&quot; },
+ 	{	Name: &quot;BlueViolet&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;r/r;O/O;);&quot; },
+ 	{	Name: &quot;RoyalBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;B/B;y/Y;r/r;o/O;&quot; },
+ 	{	Name: &quot;Violet&quot;, Tier: 5, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/Y;r/R;o/O;&quot; },
+ 	{	Name: &quot;SkyBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;R/R;O/O;&quot; },
  	
- 	{	Name: &quot;MediumVioletRed&quot;, Tier: 3, Group: &quot;Red&quot; },
- 	{	Name: &quot;Red&quot;, Tier: 3, Group: &quot;Red&quot; },
-	{	Name: &quot;BlanchedAlmond&quot;, Tier: 3, Group: &quot;Brown&quot; },
-	{	Name: &quot;ForestGreen&quot;, Tier: 3, Group: &quot;Green&quot; },
-	{	Name: &quot;SpringGreen&quot;, Tier: 3, Group: &quot;Green&quot; },
-	{	Name: &quot;RebeccaPurple&quot;, Tier: 3, Group: &quot;Purple&quot; },
-	{	Name: &quot;PaleGoldenRod&quot;, Tier: 3, Group: &quot;Yellow&quot; },
-	{	Name: &quot;SlateBlue&quot;, Tier: 3, Group: &quot;Blue&quot; },
-	{	Name: &quot;Maroon&quot;, Tier: 3, Group: &quot;Red&quot; },
-	{	Name: &quot;Pink&quot;, Tier: 3, Group: &quot;Red&quot; },
-	{	Name: &quot;MediumPurple&quot;, Tier: 3, Group: &quot;Purple&quot; },
-	{	Name: &quot;DeepPink&quot;, Tier: 3, Group: &quot;Red&quot; },
+ 	{	Name: &quot;PeachPuff&quot;, Tier: 5, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/y;r/R;O/O;&quot; },
+ 	{	Name: &quot;Crimson&quot;, Tier: 5, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;r/R;o/o;&quot; },
+ 	{	Name: &quot;Plum&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;r/r;o/O;&quot; },
+ 	{	Name: &quot;Indigo&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/Y;r/r;O/O;&quot; },
+ 	{	Name: &quot;Purple&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/Y;r/R;o/o;&quot; },
+ 	{	Name: &quot;Coral&quot;, Tier: 4, Group: &quot;Orange&quot;, Gene: &quot;b/b;y/y;r/R;o/O;&quot; },
+ 	{	Name: &quot;Blue&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;R/R;o/O;&quot; },
+ 	{	Name: &quot;SteelBlue&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;R/R;o/O;&quot; },
+ 	{	Name: &quot;Navy&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;B/B;Y/Y;r/R;O/O;&quot; },
+ 	{	Name: &quot;Cornsilk&quot;, Tier: 4, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;o/o;&quot; },
+ 	{	Name: &quot;Fuchsia&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;R/R;O/O;&quot; },
+ 
+  	{	Name: &quot;MediumVioletRed&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;O/O;&quot; },
+ 	{	Name: &quot;Red&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;b/B;Y/Y;r/R;o/o;&quot; },
+	{	Name: &quot;BlanchedAlmond&quot;, Tier: 3, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;O/O;&quot; },
+	{	Name: &quot;ForestGreen&quot;, Tier: 3, Group: &quot;Green&quot;, Gene: &quot;b/b;y/Y;r/r;O/O;&quot; },
+	{	Name: &quot;SpringGreen&quot;, Tier: 3, Group: &quot;Green&quot;, Gene: &quot;b/B;y/Y;r/R;O/O;&quot; },
+	{	Name: &quot;RebeccaPurple&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;r/R;O/O;&quot; },
+	{	Name: &quot;PaleGoldenRod&quot;, Tier: 3, Group: &quot;Yellow&quot;, Gene: &quot;b/b;Y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;SlateBlue&quot;, Tier: 3, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;r/r;o/O;&quot; },
+	{	Name: &quot;Maroon&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;o/O;&quot; },
+	{	Name: &quot;Pink&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;o/o;&quot; },
+	{	Name: &quot;MediumPurple&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;B/B;y/y;r/r;O/O;&quot; },
+	{	Name: &quot;DeepPink&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
 	
-	{	Name: &quot;HotPink&quot;, Tier: 2, Group: &quot;Red&quot; },
-	{	Name: &quot;Green&quot;, Tier: 2, Group: &quot;Green&quot; },
-	{	Name: &quot;Chocolate&quot;, Tier: 2, Group: &quot;Brown&quot; },
-	{	Name: &quot;LightCoral&quot;, Tier: 2, Group: &quot;Red&quot; },
-	{	Name: &quot;Sienna&quot;, Tier: 2, Group: &quot;Brown&quot; },
-	{	Name: &quot;Tan&quot;, Tier: 2, Group: &quot;Brown&quot; },
-	{	Name: &quot;DarkGoldenRod&quot;, Tier: 2, Group: &quot;Brown&quot; },
-	{	Name: &quot;OrangeRed&quot;, Tier: 2, Group: &quot;Orange&quot; }, 
-	{	Name: &quot;Thistle&quot;, Tier: 2, Group: &quot;Purple&quot; },
-	{	Name: &quot;Salmon&quot;, Tier: 2, Group: &quot;Red&quot; },
-	{	Name: &quot;DodgerBlue&quot;, Tier: 2, Group: &quot;Blue&quot; },
-	{	Name: &quot;GreenYellow&quot;, Tier: 2, Group: &quot;Green&quot; },
-	{	Name: &quot;PaleVioletRed&quot;, Tier: 2, Group: &quot;Red&quot; },
+	{	Name: &quot;HotPink&quot;, Tier: 2, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;O/O;&quot; },
+	{	Name: &quot;Green&quot;, Tier: 2, Group: &quot;Green&quot;, Gene: &quot;b/b;Y/Y;r/r;O/O;&quot; },
+	{	Name: &quot;Chocolate&quot;, Tier: 2, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;r/R;o/o;&quot; },
+	{	Name: &quot;LightCoral&quot;, Tier: 2, Group: &quot;Red&quot;, Gene: &quot;B/B;y/Y;R/R;o/O;&quot; },
+	{	Name: &quot;Sienna&quot;, Tier: 2, Group: &quot;Brown&quot;, Gene: &quot;b/B;Y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;Tan&quot;, Tier: 2, Group: &quot;Brown&quot;, Gene: &quot;B/B;Y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;DarkGoldenRod&quot;, Tier: 2, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/Y;R/R;o/o;&quot; },
+	{	Name: &quot;OrangeRed&quot;, Tier: 2, Group: &quot;Orange&quot;, Gene: &quot;b/B;Y/Y;r/R;o/O;&quot; }, 
+	{	Name: &quot;Thistle&quot;, Tier: 2, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/y;r/R;o/o;&quot; },
+	{	Name: &quot;Salmon&quot;, Tier: 2, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;r/R;o/O;&quot; },
+	{	Name: &quot;DodgerBlue&quot;, Tier: 2, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;R/R;o/o;&quot; },
+	{	Name: &quot;GreenYellow&quot;, Tier: 2, Group: &quot;Green&quot;, Gene: &quot;B/B;y/Y;r/R;o/O;&quot; },
+	{	Name: &quot;PaleVioletRed&quot;, Tier: 2, Group: &quot;Red&quot;, Gene: &quot;b/B;Y/Y;R/R;o/O;&quot; },
 
-	{	Name: &quot;Brown&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;BurlyWood&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;SandyBrown&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;IndianRed&quot;, Tier: 1, Group: &quot;Red&quot; },
-	{	Name: &quot;FireBrick&quot;, Tier: 1, Group: &quot;Red&quot; },
-	{	Name: &quot;Yellow&quot;, Tier: 1, Group: &quot;Yellow&quot; },
-	{	Name: &quot;Tomato&quot;, Tier: 1, Group: &quot;Orange&quot; },
-	{	Name: &quot;RosyBrown&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;Chartreuse&quot;, Tier: 1, Group: &quot;Green&quot; },
-	{	Name: &quot;Orange&quot;, Tier: 1, Group: &quot;Orange&quot; },
-	{	Name: &quot;Khaki&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;OliveDrab&quot;, Tier: 1, Group: &quot;Green&quot; },
-	{	Name: &quot;Moccasin&quot;, Tier: 1, Group: &quot;Brown&quot; },
-	{	Name: &quot;DarkSalmon&quot;, Tier: 1, Group: &quot;Red&quot; },	 
-	{	Name: &quot;YellowGreen&quot;, Tier: 1, Group: &quot;Yellow&quot; }
+	{	Name: &quot;Brown&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/B;y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;BurlyWood&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;B/B;y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;SandyBrown&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/B;y/y;r/r;o/o;&quot; },
+	{	Name: &quot;IndianRed&quot;, Tier: 1, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;r/R;o/o;&quot; },
+	{	Name: &quot;FireBrick&quot;, Tier: 1, Group: &quot;Red&quot;, Gene: &quot;B/B;y/Y;r/R;o/o;&quot; },
+	{	Name: &quot;Yellow&quot;, Tier: 1, Group: &quot;Yellow&quot;, Gene: &quot;B/B;y/y;r/R;O/O;&quot; },
+	{	Name: &quot;Tomato&quot;, Tier: 1, Group: &quot;Orange&quot;, Gene: &quot;b/b;y/y;r/R;o/o;&quot; },
+	{	Name: &quot;RosyBrown&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;o/O;&quot; },
+	{	Name: &quot;Chartreuse&quot;, Tier: 1, Group: &quot;Green&quot;, Gene: &quot;b/b;y/y;r/r;o/O;&quot; },
+	{	Name: &quot;Orange&quot;, Tier: 1, Group: &quot;Orange&quot;, Gene: &quot;B/B;y/Y;R/R;o/o;&quot; },
+	{	Name: &quot;Khaki&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;OliveDrab&quot;, Tier: 1, Group: &quot;Green&quot;, Gene: &quot;b/b;y/Y;r/r;O/O;&quot; },
+	{	Name: &quot;Moccasin&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/Y;r/R;o/O;&quot; },
+	{	Name: &quot;DarkSalmon&quot;, Tier: 1, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;o/O;&quot; },	 
+	{	Name: &quot;YellowGreen&quot;, Tier: 1, Group: &quot;Yellow&quot;, Gene: &quot;b/B;y/y;r/R;O/O;&quot; } 
  ]&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Colors check 1: &quot; + $Colors.length)&gt;&gt;
 
 
 /* **********
@@ -3648,7 +3650,7 @@ profitsTotal: 0
 	
 		&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.ageWeeks = random(5, 38)&gt;&gt;
+			&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
 			
 		 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 		 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
@@ -3662,12 +3664,24 @@ profitsTotal: 0
 		 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
 	
 		 	&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
-			&lt;&lt;set $activeFluffy.height = Number($activeFluffymaxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+			&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 			&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
 
+&lt;&lt;run console.log(&quot;Fluffy mill color test 0: &quot; + $activeFluffy.cColor)&gt;&gt;
+
+			&lt;&lt;limitColor 1 2&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Fluffy mill color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy breeder color test 0: &quot; + $shop)&gt;&gt;
+		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy breeder color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+
+			&lt;&lt;limitColor 4 6&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Fluffy breeder color test 2: &quot; + $activeFluffy.cColor)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
-	
 		&lt;br&gt;
 		&lt;br&gt;You find this fluffy:
 		&lt;hr&gt;
@@ -3675,69 +3689,75 @@ profitsTotal: 0
 		&lt;&lt;set _inbreed = String(random(0,50) + &quot;/&quot; + random(50,99)) + &quot;;&quot;&gt;&gt;
 		&lt;&lt;run $activeFluffy.genes.setInbreeding(_inbreed)&gt;&gt;
 		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-		&lt;&lt;set _shopFluffy = clone($activeFluffy)&gt;&gt;
+/*		&lt;&lt;set _shopFluffy = clone($activeFluffy)&gt;&gt;*/
 		&lt;&lt;FluffyDesc&gt;&gt;
 		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
 
 		&lt;&lt;colorValue&gt;&gt;
 		&lt;&lt;statValue&gt;&gt;
 	
+		&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+			&lt;&lt;set _price = 0&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+&lt;&lt;run console.log(&quot;Feral test 0: &quot; + $activeFluffy.traits)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;switch $activeFluffy.breed&gt;&gt;
+				&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
+					/*
+					&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _price = 0&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					*/
+				&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
+					/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _price = 0&gt;&gt;
+					&lt;&lt;/if&gt;&gt;*/
+				&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+					/*
+					&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+						&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _price = 0&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					*/
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
+					/*
+					&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
+						&lt;&lt;set _price = Number($earthPrice.mill).toFixed(2)&gt;&gt;
+					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(Number($earthPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _price = 0&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					*/
+			&lt;&lt;/switch&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
 		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.training = 20&gt;&gt;
-			&lt;&lt;set $activeFluffy.trust = 40&gt;&gt;
-			&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
+			&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
+			&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
+			&lt;&lt;set _price = Number(_price) + Number($activeFluffy.training)&gt;&gt;
 			&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-	
-		&lt;&lt;switch $activeFluffy.breed&gt;&gt;
-			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-				&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-				/*
-				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				*/
-			&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-				/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;*/
-			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				/*
-				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				*/
-			&lt;&lt;default&gt;&gt;
-				&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
-				/*
-				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($earthPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set _price = Number(Number($earthPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				*/
-		&lt;&lt;/switch&gt;&gt;
-		
+
 		&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
 		&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
 
@@ -3758,13 +3778,13 @@ profitsTotal: 0
 				
 				
 				/* Add to the global list and store list*/
-				&lt;&lt;set _shopFluffy.ID = $globalFluffies.length&gt;&gt;
-				&lt;&lt;run $globalFluffies.push(_shopFluffy)&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.push(_shopFluffy.ID)&gt;&gt;
+				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+				&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
 
-				&lt;&lt;if (_shopFluffy.ageWeeks + (_shopFluffy.age * 52) &lt; _shopFluffy.maturity)&gt;&gt;
+				&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
 					&lt;&lt;set $ourStore.foals++&gt;&gt;
-				&lt;&lt;elseif _shopFluffy.gender == &quot;male&quot;&gt;&gt;
+				&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
 					&lt;&lt;set $ourStore.stallions++&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set $ourStore.mares++&gt;&gt;
@@ -4311,6 +4331,10 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;run console.log(&quot;Price test 7: &quot; + _ageMulti)&gt;&gt;
 	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 &lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
+
+			&lt;&lt;if _thisFluffy.traits.includes(&quot;Feral&quot;)&gt;&gt;
+				&lt;&lt;set _price = Number(_price * .25).toFixed(2)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 
 			&lt;&lt;set _price = Number(_price * 2 / 3).toFixed(2)&gt;&gt;
 
@@ -5675,7 +5699,15 @@ Inbreeding:
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Price test 7: &quot; + _ageMulti)&gt;&gt;
 	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
+	
+	
+&lt;&lt;run console.log(&quot;Price test 8: &quot; + $activeFluffy.traits)&gt;&gt;
+	&lt;&lt;if $activeFluffy.traits.includes(&quot;Feral&quot;) == true&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 8: &quot; + Number(_price / 4).toFixed(2))&gt;&gt;
+		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+&lt;&lt;run console.log(&quot;Price test 9: &quot; + _price)&gt;&gt;
 	&lt;br&gt;[Price: _price]
 	
 &lt;&lt;/widget&gt;&gt;
