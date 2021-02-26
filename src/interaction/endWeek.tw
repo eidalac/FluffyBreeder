@@ -15,13 +15,10 @@
 <<run console.log("hi?")>>
 
 /* ***
- *	Caculate expenses
+ *	Base expenses
  *** */
 <<set $costs = $ourStore.storage + $ourStore.display + $ourStore.shelter + $ourStore.space>>
-<<set $cashLastWeek = $cash>>
-<<set $cash = Number($cash - $costs)>>
 
-<br>Upkeep this week was $costs.
 
 
 /* moving the count updates to here, to prevent double loops */
@@ -29,6 +26,7 @@
 <<set $ourStore.mares = 0>>
 <<set $ourStore.foals = 0>>
 
+<<set _feedCost = 0>>
 
 /* ***
  *	Update counts for the sidebar
@@ -38,6 +36,17 @@
 
 	/* Age up a week. */
 	<<set _thisFluffy.ageWeeks++>>
+
+	<<switch _thisFluffy.foodType>>
+		<<case "Kibble">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[_thisFluffy.foodQuality])).toFixed(2)>>
+		<<case "Greens">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[_thisFluffy.foodQuality])).toFixed(2)>>
+		<<case "Sketti">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[_thisFluffy.foodQuality])).toFixed(2)>>
+		<<case "Forumla">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[_thisFluffy.foodQuality])).toFixed(2)>>
+	<</switch>>
 
 <<run console.log("Count test 0: age (weeks) =  " + _thisFluffy.ageWeeks + " | age (years) = " + _thisFluffy.age + " | gender =  " + _thisFluffy.gender)>>
 
@@ -60,6 +69,16 @@
 <</for>> 
 
 <<run console.log("Breeding test 0: " + $ourStore.fluffies)>>
+
+/* ***
+ *	Final expenses:
+ *** */
+  
+<<set $costs = Number(Number($costs) + Number(_feedCost))>>
+<<set $cashLastWeek = $cash>>
+<<set $cash = Number($cash - $costs)>>
+
+<br>Upkeep this week was $costs.
 
 
 /* ***
@@ -248,6 +267,9 @@
 	 			<br><<print $globalFluffies[_thisFluffy.mother].name>> is done nursing.
 	 		<</if>> 
 	 		
+	 		<<set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType>>
+	 		<<set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality>>
+	 		
 	 		<<set _thisFluffy = _thisFluffy>>
 	 		<<set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]>>
 	 	<</if>>
@@ -358,6 +380,9 @@
 			<<set $mom.pregnant = false>>
 			<<set $mom.pregnantBy = -1>>
 			<<set $mom.nursingTime = $week + 5>>
+			<<set $mom.nursingMax = $mom.nursing>>
+			<<set $mom.nursingMax -= random(0,1)>>			
+			
 			<<set $globalFluffies[$mom.ID] = $mom>>
 			<<set $globalFluffies[$dad.ID] = $dad>>
 

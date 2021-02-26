@@ -130,7 +130,9 @@
 	</span>
 	<br>
 	<br>Upkeep | ¤$costs
-	<br>Stress | $stress
+	<br>
+	<br>
+	<<PlayerStatus>>
 <</widget>>
 
 /* ***
@@ -187,8 +189,9 @@
 <</widget>>
 
 
-<<widget "PlayerStamina">>
-	<br>@@.green; Stamina: @@ 
+<<widget "PlayerStatus">>
+	@@.pink;Owner Status:@@
+	<br>@@.yellowgreen; Stamina: @@ 
 	<<switch $actions>>
 		<<case 10>>
 			@@.green;■■■■■■■■■■@@
@@ -214,7 +217,7 @@
 			@@.red;□□□□□□□□□□@@
 	<</switch>>
 	
-	| @@.green; Stress: @@ 
+	<br> @@.yellowgreen; Stress: @@ 
 	<<set $stress = Math.clamp(Math.trunc($stress), 0, 200)>>
 	<span id="stress">
 	<<if $stress  > 190>>
@@ -260,6 +263,10 @@
 	<<else>>
 		@@color:rgb(0,255,0);tranquil@@
 	<</if>>
-	($stress)<br>
+	($stress) 
 	</span>
+	| @@.yellowgreen; Reputation: @@ $repuation
+	<br>
+	@@.yellowgreen; Training:@@ $training | @@.yellowgreen; Hugboxer:@@ $hugbox | @@.yellowgreen; Abuser:@@ $abuse |
+	<br>
 <</widget>>
