@@ -40,14 +40,18 @@
 
 
 <<widget statValue>>
-	<<set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning>>
+	<<set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning>>
 <<run console.log("Stat Test 1: " + _avg)>>
-	<<set _avg = Number(Number(_avg) / 5).toFixed(2)>>
+	<<set _avg = Number(Number(_avg) / 6).toFixed(2)>>
 <<run console.log("Stat Test 2: " + _avg)>>
 	<<set _avg++>>
 <<run console.log("Stat Test 3: " + _avg)>>
-	<<set $activeFluffy.statBonus = Number(_avg / 4).toFixed(2)>>
-	
+
+	<<if $activeFluffy.traits.includes("Bossy") || $activeFluffy.traits.includes("Timid") ||  $activeFluffy.traits.includes("Lackadaisical") ||  $activeFluffy.traits.includes("Haughty") ||  $activeFluffy.traits.includes("Rowdy")>>
+		<<set $activeFluffy.statBonus = Number(_avg / 7).toFixed(2)>>
+	<<else>>
+		<<set $activeFluffy.statBonus = Number(_avg / 5).toFixed(2)>>
+	<</if>>
 <</widget>>
 
 /* ***

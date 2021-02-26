@@ -2999,6 +2999,8 @@ You may review your settings before clicking &quot;Continue&quot; to begin.
 &lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
 &lt;&lt;set $nextButton = &quot;END WEEK&quot;, $nextLink = &quot;End Week&quot;, $showEncyclopedia = 1, $encyclopedia = &quot;How to Play&quot;&gt;&gt;
 
+&lt;&lt;PlayerStamina&gt;&gt;
+
 &lt;br&gt;Your store, $ourStore.name, is open for business for the week.
 &lt;br&gt;What would you like to do?
 &lt;br&gt;@@.orange;Features still WIP.@@
@@ -3567,6 +3569,8 @@ profitsTotal: 0
 
 &lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
 
+&lt;&lt;PlayerStamina&gt;&gt;
+
 &lt;&lt;if $shop == &quot;mart&quot;&gt;&gt;
 	&lt;br&gt;Welcome to fluffy mart, do you see anything you like?
 &lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt;
@@ -3672,6 +3676,51 @@ profitsTotal: 0
 			&lt;&lt;limitColor 1 2&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Fluffy mill color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			/* not a mill, generate adult traits */
+
+			&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Diligent&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Bossy&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Curious&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Timid&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.strong--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Pensive&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.energy--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Sweet&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Haughty&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.learning--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Playful&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.traits[0] = &quot;Rowdy&quot;&gt;&gt;
+						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Fluffy breeder color test 0: &quot; + $shop)&gt;&gt;
 		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
@@ -3727,7 +3776,11 @@ profitsTotal: 0
 						&lt;&lt;set _price = 0&gt;&gt;
 					&lt;&lt;/if&gt;&gt;*/
 				&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + $alicornPrice.deluxe)&gt;&gt;
+&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + _price)&gt;&gt;
+&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + Number(Number($alicornPrice.deluxe) + Number(_price)))&gt;&gt;
+					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe) + Number(_price))&gt;&gt;
+&lt;&lt;run console.log(&quot;Alicorn test 1: &quot; + _price)&gt;&gt;
 					/*
 					&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
 						&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
@@ -3768,7 +3821,11 @@ profitsTotal: 0
 
 		@@.green;¤_price.@@
 		&lt;hr&gt;
-		[[Keep Looking|Buy Fluffies]]  | 
+		&lt;&lt;if $actions &lt; 1&gt;&gt;
+			//You are too tired for more shopping// | 
+		&lt;&lt;else&gt;&gt;
+			[[Keep Looking|Buy Fluffies][$actions--]]  |
+		&lt;&lt;/if&gt;&gt; 
 		&lt;&lt;if $actions &lt; 1&gt;&gt;
 			//You are too tired for more shopping// | 
 		&lt;&lt;elseif Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
@@ -5642,14 +5699,18 @@ Inbreeding:
 
 
 &lt;&lt;widget statValue&gt;&gt;
-	&lt;&lt;set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning&gt;&gt;
+	&lt;&lt;set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning&gt;&gt;
 &lt;&lt;run console.log(&quot;Stat Test 1: &quot; + _avg)&gt;&gt;
-	&lt;&lt;set _avg = Number(Number(_avg) / 5).toFixed(2)&gt;&gt;
+	&lt;&lt;set _avg = Number(Number(_avg) / 6).toFixed(2)&gt;&gt;
 &lt;&lt;run console.log(&quot;Stat Test 2: &quot; + _avg)&gt;&gt;
 	&lt;&lt;set _avg++&gt;&gt;
 &lt;&lt;run console.log(&quot;Stat Test 3: &quot; + _avg)&gt;&gt;
-	&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 4).toFixed(2)&gt;&gt;
-	
+
+	&lt;&lt;if $activeFluffy.traits.includes(&quot;Bossy&quot;) || $activeFluffy.traits.includes(&quot;Timid&quot;) ||  $activeFluffy.traits.includes(&quot;Lackadaisical&quot;) ||  $activeFluffy.traits.includes(&quot;Haughty&quot;) ||  $activeFluffy.traits.includes(&quot;Rowdy&quot;)&gt;&gt;
+		&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 7).toFixed(2)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 5).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -5925,7 +5986,7 @@ Inbreeding:
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
 
-	/* Pick a random trait:*/
+	/* Pick a random child trait:*/
 	&lt;&lt;switch random(0,4)&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
@@ -6185,6 +6246,34 @@ Inbreeding:
 
 &lt;&lt;widget flipCase&gt;&gt;
 	&lt;&lt;if $args[0] == $args[0].toUpperCase()&gt;&gt;&lt;&lt;set $args[0] = $args[0].toLowerCase()&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $args[0] = $args[0].toUpperCase()&gt;&gt;&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+&lt;&lt;widget &quot;PlayerStamina&quot;&gt;&gt;
+	&lt;&lt;switch $actions&gt;&gt;
+		&lt;&lt;case 10&gt;&gt;
+			&lt;br&gt;@@.green;■■■■■■■■■■@@
+		&lt;&lt;case 9&gt;&gt;
+			&lt;br&gt;@@.green;■■■■■■■■■@@□
+		&lt;&lt;case 8&gt;&gt;
+			&lt;br&gt;@@.green;■■■■■■■■@@□□
+		&lt;&lt;case 7&gt;&gt;
+			&lt;br&gt;@@.yellowgreen;■■■■■■■@@□□□
+		&lt;&lt;case 6&gt;&gt;
+			&lt;br&gt;@@.yellowgreen;■■■■■■@@□□□□
+		&lt;&lt;case 5&gt;&gt;
+			&lt;br&gt;@@.yellow;■■■■■@@□□□□□
+		&lt;&lt;case 4&gt;&gt;
+			&lt;br&gt;@@.yellow;■■■■@@□□□□□□
+		&lt;&lt;case 3&gt;&gt;
+			&lt;br&gt;@@.orange;■■■@@□□□□□□□
+		&lt;&lt;case 2&gt;&gt;
+			&lt;br&gt;@@.orange;■■@@□□□□□□□□
+		&lt;&lt;case 1&gt;&gt;
+			&lt;br&gt;@@.red;■@@□□□□□□□□□
+		&lt;&lt;case 0&gt;&gt;
+			&lt;br&gt;@@.red;□□□□□□□□□□@@
+	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="pronoun widgets" tags="widget nobr" position="225,350" size="100,100">/* **********
  * pronounWidgets.tw
  *

@@ -24,6 +24,8 @@
 
 <<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
 
+<<PlayerStamina>>
+
 <<if $shop == "mart">>
 	<br>Welcome to fluffy mart, do you see anything you like?
 <<elseif $shop == "mill">>
@@ -129,6 +131,51 @@
 			<<limitColor 1 2>>
 
 <<run console.log("Fluffy mill color test 1: " + $activeFluffy.cColor)>>
+		<<else>>
+			/* not a mill, generate adult traits */
+
+			<<switch $activeFluffy.traits[0]>>
+				<<case "Fussy">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.traits[0] = "Diligent">>
+						<<set $activeFluffy.learning++>>
+					<<else>>
+						<<set $activeFluffy.traits[0] = "Bossy">>
+						<<set $activeFluffy.charm-->>
+					<</if>>
+				<<case "Shy">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.traits[0] = "Curious">>
+						<<set $activeFluffy.energy++>>
+					<<else>>
+						<<set $activeFluffy.traits[0] = "Timid">>
+						<<set $activeFluffy.strong-->>
+					<</if>>
+				<<case "Lazy">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.traits[0] = "Pensive">>
+						<<set $activeFluffy.learning++>>
+					<<else>>
+						<<set $activeFluffy.traits[0] = "Lackadaisical">>
+						<<set $activeFluffy.energy-->>
+					<</if>>
+				<<case "Cute">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.traits[0] = "Sweet">>
+						<<set $activeFluffy.learning++>>
+					<<else>>
+						<<set $activeFluffy.traits[0] = "Haughty">>
+						<<set $activeFluffy.learning-->>
+					<</if>>
+				<<case "Peppy">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.traits[0] = "Playful">>
+						<<set $activeFluffy.charm++>>
+					<<else>>
+						<<set $activeFluffy.traits[0] = "Rowdy">>
+						<<set $activeFluffy.charm-->>
+					<</if>>
+			<</switch>>
 		<</if>>
 <<run console.log("Fluffy breeder color test 0: " + $shop)>>
 		<<if $shop == "breeder">>
@@ -184,7 +231,11 @@
 						<<set _price = 0>>
 					<</if>>*/
 				<<case "alicorn">>
-					<<set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
+<<run console.log("Alicorn test 0: " + $alicornPrice.deluxe)>>
+<<run console.log("Alicorn test 0: " + _price)>>
+<<run console.log("Alicorn test 0: " + Number(Number($alicornPrice.deluxe) + Number(_price)))>>
+					<<set _price = Number(Number($alicornPrice.deluxe) + Number(_price))>>
+<<run console.log("Alicorn test 1: " + _price)>>
 					/*
 					<<if $shop == "breeder">> 
 						<<set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)>>
@@ -225,7 +276,11 @@
 
 		@@.green;¤_price.@@
 		<hr>
-		[[Keep Looking|Buy Fluffies]]  | 
+		<<if $actions < 1>>
+			//You are too tired for more shopping// | 
+		<<else>>
+			[[Keep Looking|Buy Fluffies][$actions--]]  |
+		<</if>> 
 		<<if $actions < 1>>
 			//You are too tired for more shopping// | 
 		<<elseif Number($cash) >= Number(_price)  || Number(_price) == 0>>
