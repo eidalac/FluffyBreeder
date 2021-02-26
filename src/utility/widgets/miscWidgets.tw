@@ -188,28 +188,78 @@
 
 
 <<widget "PlayerStamina">>
+	<br>@@.green; Stamina: @@ 
 	<<switch $actions>>
 		<<case 10>>
-			<br>@@.green;■■■■■■■■■■@@
+			@@.green;■■■■■■■■■■@@
 		<<case 9>>
-			<br>@@.green;■■■■■■■■■@@□
+			@@.green;■■■■■■■■■@@□
 		<<case 8>>
-			<br>@@.green;■■■■■■■■@@□□
+			@@.green;■■■■■■■■@@□□
 		<<case 7>>
-			<br>@@.yellowgreen;■■■■■■■@@□□□
+			@@.yellowgreen;■■■■■■■@@□□□
 		<<case 6>>
-			<br>@@.yellowgreen;■■■■■■@@□□□□
+			@@.yellowgreen;■■■■■■@@□□□□
 		<<case 5>>
-			<br>@@.yellow;■■■■■@@□□□□□
+			@@.yellow;■■■■■@@□□□□□
 		<<case 4>>
-			<br>@@.yellow;■■■■@@□□□□□□
+			@@.yellow;■■■■@@□□□□□□
 		<<case 3>>
-			<br>@@.orange;■■■@@□□□□□□□
+			@@.orange;■■■@@□□□□□□□
 		<<case 2>>
-			<br>@@.orange;■■@@□□□□□□□□
+			@@.orange;■■@@□□□□□□□□
 		<<case 1>>
-			<br>@@.red;■@@□□□□□□□□□
+			@@.red;■@@□□□□□□□□□
 		<<case 0>>
-			<br>@@.red;□□□□□□□□□□@@
+			@@.red;□□□□□□□□□□@@
 	<</switch>>
+	
+	| @@.green; Stress: @@ 
+	<<set $stress = Math.clamp(Math.trunc($stress), 0, 200)>>
+	<span id="stress">
+	<<if $stress  > 190>>
+		<span style="color:rgb(110,145,0)">hostile</span>
+	<<elseif $stress  > 180>>
+		<span style="color:rgb(100,150,0)">aggravated</span>
+	<<elseif $stress  > 170>>
+		@@color:rgb(90,155,0);exasperated@@
+	<<elseif $stress  > 160>>
+		@@color:rgb(80,160,0);irritated@@
+	<<elseif $stress  > 150>>
+		@@color:rgb(70,165,0);upset@@
+	<<elseif $stress  > 140>>
+		@@color:rgb(60,170,0);bothered@@
+	<<elseif $stress  > 130>>
+		@@color:rgb(50,175,0);annoyed@@
+	<<elseif $stress  > 120>>
+		@@color:rgb(40,180,0);irked@@
+	<<elseif $stress  > 110>>
+		@@color:rgb(30,185,0);disquiet@@
+	<<elseif $stress  > 100>>
+		@@color:rgb(20,190,0);tense@@
+	<<elseif $stress  > 90>>
+		@@color:rgb(10,195,0);neutral@@
+	<<elseif $stress  > 80>>
+		@@color:rgb(8,200,0);civil@@
+	<<elseif $stress > 70>>
+		@@color:rgb(7,205,0);amiable@@
+	<<elseif $stress > 60>>
+		@@color:rgb(6,215,0);satisfied@@
+	<<elseif $stress > 50>>
+		@@color:rgb(5,220,0);patient@@
+	<<elseif $stress > 40>>
+		@@color:rgb(4,225,0);chill@@
+	<<elseif $stress > 30>>
+		@@color:rgb(3,230,0);cool@@
+	<<elseif $stress > 20>>
+		@@color:rgb(2,240,0);calm@@
+	<<elseif $stress > 10>>
+		@@color:rgb(1,245,0);relaxed@@
+	<<elseif $stress > 5>>
+		@@color:rgb(0,250,0);serene@@
+	<<else>>
+		@@color:rgb(0,255,0);tranquil@@
+	<</if>>
+	($stress)<br>
+	</span>
 <</widget>>

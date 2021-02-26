@@ -4693,6 +4693,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 &lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
 
 &lt;span id=&quot;fluffy-name&quot;&gt;
+	&lt;&lt;PlayerStamina&gt;&gt;
 	&lt;&lt;FluffyDesc&gt;&gt;
 &lt;/span&gt;
 &lt;hr&gt;
@@ -4710,7 +4711,7 @@ Storage: &lt;span id=&quot;stats-storage&quot;&gt;&lt;&lt;print $ourStore.storag
 	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
 		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStamina&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
@@ -4735,6 +4736,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		
 	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _sf.name&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStamina&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
@@ -4748,6 +4750,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;set _desc = &quot;Play with &quot; + $activeFluffy.name&gt;&gt;
 &lt;&lt;button _desc&gt;&gt;
 	&lt;&lt;if $actions &gt; 0&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
 		&lt;&lt;set $stress -= 10&gt;&gt;
 		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set $hugbox += 2&gt;&gt;
@@ -4755,6 +4758,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStamina&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4777,6 +4781,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.training++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStamina&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4800,6 +4805,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStamina&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for this right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -6250,30 +6256,80 @@ Inbreeding:
 
 
 &lt;&lt;widget &quot;PlayerStamina&quot;&gt;&gt;
+	&lt;br&gt;@@.green; Stamina: @@ 
 	&lt;&lt;switch $actions&gt;&gt;
 		&lt;&lt;case 10&gt;&gt;
-			&lt;br&gt;@@.green;■■■■■■■■■■@@
+			@@.green;■■■■■■■■■■@@
 		&lt;&lt;case 9&gt;&gt;
-			&lt;br&gt;@@.green;■■■■■■■■■@@□
+			@@.green;■■■■■■■■■@@□
 		&lt;&lt;case 8&gt;&gt;
-			&lt;br&gt;@@.green;■■■■■■■■@@□□
+			@@.green;■■■■■■■■@@□□
 		&lt;&lt;case 7&gt;&gt;
-			&lt;br&gt;@@.yellowgreen;■■■■■■■@@□□□
+			@@.yellowgreen;■■■■■■■@@□□□
 		&lt;&lt;case 6&gt;&gt;
-			&lt;br&gt;@@.yellowgreen;■■■■■■@@□□□□
+			@@.yellowgreen;■■■■■■@@□□□□
 		&lt;&lt;case 5&gt;&gt;
-			&lt;br&gt;@@.yellow;■■■■■@@□□□□□
+			@@.yellow;■■■■■@@□□□□□
 		&lt;&lt;case 4&gt;&gt;
-			&lt;br&gt;@@.yellow;■■■■@@□□□□□□
+			@@.yellow;■■■■@@□□□□□□
 		&lt;&lt;case 3&gt;&gt;
-			&lt;br&gt;@@.orange;■■■@@□□□□□□□
+			@@.orange;■■■@@□□□□□□□
 		&lt;&lt;case 2&gt;&gt;
-			&lt;br&gt;@@.orange;■■@@□□□□□□□□
+			@@.orange;■■@@□□□□□□□□
 		&lt;&lt;case 1&gt;&gt;
-			&lt;br&gt;@@.red;■@@□□□□□□□□□
+			@@.red;■@@□□□□□□□□□
 		&lt;&lt;case 0&gt;&gt;
-			&lt;br&gt;@@.red;□□□□□□□□□□@@
+			@@.red;□□□□□□□□□□@@
 	&lt;&lt;/switch&gt;&gt;
+	
+	| @@.green; Stress: @@ 
+	&lt;&lt;set $stress = Math.clamp(Math.trunc($stress), 0, 200)&gt;&gt;
+	&lt;span id=&quot;stress&quot;&gt;
+	&lt;&lt;if $stress  &gt; 190&gt;&gt;
+		&lt;span style=&quot;color:rgb(110,145,0)&quot;&gt;hostile&lt;/span&gt;
+	&lt;&lt;elseif $stress  &gt; 180&gt;&gt;
+		&lt;span style=&quot;color:rgb(100,150,0)&quot;&gt;aggravated&lt;/span&gt;
+	&lt;&lt;elseif $stress  &gt; 170&gt;&gt;
+		@@color:rgb(90,155,0);exasperated@@
+	&lt;&lt;elseif $stress  &gt; 160&gt;&gt;
+		@@color:rgb(80,160,0);irritated@@
+	&lt;&lt;elseif $stress  &gt; 150&gt;&gt;
+		@@color:rgb(70,165,0);upset@@
+	&lt;&lt;elseif $stress  &gt; 140&gt;&gt;
+		@@color:rgb(60,170,0);bothered@@
+	&lt;&lt;elseif $stress  &gt; 130&gt;&gt;
+		@@color:rgb(50,175,0);annoyed@@
+	&lt;&lt;elseif $stress  &gt; 120&gt;&gt;
+		@@color:rgb(40,180,0);irked@@
+	&lt;&lt;elseif $stress  &gt; 110&gt;&gt;
+		@@color:rgb(30,185,0);disquiet@@
+	&lt;&lt;elseif $stress  &gt; 100&gt;&gt;
+		@@color:rgb(20,190,0);tense@@
+	&lt;&lt;elseif $stress  &gt; 90&gt;&gt;
+		@@color:rgb(10,195,0);neutral@@
+	&lt;&lt;elseif $stress  &gt; 80&gt;&gt;
+		@@color:rgb(8,200,0);civil@@
+	&lt;&lt;elseif $stress &gt; 70&gt;&gt;
+		@@color:rgb(7,205,0);amiable@@
+	&lt;&lt;elseif $stress &gt; 60&gt;&gt;
+		@@color:rgb(6,215,0);satisfied@@
+	&lt;&lt;elseif $stress &gt; 50&gt;&gt;
+		@@color:rgb(5,220,0);patient@@
+	&lt;&lt;elseif $stress &gt; 40&gt;&gt;
+		@@color:rgb(4,225,0);chill@@
+	&lt;&lt;elseif $stress &gt; 30&gt;&gt;
+		@@color:rgb(3,230,0);cool@@
+	&lt;&lt;elseif $stress &gt; 20&gt;&gt;
+		@@color:rgb(2,240,0);calm@@
+	&lt;&lt;elseif $stress &gt; 10&gt;&gt;
+		@@color:rgb(1,245,0);relaxed@@
+	&lt;&lt;elseif $stress &gt; 5&gt;&gt;
+		@@color:rgb(0,250,0);serene@@
+	&lt;&lt;else&gt;&gt;
+		@@color:rgb(0,255,0);tranquil@@
+	&lt;&lt;/if&gt;&gt;
+	($stress)&lt;br&gt;
+	&lt;/span&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="pronoun widgets" tags="widget nobr" position="225,350" size="100,100">/* **********
  * pronounWidgets.tw
  *
