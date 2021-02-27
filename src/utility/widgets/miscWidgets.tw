@@ -131,8 +131,6 @@
 	<br>
 	<br>Upkeep | ¤$costs
 	<br>
-	<br>
-	<<PlayerStatus>>
 <</widget>>
 
 /* ***
@@ -150,18 +148,9 @@
  *** */
 <<widget "SidebarStore">>
 	<br>@@.pink;Store@@
-	<br>$ourStore.shelter @@.cyan;Shelter@@ | $ourStore.display @@.cyan;Display@@
-	<br>$ourStore.space @@.cyan;Space@@ | $ourStore.storage @@.cyan;Storage@@
-<</widget>>
-
-/* ***
- *	Call as <<SidebarFeed>>
- *	Displays food info for the sidebar
- *** */
-<<widget "SidebarFood">>
-	<br>@@.pink;Food@@ | <<print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality) + ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality) + ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality) + ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)>> /  $ourStore.storage
-	<br><<print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)>> @@.cyan;Kibble@@ | <<print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)>> @@.cyan;Formula@@
-	<br><<print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)>> @@.cyan;Greens@@ | <<print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)>> @@.cyan;Sketti@@
+	<br>$ourStore.shelter @@.cyan;Shelter@@ |
+	$ourStore.display @@.cyan;Display@@ |
+	$ourStore.space @@.cyan;Space@@
 <</widget>>
 
 
@@ -191,6 +180,7 @@
 
 <<widget "PlayerStatus">>
 	@@.pink;Owner Status:@@
+	<<set $actions = Math.clamp(Math.trunc($actions), 0, 10)>>
 	<br>@@.yellowgreen; Stamina: @@ 
 	<<switch $actions>>
 		<<case 10>>
@@ -219,54 +209,73 @@
 	
 	<br> @@.yellowgreen; Stress: @@ 
 	<<set $stress = Math.clamp(Math.trunc($stress), 0, 200)>>
-	<span id="stress">
-	<<if $stress  > 190>>
-		<span style="color:rgb(110,145,0)">hostile</span>
-	<<elseif $stress  > 180>>
-		<span style="color:rgb(100,150,0)">aggravated</span>
-	<<elseif $stress  > 170>>
-		@@color:rgb(90,155,0);exasperated@@
-	<<elseif $stress  > 160>>
-		@@color:rgb(80,160,0);irritated@@
-	<<elseif $stress  > 150>>
-		@@color:rgb(70,165,0);upset@@
-	<<elseif $stress  > 140>>
-		@@color:rgb(60,170,0);bothered@@
-	<<elseif $stress  > 130>>
-		@@color:rgb(50,175,0);annoyed@@
-	<<elseif $stress  > 120>>
-		@@color:rgb(40,180,0);irked@@
-	<<elseif $stress  > 110>>
-		@@color:rgb(30,185,0);disquiet@@
-	<<elseif $stress  > 100>>
-		@@color:rgb(20,190,0);tense@@
-	<<elseif $stress  > 90>>
-		@@color:rgb(10,195,0);neutral@@
-	<<elseif $stress  > 80>>
-		@@color:rgb(8,200,0);civil@@
-	<<elseif $stress > 70>>
-		@@color:rgb(7,205,0);amiable@@
-	<<elseif $stress > 60>>
-		@@color:rgb(6,215,0);satisfied@@
-	<<elseif $stress > 50>>
-		@@color:rgb(5,220,0);patient@@
-	<<elseif $stress > 40>>
-		@@color:rgb(4,225,0);chill@@
-	<<elseif $stress > 30>>
-		@@color:rgb(3,230,0);cool@@
-	<<elseif $stress > 20>>
-		@@color:rgb(2,240,0);calm@@
-	<<elseif $stress > 10>>
-		@@color:rgb(1,245,0);relaxed@@
-	<<elseif $stress > 5>>
-		@@color:rgb(0,250,0);serene@@
+	<<if $stress < 20>>
+		@@color:rgb(0,255,0);□□□□□□□□□□@@
+	<<elseif $stress < 40>>
+		@@color:rgb(23,229,0);■□□□□□□□□□@@
+	<<elseif $stress < 60>>
+		@@color:rgb(51,204,0);■■□□□□□□□□@@
+	<<elseif $stress < 80>>
+		@@color:rgb(77,179,0);■■■□□□□□□□@@
+	<<elseif $stress < 100>>
+		@@color:rgb(102,153,0);■■■■□□□□□□@@
+	<<elseif $stress < 120>>
+		@@color:rgb(127,128,0);■■■■■□□□□□@@
+	<<elseif $stress < 140>>
+		@@color:rgb(153,102,0);■■■■■■□□□□@@
+	<<elseif $stress < 160>>
+		@@color:rgb(179,77,0);■■■■■■■□□□@@
+	<<elseif $stress < 180>>
+		@@color:rgb(204,51,0);■■■■■■■■□□@@
+	<<elseif $stress < 200>>
+		@@color:rgb(225,23,0);■■■■■■■■■□@@
 	<<else>>
-		@@color:rgb(0,255,0);tranquil@@
+		@@color:rgb(255,0,0);■■■■■■■■■■@@
 	<</if>>
-	($stress) 
-	</span>
-	| @@.yellowgreen; Reputation: @@ $repuation
+	<br>@@.yellowgreen; Rep: @@ 
+	<<set $repuation = Math.clamp(Math.trunc($repuation), 0, 1000)>>
+	<<if $repuation > 900>>
+		@@color:rgb(0,145,0);prestigious@@
+	<<elseif $repuation > 800>>
+		@@color:rgb(0,150,0);renowned@@
+	<<elseif $repuation > 700>>
+		@@color:rgb(0,155,0);famed@@
+	<<elseif $repuation > 600>>
+		@@color:rgb(0,160,0);celebrated@@
+	<<elseif $repuation > 500>>
+		@@color:rgb(0,165,0);honored@@
+	<<elseif $repuation > 400>>
+		@@color:rgb(0,170,0);acclaimed@@
+	<<elseif $repuation > 300>>
+		@@color:rgb(0,175,0);eminent@@
+	<<elseif $repuation > 200>>
+		@@color:rgb(0,180,0);prominent@@
+	<<elseif $repuation > 100>>
+		@@color:rgb(0,185,0);respected@@
+	<<elseif $repuation > 90>>
+		@@color:rgb(0,190,0);recognized@@
+	<<elseif $repuation > 80>>
+		@@color:rgb(0,195,0);known@@
+	<<elseif $repuation > 70>>
+		@@color:rgb(0,200,0);rumored@@
+	<<elseif $repuation > 60>>
+		@@color:rgb(0,205,0);envied@@
+	<<elseif $repuation > 50>>
+		@@color:rgb(0,210,0);minor@@
+	<<elseif $repuation > 40>>
+		@@color:rgb(0,215,0);obscure@@
+	<<elseif $repuation > 30>>
+		@@color:rgb(0,220,0);reprobate@@
+	<<elseif $repuation > 20>>
+		@@color:rgb(0,225,0);resented@@
+	<<elseif $repuation > 10>>
+		@@color:rgb(0,230,0);disliked@@
+	<<else>>
+		@@color:rgb(0,240,0);unknown@@
+	<</if>>
+($repuation)
+
 	<br>
-	@@.yellowgreen; Training:@@ $training | @@.yellowgreen; Hugboxer:@@ $hugbox | @@.yellowgreen; Abuser:@@ $abuse |
+	@@.yellowgreen; XP:@@ $training (@@.yellowgreen;Hugbox:@@ $hugbox | @@.yellowgreen; Abuse:@@ $abuse)
 	<br>
 <</widget>>

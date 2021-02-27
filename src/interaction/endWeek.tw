@@ -17,7 +17,7 @@
 /* ***
  *	Base expenses
  *** */
-<<set $costs = $ourStore.storage + $ourStore.display + $ourStore.shelter + $ourStore.space>>
+<<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 5).toFixed(2)>>
 
 
 
@@ -44,11 +44,9 @@
 			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[_thisFluffy.foodQuality])).toFixed(2)>>
 		<<case "Sketti">>
 			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[_thisFluffy.foodQuality])).toFixed(2)>>
-		<<case "Forumla">>
+		<<case "Formula">>
 			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[_thisFluffy.foodQuality])).toFixed(2)>>
 	<</switch>>
-
-<<run console.log("Count test 0: age (weeks) =  " + _thisFluffy.ageWeeks + " | age (years) = " + _thisFluffy.age + " | gender =  " + _thisFluffy.gender)>>
 
 	/* < 1 year old */
 	<<if Number(_thisFluffy.age) == 0>>
@@ -68,7 +66,6 @@
 	<</if>>
 <</for>> 
 
-<<run console.log("Breeding test 0: " + $ourStore.fluffies)>>
 
 /* ***
  *	Final expenses:

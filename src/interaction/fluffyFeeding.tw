@@ -22,17 +22,29 @@
 </span>
 <hr>
 
-/* Default food prices 
-<<set $foodPrice = {
-	kibble: [ 0.05, .5, 2, 7, 14 ],
-	formula: [ 0.2, 2, 6, 10, 21 ],
-	greens: [ 0.01, .1, 1, 5, 10 ],
-	sketti: [ 2, 5, 10, 15, 20 ]
-}
->>
-*/
-
-<<if $activeFluffy.foodType != "Nursing">>
+<<run console.log("Feeding check 1: " + $activeFluffy.foodType)>>
+<<if $activeFluffy.foodType === "Formula">>
+	Feeding: on Formula
+	<br>Quality:<<switch $activeFluffy.foodQuality>>
+				<<case 0>> Trash
+				<<case 1>> Cheap
+				<<case 2>> Basic
+				<<case 3>> Good
+				<<case 4>> Quality
+				<<case -1>> 
+			<</switch>>
+	<br> 
+	<<if $activeFluffy.foodQuality > 0>>
+		<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+	<</if>>
+	<<if $activeFluffy.foodQuality < 4>>
+		<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+	<</if>>
+	
+	<br>@@.green; Current Cost: ¤@@<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
+	
+<<elseif $activeFluffy.foodType != "Nursing">>
+<<run console.log("Feeding check 2: " + $activeFluffy.foodType)>>
 	Feeding: $activeFluffy.foodType
 	<br>
 	<<if $activeFluffy.foodType != "Kibble">>  
@@ -86,6 +98,7 @@
 	<<else>>
 		<br> _mom.name is not producing enough milk for all her foals.
 	<</if>>
+	<br><<button [[Put on Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula", $activeFluffy.foodQuality = 2, $globalFluffies[$activeFluffy.mother].nursing-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 
 
 <</if>>
