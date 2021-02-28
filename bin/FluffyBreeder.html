@@ -3169,7 +3169,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.55&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.65&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3565,14 +3565,17 @@ profitsTotal: 0
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Diligent&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Bossy&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;case &quot;Shy&quot;&gt;&gt;
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Curious&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Timid&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.strong--&gt;&gt;
@@ -3589,17 +3592,21 @@ profitsTotal: 0
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Sweet&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Haughty&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.learning--&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Playful&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set $activeFluffy.traits[0] = &quot;Rowdy&quot;&gt;&gt;
 						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -4065,8 +4072,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 /* ***
  *	Base expenses
  *** */
-&lt;&lt;set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 5).toFixed(2)&gt;&gt;
-
+&lt;&lt;set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)&gt;&gt;
 
 
 /* moving the count updates to here, to prevent double loops */
@@ -4281,6 +4287,80 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + (_thisFluffy.ageWeeks + (_thisFluffy.age * 52)) + &quot; gender = &quot; + _thisFluffy.gender)&gt;&gt;
 
 	/* ***
+	 *	Feed them.
+	 *** */
+	 &lt;&lt;set _foodBonus = 0&gt;&gt;
+	 &lt;&lt;switch _thisFluffy.foodType&gt;&gt;
+	 	&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
+	 		&lt;&lt;if _thisFluffy.foodQuality &gt; 3&gt;&gt;
+	 		/* Quality has some boni */
+	 			&lt;&lt;set _thisFluffy.happy++&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trauma--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament++&gt;&gt;	 			
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &lt; 2&gt;&gt;
+	 		/* Cheap has some malus */
+	 			&lt;&lt;set _thisFluffy.happy--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress++&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament--&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &lt; 1&gt;&gt;
+	 		/* Trash has more malus */
+	 			&lt;&lt;set _thisFluffy.happy -= 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress += 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trauma++&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament--&gt;&gt;
+	 		&lt;&lt;/if&gt;&gt;
+
+	 	&lt;&lt;case &quot;Greens&quot;&gt;&gt;
+	 		&lt;&lt;if _thisFluffy.foodQuality &gt; 3&gt;&gt;
+	 		/* Quality has some boni */
+	 			&lt;&lt;set _thisFluffy.stress--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trauma--&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &lt; 2&gt;&gt;
+	 		/* Cheap has some malus */
+	 			&lt;&lt;set _thisFluffy.happy--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust--&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament--&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &lt; 1&gt;&gt;
+	 		/* Trash has more malus */
+	 			&lt;&lt;set _thisFluffy.happy -= 3&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress += 3&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust -= 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament--&gt;&gt;
+	 		&lt;&lt;/if&gt;&gt;
+	 		
+	 	&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
+	 		&lt;&lt;if _thisFluffy.foodQuality &gt; 3&gt;&gt;
+	 		/* Quality has some boni */
+	 			&lt;&lt;set _thisFluffy.happy += 3&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust += 3&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress -= 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament += 5&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &gt; 2&gt;&gt;
+	 		/* Good has some boni */
+	 			&lt;&lt;set _thisFluffy.happy += 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust += 2&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress -= 1&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament += 4&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &gt; 1&gt;&gt;
+	 		/* Basic has some boni */
+	 			&lt;&lt;set _thisFluffy.happy += 1&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust += 1&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress -= 1&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.temperament += 3&gt;&gt;
+	 		&lt;&lt;elseif _thisFluffy.foodQuality &lt; 1&gt;&gt;
+	 		/* Trash has some malus */
+	 			&lt;&lt;set _thisFluffy.happy -= 1&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.stress += 3&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.trust -= 1&gt;&gt;
+	 		&lt;&lt;/if&gt;&gt;
+	 		
+	 &lt;&lt;/switch&gt;&gt;
+	 
+
+	
+	/* ***
 	 *	Grow foals.
 	 *** */
 &lt;&lt;run console.log(&quot;Growth test 0: age = &quot; + _thisFluffy.age)&gt;&gt;
@@ -4288,18 +4368,66 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;run console.log(&quot;Growth test 0: weight = &quot; + _thisFluffy.weight + &quot; age = &quot; + _thisFluffy.ageWeeks)&gt;&gt;
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
-	 	&lt;&lt;set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
-	 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
-	 	&lt;&lt;set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)&gt;&gt;
-	 	&lt;&lt;set _newL = _newW / _thisFluffy.weightMulti&gt;&gt;
-	 	&lt;&lt;set _newH = _newL * (_thisFluffy.heightMulti)&gt;&gt;
-	 	
 	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
 	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)&gt;&gt;
+	 	
+/*
+		&lt;&lt;set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)&gt;&gt;
+	 	&lt;&lt;set _newL = _newW / _thisFluffy.weightMulti&gt;&gt;
+	 	&lt;&lt;set _newH = _newL * (_thisFluffy.heightMulti)&gt;&gt;
+*/
+	 	&lt;&lt;set _lengthRatio = Number(_thisFluffy.maxLength / _thisFluffy.maxWeight).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _heightRatio = Number(_thisFluffy.maxHeight / _thisFluffy.maxWeight).toFixed(3)&gt;&gt;
+&lt;&lt;run console.log(&quot;ratio test 0: &quot; + _lengthRatio)&gt;&gt;
+&lt;&lt;run console.log(&quot;ratio test 1: &quot; + _heightRatio)&gt;&gt;
 
-	 	&lt;&lt;set _thisFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
-		&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-		&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+		&lt;&lt;set _mom = $globalFluffies[_thisFluffy.mother]&gt;&gt;
+		
+		&lt;&lt;if _thisFluffy.foodType == &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;if _mom.nursingMax &lt; _mom.nursing&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test 0.1: mother lacking milk&quot;)&gt;&gt;
+	 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test 0.3 - nursed: &quot; + _thisFluffy.maxLength)&gt;&gt;
+	 		&lt;&lt;/if&gt;&gt;
+	 	&lt;&lt;else&gt;&gt; 
+	 		&lt;&lt;run console.log(&quot;Growth test 0.2 - non nursed: &quot; + _newWMulti  + &quot; &quot; + Number(Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)))&gt;&gt;
+	 		&lt;&lt;switch _thisFluffy.foodQuality&gt;&gt;
+	 			&lt;&lt;case 0&gt;&gt;
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
+	 			&lt;&lt;case 1&gt;&gt;
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)&gt;&gt;
+	 			&lt;&lt;case 3&gt;&gt;
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
+	 			&lt;&lt;case 4&gt;&gt;	 		
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)&gt;&gt;
+	 		&lt;&lt;/switch&gt;&gt;
+	 		
+	 		/*
+	 		&lt;&lt;set _lMultiBase = Number(_lMultiBase * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)&gt;&gt;
+	 		&lt;&lt;set _lMultiAdd = Number(_lMultiAdd * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)&gt;&gt;
+	 		*/
+	 		&lt;&lt;run console.log(&quot;Growth test 0.3 - non nursed: &quot; + _newWMulti)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+
+		&lt;&lt;set _newW = Number(_thisFluffy.maxWeight * _newWMulti).toFixed(3)&gt;&gt;
+		&lt;&lt;set _thisFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+		
+	 	&lt;&lt;set _newL = Number(_thisFluffy.weight * _lengthRatio).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _newH = Number(_thisFluffy.weight * _heightRatio).toFixed(3)&gt;&gt;
+	 	
+	 	&lt;&lt;set _thisFluffy.height = Number(_newL).toFixed(2)&gt;&gt;
+		&lt;&lt;set _thisFluffy.length = Number(_newH).toFixed(2)&gt;&gt;
+
+/*
+		&lt;&lt;set _thisFluffy.height = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+		&lt;&lt;set _thisFluffy.length = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+*/
+
+&lt;&lt;run console.log(&quot;Growth test 0.4: _newW = &quot; + _newW + &quot; _newL = &quot; + _newL + &quot; _newH &quot; + _newH )&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test 0.5: weight = &quot; + _thisFluffy.weight + &quot; length = &quot; + _thisFluffy.length + &quot; height &quot; + _thisFluffy.height )&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Growth test 1: weight % = &quot; + Number(_thisFluffy.weight / _thisFluffy.maxWeight))&gt;&gt;
 		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.14 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
@@ -4319,6 +4447,61 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	/* ***
+	 *	Check for maturity and update traits:
+	 *** */
+	 &lt;&lt;if _thisFluffy.age == 0 &amp;&amp; Number(_thisFluffy.ageWeeks) &gt;= _thisFluffy.maturity&gt;&gt;
+			&lt;&lt;switch _thisFluffy.traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Diligent&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.learning++&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 20&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Bossy&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.charm--&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 30&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Curious&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.energy++&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 10&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Timid&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.strong--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Pensive&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.learning++&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.energy--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Sweet&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.learning++&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 10&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Haughty&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.learning--&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 20&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Playful&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.charm++&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 10&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _thisFluffy.traits[0] = &quot;Rowdy&quot;&gt;&gt;
+						&lt;&lt;set _thisFluffy.charm--&gt;&gt;
+						&lt;&lt;set _thisFluffy.temperament += 10&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+	 &lt;&lt;/if&gt;&gt;
 
 
 &lt;&lt;run console.log(&quot;Breeding test 1: &quot; + _thisFluffy.specialFriend + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
@@ -5699,6 +5882,16 @@ Inbreeding:
 
 	&lt;&lt;colorValue&gt;&gt;
 	&lt;&lt;statValue&gt;&gt;
+
+	 /* Clamp these to 0-200 */
+	 &lt;&lt;set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)&gt;&gt;
+	 &lt;&lt;set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)&gt;&gt;
+	 &lt;&lt;set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)&gt;&gt;
+	 &lt;&lt;set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)&gt;&gt;
+	 &lt;&lt;set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)&gt;&gt;
+	 &lt;&lt;set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)&gt;&gt;
+	 
+	 &lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 	
 	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 3&gt;&gt;, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt;&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 1&gt;&gt; and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;. 
@@ -5764,9 +5957,19 @@ Inbreeding:
 		&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[_fluffy.children[_i]].name + &quot;@@ | &quot;&gt;&gt; 
 	&lt;&lt;/for&gt;&gt;
 	
+	 /* Clamp these to 0-200 */
+	 &lt;&lt;set _fluffy.trust = Math.clamp(Math.trunc(_fluffy.trust), 0, 200)&gt;&gt;
+	 &lt;&lt;set _fluffy.training = Math.clamp(Math.trunc(_fluffy.training), 0, 200)&gt;&gt;
+	 &lt;&lt;set _fluffy.temperament = Math.clamp(Math.trunc(_fluffy.temperament), 0, 200)&gt;&gt;
+	 &lt;&lt;set _fluffy.happy = Math.clamp(Math.trunc(_fluffy.happy), 0, 200)&gt;&gt;
+	 &lt;&lt;set _fluffy.stress = Math.clamp(Math.trunc(_fluffy.stress), 0, 200)&gt;&gt;
+	 &lt;&lt;set _fluffy.trauma = Math.clamp(Math.trunc(_fluffy.trauma), 0, 200)&gt;&gt;
+	 
+	 &lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother: &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
 	 Father: &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
@@ -5855,6 +6058,9 @@ Inbreeding:
 		traits: [],
 		foodType: &quot;Kibble&quot;,
 		foodQuality: 2,
+		temperament: 0,
+		happy: 0,
+		trauma: 0,
 		stress: 0
 	}
 	&gt;&gt;
@@ -5932,6 +6138,9 @@ Inbreeding:
 			traits: [],
 			foodType: &quot;Kibble&quot;,
 			foodQuality: 2,
+			temperament: 0,
+			happy: 0,
+			trauma: 0,
 			stress: 0
 		} &gt;&gt;
 
@@ -5974,6 +6183,7 @@ Inbreeding:
 		&lt;&lt;case 0&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.strong++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperment = 20&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Shy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
@@ -5983,9 +6193,11 @@ Inbreeding:
 		&lt;&lt;case 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperment = 10&gt;&gt;
 		&lt;&lt;case 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Peppy&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperment = 10&gt;&gt;
 		&lt;&lt;default&gt;&gt;
 			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;

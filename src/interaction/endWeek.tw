@@ -17,8 +17,7 @@
 /* ***
  *	Base expenses
  *** */
-<<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 5).toFixed(2)>>
-
+<<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)>>
 
 
 /* moving the count updates to here, to prevent double loops */
@@ -233,6 +232,80 @@
 <<run console.log("Count test 0: Age = " + (_thisFluffy.ageWeeks + (_thisFluffy.age * 52)) + " gender = " + _thisFluffy.gender)>>
 
 	/* ***
+	 *	Feed them.
+	 *** */
+	 <<set _foodBonus = 0>>
+	 <<switch _thisFluffy.foodType>>
+	 	<<case "Kibble">>
+	 		<<if _thisFluffy.foodQuality > 3>>
+	 		/* Quality has some boni */
+	 			<<set _thisFluffy.happy++>>
+	 			<<set _thisFluffy.stress-->>
+	 			<<set _thisFluffy.trauma-->>
+	 			<<set _thisFluffy.temperament++>>	 			
+	 		<<elseif _thisFluffy.foodQuality < 2>>
+	 		/* Cheap has some malus */
+	 			<<set _thisFluffy.happy-->>
+	 			<<set _thisFluffy.stress++>>
+	 			<<set _thisFluffy.temperament-->>
+	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 		/* Trash has more malus */
+	 			<<set _thisFluffy.happy -= 2>>
+	 			<<set _thisFluffy.stress += 2>>
+	 			<<set _thisFluffy.trauma++>>
+	 			<<set _thisFluffy.trust-->>
+	 			<<set _thisFluffy.temperament-->>
+	 		<</if>>
+
+	 	<<case "Greens">>
+	 		<<if _thisFluffy.foodQuality > 3>>
+	 		/* Quality has some boni */
+	 			<<set _thisFluffy.stress-->>
+	 			<<set _thisFluffy.trauma-->>
+	 		<<elseif _thisFluffy.foodQuality < 2>>
+	 		/* Cheap has some malus */
+	 			<<set _thisFluffy.happy-->>
+	 			<<set _thisFluffy.trust-->>
+	 			<<set _thisFluffy.temperament-->>
+	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 		/* Trash has more malus */
+	 			<<set _thisFluffy.happy -= 3>>
+	 			<<set _thisFluffy.stress += 3>>
+	 			<<set _thisFluffy.trust -= 2>>
+	 			<<set _thisFluffy.temperament-->>
+	 		<</if>>
+	 		
+	 	<<case "Sketti">>
+	 		<<if _thisFluffy.foodQuality > 3>>
+	 		/* Quality has some boni */
+	 			<<set _thisFluffy.happy += 3>>
+	 			<<set _thisFluffy.trust += 3>>
+	 			<<set _thisFluffy.stress -= 2>>
+	 			<<set _thisFluffy.temperament += 5>>
+	 		<<elseif _thisFluffy.foodQuality > 2>>
+	 		/* Good has some boni */
+	 			<<set _thisFluffy.happy += 2>>
+	 			<<set _thisFluffy.trust += 2>>
+	 			<<set _thisFluffy.stress -= 1>>
+	 			<<set _thisFluffy.temperament += 4>>
+	 		<<elseif _thisFluffy.foodQuality > 1>>
+	 		/* Basic has some boni */
+	 			<<set _thisFluffy.happy += 1>>
+	 			<<set _thisFluffy.trust += 1>>
+	 			<<set _thisFluffy.stress -= 1>>
+	 			<<set _thisFluffy.temperament += 3>>
+	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 		/* Trash has some malus */
+	 			<<set _thisFluffy.happy -= 1>>
+	 			<<set _thisFluffy.stress += 3>>
+	 			<<set _thisFluffy.trust -= 1>>
+	 		<</if>>
+	 		
+	 <</switch>>
+	 
+
+	
+	/* ***
 	 *	Grow foals.
 	 *** */
 <<run console.log("Growth test 0: age = " + _thisFluffy.age)>>
@@ -240,18 +313,66 @@
 <<run console.log("Growth test 0: weight = " + _thisFluffy.weight + " age = " + _thisFluffy.ageWeeks)>>
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
-	 	<<set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)>>
-	 	<<set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)>>
-	 	<<set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)>>
-	 	<<set _newL = _newW / _thisFluffy.weightMulti>>
-	 	<<set _newH = _newL * (_thisFluffy.heightMulti)>>
-	 	
 	 	<<set _lMultiBase = 0.22>>
 	 	<<set _lMultiAdd = 0.0177>>
+	 	<<set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)>>
+	 	<<set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)>>
+	 	
+/*
+		<<set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)>>
+	 	<<set _newL = _newW / _thisFluffy.weightMulti>>
+	 	<<set _newH = _newL * (_thisFluffy.heightMulti)>>
+*/
+	 	<<set _lengthRatio = Number(_thisFluffy.maxLength / _thisFluffy.maxWeight).toFixed(3)>>
+	 	<<set _heightRatio = Number(_thisFluffy.maxHeight / _thisFluffy.maxWeight).toFixed(3)>>
+<<run console.log("ratio test 0: " + _lengthRatio)>>
+<<run console.log("ratio test 1: " + _heightRatio)>>
 
-	 	<<set _thisFluffy.weight = Number(_newW).toFixed(3)>>
-		<<set _thisFluffy.height = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
-		<<set _thisFluffy.length = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
+		<<set _mom = $globalFluffies[_thisFluffy.mother]>>
+		
+		<<if _thisFluffy.foodType == "Nursing">>
+			<<if _mom.nursingMax < _mom.nursing>>
+<<run console.log("Growth test 0.1: mother lacking milk")>>
+	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
+<<run console.log("Growth test 0.3 - nursed: " + _thisFluffy.maxLength)>>
+	 		<</if>>
+	 	<<else>> 
+	 		<<run console.log("Growth test 0.2 - non nursed: " + _newWMulti  + " " + Number(Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)))>>
+	 		<<switch _thisFluffy.foodQuality>>
+	 			<<case 0>>
+	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
+	 			<<case 1>>
+	 				<<set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)>>
+	 			<<case 3>>
+	 				<<set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)>>
+	 			<<case 4>>	 		
+	 				<<set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)>>
+	 		<</switch>>
+	 		
+	 		/*
+	 		<<set _lMultiBase = Number(_lMultiBase * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
+	 		<<set _lMultiAdd = Number(_lMultiAdd * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
+	 		*/
+	 		<<run console.log("Growth test 0.3 - non nursed: " + _newWMulti)>>
+		<</if>>
+
+
+		<<set _newW = Number(_thisFluffy.maxWeight * _newWMulti).toFixed(3)>>
+		<<set _thisFluffy.weight = Number(_newW).toFixed(3)>>
+		
+	 	<<set _newL = Number(_thisFluffy.weight * _lengthRatio).toFixed(3)>>
+	 	<<set _newH = Number(_thisFluffy.weight * _heightRatio).toFixed(3)>>
+	 	
+	 	<<set _thisFluffy.height = Number(_newL).toFixed(2)>>
+		<<set _thisFluffy.length = Number(_newH).toFixed(2)>>
+
+/*
+		<<set _thisFluffy.height = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
+		<<set _thisFluffy.length = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
+*/
+
+<<run console.log("Growth test 0.4: _newW = " + _newW + " _newL = " + _newL + " _newH " + _newH )>>
+<<run console.log("Growth test 0.5: weight = " + _thisFluffy.weight + " length = " + _thisFluffy.length + " height " + _thisFluffy.height )>>
 
 <<run console.log("Growth test 1: weight % = " + Number(_thisFluffy.weight / _thisFluffy.maxWeight))>>
 		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.14 && _thisFluffy.weaned == false>> 	
@@ -271,6 +392,61 @@
 	 		<<set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]>>
 	 	<</if>>
 	<</if>>
+	
+	/* ***
+	 *	Check for maturity and update traits:
+	 *** */
+	 <<if _thisFluffy.age == 0 && Number(_thisFluffy.ageWeeks) >= _thisFluffy.maturity>>
+			<<switch _thisFluffy.traits[0]>>
+				<<case "Fussy">>
+					<<if random(0, 1) == 0>>
+						<<set _thisFluffy.traits[0] = "Diligent">>
+						<<set _thisFluffy.learning++>>
+						<<set _thisFluffy.temperament += 20>>
+					<<else>>
+						<<set _thisFluffy.traits[0] = "Bossy">>
+						<<set _thisFluffy.charm-->>
+						<<set _thisFluffy.temperament += 30>>
+					<</if>>
+				<<case "Shy">>
+					<<if random(0, 1) == 0>>
+						<<set _thisFluffy.traits[0] = "Curious">>
+						<<set _thisFluffy.energy++>>
+						<<set _thisFluffy.temperament += 10>>
+					<<else>>
+						<<set _thisFluffy.traits[0] = "Timid">>
+						<<set _thisFluffy.strong-->>
+					<</if>>
+				<<case "Lazy">>
+					<<if random(0, 1) == 0>>
+						<<set _thisFluffy.traits[0] = "Pensive">>
+						<<set _thisFluffy.learning++>>
+					<<else>>
+						<<set _thisFluffy.traits[0] = "Lackadaisical">>
+						<<set _thisFluffy.energy-->>
+					<</if>>
+				<<case "Cute">>
+					<<if random(0, 1) == 0>>
+						<<set _thisFluffy.traits[0] = "Sweet">>
+						<<set _thisFluffy.learning++>>
+						<<set _thisFluffy.temperament += 10>>
+					<<else>>
+						<<set _thisFluffy.traits[0] = "Haughty">>
+						<<set _thisFluffy.learning-->>
+						<<set _thisFluffy.temperament += 20>>
+					<</if>>
+				<<case "Peppy">>
+					<<if random(0, 1) == 0>>
+						<<set _thisFluffy.traits[0] = "Playful">>
+						<<set _thisFluffy.charm++>>
+						<<set _thisFluffy.temperament += 10>>
+					<<else>>
+						<<set _thisFluffy.traits[0] = "Rowdy">>
+						<<set _thisFluffy.charm-->>
+						<<set _thisFluffy.temperament += 10>>
+					<</if>>
+			<</switch>>
+	 <</if>>
 
 
 <<run console.log("Breeding test 1: " + _thisFluffy.specialFriend + " | " + _thisFluffy.gender)>>
