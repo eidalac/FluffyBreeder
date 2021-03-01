@@ -51,7 +51,7 @@
 
 
 
-<<capture _fl, _fluff>>
+<<capture _fl, _fluff, $fluffyChecks>>
 
 	<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
 		<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
@@ -81,6 +81,7 @@
 			<<continue>>
 		<<else>>
 	
+			<label><<checkbox "$fluffyChecks[_fl]" false true>>
 			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] <<shortDesc _fluff>>
 			<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
 			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]]<<else>>[[Take off Display|Fluffy List][_fluff.onDisplay = false]]<</if>>
@@ -93,6 +94,7 @@
 				<<case -1>> 
 			<</switch>> 
 			<<set $globalFluffies[_fluff.ID] = _fluff>>
+			</label>
 			<hr>
 		<</if>>
 	<</for>>
