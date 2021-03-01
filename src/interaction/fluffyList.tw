@@ -45,6 +45,34 @@
 [[Mares|Fluffy List][$listType = "Mares"]] | 
 [[Stallions|Fluffy List][$listType = "Stallions"]] | 
 [[Display|Fluffy List][$listType = "Display"]] |
+<br>
+Bulk Actions (all checked fluffies)
+<br>
+<<link [[Bulk Sell|Fluffy List]]>>
+	<<if $fluffyChecks.length>>
+		<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+<<run console.log("Bulk test 0: " + _bf)>>
+			<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
+				<<set _bulkFluff = $globalFluffies[_bf]>>
+<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>
+				<<if _bulkFluff.pregnant == false &&
+					_bulkFluff.nursing < 1 &&
+					_bulkFluff.weaned == true>>
+<<run console.log("Bulk test 2: " + _bf)>>
+					/* Clear both special friends flag, ending breeding*/
+					<<if _bulkFluff.specialFriend != -1>>
+						<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
+						<<set _bulkFluff.specialFriend = -1>>
+					<</if>>
+<<run console.log("Bulk test 5: " + _bf)>>
+					<<set _bulkFluff.onDisplay = true>>
+<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>
+					<<set $globalFluffies[_bf] = _bulkFluff>>
+				<</if>>
+			<</if>>
+		<</for>>
+	<</if>>
+<</link>>
 
 <hr>
 

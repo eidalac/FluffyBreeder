@@ -5181,6 +5181,34 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 [[Mares|Fluffy List][$listType = &quot;Mares&quot;]] | 
 [[Stallions|Fluffy List][$listType = &quot;Stallions&quot;]] | 
 [[Display|Fluffy List][$listType = &quot;Display&quot;]] |
+&lt;br&gt;
+Bulk Actions (all checked fluffies)
+&lt;br&gt;
+&lt;&lt;link [[Bulk Sell|Fluffy List]]&gt;&gt;
+	&lt;&lt;if $fluffyChecks.length&gt;&gt;
+		&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;
+			&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
+				&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;
+				&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
+					_bulkFluff.nursing &lt; 1 &amp;&amp;
+					_bulkFluff.weaned == true&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;
+					/* Clear both special friends flag, ending breeding*/
+					&lt;&lt;if _bulkFluff.specialFriend != -1&gt;&gt;
+						&lt;&lt;set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1&gt;&gt;
+						&lt;&lt;set _bulkFluff.specialFriend = -1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;
+					&lt;&lt;set _bulkFluff.onDisplay = true&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;
+					&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/link&gt;&gt;
 
 &lt;hr&gt;
 
