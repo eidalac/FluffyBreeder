@@ -45,35 +45,61 @@
 [[Mares|Fluffy List][$listType = "Mares"]] | 
 [[Stallions|Fluffy List][$listType = "Stallions"]] | 
 [[Display|Fluffy List][$listType = "Display"]] |
-<br>
+<br><br>
 Bulk Actions (all checked fluffies)
 <br>
-<<link [[Bulk Sell|Fluffy List]]>>
-	<<if $fluffyChecks.length>>
-		<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-<<run console.log("Bulk test 0: " + _bf)>>
-			<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
-				<<set _bulkFluff = $globalFluffies[_bf]>>
-<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>
-				<<if _bulkFluff.pregnant == false &&
-					_bulkFluff.nursing < 1 &&
-					_bulkFluff.weaned == true>>
-<<run console.log("Bulk test 2: " + _bf)>>
-					/* Clear both special friends flag, ending breeding*/
-					<<if _bulkFluff.specialFriend != -1>>
-						<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
-						<<set _bulkFluff.specialFriend = -1>>
+<<button [[Clear All|Fluffy List]]>>
+	<<set $fluffyChecks = []>>
+<</button>>
+<<button [[Select All|Fluffy List]]>>
+	<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+		<<set $fluffyChecks[_bf] = true>>
+	<</for>>
+<</button>>
+<br><br>
+<<if $listType != "Display">>
+	<<button [[Bulk Sell|Fluffy List]]>>
+		<<if $fluffyChecks.length>>
+			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+	<<run console.log("Bulk test 0: " + _bf)>>
+				<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
+					<<set _bulkFluff = $globalFluffies[_bf]>>
+	<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>
+					<<if _bulkFluff.pregnant == false &&
+						_bulkFluff.nursing < 1 &&
+						_bulkFluff.weaned == true>>
+	<<run console.log("Bulk test 2: " + _bf)>>
+						/* Clear both special friends flag, ending breeding*/
+						<<if _bulkFluff.specialFriend != -1>>
+							<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
+							<<set _bulkFluff.specialFriend = -1>>
+						<</if>>
+	<<run console.log("Bulk test 5: " + _bf)>>
+						<<set _bulkFluff.onDisplay = true>>
+	<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>
+						<<set $globalFluffies[_bf] = _bulkFluff>>
 					<</if>>
-<<run console.log("Bulk test 5: " + _bf)>>
-					<<set _bulkFluff.onDisplay = true>>
-<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>
-					<<set $globalFluffies[_bf] = _bulkFluff>>
 				<</if>>
-			<</if>>
-		<</for>>
-	<</if>>
-<</link>>
-
+			<</for>>
+			
+		<<set $fluffyChecks = []>>
+		
+		<</if>>
+	<</button>>
+<<else>>
+	<<button [[Remove from Sale|Fluffy List]]>>
+		<<if $fluffyChecks.length>>
+			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+				<<set _bulkFluff = $globalFluffies[_bf]>>
+				<<set _bulkFluff.onDisplay = false>>
+				<<set $globalFluffies[_bf] = _bulkFluff>>
+			<</for>>
+			
+		<<set $fluffyChecks = []>>
+		
+		<</if>>
+	<</button>>
+<</if>>
 <hr>
 
 
@@ -109,7 +135,9 @@ Bulk Actions (all checked fluffies)
 			<<continue>>
 		<<else>>
 	
-			<label><<checkbox "$fluffyChecks[_fl]" false true>>
+			<label>
+			/*<<print '<<checkbox "$fluffyChecks[_fl]" false true>>' >>*/
+			<<print '<<checkbox "$fluffyChecks[_fl]" false true ' + ($fluffyChecks[_fl] ? "checked" : "") + '>>'>>
 			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] <<shortDesc _fluff>>
 			<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
 			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]]<<else>>[[Take off Display|Fluffy List][_fluff.onDisplay = false]]<</if>>

@@ -225,6 +225,27 @@ p {
   	margin-bottom:0px
 }
 
+button {
+  background: coral;
+  border-radius: 8px;
+  display: inline-block;
+  cursor: pointer;
+  text-align: center;
+  text-decoration: none;
+  outline: none;
+  border: none;
+  box-shadow: 0 9px #999;
+}
+
+button:hover {background-color: #3e8e41}
+
+button:active {
+  background-color: #3e8e41;
+  box-shadow: 0 5px #666;
+  transform: translateY(4px);
+
+}
+
 .imageRef {
     display: flex;
     flex-direction: column;
@@ -3334,7 +3355,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.71&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.72&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5181,35 +5202,61 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 [[Mares|Fluffy List][$listType = &quot;Mares&quot;]] | 
 [[Stallions|Fluffy List][$listType = &quot;Stallions&quot;]] | 
 [[Display|Fluffy List][$listType = &quot;Display&quot;]] |
-&lt;br&gt;
+&lt;br&gt;&lt;br&gt;
 Bulk Actions (all checked fluffies)
 &lt;br&gt;
-&lt;&lt;link [[Bulk Sell|Fluffy List]]&gt;&gt;
-	&lt;&lt;if $fluffyChecks.length&gt;&gt;
-		&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;
-			&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
-				&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;
-				&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
-					_bulkFluff.nursing &lt; 1 &amp;&amp;
-					_bulkFluff.weaned == true&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;
-					/* Clear both special friends flag, ending breeding*/
-					&lt;&lt;if _bulkFluff.specialFriend != -1&gt;&gt;
-						&lt;&lt;set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1&gt;&gt;
-						&lt;&lt;set _bulkFluff.specialFriend = -1&gt;&gt;
+&lt;&lt;button [[Clear All|Fluffy List]]&gt;&gt;
+	&lt;&lt;set $fluffyChecks = []&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+&lt;&lt;button [[Select All|Fluffy List]]&gt;&gt;
+	&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
+		&lt;&lt;set $fluffyChecks[_bf] = true&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+&lt;br&gt;&lt;br&gt;
+&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;
+	&lt;&lt;button [[Bulk Sell|Fluffy List]]&gt;&gt;
+		&lt;&lt;if $fluffyChecks.length&gt;&gt;
+			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
+	&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;
+				&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
+					&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+	&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;
+					&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
+						_bulkFluff.nursing &lt; 1 &amp;&amp;
+						_bulkFluff.weaned == true&gt;&gt;
+	&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;
+						/* Clear both special friends flag, ending breeding*/
+						&lt;&lt;if _bulkFluff.specialFriend != -1&gt;&gt;
+							&lt;&lt;set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1&gt;&gt;
+							&lt;&lt;set _bulkFluff.specialFriend = -1&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+	&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;
+						&lt;&lt;set _bulkFluff.onDisplay = true&gt;&gt;
+	&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;
+						&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;
-					&lt;&lt;set _bulkFluff.onDisplay = true&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;
-					&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/link&gt;&gt;
-
+			&lt;&lt;/for&gt;&gt;
+			
+		&lt;&lt;set $fluffyChecks = []&gt;&gt;
+		
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+&lt;&lt;else&gt;&gt;
+	&lt;&lt;button [[Remove from Sale|Fluffy List]]&gt;&gt;
+		&lt;&lt;if $fluffyChecks.length&gt;&gt;
+			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
+				&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+				&lt;&lt;set _bulkFluff.onDisplay = false&gt;&gt;
+				&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+			
+		&lt;&lt;set $fluffyChecks = []&gt;&gt;
+		
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 &lt;hr&gt;
 
 
@@ -5245,7 +5292,9 @@ Bulk Actions (all checked fluffies)
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 	
-			&lt;label&gt;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true&gt;&gt;
+			&lt;label&gt;
+			/*&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true&gt;&gt;&#39; &gt;&gt;*/
+			&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true &#39; + ($fluffyChecks[_fl] ? &quot;checked&quot; : &quot;&quot;) + &#39;&gt;&gt;&#39;&gt;&gt;
 			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
 			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
 			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
