@@ -3184,7 +3184,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;&lt;SidebarCash&gt;&gt;
 &lt;br&gt;
 &lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
-&lt;br&gt;[[Check the Fluffies|Fluffy List][$listType = &quot;All&quot;]] | [[Check displays|Fluffy List][$listType = &quot;Display&quot;]]
+&lt;br&gt;[[Check the Fluffies|Fluffy List][$listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;]] | [[Check displays|Fluffy List][$listType = &quot;Display&quot;, $encyclopedia = &quot;Fluffy List&quot;]]
 &lt;br&gt;
 &lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;[[Improve the Store|Buy Upgrades]]
@@ -3212,6 +3212,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;&lt;if _Pass == &quot;Encyclopedia&quot;&gt;&gt;
 	&lt;span id=&quot;nextButton&quot;&gt;&lt;strong&gt;&lt;&lt;link [[($nextButton)|($nextLink)]]&gt;&gt;&lt;&lt;/link&gt;&gt; to Fluffy Breeder&lt;/strong&gt;&lt;/span&gt;
 	/* Intro, new players, PC/Gameplay focused */
+	//Gameplay //
 	[[About|Encyclopedia][$encyclopedia = &quot;About&quot;]]
 	[[Playing Fluffy Breeder|Encyclopedia][$encyclopedia = &quot;Playing Fluffy Breeder&quot;]]
 	[[World Setup|Encyclopedia][$encyclopedia = &quot;World Setup&quot;]]
@@ -3355,7 +3356,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.72&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.73&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5203,8 +5204,17 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 [[Stallions|Fluffy List][$listType = &quot;Stallions&quot;]] | 
 [[Display|Fluffy List][$listType = &quot;Display&quot;]] |
 &lt;br&gt;&lt;br&gt;
+
+
+/* ***
+ *
+ * Bulk actions
+ *
+ *** */
 Bulk Actions (all checked fluffies)
 &lt;br&gt;
+
+/* Select All/Clear all buttons */
 &lt;&lt;button [[Clear All|Fluffy List]]&gt;&gt;
 	&lt;&lt;set $fluffyChecks = []&gt;&gt;
 &lt;&lt;/button&gt;&gt;
@@ -5214,6 +5224,8 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;/for&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 &lt;br&gt;&lt;br&gt;
+
+/* Bulk sell / remove from sale buttons */
 &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;
 	&lt;&lt;button [[Bulk Sell|Fluffy List]]&gt;&gt;
 		&lt;&lt;if $fluffyChecks.length&gt;&gt;
@@ -5257,10 +5269,52 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
+
+&amp;nbsp;|&amp;nbsp;
+&lt;&lt;listbox &quot;_foodType&quot; autoselect&gt;&gt;
+	&lt;&lt;option &quot;Kibble&quot;&gt;&gt;
+	&lt;&lt;option &quot;Greens&quot;&gt;&gt;
+	&lt;&lt;option &quot;Sketti&quot;&gt;&gt;
+	&lt;&lt;option &quot;Formula&quot;&gt;&gt;
+&lt;&lt;/listbox&gt;&gt;
+
+&lt;&lt;listbox &quot;_foodQuality&quot; autoselect&gt;&gt;
+	&lt;&lt;option &quot;Trash&quot; 0&gt;&gt;
+	&lt;&lt;option &quot;Cheap&quot; 1&gt;&gt;
+	&lt;&lt;option &quot;Basic&quot; 2&gt;&gt;
+	&lt;&lt;option &quot;Good&quot; 3&gt;&gt;
+	&lt;&lt;option &quot;Quality&quot; 4&gt;&gt;
+&lt;&lt;/listbox&gt;&gt;
+
+&lt;&lt;button [[Bulk Feeding|Fluffy List]]&gt;&gt;
+		&lt;&lt;if $fluffyChecks.length&gt;&gt;
+			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk food test 0: &quot; + _bf)&gt;&gt;
+	
+				&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
+					&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+					
+&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType+ &quot; &quot; + _foodQuality)&gt;&gt;
+					&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
+						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot;&gt;&gt;
+							&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
+							&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
+							&lt;&lt;set $globalFluffies[_bulkFluff.mother].nursing--&gt;&gt;
+							&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;elseif _bulkFluff.foodType != &quot;Nursing&quot;&gt;&gt;
+						&lt;&lt;set _bulkFluff.foodType = _foodType&gt;&gt;
+						&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
+						&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType+ &quot; &quot; + _foodQuality)&gt;&gt;
+
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+&amp;nbsp;|&amp;nbsp;
 &lt;hr&gt;
-
-
-
 
 &lt;&lt;capture _fl, _fluff, $fluffyChecks&gt;&gt;
 
@@ -5301,9 +5355,10 @@ Bulk Actions (all checked fluffies)
 			| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]] _fluffy.foodType 
 			&lt;&lt;switch _fluffy.foodQuality&gt;&gt;
 				&lt;&lt;case 0&gt;&gt; (trash)
-				&lt;&lt;case 1&gt;&gt; (basic)
-				&lt;&lt;case 2&gt;&gt; (good)
-				&lt;&lt;case 3&gt;&gt; (quality)
+				&lt;&lt;case 1&gt;&gt; (cheap)
+				&lt;&lt;case 2&gt;&gt; (basic)
+				&lt;&lt;case 3&gt;&gt; (good)
+				&lt;&lt;case 4&gt;&gt; (quality)
 				&lt;&lt;case -1&gt;&gt; 
 			&lt;&lt;/switch&gt;&gt; 
 			&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;

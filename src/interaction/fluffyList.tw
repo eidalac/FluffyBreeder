@@ -46,8 +46,17 @@
 [[Stallions|Fluffy List][$listType = "Stallions"]] | 
 [[Display|Fluffy List][$listType = "Display"]] |
 <br><br>
+
+
+/* ***
+ *
+ * Bulk actions
+ *
+ *** */
 Bulk Actions (all checked fluffies)
 <br>
+
+/* Select All/Clear all buttons */
 <<button [[Clear All|Fluffy List]]>>
 	<<set $fluffyChecks = []>>
 <</button>>
@@ -57,6 +66,8 @@ Bulk Actions (all checked fluffies)
 	<</for>>
 <</button>>
 <br><br>
+
+/* Bulk sell / remove from sale buttons */
 <<if $listType != "Display">>
 	<<button [[Bulk Sell|Fluffy List]]>>
 		<<if $fluffyChecks.length>>
@@ -100,10 +111,52 @@ Bulk Actions (all checked fluffies)
 		<</if>>
 	<</button>>
 <</if>>
+
+&nbsp;|&nbsp;
+<<listbox "_foodType" autoselect>>
+	<<option "Kibble">>
+	<<option "Greens">>
+	<<option "Sketti">>
+	<<option "Formula">>
+<</listbox>>
+
+<<listbox "_foodQuality" autoselect>>
+	<<option "Trash" 0>>
+	<<option "Cheap" 1>>
+	<<option "Basic" 2>>
+	<<option "Good" 3>>
+	<<option "Quality" 4>>
+<</listbox>>
+
+<<button [[Bulk Feeding|Fluffy List]]>>
+		<<if $fluffyChecks.length>>
+			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+<<run console.log("Bulk food test 0: " + _bf)>>
+	
+				<<if $fluffyChecks[_bf] == true>>
+					<<set _bulkFluff = $globalFluffies[_bf]>>
+					
+<<run console.log("Bulk test 1: " + _bulkFluff.foodType + " " + _foodType+ " " + _foodQuality)>>
+					<<if _foodType == "Formula">>
+						<<if _bulkFluff.foodType == "Nursing">>
+							<<set _bulkFluff.foodType = "Formula">>
+							<<set _bulkFluff.foodQuality = _foodQuality>>
+							<<set $globalFluffies[_bulkFluff.mother].nursing-->>
+							<<set $globalFluffies[_bf] = _bulkFluff>>
+						<</if>>
+					<<elseif _bulkFluff.foodType != "Nursing">>
+						<<set _bulkFluff.foodType = _foodType>>
+						<<set _bulkFluff.foodQuality = _foodQuality>>
+						<<set $globalFluffies[_bf] = _bulkFluff>>
+					<</if>>
+<<run console.log("Bulk test 2: " + _bulkFluff.foodType + " " + _foodType+ " " + _foodQuality)>>
+
+				<</if>>
+			<</for>>
+		<</if>>
+<</button>>
+&nbsp;|&nbsp;
 <hr>
-
-
-
 
 <<capture _fl, _fluff, $fluffyChecks>>
 
@@ -144,9 +197,10 @@ Bulk Actions (all checked fluffies)
 			| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]] _fluffy.foodType 
 			<<switch _fluffy.foodQuality>>
 				<<case 0>> (trash)
-				<<case 1>> (basic)
-				<<case 2>> (good)
-				<<case 3>> (quality)
+				<<case 1>> (cheap)
+				<<case 2>> (basic)
+				<<case 3>> (good)
+				<<case 4>> (quality)
 				<<case -1>> 
 			<</switch>> 
 			<<set $globalFluffies[_fluff.ID] = _fluff>>
