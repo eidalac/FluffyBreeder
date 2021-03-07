@@ -519,6 +519,7 @@
 					<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
 					<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
 					<<set $mom.stress += 25>>
+					<<set $mom.trauma += 1>>
 					<br>
 					<br>
 					<hr>
@@ -547,14 +548,29 @@
 
 			<</for>>
 <<run console.log("Breeding test 6: " + $globalFluffies.length)>>
-			<<set $mom.litter = 0>>
+			
 
+			/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count*/
 			<<if $mom.fertility > 0>>
-				<<set $mom.fertility-->>
+				<<set _fertileChance = $mom.litter>>
+				<<set _fertileChance += $mom.children.length>>
+				<<set _fertileChance = 2 * _fertileChance>>
+				
+				<<if random(0,100) >= _fertileChance>> 
+					<<set $mom.fertility-->>
+					<<set $mom.stress += 5>>
+					<<set $mom.trauma += 1>>
+					<br>@@.cyan;Why special place hurties?@@
+				<<else>>
+					<br>@@.cyan;Mumah wuv babhies.@@
+				<</if>>
 			<<else>>
 				<<set $mom.stress += 50>>
+				<<set $mom.trauma += 5>>
 				<br>@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
 			<</if>>
+			
+			<<set $mom.litter = 0>>
 			<<set $mom.dueDate = -1>>
 			<<set $mom.pregnant = false>>
 			<<set $mom.pregnantBy = -1>>

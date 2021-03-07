@@ -3407,7 +3407,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.75&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.77&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -4820,6 +4820,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 					&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
 					&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
 					&lt;&lt;set $mom.stress += 25&gt;&gt;
+					&lt;&lt;set $mom.trauma += 1&gt;&gt;
 					&lt;br&gt;
 					&lt;br&gt;
 					&lt;hr&gt;
@@ -4848,14 +4849,29 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 			&lt;&lt;/for&gt;&gt;
 &lt;&lt;run console.log(&quot;Breeding test 6: &quot; + $globalFluffies.length)&gt;&gt;
-			&lt;&lt;set $mom.litter = 0&gt;&gt;
+			
 
+			/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count*/
 			&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
-				&lt;&lt;set $mom.fertility--&gt;&gt;
+				&lt;&lt;set _fertileChance = $mom.litter&gt;&gt;
+				&lt;&lt;set _fertileChance += $mom.children.length&gt;&gt;
+				&lt;&lt;set _fertileChance = 2 * _fertileChance&gt;&gt;
+				
+				&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
+					&lt;&lt;set $mom.fertility--&gt;&gt;
+					&lt;&lt;set $mom.stress += 5&gt;&gt;
+					&lt;&lt;set $mom.trauma += 1&gt;&gt;
+					&lt;br&gt;@@.cyan;Why special place hurties?@@
+				&lt;&lt;else&gt;&gt;
+					&lt;br&gt;@@.cyan;Mumah wuv babhies.@@
+				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;set $mom.stress += 50&gt;&gt;
+				&lt;&lt;set $mom.trauma += 5&gt;&gt;
 				&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
 			&lt;&lt;/if&gt;&gt;
+			
+			&lt;&lt;set $mom.litter = 0&gt;&gt;
 			&lt;&lt;set $mom.dueDate = -1&gt;&gt;
 			&lt;&lt;set $mom.pregnant = false&gt;&gt;
 			&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
