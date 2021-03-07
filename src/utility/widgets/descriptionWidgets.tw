@@ -40,17 +40,14 @@
 
 
 <<widget statValue>>
-	<<set _avg = $activeFluffy.strong + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking +$activeFluffy.learning>>
-<<run console.log("Stat Test 1: " + _avg)>>
-	<<set _avg = Number(Number(_avg) / 6).toFixed(2)>>
-<<run console.log("Stat Test 2: " + _avg)>>
+	<<set _avg = $activeFluffy.strength + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking + $activeFluffy.learning + $activeFluffy.fertility>>
+	<<set _avg = Number(Number(_avg) / 7).toFixed(2)>>
 	<<set _avg++>>
-<<run console.log("Stat Test 3: " + _avg)>>
 
 	<<if $activeFluffy.traits.includes("Bossy") || $activeFluffy.traits.includes("Timid") ||  $activeFluffy.traits.includes("Lackadaisical") ||  $activeFluffy.traits.includes("Haughty") ||  $activeFluffy.traits.includes("Rowdy")>>
-		<<set $activeFluffy.statBonus = Number(_avg / 7).toFixed(2)>>
+		<<set $activeFluffy.statBonus = Number(_avg / 8).toFixed(2)>>
 	<<else>>
-		<<set $activeFluffy.statBonus = Number(_avg / 5).toFixed(2)>>
+		<<set $activeFluffy.statBonus = Number(_avg / 6).toFixed(2)>>
 	<</if>>
 <</widget>>
 
@@ -80,7 +77,7 @@
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
-	<br>Strong: [$activeFluffy.strong], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
+	<br>Strength: [$activeFluffy.strength], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
 	<br> Color Bonus: $activeFluffy.colorBonus. 
 	<br> Stat Bonus: $activeFluffy.statBonus.
 	
@@ -150,7 +147,7 @@
 	 <<set $globalFluffies[_fluffy.ID] = _fluffy>>
 
 	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
-	<br>&nbsp;&nbsp;&nbsp;&nbsp;Strong [_fluffy.strong] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	<br>&nbsp;&nbsp;&nbsp;&nbsp;Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
 	<br>&nbsp;&nbsp;&nbsp;&nbsp;Mother: <<if _fluffy.mother == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@<</if>> 
