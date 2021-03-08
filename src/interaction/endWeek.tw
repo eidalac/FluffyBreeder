@@ -10,9 +10,7 @@
  *
  *********** */
 
-<<set $nextButton to "CONTINUE.", $nextLink to "Week Start">>
-
-<<run console.log("hi?")>>
+<<set $nextButton to "CONTINUE", $nextLink to "Event Main", $showEncyclopedia = 0>>
 
 /* ***
  *	Base expenses
@@ -26,6 +24,9 @@
 <<set $ourStore.foals = 0>>
 
 <<set _feedCost = 0>>
+
+/* clear event queues */
+<<set $eventBirths = []>>
 
 /* ***
  *	Update counts for the sidebar
@@ -493,6 +494,9 @@
 		<</if>>
 
 		<<if $mom.pregnant && Number($mom.dueDate) < Number($week)>>
+<<run console.log("Birth test 0:  " + $mom.name + " added to birth even queue.")>>
+			<<run $eventBirths.push($mom)>>
+			/*
 			<br>$mom.name is giving birth to $mom.litter foals.
 			<br>@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			<br>
@@ -550,7 +554,7 @@
 <<run console.log("Breeding test 6: " + $globalFluffies.length)>>
 			
 
-			/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count*/
+			 We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count
 			<<if $mom.fertility > 0>>
 				<<set _fertileChance = $mom.litter>>
 				<<set _fertileChance += $mom.children.length>>
@@ -580,7 +584,7 @@
 			
 			<<set $globalFluffies[$mom.ID] = $mom>>
 			<<set $globalFluffies[$dad.ID] = $dad>>
-
+*/
 		<<elseif $mom.nursing > 0>>
 			 <br>$mom.name is nursing foals.
 			 <<set $globalFluffies[$mom.ID] = $mom>>
@@ -594,7 +598,7 @@
 <<set $week++>>
 <<set $actions = 10>>
 
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
-<br>//[[Back to Week Start|Week Start]]//
-<br>
-<br>//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//
+
+

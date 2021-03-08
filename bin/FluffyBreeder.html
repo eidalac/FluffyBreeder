@@ -2629,7 +2629,164 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;run console.log(&quot;Color Change test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
 &lt;&lt;run console.log(&quot;Color Change test 1: &quot; + $activeFluffy.mColor)&gt;&gt;
 	
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Encyclopedia" tags="nobr" position="350,100" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Event Birth" tags="nobr" position="350,100" size="100,100">/* **********
+ * eventBirth.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for a fluffy giving birth.
+ *
+ *********** */
+ 
+ 
+&lt;&lt;run console.log(&quot;Birth test 2:  on birth event page&quot;)&gt;&gt;
+ 
+/*&lt;&lt;for _i = 0; i &lt; $eventBirths.length; i++&gt;&gt;*/
+/* Each birth even entry is the mother giving birth */
+/* Pick a random fulffy from the list and run the birth */
+&lt;&lt;set $mom = $eventBirths.pluck()&gt;&gt;
+
+&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
+&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
+&lt;br&gt;
+&lt;hr&gt;
+	
+&lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Birth test 3: &quot; + $mom.litter)&gt;&gt;
+
+&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
+	
+	/* Base chance for still births is based on the mare&#39;s fertility and number of prior children */
+	&lt;&lt;if $mom.fertility &lt; 1&gt;&gt;
+		&lt;&lt;set _diff = 35 - $mom.children.length&gt;&gt;
+	&lt;&lt;elseif $mom.fertility &lt; 2&gt;&gt;
+		&lt;&lt;set _diff = 55 - $mom.children.length&gt;&gt;
+	&lt;&lt;elseif $mom.fertility &lt; 3&gt;&gt;
+		&lt;&lt;set _diff = 75 - $mom.children.length&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _diff = 95 - $mom.children.length&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	/* Creates a new fluffy as $activeFluffy */
+	&lt;&lt;breedFluffies $mom $dad&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Birth test 4: &quot; + _diff)&gt;&gt;
+
+	/* Stillbirth chance; we display some info about the foal (type and color), so this happens after generating it. */
+	&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
+		&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
+		&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
+		&lt;&lt;set $mom.stress += 25&gt;&gt;
+		&lt;&lt;set $mom.trauma += 1&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		&lt;hr&gt;
+		
+&lt;&lt;run console.log(&quot;Birth test 5: &quot; + _diff)&gt;&gt;
+
+	&lt;&lt;else&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
+		
+		/* Print the foal info */	
+		&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
+		&lt;hr&gt;
+
+		/* Save it */
+		&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+		&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;
+		&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
+		&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+		&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+			
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+			
+		&lt;&lt;set $ourStore.foals++&gt;&gt;
+			
+		&lt;&lt;set $mom.nursing++&gt;&gt;
+		&lt;&lt;set $mom.stress += 5&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
+
+&lt;&lt;/for&gt;&gt; /* Close litter itteration */
+
+&lt;&lt;run console.log(&quot;Birth test 7: &quot; + $globalFluffies.length)&gt;&gt;
+
+/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count */
+&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
+	&lt;&lt;set _fertileChance = $mom.litter&gt;&gt;
+	&lt;&lt;set _fertileChance += $mom.children.length&gt;&gt;
+	&lt;&lt;set _fertileChance = 2 * _fertileChance&gt;&gt;
+	
+	/* Test for fertility drop */
+	&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
+		&lt;&lt;set $mom.fertility--&gt;&gt;
+		&lt;&lt;set $mom.stress += 5&gt;&gt;
+		&lt;&lt;set $mom.trauma += 1&gt;&gt;
+		&lt;br&gt;@@.cyan;Why special place hurties?@@
+	/* 
+	&lt;&lt;else&gt;&gt;
+		&lt;br&gt;@@.cyan;Mumah wuv babhies.@@
+		*/
+	&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
+&lt;&lt;else&gt;&gt;
+	/* 0 fertility left */
+	&lt;&lt;set $mom.stress += 50&gt;&gt;
+	&lt;&lt;set $mom.trauma += 5&gt;&gt;
+	&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
+
+/* Update the mom: */
+&lt;&lt;set $mom.litter = 0&gt;&gt;
+&lt;&lt;set $mom.dueDate = -1&gt;&gt;
+&lt;&lt;set $mom.pregnant = false&gt;&gt;
+&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
+&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
+&lt;&lt;set $mom.nursingMax = $mom.nursing&gt;&gt;
+&lt;&lt;set $mom.nursingMax -= random(0,1)&gt;&gt;			
+
+/* Save changes to mom and dad*/ 
+&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+&lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
+ 	
+/*&lt;&lt;/for&gt;&gt;*/ /* Close birth event loop */
+ 
+ 
+&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="4" name="Event Main" tags="nobr" position="475,100" size="100,100">/* **********
+ * eventMain.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Checks and runs end of week events.
+ *
+ *********** */
+ 
+&lt;&lt;set $showEncyclopedia = 0&gt;&gt;
+ 
+&lt;&lt;if $eventBirths.length&gt;&gt;
+&lt;&lt;run console.log(&quot;Birth test 1:  going to birth event page&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Birth&quot;&gt;&gt;
+&lt;&lt;else&gt;&gt;
+	/* no events fired*/
+	&lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
+	&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;
+	
+&lt;&lt;/if&gt;&gt; /* Close event list */
+
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Week Start][$showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;]]
+
+/* 
+&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+&lt;&lt;set $nextLink = &quot;Week Start&quot;&gt;&gt;
+*/</tw-passagedata><tw-passagedata pid="5" name="Encyclopedia" tags="nobr" position="600,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -2905,7 +3062,7 @@ Mother, Father and any children
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
-&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="4" name="Disclaimer" tags="nobr" position="475,100" size="100,100">/* **********
+&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Disclaimer" tags="nobr" position="725,100" size="100,100">/* **********
  * Disclaimer.tw
  *
  * Package: FluffyBreeder
@@ -2931,7 +3088,7 @@ Mother, Father and any children
 &lt;br&gt;
 
 /* Move to the next card */
-&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="5" name="Intro Summary" tags="nobr" position="600,100" size="100,100">/* **********
+&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="7" name="Intro Summary" tags="nobr" position="850,100" size="100,100">/* **********
  * introSummary.tw
  *
  * Package: FluffyBreeder
@@ -3073,7 +3230,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100), $encyclopedia = &quot;Shop Setup&quot;]]
 &lt;br&gt;
 &lt;br&gt;
-[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="6" name="Shop Intro" tags="nobr" position="725,100" size="100,100">/* **********
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="8" name="Shop Intro" tags="nobr" position="975,100" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -3200,7 +3357,7 @@ __&#39;&#39;World Settings&#39;&#39;__
  *** */
 /*&lt;br&gt;&lt;br&gt;[[Get Fluffies|Fluffy Intro][$cash = Number($storePoints + 100)]]*/
 
-&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="7" name="Week Start" tags="nobr" position="850,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="9" name="Week Start" tags="nobr" position="1100,100" size="100,100">/* **********
  * weekStart.tw
  *
  * Package: FluffyBreeder
@@ -3239,7 +3396,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;@@.coral;Get Fluffies@@
 &lt;br&gt;[[Visit Fluffy Mart|Buy Fluffies][$shop = &quot;mart&quot;]] | [[Visit a Fluffy Mill|Buy Fluffies][$shop = &quot;mill&quot;]] | [[Visit a Fluffy Breeder|Buy Fluffies][$shop = &quot;breeder&quot;]] | [[Hunt Ferals|Buy Fluffies][$shop = &quot;feral&quot;]]
 &lt;br&gt;
-&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="StoryCaption" tags="" position="975,100" size="100,100">/* **********
+&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="StoryCaption" tags="" position="1225,100" size="100,100">/* **********
  *	storyCaption.tw
  *
  *	Package: FluffyBreeder
@@ -3382,7 +3539,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 	&lt;br&gt;
 	&lt;&lt;link &quot;Bug Report&quot;&gt;&gt;&lt;&lt;bugreport&gt;&gt;&lt;&lt;/link&gt;&gt;
 
-&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="9" name="init" tags="nobr" position="1100,100" size="100,100">/* **********
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="init" tags="nobr" position="100,225" size="100,100">/* **********
   *	Fluffy Breeder
 a text-based fluffy management game
  *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
@@ -3407,7 +3564,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.77&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.87&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -3672,7 +3829,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="Buy Fluffies" tags="nobr" position="1225,100" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="Buy Fluffies" tags="nobr" position="225,225" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -3994,7 +4151,7 @@ profitsTotal: 0
 &lt;&lt;/if&gt;&gt;
 
 [[End Shopping|Week Start]]
-*/</tw-passagedata><tw-passagedata pid="11" name="Buy Food" tags="nobr" position="100,225" size="100,100">/* **********
+*/</tw-passagedata><tw-passagedata pid="13" name="Buy Food" tags="nobr" position="350,225" size="100,100">/* **********
  * Buy Food.tw
  *
  * Package: FluffyBreeder
@@ -4132,7 +4289,7 @@ profitsTotal: 0
 
 &lt;br&gt;&lt;br&gt;
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="Buy Upgrades" tags="nobr" position="225,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Buy Upgrades" tags="nobr" position="475,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -4301,7 +4458,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="End Week" tags="nobr" position="350,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="End Week" tags="nobr" position="600,225" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -4311,9 +4468,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
  *
  *********** */
 
-&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
-
-&lt;&lt;run console.log(&quot;hi?&quot;)&gt;&gt;
+&lt;&lt;set $nextButton to &quot;CONTINUE&quot;, $nextLink to &quot;Event Main&quot;, $showEncyclopedia = 0&gt;&gt;
 
 /* ***
  *	Base expenses
@@ -4327,6 +4482,9 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;set $ourStore.foals = 0&gt;&gt;
 
 &lt;&lt;set _feedCost = 0&gt;&gt;
+
+/* clear event queues */
+&lt;&lt;set $eventBirths = []&gt;&gt;
 
 /* ***
  *	Update counts for the sidebar
@@ -4794,6 +4952,9 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;if $mom.pregnant &amp;&amp; Number($mom.dueDate) &lt; Number($week)&gt;&gt;
+&lt;&lt;run console.log(&quot;Birth test 0:  &quot; + $mom.name + &quot; added to birth even queue.&quot;)&gt;&gt;
+			&lt;&lt;run $eventBirths.push($mom)&gt;&gt;
+			/*
 			&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
 			&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 			&lt;br&gt;
@@ -4851,7 +5012,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;run console.log(&quot;Breeding test 6: &quot; + $globalFluffies.length)&gt;&gt;
 			
 
-			/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count*/
+			 We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count
 			&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
 				&lt;&lt;set _fertileChance = $mom.litter&gt;&gt;
 				&lt;&lt;set _fertileChance += $mom.children.length&gt;&gt;
@@ -4881,7 +5042,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 			
 			&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
 			&lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
-
+*/
 		&lt;&lt;elseif $mom.nursing &gt; 0&gt;&gt;
 			 &lt;br&gt;$mom.name is nursing foals.
 			 &lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
@@ -4895,10 +5056,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;set $week++&gt;&gt;
 &lt;&lt;set $actions = 10&gt;&gt;
 
-
-&lt;br&gt;//[[Back to Week Start|Week Start]]//
-&lt;br&gt;
-&lt;br&gt;//[[Back to Options|Intro Summary][$economy = 1, $alicornRarity = 1, $alicornMonster = 1, $pooBaby = 1, $smartySyndrom = 1]]//</tw-passagedata><tw-passagedata pid="14" name="Fluffy Breeding" tags="nobr" position="475,225" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="16" name="Fluffy Breeding" tags="nobr" position="725,225" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -4983,7 +5141,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;/if&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Fluffy Feeding" tags="nobr" position="600,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Fluffy Feeding" tags="nobr" position="850,225" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -5088,7 +5246,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Fluffy Interact" tags="nobr" position="725,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="Fluffy Interact" tags="nobr" position="975,225" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -5233,7 +5391,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Fluffy List" tags="nobr" position="850,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="Fluffy List" tags="nobr" position="1100,225" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -5454,7 +5612,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="Fluffy Selling" tags="nobr" position="975,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="Fluffy Selling" tags="nobr" position="1225,225" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -5523,7 +5681,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/capture&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="Gene Lab" tags="nobr" position="1100,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="Gene Lab" tags="nobr" position="100,350" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -6198,7 +6356,7 @@ Inbreeding:
 
 
 &lt;br&gt;
-[[Exit the Lab|Fluffy Interact]]</tw-passagedata><tw-passagedata pid="20" name="description widgets" tags="widget nobr" position="1225,225" size="100,100">/* **********
+[[Exit the Lab|Fluffy Interact]]</tw-passagedata><tw-passagedata pid="22" name="description widgets" tags="widget nobr" position="225,350" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -6355,7 +6513,7 @@ Inbreeding:
 	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="fluffy creation widgets" tags="widget nobr" position="100,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="fluffy creation widgets" tags="widget nobr" position="350,350" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -6644,7 +6802,7 @@ Inbreeding:
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodType = &quot;Nursing&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="misc widgets" tags="nobr widget" position="225,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="misc widgets" tags="nobr widget" position="475,350" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -6919,7 +7077,7 @@ Inbreeding:
 ($repuation)
 
 	&lt;br&gt;@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="pronoun widgets" tags="widget nobr" position="350,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="pronoun widgets" tags="widget nobr" position="600,350" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder
