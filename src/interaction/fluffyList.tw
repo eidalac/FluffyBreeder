@@ -72,22 +72,22 @@ Bulk Actions (all checked fluffies)
 	<<button [[Bulk Sell|Fluffy List]]>>
 		<<if $fluffyChecks.length>>
 			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-	<<run console.log("Bulk test 0: " + _bf)>>
+	/*<<run console.log("Bulk test 0: " + _bf)>>*/
 				<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
 					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-	<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>
+	/*<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>*/
 					<<if _bulkFluff.pregnant == false &&
 						_bulkFluff.nursing < 1 &&
 						_bulkFluff.weaned == true>>
-	<<run console.log("Bulk test 2: " + _bf)>>
+	/*<<run console.log("Bulk test 2: " + _bf)>>*/
 						/* Clear both special friends flag, ending breeding*/
 						<<if _bulkFluff.specialFriend != -1>>
 							<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
 							<<set _bulkFluff.specialFriend = -1>>
 						<</if>>
-	<<run console.log("Bulk test 5: " + _bf)>>
+	/*<<run console.log("Bulk test 5: " + _bf)>>*/
 						<<set _bulkFluff.onDisplay = true>>
-	<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>
+	/*<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>*/
 						<<set $globalFluffies[_bf] = _bulkFluff>>
 					<</if>>
 				<</if>>
@@ -101,9 +101,11 @@ Bulk Actions (all checked fluffies)
 	<<button [[Remove from Sale|Fluffy List]]>>
 		<<if $fluffyChecks.length>>
 			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-				<<set _bulkFluff = $globalFluffies[_bf]>>
-				<<set _bulkFluff.onDisplay = false>>
-				<<set $globalFluffies[_bf] = _bulkFluff>>
+				<<if $fluffyChecks[_bf] == true>>
+					<<set _bulkFluff = $globalFluffies[_bf]>>
+					<<set _bulkFluff.onDisplay = false>>
+					<<set $globalFluffies[_bf] = _bulkFluff>>
+				<</if>>
 			<</for>>
 			
 		<<set $fluffyChecks = []>>
@@ -138,7 +140,7 @@ Bulk Actions (all checked fluffies)
 					
 /*<<run console.log("Bulk test 1: " + _bulkFluff.foodType + " " + _foodType + " " + _foodQuality + " " + _bulkFluff.name)>>*/
 					<<if _foodType == "Formula">>
-						<<if _bulkFluff.foodType == "Nursing">>
+						<<if _bulkFluff.foodType == "Nursing" || _bulkFluff.foodType == "Formula">>
 							<<set _bulkFluff.foodType = "Formula">>
 							<<set _bulkFluff.foodQuality = _foodQuality>>
 							<<set $globalFluffies[_bulkFluff.mother].nursing-->>
@@ -157,8 +159,6 @@ Bulk Actions (all checked fluffies)
 <</button>>
 &nbsp;|&nbsp;
 <hr>
-
-<<capture _fl, _fluff, $fluffyChecks>>
 
 	<<for _fl to 0; _fl < $ourStore.fluffies.length; _fl++>>
 		<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
@@ -187,7 +187,9 @@ Bulk Actions (all checked fluffies)
 		<<elseif _fluff.onDisplay == false && $listType == "Display">>
 			<<continue>>
 		<<else>>
-<<run console.log("Bulk test 3: " + _fl)>>	
+/*<<run console.log("Bulk test 3: " + _fl)>>	*/
+
+<<capture _fl, _fluff, $fluffyChecks>>
 			<label>
 			/*<<print '<<checkbox "$fluffyChecks[_fl]" false true>>' >>*/
 			<<print '<<checkbox "$fluffyChecks[_fl]" false true ' + ($fluffyChecks[_fl] ? "checked" : "") + '>>'>>
@@ -203,13 +205,14 @@ Bulk Actions (all checked fluffies)
 				<<case 4>> (quality)
 				<<case -1>> 
 			<</switch>> 
-			<<set $globalFluffies[_fluff.ID] = _fluff>>
+			/*<<set $globalFluffies[_fluff.ID] = _fluff>>*/
 			</label>
+<</capture>>
 			<hr>
 		<</if>>
 	<</for>>
 	
-<</capture>>
+
 
 /* Update the sidebar */
 <<replace "#fluffy-count">><<SidebarFluffies>><</replace>>

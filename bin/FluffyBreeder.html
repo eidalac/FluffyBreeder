@@ -5467,22 +5467,22 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;button [[Bulk Sell|Fluffy List]]&gt;&gt;
 		&lt;&lt;if $fluffyChecks.length&gt;&gt;
 			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
-	&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;
+	/*&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;*/
 				&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
 					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
-	&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;
+	/*&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;*/
 					&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
 						_bulkFluff.nursing &lt; 1 &amp;&amp;
 						_bulkFluff.weaned == true&gt;&gt;
-	&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;
+	/*&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;*/
 						/* Clear both special friends flag, ending breeding*/
 						&lt;&lt;if _bulkFluff.specialFriend != -1&gt;&gt;
 							&lt;&lt;set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1&gt;&gt;
 							&lt;&lt;set _bulkFluff.specialFriend = -1&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-	&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;
+	/*&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;*/
 						&lt;&lt;set _bulkFluff.onDisplay = true&gt;&gt;
-	&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;
+	/*&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;*/
 						&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -5496,9 +5496,11 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;button [[Remove from Sale|Fluffy List]]&gt;&gt;
 		&lt;&lt;if $fluffyChecks.length&gt;&gt;
 			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
-				&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
-				&lt;&lt;set _bulkFluff.onDisplay = false&gt;&gt;
-				&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+				&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
+					&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+					&lt;&lt;set _bulkFluff.onDisplay = false&gt;&gt;
+					&lt;&lt;set $globalFluffies[_bf] = _bulkFluff&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 			
 		&lt;&lt;set $fluffyChecks = []&gt;&gt;
@@ -5533,7 +5535,7 @@ Bulk Actions (all checked fluffies)
 					
 /*&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType + &quot; &quot; + _foodQuality + &quot; &quot; + _bulkFluff.name)&gt;&gt;*/
 					&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
-						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot;&gt;&gt;
+						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot; || _bulkFluff.foodType == &quot;Formula&quot;&gt;&gt;
 							&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
 							&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
 							&lt;&lt;set $globalFluffies[_bulkFluff.mother].nursing--&gt;&gt;
@@ -5552,8 +5554,6 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/button&gt;&gt;
 &amp;nbsp;|&amp;nbsp;
 &lt;hr&gt;
-
-&lt;&lt;capture _fl, _fluff, $fluffyChecks&gt;&gt;
 
 	&lt;&lt;for _fl to 0; _fl &lt; $ourStore.fluffies.length; _fl++&gt;&gt;
 		&lt;&lt;set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
@@ -5582,7 +5582,9 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;elseif _fluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk test 3: &quot; + _fl)&gt;&gt;	
+/*&lt;&lt;run console.log(&quot;Bulk test 3: &quot; + _fl)&gt;&gt;	*/
+
+&lt;&lt;capture _fl, _fluff, $fluffyChecks&gt;&gt;
 			&lt;label&gt;
 			/*&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true&gt;&gt;&#39; &gt;&gt;*/
 			&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true &#39; + ($fluffyChecks[_fl] ? &quot;checked&quot; : &quot;&quot;) + &#39;&gt;&gt;&#39;&gt;&gt;
@@ -5598,13 +5600,14 @@ Bulk Actions (all checked fluffies)
 				&lt;&lt;case 4&gt;&gt; (quality)
 				&lt;&lt;case -1&gt;&gt; 
 			&lt;&lt;/switch&gt;&gt; 
-			&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;
+			/*&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;*/
 			&lt;/label&gt;
+&lt;&lt;/capture&gt;&gt;
 			&lt;hr&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 	
-&lt;&lt;/capture&gt;&gt;
+
 
 /* Update the sidebar */
 &lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
