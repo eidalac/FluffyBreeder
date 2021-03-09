@@ -74,7 +74,7 @@ Bulk Actions (all checked fluffies)
 			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
 	<<run console.log("Bulk test 0: " + _bf)>>
 				<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
-					<<set _bulkFluff = $globalFluffies[_bf]>>
+					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
 	<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>
 					<<if _bulkFluff.pregnant == false &&
 						_bulkFluff.nursing < 1 &&
@@ -130,13 +130,13 @@ Bulk Actions (all checked fluffies)
 
 <<button [[Bulk Feeding|Fluffy List]]>>
 		<<if $fluffyChecks.length>>
-			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-<<run console.log("Bulk food test 0: " + _bf)>>
+			<<for _bf to 0; _bf < $fluffyChecks.length; _bf++>>
+<<run console.log("Bulk food test 0: " + _bf + " " + $fluffyChecks.length)>>
 	
 				<<if $fluffyChecks[_bf] == true>>
-					<<set _bulkFluff = $globalFluffies[_bf]>>
+					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
 					
-<<run console.log("Bulk test 1: " + _bulkFluff.foodType + " " + _foodType+ " " + _foodQuality)>>
+<<run console.log("Bulk test 1: " + _bulkFluff.foodType + " " + _foodType + " " + _foodQuality + " " + _bulkFluff.name)>>
 					<<if _foodType == "Formula">>
 						<<if _bulkFluff.foodType == "Nursing">>
 							<<set _bulkFluff.foodType = "Formula">>
@@ -160,7 +160,7 @@ Bulk Actions (all checked fluffies)
 
 <<capture _fl, _fluff, $fluffyChecks>>
 
-	<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
+	<<for _fl to 0; _fl < $ourStore.fluffies.length; _fl++>>
 		<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
 
 		/* < 1 year old */
@@ -187,7 +187,7 @@ Bulk Actions (all checked fluffies)
 		<<elseif _fluff.onDisplay == false && $listType == "Display">>
 			<<continue>>
 		<<else>>
-	
+<<run console.log("Bulk test 3: " + _fl)>>	
 			<label>
 			/*<<print '<<checkbox "$fluffyChecks[_fl]" false true>>' >>*/
 			<<print '<<checkbox "$fluffyChecks[_fl]" false true ' + ($fluffyChecks[_fl] ? "checked" : "") + '>>'>>

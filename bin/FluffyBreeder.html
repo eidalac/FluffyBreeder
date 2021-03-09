@@ -2655,6 +2655,7 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Birth test 3: &quot; + $mom.litter)&gt;&gt;
+&lt;&lt;capture _fo, _section, _sectionP, _line&gt;&gt;
 
 &lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
 	
@@ -2689,10 +2690,19 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;else&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
-		
+
 		/* Print the foal info */	
-		&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; &lt;&lt;FluffyDesc&gt;&gt;
+		&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Colapse]&quot;&gt;&gt;
+		/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
+		&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
+		&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
+		&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
+		&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
+		&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
+			&lt;&lt;FluffyDesc&gt;&gt;
+		&lt;/div&gt;
 		&lt;hr&gt;
+
 
 		/* Save it */
 		&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
@@ -2749,7 +2759,7 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
  	
 /*&lt;&lt;/for&gt;&gt;*/ /* Close birth event loop */
- 
+ &lt;&lt;/capture&gt;&gt;
  
 &lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 &lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
@@ -5459,7 +5469,7 @@ Bulk Actions (all checked fluffies)
 			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
 	&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;
 				&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
-					&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
 	&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;
 					&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
 						_bulkFluff.nursing &lt; 1 &amp;&amp;
@@ -5515,13 +5525,13 @@ Bulk Actions (all checked fluffies)
 
 &lt;&lt;button [[Bulk Feeding|Fluffy List]]&gt;&gt;
 		&lt;&lt;if $fluffyChecks.length&gt;&gt;
-			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
-&lt;&lt;run console.log(&quot;Bulk food test 0: &quot; + _bf)&gt;&gt;
+			&lt;&lt;for _bf to 0; _bf &lt; $fluffyChecks.length; _bf++&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk food test 0: &quot; + _bf + &quot; &quot; + $fluffyChecks.length)&gt;&gt;
 	
 				&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
-					&lt;&lt;set _bulkFluff = $globalFluffies[_bf]&gt;&gt;
+					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
 					
-&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType+ &quot; &quot; + _foodQuality)&gt;&gt;
+&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType + &quot; &quot; + _foodQuality + &quot; &quot; + _bulkFluff.name)&gt;&gt;
 					&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
 						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot;&gt;&gt;
 							&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
@@ -5545,7 +5555,7 @@ Bulk Actions (all checked fluffies)
 
 &lt;&lt;capture _fl, _fluff, $fluffyChecks&gt;&gt;
 
-	&lt;&lt;for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++&gt;&gt;
+	&lt;&lt;for _fl to 0; _fl &lt; $ourStore.fluffies.length; _fl++&gt;&gt;
 		&lt;&lt;set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
 
 		/* &lt; 1 year old */
@@ -5572,7 +5582,7 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;elseif _fluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-	
+&lt;&lt;run console.log(&quot;Bulk test 3: &quot; + _fl)&gt;&gt;	
 			&lt;label&gt;
 			/*&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true&gt;&gt;&#39; &gt;&gt;*/
 			&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true &#39; + ($fluffyChecks[_fl] ? &quot;checked&quot; : &quot;&quot;) + &#39;&gt;&gt;&#39;&gt;&gt;

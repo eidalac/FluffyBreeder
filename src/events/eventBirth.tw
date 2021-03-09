@@ -26,6 +26,7 @@
 <<set $dad = $globalFluffies[$mom.pregnantBy]>>
 
 <<run console.log("Birth test 3: " + $mom.litter)>>
+<<capture _fo, _section, _sectionP, _line>>
 
 <<for _fo = 0; _fo < $mom.litter; _fo++>>
 	
@@ -60,10 +61,19 @@
 	<<else>>
 
 <<run console.log("Birth test 6: " + _diff)>>
-		
+
 		/* Print the foal info */	
-		<br>Foal#<<print _fo+1>> <<FluffyDesc>>
+		<<set _line = "Foal" + (_fo+1) + " [Click to Expand/Colapse]">>
+		/*<<set _line = "Foal# " + (_fo+1)>>*/
+		<<set _section = "section" + _fo>>
+		<<set _sectionP = "#section" + _fo>>
+		<<link _line>><<toggleclass _sectionP "hidden">><</link>>
+		<div @id="_line"></div>
+		<div @id="_section" class="hidden">
+			<<FluffyDesc>>
+		</div>
 		<hr>
+
 
 		/* Save it */
 		<<set $activeFluffy.ageWeeks = 0>>
@@ -120,7 +130,7 @@
 <<set $globalFluffies[$dad.ID] = $dad>>
  	
 /*<</for>>*/ /* Close birth event loop */
- 
+ <</capture>>
  
 <<set $nextButton = "Continue">>
 <<set $nextLink = "Event Main">>
