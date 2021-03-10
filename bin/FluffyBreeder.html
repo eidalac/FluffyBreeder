@@ -5556,15 +5556,15 @@ Bulk Actions (all checked fluffies)
 &lt;hr&gt;
 
 	&lt;&lt;for _fl to 0; _fl &lt; $ourStore.fluffies.length; _fl++&gt;&gt;
-		&lt;&lt;set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
+		&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
 
 		/* &lt; 1 year old */
-		&lt;&lt;if Number(_fluff.age) == 0 &amp;&amp;  Number(_fluff.ageWeeks) &lt;= _fluff.maturity&gt;&gt;
+		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
 			&lt;&lt;set $ourStore.foals++&gt;&gt;
 			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;elseif _fluff.gender == &quot;male&quot;&gt;&gt;
+		&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
 			&lt;&lt;set $ourStore.stallions++&gt;&gt;
 			&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
@@ -5577,22 +5577,22 @@ Bulk Actions (all checked fluffies)
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;if _fluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+		&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif _fluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+		&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 /*&lt;&lt;run console.log(&quot;Bulk test 3: &quot; + _fl)&gt;&gt;	*/
 
-&lt;&lt;capture _fl, _fluff, $fluffyChecks&gt;&gt;
-			&lt;label&gt;
-			/*&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true&gt;&gt;&#39; &gt;&gt;*/
-			&lt;&lt;print &#39;&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true &#39; + ($fluffyChecks[_fl] ? &quot;checked&quot; : &quot;&quot;) + &#39;&gt;&gt;&#39;&gt;&gt;
-			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] &lt;&lt;shortDesc _fluff&gt;&gt;
-			&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
-			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_fluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
-			| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _fluff]] _fluffy.foodType 
-			&lt;&lt;switch _fluffy.foodQuality&gt;&gt;
+&lt;&lt;capture _fl, _listFluff&gt;&gt;
+			&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
+			&lt;&lt;checkbox &quot;$fluffyChecks[_fl]&quot; false true `$fluffyChecks[_fl] ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
+			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] &lt;&lt;shortDesc _listFluff&gt;&gt;
+			&lt;/p&gt;
+			[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
+			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
+			| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
+			&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
 				&lt;&lt;case 0&gt;&gt; (trash)
 				&lt;&lt;case 1&gt;&gt; (cheap)
 				&lt;&lt;case 2&gt;&gt; (basic)
@@ -5600,7 +5600,6 @@ Bulk Actions (all checked fluffies)
 				&lt;&lt;case 4&gt;&gt; (quality)
 				&lt;&lt;case -1&gt;&gt; 
 			&lt;&lt;/switch&gt;&gt; 
-			/*&lt;&lt;set $globalFluffies[_fluff.ID] = _fluff&gt;&gt;*/
 			&lt;/label&gt;
 &lt;&lt;/capture&gt;&gt;
 			&lt;hr&gt;
@@ -6510,15 +6509,15 @@ Inbreeding:
 	 &lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Mother: &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
+	&lt;br&gt;Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	&lt;br&gt;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
+	&lt;br&gt;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall  
+	&lt;br&gt;Mother: &lt;&lt;if _fluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
 	 Father: &lt;&lt;if _fluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt; 
 	 &lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;Special Friend: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Children: &lt;&lt;linkreplace &quot;_fluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;
-	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
+	&lt;br&gt;Children: &lt;&lt;linkreplace &quot;_fluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;
+	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;Is due to give birth in &lt;&lt;print _fluffy.dueDate-$week+1&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="fluffy creation widgets" tags="widget nobr" position="350,350" size="100,100">/* **********
  * fluffyCreationWidgets.tw

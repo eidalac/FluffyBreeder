@@ -161,15 +161,15 @@ Bulk Actions (all checked fluffies)
 <hr>
 
 	<<for _fl to 0; _fl < $ourStore.fluffies.length; _fl++>>
-		<<set _fluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
+		<<set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
 
 		/* < 1 year old */
-		<<if Number(_fluff.age) == 0 &&  Number(_fluff.ageWeeks) <= _fluff.maturity>>
+		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
 			<<set $ourStore.foals++>>
 			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
 				<<continue>>
 			<</if>>
-		<<elseif _fluff.gender == "male">>
+		<<elseif _listFluff.gender == "male">>
 			<<set $ourStore.stallions++>>
 			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
 				<<continue>>
@@ -182,22 +182,22 @@ Bulk Actions (all checked fluffies)
 			<</if>>
 		<</if>>
 
-		<<if _fluff.onDisplay == true && $listType != "Display">>
+		<<if _listFluff.onDisplay == true && $listType != "Display">>
 			<<continue>>
-		<<elseif _fluff.onDisplay == false && $listType == "Display">>
+		<<elseif _listFluff.onDisplay == false && $listType == "Display">>
 			<<continue>>
 		<<else>>
 /*<<run console.log("Bulk test 3: " + _fl)>>	*/
 
-<<capture _fl, _fluff, $fluffyChecks>>
-			<label>
-			/*<<print '<<checkbox "$fluffyChecks[_fl]" false true>>' >>*/
-			<<print '<<checkbox "$fluffyChecks[_fl]" false true ' + ($fluffyChecks[_fl] ? "checked" : "") + '>>'>>
-			[[_fluff.name|Fluffy Interact][$activeFluffy = _fluff]] <<shortDesc _fluff>>
-			<br>&nbsp;&nbsp;&nbsp;&nbsp;[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff, $breedMare = -1, $breedStal = -1]] | 
-			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]]<<else>>[[Take off Display|Fluffy List][_fluff.onDisplay = false]]<</if>>
-			| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _fluff]] _fluffy.foodType 
-			<<switch _fluffy.foodQuality>>
+<<capture _fl, _listFluff>>
+			<label>	<p class="hang">
+			<<checkbox "$fluffyChecks[_fl]" false true `$fluffyChecks[_fl] ? 'checked' : ''`>>
+			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] <<shortDesc _listFluff>>
+			</p>
+			[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
+			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]<</if>>
+			| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
+			<<switch _listFluff.foodQuality>>
 				<<case 0>> (trash)
 				<<case 1>> (cheap)
 				<<case 2>> (basic)
@@ -205,7 +205,6 @@ Bulk Actions (all checked fluffies)
 				<<case 4>> (quality)
 				<<case -1>> 
 			<</switch>> 
-			/*<<set $globalFluffies[_fluff.ID] = _fluff>>*/
 			</label>
 <</capture>>
 			<hr>
