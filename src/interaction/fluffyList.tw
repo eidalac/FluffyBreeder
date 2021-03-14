@@ -88,7 +88,7 @@ Bulk Actions (all checked fluffies)
 	/*<<run console.log("Bulk test 5: " + _bf)>>*/
 						<<set _bulkFluff.onDisplay = true>>
 	/*<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>*/
-						<<set $globalFluffies[_bf] = _bulkFluff>>
+						<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
 					<</if>>
 				<</if>>
 			<</for>>
@@ -102,9 +102,9 @@ Bulk Actions (all checked fluffies)
 		<<if $fluffyChecks.length>>
 			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
 				<<if $fluffyChecks[_bf] == true>>
-					<<set _bulkFluff = $globalFluffies[_bf]>>
+					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
 					<<set _bulkFluff.onDisplay = false>>
-					<<set $globalFluffies[_bf] = _bulkFluff>>
+					<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
 				<</if>>
 			<</for>>
 			
@@ -145,12 +145,12 @@ Bulk Actions (all checked fluffies)
 							<<set _bulkFluff.foodType = "Formula">>
 							<<set _bulkFluff.foodQuality = _foodQuality>>
 							<<set $globalFluffies[_bulkFluff.mother].nursing-->>
-							<<set $globalFluffies[_bf] = _bulkFluff>>
+							<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
 						<</if>>
 					<<elseif _bulkFluff.foodType != "Nursing">>
 						<<set _bulkFluff.foodType = _foodType>>
 						<<set _bulkFluff.foodQuality = _foodQuality>>
-						<<set $globalFluffies[_bf] = _bulkFluff>>
+						<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
 					<</if>>
 /*<<run console.log("Bulk test 2: " + _bulkFluff.foodType + " " + _foodType+ " " + _foodQuality)>>*/
 
