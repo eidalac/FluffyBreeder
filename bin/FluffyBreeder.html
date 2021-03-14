@@ -2692,7 +2692,7 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 /* Check if this is a brown foal rejection: */
-&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
 
 	&lt;br&gt;Brown foal Rejection event for &#39;&lt;&lt;- $activeFluffy.name&gt;&gt;&#39; by &#39;&lt;&lt;- $mom.name&gt;&gt;&#39;.
 	&lt;br&gt;
@@ -2920,7 +2920,26 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;set $mom.training++&gt;&gt;
 			&lt;&lt;set $mom.temperament -= 5&gt;&gt;
 			
-			&lt;&lt;if $training &gt;= random(0, 199)&gt;&gt;
+			&lt;&lt;set _difficulty = 0&gt;&gt;
+			
+			
+			&lt;&lt;if $pooBaby == 0&gt;&gt;
+				&lt;&lt;set _difficulty = Number(2 * $training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) + Number(4 * $mom.training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) - Number($mom.temperament)&gt;&gt;
+			&lt;&lt;elseif $pooBaby == 1&gt;&gt;
+				&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) + Number(2 * $mom.training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) - Number($mom.temperament)&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) + Number($mom.training)&gt;&gt;
+				&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $mom.temperament)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		
+&lt;&lt;run console.log(&quot;Rejection test 3: Training difficulty: &quot; + _difficulty)&gt;&gt;
+	
+			&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
 				&lt;&lt;set $mom.traits.push(&quot;Good Mama&quot;)&gt;&gt;
 				&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
 			&lt;&lt;else&gt;&gt;
@@ -2970,6 +2989,9 @@ console.log("cleared defects parts = " + this.genes[index])
 		@@.orange;Hugbox option.@@
 	&lt;/span&gt;
 	&lt;&lt;/if&gt;&gt; /* Close mother trait check */
+&lt;&lt;elseif $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+	/* for now skip a brown mane */
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 &lt;&lt;/if&gt;&gt; /* Close brown foal birth rejection */
 
 
@@ -4530,7 +4552,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.91&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;00.01.99&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********

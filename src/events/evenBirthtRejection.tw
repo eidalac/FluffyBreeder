@@ -19,7 +19,7 @@
 <<set $mom = $globalFluffies[$activeFluffy.mother]>>
 
 /* Check if this is a brown foal rejection: */
-<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
+<<if $activeFluffy.colorGroup[0] == "Brown">>
 
 	<br>Brown foal Rejection event for '<<- $activeFluffy.name>>' by '<<- $mom.name>>'.
 	<br>
@@ -247,7 +247,26 @@
 			<<set $mom.training++>>
 			<<set $mom.temperament -= 5>>
 			
-			<<if $training >= random(0, 199)>>
+			<<set _difficulty = 0>>
+			
+			
+			<<if $pooBaby == 0>>
+				<<set _difficulty = Number(2 * $training)>>
+				<<set _difficulty = Number(_difficulty) + Number(4 * $mom.training)>>
+				<<set _difficulty = Number(_difficulty) - Number($mom.temperament)>>
+			<<elseif $pooBaby == 1>>
+				<<set _difficulty = Number($training)>>
+				<<set _difficulty = Number(_difficulty) + Number(2 * $mom.training)>>
+				<<set _difficulty = Number(_difficulty) - Number($mom.temperament)>>
+			<<else>>
+				<<set _difficulty = Number($training)>>
+				<<set _difficulty = Number(_difficulty) + Number($mom.training)>>
+				<<set _difficulty = Number(_difficulty) - Number(2 * $mom.temperament)>>
+			<</if>>
+		
+<<run console.log("Rejection test 3: Training difficulty: " + _difficulty)>>
+	
+			<<if _difficulty >= random(0, 199)>>
 				<<set $mom.traits.push("Good Mama")>>
 				<<set _reactionString = "@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@">>
 			<<else>>
@@ -297,6 +316,9 @@
 		@@.orange;Hugbox option.@@
 	</span>
 	<</if>> /* Close mother trait check */
+<<elseif $activeFluffy.colorGroup[1] == "Brown">>
+	/* for now skip a brown mane */
+	<<goto "Event Main">>
 <</if>> /* Close brown foal birth rejection */
 
 
