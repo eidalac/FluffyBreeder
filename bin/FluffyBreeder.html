@@ -2673,7 +2673,316 @@ console.log("cleared defects parts = " + this.genes[index])
 
 	&lt;&lt;set $activeFluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Event Birth" tags="nobr" position="350,100" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Event Birth Rejection" tags="nobr" position="350,100" size="100,100">/* **********
+ * eventBirthRejection.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for foal rejected at birth.
+ *
+ *********** */
+ 
+ 
+&lt;&lt;run console.log(&quot;Rejection test 2:  on event page&quot;)&gt;&gt;
+ 
+/* Each birth even entry is the foal involved */
+/* Pick a random fulffy from the list and run the event */
+&lt;&lt;set $activeFluffy = $eventBirthRejection.pluck()&gt;&gt;
+&lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
+
+/* Check if this is a brown foal rejection: */
+&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+
+	&lt;br&gt;Brown foal Rejection event for &#39;&lt;&lt;- $activeFluffy.name&gt;&gt;&#39; by &#39;&lt;&lt;- $mom.name&gt;&gt;&#39;.
+	&lt;br&gt;
+	&lt;&lt;if $mom.colorGroup[0] == &quot;Brown&quot; || $mom.traits.includes(&quot;Good Mama&quot;)&gt;&gt;
+		&lt;br&gt;@@.cyan;Mumah wuvs aaaawww babhes.@@
+		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+	&lt;&lt;elseif $mom.temperament &lt; 10&gt;&gt;
+		/* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
+		&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; halp... bad miwkie thief..save good fluffy mama...hu hu hu...@@
+		&lt;&lt;set $mom.stress += 25&gt;&gt;
+		&lt;&lt;set $mom.trauma += 5&gt;&gt;
+		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+	&lt;&lt;else&gt;&gt;
+		&lt;br&gt;It seems &lt;&lt;- $mom.name&gt;&gt; is rejecting a foal.
+		&lt;br&gt;
+		
+		&lt;br&gt;
+		/* Temperament and personality checks*/
+		&lt;&lt;switch $mom.traits[0]&gt;&gt;
+			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh...@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
+					
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Nu gib miwkies and wub to wowstes&#39; poopie babbeh!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;NU! gu way! nu wan miwkie thief!@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Poopie babbehs nu nee wub ow huggies.@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Nu wan gib wub to wowstes&#39; poopie babbeh...@@
+					
+				&lt;&lt;/if&gt;&gt;
+				
+			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Nu wike poopie babbeh... nu wub.@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Why nu smeww wike gud babbehs?@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Nu wike wowstes&#39; babbeh...@@
+					
+				&lt;&lt;/if&gt;&gt;
+				
+			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;&lt;&lt;- $title&gt;&gt;, nu wan ugwy babbeh.@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Dis am ugwy babbeh, &lt;&lt;- $title&gt;&gt;...@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Nu wub... nu smeww pwetty...@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
+					
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Nu wan gib wub an&#39; huggies to poopie babbeh.@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Udda babbehs need miwkies a wot mowe…@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Nu wike poopie babbeh.@@
+					
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Nu cawe &#39;bout poopie babbeh! Nu wub!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Nu wike poopie babbeh.@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Too much babbehs awready anyways...@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Poopie babbeh... nu get wub ow huggies.@@
+					
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;&lt;&lt;- $mom.name&gt;&gt;, hewp &lt;&lt;- $title&gt;&gt;, gib wowstes&#39; babbeh nu wub.@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Wowstes&#39; poopie babbeh nu need wub ow huggies.@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting…@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Poopie babbeh... nu wan... huu huu....@@
+					
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs!@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Wub and huggies //bad// fow poopie babbehs.@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Ugwy, nu smeww pwetty babbeh am wowstes babbeh!@@
+					
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;Mummah wub babbehs... except poopie babbeh.@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Mummah nu wub poopie babbeh!@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...@@
+					
+				&lt;&lt;/if&gt;&gt;
+	
+			&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
+				/* &gt;= 190 - smarty */
+				&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+					@@.cyan;&lt;&lt;- $title&gt;&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh!@@
+				
+				/* &gt;= 130 - bratty */
+				&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+					@@.cyan;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.@@
+									
+				/* &gt;= 70 - Normal */
+				&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+					@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong.@@
+
+				/* &gt;= 10 - Meek */
+				&lt;&lt;else&gt;&gt;
+					@@.cyan;Nu wan&#39; stupi dummeh poopie babbeh.@@
+					
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;default&gt;&gt;
+				&lt;br&gt;@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
+		&lt;&lt;/switch&gt;&gt;
+		&lt;br&gt; 
+		&lt;&lt;set _punishString = &quot;Punish &quot; + $mom.name&gt;&gt;
+		&lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
+		&lt;br&gt;
+	&lt;span id=&quot;reaction-msg&quot;&gt;
+		
+		&lt;&lt;button _punishString&gt;&gt;
+			&lt;&lt;set $training += 3&gt;&gt;
+			&lt;&lt;set $hugbox += 1&gt;&gt;
+			&lt;&lt;set $stress += 10&gt;&gt;
+			
+			&lt;&lt;set $mom.stress += 5&gt;&gt;
+			&lt;&lt;set $mom.trust--&gt;&gt;
+			&lt;&lt;set $mom.training++&gt;&gt;
+			&lt;&lt;set $mom.temperament -= 5&gt;&gt;
+			
+			&lt;&lt;if $training &gt;= random(0, 199)&gt;&gt;
+				&lt;&lt;set $mom.traits.push(&quot;Good Mama&quot;)&gt;&gt;
+				&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set _reactionString = &quot;@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@&quot;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			
+			&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $mom.name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/button&gt;&gt;
+		@@.orange;Neutral option.@@
+		
+		&lt;br&gt;&lt;br&gt;
+		&lt;&lt;button &quot;Ignore it&quot;&gt;&gt;
+			&lt;&lt;set $abuse += 3&gt;&gt;
+			
+			&lt;&lt;set $mom.nursing--&gt;&gt;
+			&lt;&lt;set $mom.temperament += 5&gt;&gt;
+			
+			&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
+			
+			&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;Nu miwkies for bad babbeh!@@&quot;&gt;&gt;
+			
+			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/button&gt;&gt;
+		@@.orange;Abuse option.@@
+		
+		&lt;br&gt;&lt;br&gt;
+		&lt;&lt;button &quot;Take the Foal&quot;&gt;&gt;
+			&lt;&lt;set $hugbox += 3&gt;&gt;
+			&lt;&lt;set $training += 1&gt;&gt;
+			
+			&lt;&lt;set $mom.nursing--&gt;&gt;
+			&lt;&lt;set $mom.temperament += 5&gt;&gt;
+			
+			&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
+			
+			&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;Take bad babbehs for trashies?@@&quot;&gt;&gt;
+			
+			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/button&gt;&gt;
+		@@.orange;Hugbox option.@@
+	&lt;/span&gt;
+	&lt;&lt;/if&gt;&gt; /* Close mother trait check */
+&lt;&lt;/if&gt;&gt; /* Close brown foal birth rejection */
+
+
+
+
+ 	
+
+/*
+&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+*/</tw-passagedata><tw-passagedata pid="4" name="Event Birth" tags="nobr" position="475,100" size="100,100">/* **********
  * eventBirth.tw
  *
  * Package: FluffyBreeder
@@ -2766,7 +3075,7 @@ console.log("cleared defects parts = " + this.genes[index])
 		
 		&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
 			/* Push to event stack  */
-			&lt;&lt;run $eventRejection.push($activeFluffy)&gt;&gt;
+			&lt;&lt;run $eventBirthRejection.push($activeFluffy)&gt;&gt;
 		&lt;&lt;/if&gt;&gt; 
 	&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
 
@@ -2813,7 +3122,7 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 &lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="4" name="Event Main" tags="nobr" position="475,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="5" name="Event Main" tags="nobr" position="600,100" size="100,100">/* **********
  * eventMain.tw
  *
  * Package: FluffyBreeder
@@ -2831,9 +3140,9 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;elseif $eventBirths.length&gt;&gt;
 &lt;&lt;run console.log(&quot;Birth test 1:  going to birth event page&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Birth&quot;&gt;&gt;
-&lt;&lt;elseif $eventRejection.length&gt;&gt;
+&lt;&lt;elseif $eventBirthRejection.length&gt;&gt;
 &lt;&lt;run console.log(&quot;Rejection test 1:  going to birth event page&quot;)&gt;&gt;
-	&lt;&lt;goto &quot;Event Rejection&quot;&gt;&gt;
+	&lt;&lt;goto &quot;Event Birth Rejection&quot;&gt;&gt;
 &lt;&lt;else&gt;&gt;
 	/* no events fired*/
 	&lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
@@ -2847,7 +3156,7 @@ console.log("cleared defects parts = " + this.genes[index])
 /* 
 &lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 &lt;&lt;set $nextLink = &quot;Week Start&quot;&gt;&gt;
-*/</tw-passagedata><tw-passagedata pid="5" name="Event Mating" tags="nobr" position="600,100" size="100,100">/* **********
+*/</tw-passagedata><tw-passagedata pid="6" name="Event Mating" tags="nobr" position="725,100" size="100,100">/* **********
  * eventMating.tw
  *
  * Package: FluffyBreeder
@@ -2932,134 +3241,6 @@ console.log("cleared defects parts = " + this.genes[index])
 				&lt;&lt;/if&gt;&gt; /* Close shelter count 
 			
 		&lt;&lt;/if&gt;&gt; /* Closepecial friend check
-*/</tw-passagedata><tw-passagedata pid="6" name="Event Rejection" tags="nobr" position="725,100" size="100,100">/* **********
- * eventRejection.tw
- *
- * Package: FluffyBreeder
- * Format: Twine2 (Sugarcube 2)
- *
- * foal rejection event.
- *
- *********** */
- 
- 
-&lt;&lt;run console.log(&quot;Rejection test 2:  on event page&quot;)&gt;&gt;
- 
-/* Each birth even entry is the foal involved */
-/* Pick a random fulffy from the list and run the event */
-&lt;&lt;set $activeFluffy = $eventRejection.pluck()&gt;&gt;
-&lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
-
-&lt;br&gt;Rejection event for &#39;&lt;&lt;- $activeFluffy.name&gt;&gt;&#39; by &#39;&lt;&lt;- $mom.name&gt;&gt;&#39;.
-&lt;br&gt;
-&lt;&lt;if $mom.colorGroup[0] == &quot;Brown&quot; || $mom.traits.includes(&quot;Good Mama&quot;)&gt;&gt;
-	&lt;br&gt;@@.cyan;Mumah wuvs aaaawww babhes.@@
-	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-&lt;&lt;else&gt;&gt;
-	&lt;br&gt;It seems &lt;&lt;- $mom.name&gt;&gt; is rejecting a foal.
-	&lt;br&gt;
-	&lt;&lt;switch $mom.traits[0]&gt;&gt;
-		&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
-		&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;NU! gu way! nu wan miwkie thief@@
-		&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Why nu smeww wike gud babbehs?@@
-		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
-		&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Udda babbehs need miwkies a wot mowe…@@
-		&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Too much babbehs awready anyways@@
-		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Babbeh su negatibe… ruin fwuffpiwe… ruin ebbyting@@
-		&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs@@
-		&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
-		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-			&lt;br&gt;@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong@@
-		&lt;&lt;default&gt;&gt;
-			&lt;br&gt;@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
-	&lt;&lt;/switch&gt;&gt;
-	&lt;br&gt; 
-	&lt;&lt;set _punishString = &quot;Punish &quot; + $mom.name&gt;&gt;
-	&lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
-	&lt;br&gt;
-&lt;span id=&quot;reaction-msg&quot;&gt;
-	
-	&lt;&lt;button _punishString&gt;&gt;
-		&lt;&lt;set $training += 3&gt;&gt;
-		&lt;&lt;set $hugbox += 1&gt;&gt;
-		&lt;&lt;set $stress += 10&gt;&gt;
-		
-		&lt;&lt;set $mom.stress += 5&gt;&gt;
-		&lt;&lt;set $mom.trust--&gt;&gt;
-		&lt;&lt;set $mom.training++&gt;&gt;
-		&lt;&lt;set $mom.temperament -= 5&gt;&gt;
-		
-		&lt;&lt;if $training &gt;= random(0, 199)&gt;&gt;
-			&lt;&lt;set $mom.traits.push(&quot;Good Mama&quot;)&gt;&gt;
-			&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _reactionString = &quot;@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@&quot;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
-		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $mom.name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;/button&gt;&gt;
-	@@.orange;Neutral option.@@
-	
-	&lt;br&gt;&lt;br&gt;
-	&lt;&lt;button &quot;Ignore it&quot;&gt;&gt;
-		&lt;&lt;set $abuse += 3&gt;&gt;
-		
-		&lt;&lt;set $mom.nursing--&gt;&gt;
-		&lt;&lt;set $mom.temperament += 5&gt;&gt;
-		
-		&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
-		&lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
-		
-		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;set _reactionString = &quot;@@.cyan;Nu miwkies for bad babbeh!@@&quot;&gt;&gt;
-		
-		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;/button&gt;&gt;
-	@@.orange;Abuse option.@@
-	
-	&lt;br&gt;&lt;br&gt;
-	&lt;&lt;button &quot;Take the Foal&quot;&gt;&gt;
-		&lt;&lt;set $hugbox += 3&gt;&gt;
-		&lt;&lt;set $training += 1&gt;&gt;
-		
-		&lt;&lt;set $mom.nursing--&gt;&gt;
-		&lt;&lt;set $mom.temperament += 5&gt;&gt;
-		
-		&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;
-		&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
-		
-		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;set _reactionString = &quot;@@.cyan;Take bad babbehs for trashies?@@&quot;&gt;&gt;
-		
-		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;/button&gt;&gt;
-	@@.orange;Hugbox option.@@
-&lt;/span&gt;
-
-&lt;&lt;/if&gt;&gt;
-
-
-
-
- 	
-
-/*
-&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
-&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
 */</tw-passagedata><tw-passagedata pid="7" name="Encyclopedia" tags="nobr" position="850,100" size="100,100">/* **********
  * encylopedia.tw
  *
@@ -3364,7 +3545,7 @@ Mother, Father and any children
 /* clear event queues */
 &lt;&lt;set $eventMating = []&gt;&gt;
 &lt;&lt;set $eventBirths = []&gt;&gt;
-&lt;&lt;set $eventRejection = []&gt;&gt;
+&lt;&lt;set $eventBirthRejection = []&gt;&gt;
 
 
 /* ***
@@ -5545,6 +5726,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set $hugbox += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
+		&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -5589,7 +5771,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $actions--&gt;&gt;
 		&lt;&lt;set $abuse += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.stress++&gt;&gt;
-		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
+		&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;

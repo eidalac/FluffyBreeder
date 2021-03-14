@@ -1,0 +1,312 @@
+:: Event Birth Rejection [nobr]
+
+/* **********
+ * eventBirthRejection.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for foal rejected at birth.
+ *
+ *********** */
+ 
+ 
+<<run console.log("Rejection test 2:  on event page")>>
+ 
+/* Each birth even entry is the foal involved */
+/* Pick a random fulffy from the list and run the event */
+<<set $activeFluffy = $eventBirthRejection.pluck()>>
+<<set $mom = $globalFluffies[$activeFluffy.mother]>>
+
+/* Check if this is a brown foal rejection: */
+<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
+
+	<br>Brown foal Rejection event for '<<- $activeFluffy.name>>' by '<<- $mom.name>>'.
+	<br>
+	<<if $mom.colorGroup[0] == "Brown" || $mom.traits.includes("Good Mama")>>
+		<br>@@.cyan;Mumah wuvs aaaawww babhes.@@
+		<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+	<<elseif $mom.temperament < 10>>
+		/* < 10 = fear/terror, so fluffy will just be terrified of the babby */
+		<br>@@.cyan;<<- $title>> halp... bad miwkie thief..save good fluffy mama...hu hu hu...@@
+		<<set $mom.stress += 25>>
+		<<set $mom.trauma += 5>>
+		<<set $globalFluffies[$mom.ID] = $mom>>
+		<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+	<<else>>
+		<br>It seems <<- $mom.name>> is rejecting a foal.
+		<br>
+		
+		<br>
+		/* Temperament and personality checks*/
+		<<switch $mom.traits[0]>>
+			<<case "Diligent">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Miwkies onwy fow bestes' babbehs! Nu miwkies fow poopie babbeh!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Miwkies fow bestes' babbehs. Nu miwkies fow poopie babbeh, bestes' babbehs nee miwkies!@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Bestes' babbehs nee miwkies... nu hab miwkies fow poopie wowstes' babbeh...@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
+					
+				<</if>>
+			<<case "Bossy">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Nu gib miwkies and wub to wowstes' poopie babbeh!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;NU! gu way! nu wan miwkie thief!@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Poopie babbehs nu nee wub ow huggies.@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Nu wan gib wub to wowstes' poopie babbeh...@@
+					
+				<</if>>
+				
+			<<case "Curious">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Why hab wowstes', ugwy poopie babbeh? Nu pwetty!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Nu wike poopie babbeh... nu wub.@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Why nu smeww wike gud babbehs?@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Nu wike wowstes' babbeh...@@
+					
+				<</if>>
+				
+			<<case "Timid">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;<<- $title>>, nu wan ugwy babbeh.@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Dis am ugwy babbeh, <<- $title>>...@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Nu wub... nu smeww pwetty...@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
+					
+				<</if>>
+
+			<<case "Pensive">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Nu wan gib wub an' huggies to poopie babbeh.@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Udda babbehs need miwkies a wot mowe…@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Nu wike poopie babbeh.@@
+					
+				<</if>>
+
+			<<case "Lackadaisical">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Nu cawe 'bout poopie babbeh! Nu wub!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Nu wike poopie babbeh.@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Too much babbehs awready anyways...@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Poopie babbeh... nu get wub ow huggies.@@
+					
+				<</if>>
+
+			<<case "Sweet">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;<<- $mom.name>>, hewp <<- $title>>, gib wowstes' babbeh nu wub.@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Wowstes' poopie babbeh nu need wub ow huggies.@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting…@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Poopie babbeh... nu wan... huu huu....@@
+					
+				<</if>>
+
+			<<case "Haughty">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Nu wike poopie babbeh an' nu gib ANY wub ow huggies!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs!@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Wub and huggies //bad// fow poopie babbehs.@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Ugwy, nu smeww pwetty babbeh am wowstes babbeh!@@
+					
+				<</if>>
+			<<case "Playful">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;Mummah wub babbehs... except poopie babbeh.@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Mummah nu wub poopie babbeh!@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...@@
+					
+				<</if>>
+	
+			<<case "Rowdy">>
+				/* >= 190 - smarty */
+				<<if $mom.temperament >= 190>>
+					@@.cyan;<<- $title>> gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh!@@
+				
+				/* >= 130 - bratty */
+				<<elseif $mom.temperament >= 130>>
+					@@.cyan;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes'.@@
+									
+				/* >= 70 - Normal */
+				<<elseif $mom.temperament >= 70>>
+					@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong.@@
+
+				/* >= 10 - Meek */
+				<<else>>
+					@@.cyan;Nu wan' stupi dummeh poopie babbeh.@@
+					
+				<</if>>
+
+			<<default>>
+				<br>@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
+		<</switch>>
+		<br> 
+		<<set _punishString = "Punish " + $mom.name>>
+		<<set _reactionString = "">>
+		<br>
+	<span id="reaction-msg">
+		
+		<<button _punishString>>
+			<<set $training += 3>>
+			<<set $hugbox += 1>>
+			<<set $stress += 10>>
+			
+			<<set $mom.stress += 5>>
+			<<set $mom.trust-->>
+			<<set $mom.training++>>
+			<<set $mom.temperament -= 5>>
+			
+			<<if $training >= random(0, 199)>>
+				<<set $mom.traits.push("Good Mama")>>
+				<<set _reactionString = "@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@">>
+			<<else>>
+				<<set _reactionString = "@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@">>
+			<</if>>
+			
+			<<set $globalFluffies[$mom.ID] = $mom>>
+			<<replace "#reaction-msg">><br>You discipline <<- $mom.name>><br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+		<</button>>
+		@@.orange;Neutral option.@@
+		
+		<br><br>
+		<<button "Ignore it">>
+			<<set $abuse += 3>>
+			
+			<<set $mom.nursing-->>
+			<<set $mom.temperament += 5>>
+			
+			<<set $activeFluffy.foodType = "Nothing">>
+			<<set $activeFluffy.foodQuality = 0>>
+			
+			<<set $globalFluffies[$mom.ID] = $mom>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+			<<set _reactionString = "@@.cyan;Nu miwkies for bad babbeh!@@">>
+			
+			<<replace "#reaction-msg">><br>You ignore it.<br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+		<</button>>
+		@@.orange;Abuse option.@@
+		
+		<br><br>
+		<<button "Take the Foal">>
+			<<set $hugbox += 3>>
+			<<set $training += 1>>
+			
+			<<set $mom.nursing-->>
+			<<set $mom.temperament += 5>>
+			
+			<<set $activeFluffy.foodType = "Formula">>
+			<<set $activeFluffy.foodQuality = 2>>
+			
+			<<set $globalFluffies[$mom.ID] = $mom>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+			<<set _reactionString = "@@.cyan;Take bad babbehs for trashies?@@">>
+			
+			<<replace "#reaction-msg">><br>You take the foal for some formula.<br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+		<</button>>
+		@@.orange;Hugbox option.@@
+	</span>
+	<</if>> /* Close mother trait check */
+<</if>> /* Close brown foal birth rejection */
+
+
+
+
+ 	
+
+/*
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+*/
