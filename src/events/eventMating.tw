@@ -1,0 +1,88 @@
+:: Event Mating [nobr]
+
+/* **********
+ * eventMating.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for two fluffies breeding.
+ *
+ *********** */
+ 
+ 
+<<run console.log("Mating test 2:  on event page")>>
+ 
+/* Each birth even entry is the mother involved */
+/* Pick a random fulffy from the list and run the breeding */
+<<set $mom = $eventMating.pluck()>>
+<<set $dad = $globalFluffies[$mom.specialFriend]>>
+<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
+
+/* Check this here for now, may want to add events if the male is forcefull */				
+<<if $mom.pregnant || $mom.nursing != 0>>
+<<run console.log("Mating test 3 (pregant or nursing): " + $mom.nursing + " | " + $mom.pregnant)>>
+	<<goto "Event Main">>
+<<elseif _count > $ourStore.shelter>>
+<<run console.log("Mating test 4 (lacking shelter): " + $mom.nursing + " | " + $mom.pregnant)>>
+	<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals, so you have to seperate them.
+	<br>@@.cyan;huhuhu@@
+	<<set $mom.pregnant = false>>
+	
+<<else>>
+	<br>$mom.name and $dad.name have special hugs.
+	<br>enf enf enf
+	<br>//@@.cyan;GOODFEELS@@//
+
+	<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+	<<set $mom.pregnant = true>>
+	<<set $mom.pregnantBy = $dad.ID>>
+	<<set $mom.dueDate = $week + random(5, 6)>>
+	<<set $mom.litter = _litter>>
+	<<set $mom.preWeight = $mom.weight>>
+<</if>> /* Close pregant/nursing check 
+
+/* Save changes to mom and dad*/ 
+<<set $globalFluffies[$mom.ID] = $mom>>
+<<set $globalFluffies[$dad.ID] = $dad>>
+
+
+
+ 	
+
+ 
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+/*
+			
+				
+<<run console.log("Breeding test 2: " + $mom.nursing + " | " + $mom.pregnant)>>
+				
+			<<if !$mom.pregnant && $mom.nursing == 0>>
+				<<run console.log("Breeding test 3: " + $mom.nursing + " | " + $mom.pregnant)>>
+				
+				<<if _count > $ourStore.shelter>>
+				/* Work around for now to limit population 
+					<br>$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
+					<br>huhuhu
+					<<set $mom.pregnant = false>>
+					
+				<<else>>
+	<<run console.log("Breeding test 4: " + $mom.nursing + " | " + $mom.pregnant)>>
+					<br>$mom.name and $dad.name have special hugs.
+					<br>enf enf enf
+				
+					<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+					<<set $mom.pregnant = true>>
+					<<set $mom.pregnantBy = $dad.ID>>
+					<<set $mom.dueDate = $week + random(5, 6)>>
+					<<set $mom.litter = _litter>>
+					<<set $mom.preWeight = $mom.weight>>
+				<</if>> /* Close shelter count 
+			
+		<</if>> /* Closepecial friend check
+*/

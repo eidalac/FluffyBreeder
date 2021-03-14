@@ -159,12 +159,13 @@
  	<<set _randomCoat = _nColors.random()>>
 	<<set _randomMane = _nColors.random()>>
 
-
+/* 
 <<run console.log("Color Change test 0: " + $activeFluffy.cColor)>>
 <<run console.log("Color Change test 0: " + $activeFluffy.mColor)>>
 <<run console.log("Color Change test 0: " + _randomCoat.Name + " " + _randomCoat.Tier)>>
 <<run console.log("Color Change test 0: " + _randomMane.Name + " " + _randomMane.Tier)>>
-	
+*/
+
 	<<run $activeFluffy.genes.setManeColor(_randomMane.Gene)>>
 	<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene)>>
 	<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene)>>
@@ -178,4 +179,47 @@
 <<run console.log("Color Change test 1: " + $activeFluffy.cColor)>>
 <<run console.log("Color Change test 1: " + $activeFluffy.mColor)>>
 	
+<</widget>>
+
+
+
+
+/* ***
+ *	Color Group
+ *	Call as <<colorGroup>>
+ *
+ *	finds the color group of ($activeFluffy)
+ *** */
+<<widget "colorGroup">>
+
+	<<set _coatGroup = "">>
+	<<set _maneGroup = "">>
+	<<set _eyeGroup = "">>
+	
+	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	<<for _i = 0; _i < $Colors.length; _i++>>
+		<<if $activeFluffy.cColor == $Colors[_i].Name>>
+			<<set _coatGroup = $Colors[_i].Group>>
+		<</if>>
+		<<if $activeFluffy.mColor == $Colors[_i].Name>>
+			<<set _maneGroup = $Colors[_i].Group>>
+		<</if>>
+		<<if $activeFluffy.eColor == $Colors[_i].Name>>
+			<<set _eyeGroup = $Colors[_i].Group>>
+		<</if>>
+	<</for>>
+
+	/* No matches found, bad*/
+	<<if _coatGroup == "">>
+		<br>@@.red;No color match found for coat: <<print $activeFluffy.ID>>.
+	<</if>>
+	<<if _maneGroup == "">>
+		<br>@@.red;No color match found for mane: <<print $activeFluffy.ID>>.
+	<</if>>
+	<<if _eyeGroup == "">>
+		<br>@@.red;No color match found for eye: <<print $activeFluffy.ID>>.
+	<</if>>	
+
+	<<set $activeFluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]>>
+
 <</widget>>
