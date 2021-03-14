@@ -23,7 +23,26 @@
 <hr>
 
 <<run console.log("Feeding check 1: " + $activeFluffy.foodType)>>
-<<if $activeFluffy.foodType === "Formula">>
+
+
+<<if $activeFluffy.foodType === "Nothing">>
+	This fluffy is not being fed.
+	<br>
+	<br>Do you want to start feeding it?
+	<br>
+	
+	<<if $activeFluffy.weaned == true>>
+		<br>
+		<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+	<<else>>
+		<br>
+		<<button [[Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+	<</if>>
+	
+	
+<<elseif $activeFluffy.foodType === "Formula">>
 	Feeding: on Formula
 	<br>Quality:<<switch $activeFluffy.foodQuality>>
 				<<case 0>> Trash
@@ -34,6 +53,7 @@
 				<<case -1>> 
 			<</switch>>
 	<br> 
+
 	<<if $activeFluffy.foodQuality > 0>>
 		<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
@@ -41,12 +61,15 @@
 		<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
 	
-	<br>@@.green; Current Cost: ¤@@<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
+	<<button [[Stop Feeing|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	
+	<br>@@.green; Current Cost: ¤@@<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
+
 <<elseif $activeFluffy.foodType != "Nursing">>
 <<run console.log("Feeding check 2: " + $activeFluffy.foodType)>>
 	Feeding: $activeFluffy.foodType
 	<br>
+
 	<<if $activeFluffy.foodType != "Kibble">>  
 	<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
@@ -56,6 +79,9 @@
 	<<if $activeFluffy.foodType != "Sketti">>  
 	<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
+	
+	<<button [[Stop Feeing|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+
 	<br>Quality:<<switch $activeFluffy.foodQuality>>
 				<<case 0>> Trash
 				<<case 1>> Cheap
@@ -65,12 +91,16 @@
 				<<case -1>> 
 			<</switch>> 
 	<br>
+
 	<<if $activeFluffy.foodQuality > 0>>
 		<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
 	<<if $activeFluffy.foodQuality < 4>>
 		<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 	<</if>>
+	
+	<br>
+
 	<br>
 	@@.green;Current Cost: ¤@@
 		<<switch $activeFluffy.foodType>>
@@ -82,7 +112,7 @@
 				<<print Number($foodPrice.sketti[$activeFluffy.foodQuality]).toFixed(2)>>
 			<<case "Forumla">>
 				<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
-			<<case "Nursing">>
+			<<case "Nursing" "Nothing">>
 				0.00
 		<</switch>>
 	<br>
@@ -104,5 +134,7 @@
 <</if>>
 
 
+
 /* Sidebar link for mobile users */
 <<SidebarButton>>
+

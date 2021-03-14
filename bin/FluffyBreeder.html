@@ -3017,7 +3017,7 @@ console.log("cleared defects parts = " + this.genes[index])
 		&lt;&lt;set $mom.nursing--&gt;&gt;
 		&lt;&lt;set $mom.temperament += 5&gt;&gt;
 		
-		&lt;&lt;set $activeFluffy.foodType = &quot;Poop&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
 		&lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
 		
 		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
@@ -3643,6 +3643,13 @@ Mother, Father and any children
 	 			&lt;&lt;set _thisFluffy.trust -= 1&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
+	 	&lt;&lt;case &quot;Nothing&quot;&gt;&gt;
+	 		/* Quality doesn&#39;t matter */
+			&lt;&lt;set _thisFluffy.stress += 10&gt;&gt;
+			&lt;&lt;set _thisFluffy.trauma += 5&gt;&gt;
+			&lt;&lt;set _thisFluffy.happy -= 5&gt;&gt;
+ 			&lt;&lt;set _thisFluffy.trust -= 2&gt;&gt;
+ 			&lt;&lt;set _thisFluffy.temperament -= 2&gt;&gt;
 	 &lt;&lt;/switch&gt;&gt;
 	 
 
@@ -3678,10 +3685,8 @@ Mother, Father and any children
 	 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)&gt;&gt;
 &lt;&lt;run console.log(&quot;Growth test 0.3 - nursed: &quot; + _thisFluffy.maxLength)&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;elseif _thisFluffy.foodType == &quot;Poop&quot;&gt;&gt;
+		&lt;&lt;elseif _thisFluffy.foodType == &quot;Nothing&quot;&gt;&gt;
 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)&gt;&gt;
-			&lt;&lt;set _thisFluffy.stress += 10&gt;&gt;
-			&lt;&lt;set _thisFluffy.trauma += 5&gt;&gt;
 	 	&lt;&lt;else&gt;&gt; 
 	 		&lt;&lt;run console.log(&quot;Growth test 0.2 - non nursed: &quot; + _newWMulti  + &quot; &quot; + Number(Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)))&gt;&gt;
 	 		&lt;&lt;switch _thisFluffy.foodQuality&gt;&gt;
@@ -3724,17 +3729,23 @@ Mother, Father and any children
 		&lt;&lt;if (_thisFluffy.weight / _thisFluffy.maxWeight) &gt; 0.14 &amp;&amp; _thisFluffy.weaned == false&gt;&gt; 	
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother].nursing--&gt;&gt;
 
-			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; is ready for solid food.
-			&lt;&lt;set _thisFluffy.weaned = true&gt;&gt;
-			
+			&lt;br&gt;&lt;&lt;print _thisFluffy.name&gt;&gt; is ready for solid food
+	 		&lt;&lt;if _thisFluffy.foodType == &quot;Nothing&quot;&gt;&gt;
+	 			, if it was being fed.
+	 		&lt;&lt;else&gt;&gt;
+	 			.
+	 			&lt;&lt;set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType&gt;&gt;
+	 			&lt;&lt;set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality&gt;&gt;
+	 		&lt;&lt;/if&gt;&gt;
+	 		
+	 		&lt;&lt;set _thisFluffy.weaned = true&gt;&gt;
+
 	 		&lt;&lt;if $globalFluffies[_thisFluffy.mother].nursing == 0&gt;&gt;
 	 			&lt;br&gt;&lt;&lt;print $globalFluffies[_thisFluffy.mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
 	 		
-	 		&lt;&lt;set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType&gt;&gt;
-	 		&lt;&lt;set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality&gt;&gt;
+
 	 		
-	 		&lt;&lt;set _thisFluffy = _thisFluffy&gt;&gt;
 	 		&lt;&lt;set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -3826,6 +3837,8 @@ Mother, Father and any children
 
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
 /%
@@ -5339,7 +5352,26 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;hr&gt;
 
 &lt;&lt;run console.log(&quot;Feeding check 1: &quot; + $activeFluffy.foodType)&gt;&gt;
-&lt;&lt;if $activeFluffy.foodType === &quot;Formula&quot;&gt;&gt;
+
+
+&lt;&lt;if $activeFluffy.foodType === &quot;Nothing&quot;&gt;&gt;
+	This fluffy is not being fed.
+	&lt;br&gt;
+	&lt;br&gt;Do you want to start feeding it?
+	&lt;br&gt;
+	
+	&lt;&lt;if $activeFluffy.weaned == true&gt;&gt;
+		&lt;br&gt;
+		&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Greens|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Greens&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;br&gt;
+		&lt;&lt;button [[Formula|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	
+&lt;&lt;elseif $activeFluffy.foodType === &quot;Formula&quot;&gt;&gt;
 	Feeding: on Formula
 	&lt;br&gt;Quality:&lt;&lt;switch $activeFluffy.foodQuality&gt;&gt;
 				&lt;&lt;case 0&gt;&gt; Trash
@@ -5350,6 +5382,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 				&lt;&lt;case -1&gt;&gt; 
 			&lt;&lt;/switch&gt;&gt;
 	&lt;br&gt; 
+
 	&lt;&lt;if $activeFluffy.foodQuality &gt; 0&gt;&gt;
 		&lt;&lt;button [[Decrease|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality--&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -5357,12 +5390,15 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;button [[Increase|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality++&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;br&gt;@@.green; Current Cost: ¤@@&lt;&lt;print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)&gt;&gt;
+	&lt;&lt;button [[Stop Feeing|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	
+	&lt;br&gt;@@.green; Current Cost: ¤@@&lt;&lt;print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)&gt;&gt;
+
 &lt;&lt;elseif $activeFluffy.foodType != &quot;Nursing&quot;&gt;&gt;
 &lt;&lt;run console.log(&quot;Feeding check 2: &quot; + $activeFluffy.foodType)&gt;&gt;
 	Feeding: $activeFluffy.foodType
 	&lt;br&gt;
+
 	&lt;&lt;if $activeFluffy.foodType != &quot;Kibble&quot;&gt;&gt;  
 	&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -5372,6 +5408,9 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	&lt;&lt;if $activeFluffy.foodType != &quot;Sketti&quot;&gt;&gt;  
 	&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;button [[Stop Feeing|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+
 	&lt;br&gt;Quality:&lt;&lt;switch $activeFluffy.foodQuality&gt;&gt;
 				&lt;&lt;case 0&gt;&gt; Trash
 				&lt;&lt;case 1&gt;&gt; Cheap
@@ -5381,12 +5420,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 				&lt;&lt;case -1&gt;&gt; 
 			&lt;&lt;/switch&gt;&gt; 
 	&lt;br&gt;
+
 	&lt;&lt;if $activeFluffy.foodQuality &gt; 0&gt;&gt;
 		&lt;&lt;button [[Decrease|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality--&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $activeFluffy.foodQuality &lt; 4&gt;&gt;
 		&lt;&lt;button [[Increase|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality++&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	&lt;br&gt;
+
 	&lt;br&gt;
 	@@.green;Current Cost: ¤@@
 		&lt;&lt;switch $activeFluffy.foodType&gt;&gt;
@@ -5398,7 +5441,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 				&lt;&lt;print Number($foodPrice.sketti[$activeFluffy.foodQuality]).toFixed(2)&gt;&gt;
 			&lt;&lt;case &quot;Forumla&quot;&gt;&gt;
 				&lt;&lt;print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)&gt;&gt;
-			&lt;&lt;case &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;case &quot;Nursing&quot; &quot;Nothing&quot;&gt;&gt;
 				0.00
 		&lt;&lt;/switch&gt;&gt;
 	&lt;br&gt;
@@ -5418,6 +5461,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 &lt;&lt;/if&gt;&gt;
+
 
 
 /* Sidebar link for mobile users */
@@ -5499,8 +5543,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $actions--&gt;&gt;
 		&lt;&lt;set $stress -= 10&gt;&gt;
 		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
-		&lt;&lt;set $hugbox += 2&gt;&gt;
-		&lt;&lt;set $training += 1&gt;&gt;
+		&lt;&lt;set $hugbox += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
@@ -5522,8 +5565,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;if $actions &gt; 0&gt;&gt;
 		&lt;&lt;set $stress += 1&gt;&gt;
 		&lt;&lt;set $actions--&gt;&gt;
-		&lt;&lt;set $hugbox += 1&gt;&gt;
-		&lt;&lt;set $training += 2&gt;&gt;
+		&lt;&lt;set $training += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.training++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
@@ -5545,8 +5587,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;if $actions &gt; 0&gt;&gt;
 		&lt;&lt;set $stress -= 50&gt;&gt;
 		&lt;&lt;set $actions--&gt;&gt;
-		&lt;&lt;set $abuse += 2&gt;&gt;
-		&lt;&lt;set $training += 1&gt;&gt;
+		&lt;&lt;set $abuse += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.stress++&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
@@ -5686,6 +5727,7 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;option &quot;Greens&quot;&gt;&gt;
 	&lt;&lt;option &quot;Sketti&quot;&gt;&gt;
 	&lt;&lt;option &quot;Formula&quot;&gt;&gt;
+	&lt;&lt;option &quot;Nothing&quot;&gt;&gt;
 &lt;&lt;/listbox&gt;&gt;
 
 &lt;&lt;listbox &quot;_foodQuality&quot; autoselect&gt;&gt;
@@ -5706,7 +5748,7 @@ Bulk Actions (all checked fluffies)
 					
 /*&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType + &quot; &quot; + _foodQuality + &quot; &quot; + _bulkFluff.name)&gt;&gt;*/
 					&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
-						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot; || _bulkFluff.foodType == &quot;Formula&quot;&gt;&gt;
+						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot; || _bulkFluff.foodType == &quot;Formula&quot; || _bulkFluff.foodType == &quot;Nothing&quot;&gt;&gt;
 							&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
 							&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
 							&lt;&lt;set $globalFluffies[_bulkFluff.mother].nursing--&gt;&gt;

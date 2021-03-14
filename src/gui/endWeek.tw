@@ -307,6 +307,13 @@
 	 			<<set _thisFluffy.trust -= 1>>
 	 		<</if>>
 	 		
+	 	<<case "Nothing">>
+	 		/* Quality doesn't matter */
+			<<set _thisFluffy.stress += 10>>
+			<<set _thisFluffy.trauma += 5>>
+			<<set _thisFluffy.happy -= 5>>
+ 			<<set _thisFluffy.trust -= 2>>
+ 			<<set _thisFluffy.temperament -= 2>>
 	 <</switch>>
 	 
 
@@ -342,10 +349,8 @@
 	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
 <<run console.log("Growth test 0.3 - nursed: " + _thisFluffy.maxLength)>>
 	 		<</if>>
-		<<elseif _thisFluffy.foodType == "Poop">>
+		<<elseif _thisFluffy.foodType == "Nothing">>
 			<<set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)>>
-			<<set _thisFluffy.stress += 10>>
-			<<set _thisFluffy.trauma += 5>>
 	 	<<else>> 
 	 		<<run console.log("Growth test 0.2 - non nursed: " + _newWMulti  + " " + Number(Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)))>>
 	 		<<switch _thisFluffy.foodQuality>>
@@ -388,17 +393,23 @@
 		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.14 && _thisFluffy.weaned == false>> 	
 	 		<<set $globalFluffies[_thisFluffy.mother].nursing-->>
 
-			<br><<print _thisFluffy.name>> is ready for solid food.
-			<<set _thisFluffy.weaned = true>>
-			
+			<br><<print _thisFluffy.name>> is ready for solid food
+	 		<<if _thisFluffy.foodType == "Nothing">>
+	 			, if it was being fed.
+	 		<<else>>
+	 			.
+	 			<<set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType>>
+	 			<<set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality>>
+	 		<</if>>
+	 		
+	 		<<set _thisFluffy.weaned = true>>
+
 	 		<<if $globalFluffies[_thisFluffy.mother].nursing == 0>>
 	 			<br><<print $globalFluffies[_thisFluffy.mother].name>> is done nursing.
 	 		<</if>> 
 	 		
-	 		<<set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType>>
-	 		<<set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality>>
+
 	 		
-	 		<<set _thisFluffy = _thisFluffy>>
 	 		<<set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]>>
 	 	<</if>>
 	<</if>>
@@ -490,6 +501,8 @@
 
 		<</if>>
 	<</if>>
+	
+	<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
 <</for>>
 
 /%
