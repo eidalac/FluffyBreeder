@@ -72,23 +72,20 @@ Bulk Actions (all checked fluffies)
 	<<button [[Bulk Sell|Fluffy List]]>>
 		<<if $fluffyChecks.length>>
 			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-	/*<<run console.log("Bulk test 0: " + _bf)>>*/
+
 				<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
-					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-	/*<<run console.log("Bulk test 1: " + _bulkFluff.pregnant + " " + _bulkFluff.nursing + " " + _bulkFluff.weaned)>>*/
-					<<if _bulkFluff.pregnant == false &&
-						_bulkFluff.nursing < 1 &&
-						_bulkFluff.weaned == true>>
-	/*<<run console.log("Bulk test 2: " + _bf)>>*/
+					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]>>
+
+					<<if _bulkFluff.pregnant == false && _bulkFluff.nursing < 1 && _bulkFluff.weaned == true>>
+
 						/* Clear both special friends flag, ending breeding*/
 						<<if _bulkFluff.specialFriend != -1>>
 							<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
 							<<set _bulkFluff.specialFriend = -1>>
 						<</if>>
-	/*<<run console.log("Bulk test 5: " + _bf)>>*/
+
 						<<set _bulkFluff.onDisplay = true>>
-	/*<<run console.log("Bulk test 6: " + _bulkFluff.onDisplay)>>*/
-						<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
+						<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
 					<</if>>
 				<</if>>
 			<</for>>
@@ -104,12 +101,12 @@ Bulk Actions (all checked fluffies)
 				<<if $fluffyChecks[_bf] == true>>
 					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
 					<<set _bulkFluff.onDisplay = false>>
-					<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
+					
+					<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
 				<</if>>
 			<</for>>
 			
-		<<set $fluffyChecks = []>>
-		
+			<<set $fluffyChecks = []>>
 		<</if>>
 	<</button>>
 <</if>>
@@ -132,31 +129,26 @@ Bulk Actions (all checked fluffies)
 <</listbox>>
 
 <<button [[Bulk Feeding|Fluffy List]]>>
-		<<if $fluffyChecks.length>>
-			<<for _bf to 0; _bf < $fluffyChecks.length; _bf++>>
-/*<<run console.log("Bulk food test 0: " + _bf + " " + $fluffyChecks.length)>>*/
-	
-				<<if $fluffyChecks[_bf] == true>>
-					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-					
-/*<<run console.log("Bulk test 1: " + _bulkFluff.foodType + " " + _foodType + " " + _foodQuality + " " + _bulkFluff.name)>>*/
-					<<if _foodType == "Formula">>
-						<<if _bulkFluff.foodType == "Nursing" || _bulkFluff.foodType == "Formula" || _bulkFluff.foodType == "Nothing">>
-							<<set _bulkFluff.foodType = "Formula">>
-							<<set _bulkFluff.foodQuality = _foodQuality>>
-							<<set $globalFluffies[_bulkFluff.mother].nursing-->>
-							<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
-						<</if>>
-					<<elseif _bulkFluff.foodType != "Nursing">>
-						<<set _bulkFluff.foodType = _foodType>>
-						<<set _bulkFluff.foodQuality = _foodQuality>>
-						<<set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff>>
-					<</if>>
-/*<<run console.log("Bulk test 2: " + _bulkFluff.foodType + " " + _foodType+ " " + _foodQuality)>>*/
+	<<if $fluffyChecks.length>>
+		<<for _bf to 0; _bf < $fluffyChecks.length; _bf++>>
+			<<if $fluffyChecks[_bf] == true>>
+				<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
 
+				<<if _foodType == "Formula">>
+					<<if _bulkFluff.weaned == false>> 
+						<<set _bulkFluff.foodType = "Formula">>
+						<<set _bulkFluff.foodQuality = _foodQuality>>
+						<<set $globalFluffies[_bulkFluff.mother].nursing-->>
+					<</if>>
+				<<elseif _bulkFluff.foodType != "Nursing">>
+					<<set _bulkFluff.foodType = _foodType>>
+					<<set _bulkFluff.foodQuality = _foodQuality>>
 				<</if>>
-			<</for>>
-		<</if>>
+				
+				<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
+			<</if>>
+		<</for>>
+	<</if>>
 <</button>>
 &nbsp;|&nbsp;
 <hr>
@@ -188,7 +180,7 @@ Bulk Actions (all checked fluffies)
 		<<elseif _listFluff.onDisplay == false && $listType == "Display">>
 			<<continue>>
 		<<else>>
-/*<<run console.log("Bulk test 3: " + _fl)>>	*/
+
 
 <<capture _fl, _listFluff>>
 			<label>	<p class="hang">

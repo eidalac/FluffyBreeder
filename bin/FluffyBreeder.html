@@ -2684,28 +2684,35 @@ console.log("cleared defects parts = " + this.genes[index])
  *********** */
  
  
-&lt;&lt;run console.log(&quot;Rejection test 2:  on event page&quot;)&gt;&gt;
- 
 /* Each birth even entry is the foal involved */
+
 /* Pick a random fulffy from the list and run the event */
 &lt;&lt;set $activeFluffy = $eventBirthRejection.pluck()&gt;&gt;
+
+/* Get the mother */
 &lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 /* Check if this is a brown foal rejection: */
 &lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
 
-	&lt;br&gt;Brown foal Rejection event for &#39;&lt;&lt;- $activeFluffy.name&gt;&gt;&#39; by &#39;&lt;&lt;- $mom.name&gt;&gt;&#39;.
-	&lt;br&gt;
+	/* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
 	&lt;&lt;if $mom.colorGroup[0] == &quot;Brown&quot; || $mom.traits.includes(&quot;Good Mama&quot;)&gt;&gt;
+		/* Skip this info for now */
+		&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+		/*
 		&lt;br&gt;@@.cyan;Mumah wuvs aaaawww babhes.@@
 		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+		*/
+		
+	/* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
 	&lt;&lt;elseif $mom.temperament &lt; 10&gt;&gt;
-		/* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
-		&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; halp... bad miwkie thief..save good fluffy mama...hu hu hu...@@
+		&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; halp... bad miwkie thief..save good fluffy mama, &lt;&lt;- $title&gt;&gt;...hu hu hu...@@
 		&lt;&lt;set $mom.stress += 25&gt;&gt;
 		&lt;&lt;set $mom.trauma += 5&gt;&gt;
 		&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
 		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+		
+	/* The main event: */
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;It seems &lt;&lt;- $mom.name&gt;&gt; is rejecting a foal.
 		&lt;br&gt;
@@ -3022,129 +3029,147 @@ console.log("cleared defects parts = " + this.genes[index])
 /* Pick a random fulffy from the list and run the birth */
 &lt;&lt;set $mom = $eventBirths.pluck()&gt;&gt;
 
-&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
-&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
-&lt;br&gt;
-&lt;hr&gt;
-	
 &lt;&lt;set $dad = $globalFluffies[$mom.pregnantBy]&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Birth test 3: &quot; + $mom.litter)&gt;&gt;
-&lt;&lt;capture _fo, _section, _sectionP, _line&gt;&gt;
-
-&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
+&lt;&lt;if ndef $dad&gt;&gt;
+	&lt;br&gt;&lt;br&gt;@@.red;Event Birth - mare pregnant without a father!  Virgin birth is not headcannon!@@&lt;br&gt;&lt;br&gt;
 	
-	/* Base chance for still births is based on the mare&#39;s fertility and number of prior children */
-	&lt;&lt;if $mom.fertility &lt; 1&gt;&gt;
-		&lt;&lt;set _diff = 35 - $mom.children.length&gt;&gt;
-	&lt;&lt;elseif $mom.fertility &lt; 2&gt;&gt;
-		&lt;&lt;set _diff = 55 - $mom.children.length&gt;&gt;
-	&lt;&lt;elseif $mom.fertility &lt; 3&gt;&gt;
-		&lt;&lt;set _diff = 75 - $mom.children.length&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _diff = 95 - $mom.children.length&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;set $mom.litter = 0&gt;&gt;
+	&lt;&lt;set $mom.dueDate = -1&gt;&gt;
+	&lt;&lt;set $mom.pregnant = false&gt;&gt;
+	&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
+	&lt;&lt;set $mom.nursingTime = 0&gt;&gt;
+	&lt;&lt;set $mom.nursingMax = 0&gt;&gt;
 	
-	/* Creates a new fluffy as $activeFluffy */
-	&lt;&lt;breedFluffies $mom $dad&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Birth test 4: &quot; + _diff)&gt;&gt;
-
-	/* Stillbirth chance; we display some info about the foal (type and color), so this happens after generating it. */
-	&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
-		&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
-		&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
-		&lt;&lt;set $mom.stress += 25&gt;&gt;
-		&lt;&lt;set $mom.trauma += 1&gt;&gt;
-		&lt;br&gt;
-		&lt;br&gt;
-		&lt;hr&gt;
-		
-&lt;&lt;run console.log(&quot;Birth test 5: &quot; + _diff)&gt;&gt;
-
-	&lt;&lt;else&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
-
-		/* Print the foal info */	
-		&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Colapse]&quot;&gt;&gt;
-		/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
-		&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
-		&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
-		&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
-		&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
-		&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
-			&lt;&lt;FluffyDesc&gt;&gt;
-		&lt;/div&gt;
-		&lt;hr&gt;
-
-
-		/* Save it */
-		&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
-		&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-		&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;
-		&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
-		&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
-		&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
-		&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-			
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-			
-		&lt;&lt;set $ourStore.foals++&gt;&gt;
-			
-		&lt;&lt;set $mom.nursing++&gt;&gt;
-		&lt;&lt;set $mom.stress += 5&gt;&gt;
-		
-		&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
-			/* Push to event stack  */
-			&lt;&lt;run $eventBirthRejection.push($activeFluffy)&gt;&gt;
-		&lt;&lt;/if&gt;&gt; 
-	&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
-
-&lt;&lt;/for&gt;&gt; /* Close litter itteration */
-
-&lt;&lt;run console.log(&quot;Birth test 7: &quot; + $globalFluffies.length)&gt;&gt;
-
-/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count */
-&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
-	&lt;&lt;set _fertileChance = $mom.litter&gt;&gt;
-	&lt;&lt;set _fertileChance += $mom.children.length&gt;&gt;
-	&lt;&lt;set _fertileChance = 2 * _fertileChance&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
 	
-	/* Test for fertility drop */
-	&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
-		&lt;&lt;set $mom.fertility--&gt;&gt;
-		&lt;&lt;set $mom.stress += 5&gt;&gt;
-		&lt;&lt;set $mom.trauma += 1&gt;&gt;
-		&lt;br&gt;@@.cyan;Why special place hurties?@@
-	&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+
 &lt;&lt;else&gt;&gt;
-	/* 0 fertility left */
-	&lt;&lt;set $mom.stress += 50&gt;&gt;
-	&lt;&lt;set $mom.trauma += 5&gt;&gt;
-	&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
-&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
+	
+	&lt;br&gt;$mom.name is giving birth to $mom.litter foals.
+	&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
+	&lt;br&gt;
+	&lt;hr&gt;
+	
+	&lt;&lt;run console.log(&quot;Birth test 3: &quot; + $mom.litter)&gt;&gt;
+	&lt;&lt;capture _fo, _section, _sectionP, _line&gt;&gt;
+	
+	&lt;&lt;for _fo = 0; _fo &lt; $mom.litter; _fo++&gt;&gt;
+		
+		/* Base chance for still births is based on the mare&#39;s fertility and number of prior children */
+		&lt;&lt;if $mom.fertility &lt; 1&gt;&gt;
+			&lt;&lt;set _diff = 35 - $mom.children.length&gt;&gt;
+		&lt;&lt;elseif $mom.fertility &lt; 2&gt;&gt;
+			&lt;&lt;set _diff = 55 - $mom.children.length&gt;&gt;
+		&lt;&lt;elseif $mom.fertility &lt; 3&gt;&gt;
+			&lt;&lt;set _diff = 75 - $mom.children.length&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _diff = 95 - $mom.children.length&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		
+		/* Creates a new fluffy as $activeFluffy */
+		&lt;&lt;breedFluffies $mom $dad&gt;&gt;
+	
+	&lt;&lt;run console.log(&quot;Birth test 4: &quot; + _diff)&gt;&gt;
+	
+		/* Stillbirth chance; we display some info about the foal (type and color), so this happens after generating it. */
+		&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
+			&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
+			&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
+			&lt;&lt;set $mom.stress += 25&gt;&gt;
+			&lt;&lt;set $mom.trauma += 1&gt;&gt;
+			&lt;br&gt;
+			&lt;br&gt;
+			&lt;hr&gt;
+			
+	&lt;&lt;run console.log(&quot;Birth test 5: &quot; + _diff)&gt;&gt;
+	
+		&lt;&lt;else&gt;&gt;
+	
+	&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
+	
+			/* Print the foal info */	
+			&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Colapse]&quot;&gt;&gt;
+			/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
+			&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
+			&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
+			&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
+			&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
+			&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
+				&lt;&lt;FluffyDesc&gt;&gt;
+			&lt;/div&gt;
+			&lt;hr&gt;
+	
+	
+			/* Save it */
+			&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+			&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+			&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;
+			&lt;&lt;set $mom.children.push($activeFluffy.ID)&gt;&gt;
+			&lt;&lt;set $dad.children.push($activeFluffy.ID)&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+			&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+				
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+				
+			&lt;&lt;set $ourStore.foals++&gt;&gt;
+				
+			&lt;&lt;set $mom.nursing++&gt;&gt;
+			&lt;&lt;set $mom.stress += 5&gt;&gt;
+			
+			&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+				/* Push to event stack  */
+				&lt;&lt;run $eventBirthRejection.push($activeFluffy)&gt;&gt;
+			&lt;&lt;/if&gt;&gt; 
+		&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
+	
+	&lt;&lt;/for&gt;&gt; /* Close litter itteration */
+	
+	&lt;&lt;run console.log(&quot;Birth test 7: &quot; + $globalFluffies.length)&gt;&gt;
+	
+	/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count */
+	&lt;&lt;if $mom.fertility &gt; 0&gt;&gt;
+		&lt;&lt;set _fertileChance = $mom.litter&gt;&gt;
+		&lt;&lt;set _fertileChance += $mom.children.length&gt;&gt;
+		&lt;&lt;set _fertileChance = 2 * _fertileChance&gt;&gt;
+		
+		/* Test for fertility drop */
+		&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
+			&lt;&lt;set $mom.fertility--&gt;&gt;
+			&lt;&lt;set $mom.stress += 5&gt;&gt;
+			&lt;&lt;set $mom.trauma += 1&gt;&gt;
+			&lt;br&gt;@@.cyan;Why special place hurties?@@
+		&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
+	&lt;&lt;else&gt;&gt;
+		/* 0 fertility left */
+		&lt;&lt;set $mom.stress += 50&gt;&gt;
+		&lt;&lt;set $mom.trauma += 5&gt;&gt;
+		&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+	&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
+	
+	/* Update the mom: */
+	&lt;&lt;set $mom.litter = 0&gt;&gt;
+	&lt;&lt;set $mom.dueDate = -1&gt;&gt;
+	&lt;&lt;set $mom.pregnant = false&gt;&gt;
+	&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
+	&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
+	&lt;&lt;set $mom.nursingMax = $mom.nursing&gt;&gt;
+	&lt;&lt;set $mom.nursingMax -= random(0,1)&gt;&gt;			
+	
+	/* Save changes to mom and dad*/ 
+	&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
+	&lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
+	 	
+	/*&lt;&lt;/for&gt;&gt;*/ /* Close birth event loop */
+	 &lt;&lt;/capture&gt;&gt;
+	 
+	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+	
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
 
-/* Update the mom: */
-&lt;&lt;set $mom.litter = 0&gt;&gt;
-&lt;&lt;set $mom.dueDate = -1&gt;&gt;
-&lt;&lt;set $mom.pregnant = false&gt;&gt;
-&lt;&lt;set $mom.pregnantBy = -1&gt;&gt;
-&lt;&lt;set $mom.nursingTime = $week + 5&gt;&gt;
-&lt;&lt;set $mom.nursingMax = $mom.nursing&gt;&gt;
-&lt;&lt;set $mom.nursingMax -= random(0,1)&gt;&gt;			
-
-/* Save changes to mom and dad*/ 
-&lt;&lt;set $globalFluffies[$mom.ID] = $mom&gt;&gt;
-&lt;&lt;set $globalFluffies[$dad.ID] = $dad&gt;&gt;
- 	
-/*&lt;&lt;/for&gt;&gt;*/ /* Close birth event loop */
- &lt;&lt;/capture&gt;&gt;
- 
-&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
-&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="5" name="Event Main" tags="nobr" position="600,100" size="100,100">/* **********
+&lt;&lt;/if&gt;&gt; /* Close null $dad check */</tw-passagedata><tw-passagedata pid="5" name="Event Main" tags="nobr" position="600,100" size="100,100">/* **********
  * eventMain.tw
  *
  * Package: FluffyBreeder
@@ -3232,38 +3257,7 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 &lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-
-
-/*
-			
-				
-&lt;&lt;run console.log(&quot;Breeding test 2: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-				
-			&lt;&lt;if !$mom.pregnant &amp;&amp; $mom.nursing == 0&gt;&gt;
-				&lt;&lt;run console.log(&quot;Breeding test 3: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-				
-				&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
-				/* Work around for now to limit population 
-					&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals!
-					&lt;br&gt;huhuhu
-					&lt;&lt;set $mom.pregnant = false&gt;&gt;
-					
-				&lt;&lt;else&gt;&gt;
-	&lt;&lt;run console.log(&quot;Breeding test 4: &quot; + $mom.nursing + &quot; | &quot; + $mom.pregnant)&gt;&gt;
-					&lt;br&gt;$mom.name and $dad.name have special hugs.
-					&lt;br&gt;enf enf enf
-				
-					&lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
-					&lt;&lt;set $mom.pregnant = true&gt;&gt;
-					&lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
-					&lt;&lt;set $mom.dueDate = $week + random(5, 6)&gt;&gt;
-					&lt;&lt;set $mom.litter = _litter&gt;&gt;
-					&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* Close shelter count 
-			
-		&lt;&lt;/if&gt;&gt; /* Closepecial friend check
-*/</tw-passagedata><tw-passagedata pid="7" name="Encyclopedia" tags="nobr" position="850,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="7" name="Encyclopedia" tags="nobr" position="850,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -3576,6 +3570,44 @@ Mother, Father and any children
 &lt;&lt;for _ef = 0; _ef &lt; $ourStore.fluffies.length; _ef++&gt;&gt;
 	&lt;&lt;set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]&gt;&gt;
 
+	/* First some tedius house keeping: */
+	&lt;&lt;if ndef _thisFluffy.name&gt;&gt;
+		&lt;&lt;set _thisFluffy.name = &quot;This fluffy&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.gender&gt;&gt;
+		&lt;&lt;set _thisFluffy.gender = &quot;female&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.geneString&gt;&gt;
+		&lt;&lt;if _thisFluffy.gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set _geneSTR = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0&quot;&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _geneSTR = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1&quot;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.weekAcquired&gt;&gt;
+		&lt;&lt;set _thisFluffy.weekAcquired = 0&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.ID&gt;&gt;
+		&lt;&lt;set _thisFluffy.ID = $ourStore.fluffies[_ef]&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.specialFriend&gt;&gt;
+		&lt;&lt;set _thisFluffy.specialFriend = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.pregnant&gt;&gt;
+		&lt;&lt;set _thisFluffy.pregnant = false&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.pregnantBy&gt;&gt;
+		&lt;&lt;set _thisFluffy.pregnantBy = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.ageWeeks&gt;&gt;
+		&lt;&lt;set _thisFluffy.ageWeeks = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if ndef _thisFluffy.foodType&gt;&gt;
+		&lt;&lt;set _thisFluffy.foodType = &quot;Kibble&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
+
 	/* Age up a week. */
 	&lt;&lt;set _thisFluffy.ageWeeks++&gt;&gt;
 
@@ -3653,6 +3685,10 @@ Mother, Father and any children
 &lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + _thisFluffy.name + &quot; | &quot; + _thisFluffy.gender)&gt;&gt;
 
 	/* some logic checking */
+	&lt;&lt;if ndef _thisFluffy.nursing &gt;&gt;
+		&lt;&lt;set _thisFluffy.nursing = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
 	&lt;&lt;if _thisFluffy.nursing &lt; 0&gt;&gt;
 		&lt;&lt;set _thisFluffy.nursing = 0&gt;&gt;
 		&lt;&lt;set $globalFluffies[_thisFluffy.ID] = _thisFluffy&gt;&gt;
@@ -5886,23 +5922,20 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;button [[Bulk Sell|Fluffy List]]&gt;&gt;
 		&lt;&lt;if $fluffyChecks.length&gt;&gt;
 			&lt;&lt;for _bf to 0; _bf lt $fluffyChecks.length; _bf++&gt;&gt;
-	/*&lt;&lt;run console.log(&quot;Bulk test 0: &quot; + _bf)&gt;&gt;*/
+
 				&lt;&lt;if $fluffyChecks[_bf] == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
-					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
-	/*&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.pregnant + &quot; &quot; + _bulkFluff.nursing + &quot; &quot; + _bulkFluff.weaned)&gt;&gt;*/
-					&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp;
-						_bulkFluff.nursing &lt; 1 &amp;&amp;
-						_bulkFluff.weaned == true&gt;&gt;
-	/*&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bf)&gt;&gt;*/
+					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]&gt;&gt;
+
+					&lt;&lt;if _bulkFluff.pregnant == false &amp;&amp; _bulkFluff.nursing &lt; 1 &amp;&amp; _bulkFluff.weaned == true&gt;&gt;
+
 						/* Clear both special friends flag, ending breeding*/
 						&lt;&lt;if _bulkFluff.specialFriend != -1&gt;&gt;
 							&lt;&lt;set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1&gt;&gt;
 							&lt;&lt;set _bulkFluff.specialFriend = -1&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-	/*&lt;&lt;run console.log(&quot;Bulk test 5: &quot; + _bf)&gt;&gt;*/
+
 						&lt;&lt;set _bulkFluff.onDisplay = true&gt;&gt;
-	/*&lt;&lt;run console.log(&quot;Bulk test 6: &quot; + _bulkFluff.onDisplay)&gt;&gt;*/
-						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff&gt;&gt;
+						&lt;&lt;set $globalFluffies[_bulkFluff.ID] = _bulkFluff&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
@@ -5918,12 +5951,12 @@ Bulk Actions (all checked fluffies)
 				&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
 					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
 					&lt;&lt;set _bulkFluff.onDisplay = false&gt;&gt;
-					&lt;&lt;set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff&gt;&gt;
+					
+					&lt;&lt;set $globalFluffies[_bulkFluff.ID] = _bulkFluff&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 			
-		&lt;&lt;set $fluffyChecks = []&gt;&gt;
-		
+			&lt;&lt;set $fluffyChecks = []&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
@@ -5946,31 +5979,26 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/listbox&gt;&gt;
 
 &lt;&lt;button [[Bulk Feeding|Fluffy List]]&gt;&gt;
-		&lt;&lt;if $fluffyChecks.length&gt;&gt;
-			&lt;&lt;for _bf to 0; _bf &lt; $fluffyChecks.length; _bf++&gt;&gt;
-/*&lt;&lt;run console.log(&quot;Bulk food test 0: &quot; + _bf + &quot; &quot; + $fluffyChecks.length)&gt;&gt;*/
-	
-				&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
-					&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
-					
-/*&lt;&lt;run console.log(&quot;Bulk test 1: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType + &quot; &quot; + _foodQuality + &quot; &quot; + _bulkFluff.name)&gt;&gt;*/
-					&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
-						&lt;&lt;if _bulkFluff.foodType == &quot;Nursing&quot; || _bulkFluff.foodType == &quot;Formula&quot; || _bulkFluff.foodType == &quot;Nothing&quot;&gt;&gt;
-							&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
-							&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
-							&lt;&lt;set $globalFluffies[_bulkFluff.mother].nursing--&gt;&gt;
-							&lt;&lt;set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;elseif _bulkFluff.foodType != &quot;Nursing&quot;&gt;&gt;
-						&lt;&lt;set _bulkFluff.foodType = _foodType&gt;&gt;
-						&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
-						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_bf]] = _bulkFluff&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-/*&lt;&lt;run console.log(&quot;Bulk test 2: &quot; + _bulkFluff.foodType + &quot; &quot; + _foodType+ &quot; &quot; + _foodQuality)&gt;&gt;*/
+	&lt;&lt;if $fluffyChecks.length&gt;&gt;
+		&lt;&lt;for _bf to 0; _bf &lt; $fluffyChecks.length; _bf++&gt;&gt;
+			&lt;&lt;if $fluffyChecks[_bf] == true&gt;&gt;
+				&lt;&lt;set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
 
+				&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
+					&lt;&lt;if _bulkFluff.weaned == false&gt;&gt; 
+						&lt;&lt;set _bulkFluff.foodType = &quot;Formula&quot;&gt;&gt;
+						&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
+						&lt;&lt;set $globalFluffies[_bulkFluff.mother].nursing--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _bulkFluff.foodType != &quot;Nursing&quot;&gt;&gt;
+					&lt;&lt;set _bulkFluff.foodType = _foodType&gt;&gt;
+					&lt;&lt;set _bulkFluff.foodQuality = _foodQuality&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/for&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+				
+				&lt;&lt;set $globalFluffies[_bulkFluff.ID] = _bulkFluff&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 &amp;nbsp;|&amp;nbsp;
 &lt;hr&gt;
@@ -6002,7 +6030,7 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-/*&lt;&lt;run console.log(&quot;Bulk test 3: &quot; + _fl)&gt;&gt;	*/
+
 
 &lt;&lt;capture _fl, _listFluff&gt;&gt;
 			&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
@@ -7212,6 +7240,18 @@ Inbreeding:
 	&lt;&lt;set _dad = $args[1]&gt;&gt;
 	&lt;&lt;set _mom.genes = Genome.fromString(_mom.geneString)&gt;&gt;
 	&lt;&lt;set _dad.genes = Genome.fromString(_dad.geneString)&gt;&gt;
+
+	&lt;&lt;if ndef _mom.genes&gt;&gt;
+		&lt;br&gt;&lt;br&gt;@@.red; breedFluffies: mother has no genes, loading default genes@@&lt;br&gt;&lt;br&gt;
+		&lt;&lt;set _mom.geneString = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1&quot;&gt;&gt;
+		&lt;&lt;set _mom.genes = Genome.fromString(_mom.geneString)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if ndef _dad.genes&gt;&gt;
+		&lt;br&gt;&lt;br&gt;@@.red; breedFluffies: father has no genes, loading default genes@@&lt;br&gt;&lt;br&gt;
+		&lt;&lt;set _dad.geneString = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0&quot;&gt;&gt;
+		&lt;&lt;set _dad.genes = Genome.fromString(_dad.geneString)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;set $childGene = _mom.genes.breedWithGenome(_dad.genes)&gt;&gt;
 

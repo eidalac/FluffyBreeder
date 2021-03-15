@@ -11,28 +11,35 @@
  *********** */
  
  
-<<run console.log("Rejection test 2:  on event page")>>
- 
 /* Each birth even entry is the foal involved */
+
 /* Pick a random fulffy from the list and run the event */
 <<set $activeFluffy = $eventBirthRejection.pluck()>>
+
+/* Get the mother */
 <<set $mom = $globalFluffies[$activeFluffy.mother]>>
 
 /* Check if this is a brown foal rejection: */
 <<if $activeFluffy.colorGroup[0] == "Brown">>
 
-	<br>Brown foal Rejection event for '<<- $activeFluffy.name>>' by '<<- $mom.name>>'.
-	<br>
+	/* If the mom is brown or has the "good Mama" trait she will not reject the foal: */
 	<<if $mom.colorGroup[0] == "Brown" || $mom.traits.includes("Good Mama")>>
+		/* Skip this info for now */
+		<<goto "Event Main">>
+		/*
 		<br>@@.cyan;Mumah wuvs aaaawww babhes.@@
 		<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+		*/
+		
+	/* < 10 = fear/terror, so fluffy will just be terrified of the babby */
 	<<elseif $mom.temperament < 10>>
-		/* < 10 = fear/terror, so fluffy will just be terrified of the babby */
-		<br>@@.cyan;<<- $title>> halp... bad miwkie thief..save good fluffy mama...hu hu hu...@@
+		<br>@@.cyan;<<- $title>> halp... bad miwkie thief..save good fluffy mama, <<- $title>>...hu hu hu...@@
 		<<set $mom.stress += 25>>
 		<<set $mom.trauma += 5>>
 		<<set $globalFluffies[$mom.ID] = $mom>>
 		<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+		
+	/* The main event: */
 	<<else>>
 		<br>It seems <<- $mom.name>> is rejecting a foal.
 		<br>
