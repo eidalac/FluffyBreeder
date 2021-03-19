@@ -70,7 +70,13 @@
 	 <<set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)>>
 	 <<set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)>>
 	 
-	 <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<<else>>
+		<<run console.log("FluffyDesc - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+		<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<</if>>
 	
 	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
 	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor>> eyes<</if>>. 
@@ -145,6 +151,14 @@
 	 <<set _fluffy.trauma = Math.clamp(Math.trunc(_fluffy.trauma), 0, 200)>>
 	 
 	 <<set $globalFluffies[_fluffy.ID] = _fluffy>>
+	 
+	<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
+		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+	<<else>>
+		<<run console.log("shortDesc - invalid $activeFluffy ID: " + _fluffy.ID + ". Should be " + $globalFluffies[_fluffy.ID].ID)>>
+		<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
+		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+	<</if>>
 
 	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
 	<br>Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
@@ -158,7 +172,7 @@
 	 Father: <<if _fluffy.father == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[_fluffy.father].name>>@@<</if>> 
 	 <<if _fluffy.specialFriend != -1>>Special Friend: @@.cyan;<<print $globalFluffies[_fluffy.specialFriend].name>>@@<</if>>
 	<br>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>>
-	<<if _fluffy.pregnant == true>><br>Is due to give birth in <<print _fluffy.dueDate-$week+1>> weeks<</if>>
+	<<if _fluffy.pregnant == true>><br>Is due to give birth in <<- _fluffy.dueDate>> weeks<</if>>
 	<<if _fluffy.nursing > 0>><br>Is nursing <<print _fluffy.nursing >> foals<</if>>
 	
 

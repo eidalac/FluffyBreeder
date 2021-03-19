@@ -58,11 +58,13 @@ Bulk Actions (all checked fluffies)
 
 /* Select All/Clear all buttons */
 <<button [[Clear All|Fluffy List]]>>
-	<<set $fluffyChecks = []>>
+	<<for _bf range $ourStore.fluffies>>
+		<<set $globalFluffies[_bf].isChecked = false>>
+	<</for>>
 <</button>>
 <<button [[Select All|Fluffy List]]>>
-	<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-		<<set $fluffyChecks[_bf] = true>>
+	<<for _bf range $ourStore.fluffies>>
+		<<set $globalFluffies[_bf].isChecked = true>>
 	<</for>>
 <</button>>
 <br><br>
@@ -70,44 +72,30 @@ Bulk Actions (all checked fluffies)
 /* Bulk sell / remove from sale buttons */
 <<if $listType != "Display">>
 	<<button [[Bulk Sell|Fluffy List]]>>
-		<<if $fluffyChecks.length>>
-			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
+		<<for _bf range $ourStore.fluffies>>
+			<<if $globalFluffies[_bf].isChecked == true && $ourStore.onDisplay < $ourStore.display>>
 
-				<<if $fluffyChecks[_bf] == true && $ourStore.onDisplay < $ourStore.display>>
-					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-
-					<<if _bulkFluff.pregnant == false && _bulkFluff.nursing < 1 && _bulkFluff.weaned == true>>
-
-						/* Clear both special friends flag, ending breeding*/
-						<<if _bulkFluff.specialFriend != -1>>
-							<<set $globalFluffies[_bulkFluff.specialFriend].specialFriend = -1>>
-							<<set _bulkFluff.specialFriend = -1>>
-						<</if>>
-
-						<<set _bulkFluff.onDisplay = true>>
-						<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
+				<<if $globalFluffies[_bf].pregnant == false && $globalFluffies[_bf].nursing < 1 && $globalFluffies[_bf].weaned == true>>
+					/* Clear both special friends flag, ending breeding*/
+					<<if $globalFluffies[_bf].specialFriend != -1>>
+						<<set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1>>
+						<<set $globalFluffies[_bf].specialFriend = -1>>
 					<</if>>
+
+					<<set $globalFluffies[_bf].onDisplay = true>>
+					<<set $globalFluffies[_bf].isChecked = false>>
 				<</if>>
-			<</for>>
-			
-		<<set $fluffyChecks = []>>
-		
-		<</if>>
+			<</if>>
+		<</for>>
 	<</button>>
 <<else>>
 	<<button [[Remove from Sale|Fluffy List]]>>
-		<<if $fluffyChecks.length>>
-			<<for _bf to 0; _bf lt $fluffyChecks.length; _bf++>>
-				<<if $fluffyChecks[_bf] == true>>
-					<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-					<<set _bulkFluff.onDisplay = false>>
-					
-					<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
-				<</if>>
-			<</for>>
-			
-			<<set $fluffyChecks = []>>
-		<</if>>
+		<<for _bf range $ourStore.fluffies>>
+			<<if $globalFluffies[_bf].isChecked == true>>
+				<<set $globalFluffies[_bf].onDisplay = false>>	
+				<<set $globalFluffies[_bf].isChecked = false>>				
+			<</if>>
+		<</for>>
 	<</button>>
 <</if>>
 
@@ -129,62 +117,61 @@ Bulk Actions (all checked fluffies)
 <</listbox>>
 
 <<button [[Bulk Feeding|Fluffy List]]>>
-	<<if $fluffyChecks.length>>
-		<<for _bf to 0; _bf < $fluffyChecks.length; _bf++>>
-			<<if $fluffyChecks[_bf] == true>>
-				<<set _bulkFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-
-				<<if _foodType == "Formula">>
-					<<if _bulkFluff.weaned == false>> 
-						<<set _bulkFluff.foodType = "Formula">>
-						<<set _bulkFluff.foodQuality = _foodQuality>>
-						<<set $globalFluffies[_bulkFluff.mother].nursing-->>
-					<</if>>
-				<<elseif _bulkFluff.foodType != "Nursing">>
-					<<set _bulkFluff.foodType = _foodType>>
-					<<set _bulkFluff.foodQuality = _foodQuality>>
+	<<for _bf range $ourStore.fluffies>>
+		<<if $globalFluffies[_bf].isChecked == true>>
+			<<if _foodType == "Formula">>
+				<<if $globalFluffies[_bf].weaned == false>> 
+					<<set $globalFluffies[_bf].foodType = "Formula">>
+					<<set $globalFluffies[_bf].foodQuality = _foodQuality>>
+					<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
 				<</if>>
-				
-				<<set $globalFluffies[_bulkFluff.ID] = _bulkFluff>>
+			<<elseif $globalFluffies[_bf].foodType != "Nursing">>
+				<<set $globalFluffies[_bf].foodType = _foodType>>
+				<<set $globalFluffies[_bf].foodQuality = _foodQuality>>
 			<</if>>
-		<</for>>
-	<</if>>
+		<</if>>
+	<</for>>
 <</button>>
 &nbsp;|&nbsp;
 <hr>
 
-	<<for _fl to 0; _fl < $ourStore.fluffies.length; _fl++>>
-		<<set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
+	<<for _fl range $ourStore.fluffies>>
+		<<set _listFluff = $globalFluffies[_fl]>>
 
 		/* < 1 year old */
 		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
 			<<set $ourStore.foals++>>
 			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<</if>>
 		<<elseif _listFluff.gender == "male">>
 			<<set $ourStore.stallions++>>
 			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<</if>>
 		<<else>>
 			<<set $ourStore.mares++>>
 
 			<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<</if>>
 		<</if>>
 
 		<<if _listFluff.onDisplay == true && $listType != "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
 			<<continue>>
 		<<elseif _listFluff.onDisplay == false && $listType == "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
 			<<continue>>
 		<<else>>
 
 
 <<capture _fl, _listFluff>>
 			<label>	<p class="hang">
-			<<checkbox "$fluffyChecks[_fl]" false true `$fluffyChecks[_fl] ? 'checked' : ''`>>
+			<<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>>
 			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] <<shortDesc _listFluff>>
 			</p>
 			[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |

@@ -26,10 +26,16 @@
 		<<set _sf = $globalFluffies[$activeFluffy.specialFriend]>>
 		
 		<<set $activeFluffy.specialFriend = -1>>
-		<<set _sf.specialFriend = -1>>
+		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
 		
-		<<set $globalFluffies[_sf.ID] = _sf>>
-		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<else>>
+			<<run console.log("fluffyBreeding - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+			<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<</if>>
+
 	<</link>>
 <</if>>
 

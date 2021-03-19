@@ -1,0 +1,179 @@
+:: Event Customer [nobr]
+
+/* **********
+ * eventCustomer.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event a random customer looking for a fluffy
+ *
+ *********** */
+ 
+ 
+<<run console.log("Customer test 2:  on event page")>>
+ 
+ /* First, we build a customer, starting with how many wants it has, up to 6 */
+<<set _customerWants = random(0, 6)>>
+
+/* List of possible needs we will check.  Some are duplciated to be more common*/
+<<set _possibleNeeds = [ "Personality", "Gender", "Breed", "Coat", "Mane", "Eyes", "Stat", "Temperament", "Age", "Breed", "Coat", "Breed", "Coat", "Gender", ]>>
+<<set $fluffyPersonalities = [ "Fussy", "Shy", "Lazy", "Cute", "Peppy", "Diligent", "Bossy", "Curious", "Timid", "Pensive", "Lackadaisical", "Sweet", "Haughty", "Playful", "Rowdy"] >> 
+
+/* We know how many needs it has, now pick some to fill it. */
+<<set _customerBasicNeeds = []>>
+<<set _customerDetailedNeeds = []>>
+
+<<for _customerWants > 0>>
+
+	/* Remember how many we started with */
+	<<set _firstLength = _customerBasicNeeds.length>>
+	
+	/* Pick one random item from the possible list and add it if it's not already on the list*/
+	<<set _customerBasicNeeds.pushUnique(_possibleNeeds.random())>>
+	
+	/* New length */
+	<<set _secondLength = _customerBasicNeeds.length>>
+	
+	/* If this is not true, the value was already on the list, so try again */
+	<<if _secondLength > _firstLength>>
+		<<set _customerWants-->>
+	<</if>>
+<</for>>
+
+/* Now some of these needs are general, so we need to pick a more specific version*/
+<<for _need range _customerBasicNeeds>>
+	/*<<set _customerNeeds.delete(_need)>>*/
+	
+	<<switch _need>>
+		<<case "Personality">>
+				<<set _customerDetailedNeeds.push($fluffyPersonalities.random())>>
+		<<case "Gender">>
+				<<if random(0,1) == 0>>
+				<<set _customerDetailedNeeds.push("Male")>>
+			<<else>>
+				<<set _customerDetailedNeeds.push("Female")>>
+			<</if>>
+		<<case "Breed">>
+			<<switch random(0, 10)>>
+				<<case 0 1>>
+					<<set _customerDetailedNeeds.push("Earthie")>>
+				<<case 3 4 5>>
+					<<set _customerDetailedNeeds.push("Unicorn")>>
+				<<case 6 7 8>>
+					<<set _customerDetailedNeeds.push("Pegasus")>>
+				<<case 9 10>>
+					<<set _customerDetailedNeeds.push("Alicorn")>>
+			<</switch>>
+		<<case "Coat">>
+			<<set _customerDetailedNeeds.push($Colors.random().Group + " coat")>>
+		<<case "Mane">>
+			<<set _customerDetailedNeeds.push($Colors.random().Group + " mane")>>
+		<<case "Eyes">>
+			<<set _customerDetailedNeeds.push($Colors.random().Group + " eyes")>>
+		<<case "Stat">>
+			<<switch random(0, 12)>>
+				<<case 0 1>>
+					<<set _customerDetailedNeeds.push("Strength")>>
+				<<case 2 3>>
+					<<set _customerDetailedNeeds.push("Energy")>>
+				<<case 4 5 6 7>>
+					<<set _customerDetailedNeeds.push("Charm")>>
+				<<case 8 9>>
+					<<set _customerDetailedNeeds.push("Thinking")>>
+				<<case 10 11>>
+					<<set _customerDetailedNeeds.push("Learning")>>
+				<<case 12>>
+					<<set _customerDetailedNeeds.push("Fertility")>>
+			<</switch>>
+		<<case "Temperament">>
+			<<switch random(0, 7)>>
+				<<case 0 1 3>>
+					<<set _customerDetailedNeeds.push("Low Temperament")>>
+				<<case 4 5 6>>
+					<<set _customerDetailedNeeds.push("Normal Temperament")>>
+				<<case 7>>
+					<<set _customerDetailedNeeds.push("High Temperament")>>
+			<</switch>>
+		<<case "Age">>
+			<<switch random(0, 7)>>
+				<<case 0 1>>
+					<<set _customerDetailedNeeds.push("Baby")>>
+				<<case 4 5 6>>
+					<<set _customerDetailedNeeds.push("Foal")>>
+				<<case 7>>
+					<<set _customerDetailedNeeds.push("Adult")>>
+			<</switch>>
+	<</switch>>
+<</for>>
+
+<h1>Customer</h1>
+<br>A customer comes into <<- $ourStore.name>>. 
+<br>They are looking for 
+<<if _customerDetailedNeeds.length == 0>>
+	@@.coral; Any Fluffy.@@
+<<else>>
+	@@.coral; 
+	<<for _need range _customerDetailedNeeds>>
+		<<if _need == _customerDetailedNeeds.last()>>
+			<<- _need>>.
+		<<else>>
+			<<- _need>>, 
+		<</if>> 
+	<</for>>
+	@@
+<</if>>
+<br>
+<br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
+
+<hr>
+<<capture _fl>>
+	<<for _fl to 0; _fl < $ourStore.fluffies.length; _fl++>>
+		<<set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]>>
+		<<set _buttonString = "Offer " + _listFluff.name>>
+		
+		<p class="hang">
+		<<button _buttonString>>
+			<<set _needsMatch = 0>>
+			<<for _i = 0; _i < _customerBasicNeeds.length; _i++>>
+
+				<<switch _customerBasicNeeds[_i]>>
+					<<case "Personality">>
+						<<if $globalFluffies[$ourStore.fluffies[_fl]].traits[0] == _customerDetailedNeeds[_i]>>
+							<<set _needsMatch += 2>>
+						<</if>>
+					<<case "Gender">>
+						<<if $globalFluffies[$ourStore.fluffies[_fl]].gender == _customerDetailedNeeds[_i].toLowerCase()>>
+							<<set _needsMatch += 2>>
+						<</if>>
+					<<case "Breed">>
+						<<if $globalFluffies[$ourStore.fluffies[_fl]].breed == _customerDetailedNeeds[_i].toLowerCase()>>
+							<<set _needsMatch += 2>>
+						<<elseif _customerDetailedNeeds[_i] == "Earthie">>
+							<<set _needsMatch += 1>>
+						<<elseif _customerDetailedNeeds[_i] == "Unicorn" && $globalFluffies[$ourStore.fluffies[_fl]].breed == "pegasus">>
+							<<set _needsMatch += 1>>
+						<<elseif _customerDetailedNeeds[_i] == "Pegasus" && $globalFluffies[$ourStore.fluffies[_fl]].breed == "unicorn">>
+							<<set _needsMatch += 1>>
+						<<else>>
+							<<set _needsMatch += 0>>
+						<</if>>
+				<</switch>>
+	
+			<</for>>
+			<<replace "#result-msg">>@@.orange;Match points = <<- _needsMatch>>.@@<</replace>>
+		<</button>>
+		<span id="result-msg"></span>
+		<br>
+		<<shortDesc _listFluff>>
+		</p>
+		<hr>
+	<</for>>
+<</capture>>
+  
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+ 

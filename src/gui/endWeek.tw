@@ -34,78 +34,122 @@
 /* ***
  *	Update counts for the sidebar
  *** */
-<<for _ef = 0; _ef < $ourStore.fluffies.length; _ef++>>
-	<<set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]>>
+<<for _ef range $ourStore.fluffies>>
+
+<<run console.log("Logic Test 0 " + $ourStore.fluffies.length)>>
+
+	<<if $globalFluffies[_ef].ID != _ef>>
+		<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_ef].ID + ". Should be " + _ef)>>
+		<<run $ourStore.fluffies.delete(_ef)>>
+		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
+		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
+		<<continue>>
+	<</if>>
+	
+	<<if $globalFluffies[_ef].dead == true>>
+		<<run console.log("Logic Test 1 - dead fluffy found: " + $globalFluffies[_ef].ID)>>
+		<<run $ourStore.fluffies.delete(_ef)>>
+		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
+		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
+		<<continue>>
+	<</if>>
+
+	<<if $globalFluffies[_ef].sold == true>>
+		<<run console.log("Logic Test 1 - sold fluffy found: " + $globalFluffies[_ef].ID)>>
+		<<run $ourStore.fluffies.delete(_ef)>>
+		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
+		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
+		<<continue>>
+	<</if>>
+
+	<<if $globalFluffies[_ef].dueDate > 7>>
+		<<run console.log("Logic Test 1 - invalid due date: " + $globalFluffies[_ef].dueDate)>>
+		<<set $globalFluffies[_ef].dueDate = 7>>
+	<</if>>
+
+	<<if $globalFluffies[_ef].specialFriend >= 0>>
+		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true>>
+			<<run console.log("endWeek: Dead Special friend found!")>>
+			<<set $globalFluffies[_ef].specialFriend = -1>>
+		<</if>>
+		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true>>
+			<<run console.log("endWeek: Sold Special friend found!")>>
+			<<set $globalFluffies[_ef].specialFriend = -1>>
+		<</if>>
+		
+		<<if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false>>
+			<<run console.log("endWeek: Invalid Special friend found!")>>
+			<<set $globalFluffies[_ef].specialFriend = -1>>
+		<</if>>
+	<</if>>
 
 	/* First some tedius house keeping: */
-	<<if ndef _thisFluffy.name>>
-		<<set _thisFluffy.name = "This fluffy">>
+	<<if ndef $globalFluffies[_ef].name>>
+		<<set $globalFluffies[_ef].name = "This fluffy">>
 	<</if>>
-	<<if ndef _thisFluffy.gender>>
-		<<set _thisFluffy.gender = "female">>
+	<<if ndef $globalFluffies[_ef].gender>>
+		<<set $globalFluffies[_ef].gender = "female">>
 	<</if>>
-	<<if ndef _thisFluffy.geneString>>
-		<<if _thisFluffy.gender == "male">>
+	<<if ndef $globalFluffies[_ef].geneString>>
+		<<if $globalFluffies[_ef].gender == "male">>
 			<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0">>
 		<<else>>
 			<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1">>
 		<</if>>
 	<</if>>
-	<<if ndef _thisFluffy.weekAcquired>>
-		<<set _thisFluffy.weekAcquired = 0>>
+	<<if ndef $globalFluffies[_ef].weekAcquired>>
+		<<set $globalFluffies[_ef].weekAcquired = 0>>
 	<</if>>
-	<<if ndef _thisFluffy.ID>>
-		<<set _thisFluffy.ID = $ourStore.fluffies[_ef]>>
+	<<if ndef $globalFluffies[_ef].ID>>
+		<<set $globalFluffies[_ef].ID = $ourStore.fluffies[_ef]>>
 	<</if>>
-	<<if ndef _thisFluffy.specialFriend>>
-		<<set _thisFluffy.specialFriend = -1>>
+	<<if ndef $globalFluffies[_ef].specialFriend>>
+		<<set $globalFluffies[_ef].specialFriend = -1>>
 	<</if>>
-	<<if ndef _thisFluffy.pregnant>>
-		<<set _thisFluffy.pregnant = false>>
+	<<if ndef $globalFluffies[_ef].pregnant>>
+		<<set $globalFluffies[_ef].pregnant = false>>
 	<</if>>
-	<<if ndef _thisFluffy.pregnantBy>>
-		<<set _thisFluffy.pregnantBy = -1>>
+	<<if ndef $globalFluffies[_ef].pregnantBy>>
+		<<set $globalFluffies[_ef].pregnantBy = -1>>
 	<</if>>
-	<<if ndef _thisFluffy.ageWeeks>>
-		<<set _thisFluffy.ageWeeks = -1>>
+	<<if ndef $globalFluffies[_ef].ageWeeks>>
+		<<set $globalFluffies[_ef].ageWeeks = -1>>
 	<</if>>
-	<<if ndef _thisFluffy.foodType>>
-		<<set _thisFluffy.foodType = "Kibble">>
+	<<if ndef $globalFluffies[_ef].foodType>>
+		<<set $globalFluffies[_ef].foodType = "Kibble">>
 	<</if>>
 	
-	<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
-
 	/* Age up a week. */
-	<<set _thisFluffy.ageWeeks++>>
+	<<set $globalFluffies[_ef].ageWeeks++>>
 
-	<<switch _thisFluffy.foodType>>
+	<<switch $globalFluffies[_ef].foodType>>
 		<<case "Kibble">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[_thisFluffy.foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
 		<<case "Greens">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[_thisFluffy.foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
 		<<case "Sketti">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[_thisFluffy.foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
 		<<case "Formula">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[_thisFluffy.foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
 		<<case "Default">>
 			<<set _feedCost = 0>>
 	<</switch>>
 
 	/* < 1 year old */
-	<<if Number(_thisFluffy.age) == 0>>
-		<<if Number(_thisFluffy.ageWeeks) <= _thisFluffy.maturity>>
+	<<if Number($globalFluffies[_ef].age) == 0>>
+		<<if Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
 			<<set $ourStore.foals++>>
 			<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
 			<<continue>>
 		<</if>>
 	<</if>>
 
-	<<if _thisFluffy.gender == "male">>
+	<<if $globalFluffies[_ef].gender == "male">>
 		<<set $ourStore.stallions++>>
-		<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
+		<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<<else>>
 		<<set $ourStore.mares++>>
-		<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + _thisFluffy.ID + " | " + _thisFluffy.gender)>>
+		<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<</if>>
 <</for>> 
 
@@ -146,53 +190,47 @@
  * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
  *
  *** */ 
-<<for _ef = 0; _ef < $ourStore.fluffies.length; _ef++>>
-	<<set _thisFluffy = $globalFluffies[$ourStore.fluffies[_ef]]>>
+<<for _ef range $ourStore.fluffies>>
 		
-<<run console.log("Breeding test 0.1: " + _thisFluffy.name + " | " + _thisFluffy.gender)>>
+<<run console.log("Breeding test 0.1: " + $globalFluffies[_ef].name + " | " + $globalFluffies[_ef].gender)>>
 
 	/* some logic checking */
-	<<if ndef _thisFluffy.nursing >>
-		<<set _thisFluffy.nursing = -1>>
+	<<if ndef $globalFluffies[_ef].nursing >>
+		<<set $globalFluffies[_ef].nursing = -1>>
 	<</if>>
 	
-	<<if _thisFluffy.nursing < 0>>
-		<<set _thisFluffy.nursing = 0>>
-		<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
+	<<if $globalFluffies[_ef].nursing < 0>>
+		<<set $globalFluffies[_ef].nursing = 0>>
 	<</if>>
 
 	/* turn 52 weeks into a year */
-	<<if Number(_thisFluffy.ageWeeks) > 52>>
-		<<set _thisFluffy.ageWeeks = 0>>
-		<<set _thisFluffy.age++>>
-		<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
+	<<if Number($globalFluffies[_ef].ageWeeks) > 52>>
+		<<set $globalFluffies[_ef].ageWeeks = 0>>
+		<<set $globalFluffies[_ef].age++>>
 	<</if>>
 
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	<<if Number(_thisFluffy.maxAge) <= Number(_thisFluffy.age)>>
+	<<if Number($globalFluffies[_ef].maxAge) <= Number($globalFluffies[_ef].age)>>
 		<<if random(0, 1) == 1>>
-			<br><<print _thisFluffy.name>> does not wake up.  (_thisFluffy.age /  _thisFluffy.maxAge years old)
+			<br><<print $globalFluffies[_ef].name>> does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
 			<br>
-			<<set _thisFluffy.dead = true>>
-			<<set _thisFluffy.onDisplay = false>>
-			<<set _thisFluffy.pregnant = false>>
-			<<set _thisFluffy.nursing = 0>>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<set $globalFluffies[_ef].onDisplay = false>>
+			<<set $globalFluffies[_ef].pregnant = false>>
+			<<set $globalFluffies[_ef].nursing = 0>>
 			
-			<<if _thisFluffy.specialFriend != -1>>
-				<<set $globalFluffies[_thisFluffy.specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[_thisFluffy.specialFriend] = $globalFluffies[_thisFluffy.specialFriend]>>
-				<<set _thisFluffy.specialFriend = -1>>
+			<<if $globalFluffies[_ef].specialFriend != -1>>
+				<<set $globalFluffies[$globalFluffies[_ef].specialFriend].specialFriend = -1>>
+				<<set $globalFluffies[_ef].specialFriend = -1>>
 			<</if>>
-			
-			<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
 		<</if>>
 <<run console.log("dead test 1 " + $ourStore.fluffies)>>		
-		<<run $ourStore.fluffies.delete(_thisFluffy.ID)>>
+		<<run $ourStore.fluffies.delete($globalFluffies[_ef].ID)>>
 <<run console.log("dead test 2 " + $ourStore.fluffies)>>
 
-		<<if _thisFluffy.gender == "male">>
+		<<if $globalFluffies[_ef].gender == "male">>
 			<<set $ourStore.stallions-->>
 		<<else>>
 			<<set $ourStore.mares-->>
@@ -205,15 +243,15 @@
 	 *
 	 *	Todo: This should be semi random and have non fixed prices.
 	 *** */
-	<<if _thisFluffy.onDisplay == true>>
+	<<if $globalFluffies[_ef].onDisplay == true>>
 		<<if random(0, 1) == 1>>
 			<<set _price = 0>>
 
-			<<set _price = Number(_thisFluffy.training)>>
+			<<set _price = Number($globalFluffies[_ef].training)>>
 <<run console.log("Price test 1: " + _price)>>
-			<<set _price = Number(_price) + Number(Number(_thisFluffy.trust/10))>>
+			<<set _price = Number(_price) + Number(Number($globalFluffies[_ef].trust/10))>>
 <<run console.log("Price test 2: " + _price)>>
-			<<switch _thisFluffy.breed>>
+			<<switch $globalFluffies[_ef].breed>>
 				<<case "unicorn">>
 					<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
 				<<case "pegasus">>
@@ -224,51 +262,49 @@
 					<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
 			<</switch>>
 			
-			<<set _price = Number(Number(_price) * Number(_thisFluffy.statBonus)).toFixed(2)>>
+			<<set _price = Number(Number(_price) * Number($globalFluffies[_ef].statBonus)).toFixed(2)>>
 		<<run console.log("Price test 5: " + _price)>>
-			<<set _price = Number(_price * _thisFluffy.colorBonus).toFixed(2)>>
+			<<set _price = Number(_price * $globalFluffies[_ef].colorBonus).toFixed(2)>>
 		<<run console.log("Price test 6: " + _price)>>
 
 	<<set _ageMulti = 1>>
 	
-	<<if $activeFluffy.age == 0 && _thisFluffy.ageWeeks < 45>>
-		<<set _ageMulti = Number((_thisFluffy.ageWeeks+1) / 44).toFixed(2)>>
+	<<if $activeFluffy.age == 0 && $globalFluffies[_ef].ageWeeks < 45>>
+		<<set _ageMulti = Number(($globalFluffies[_ef].ageWeeks+1) / 44).toFixed(2)>>
 	<</if>>
 <<run console.log("Price test 7: " + _ageMulti)>>
 	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
 <<run console.log("Price test 8: " + _price)>>
 
-			<<if _thisFluffy.traits.includes("Feral")>>
+			<<if $globalFluffies[_ef].traits.includes("Feral")>>
 				<<set _price = Number(_price * .25).toFixed(2)>>
 			<</if>>
 
 			<<set _price = Number(_price * 2 / 3).toFixed(2)>>
 
-			<br>_thisFluffy.name was sold for _price
+			<br>$globalFluffies[_ef].name was sold for _price
 			<<set $cash += Number(_price)>>
 			<br>
-<<run console.log("Sell Test 0 " + _ef + " | " + _thisFluffy.name)>>
-			<<set _thisFluffy.sold = true>>
-			<<set _thisFluffy.onDisplay = false>>
-			<<set _thisFluffy.pregnant = false>>
-			<<set _thisFluffy.nursing = 0>>
+<<run console.log("Sell Test 0 " + _ef + " | " + $globalFluffies[_ef].name)>>
+			<<set $globalFluffies[_ef].sold = true>>
+			<<set $globalFluffies[_ef].onDisplay = false>>
+			<<set $globalFluffies[_ef].pregnant = false>>
+			<<set $globalFluffies[_ef].nursing = 0>>
 
-			<<if _thisFluffy.specialFriend != -1>>
-				<<set $globalFluffies[_thisFluffy.specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[_thisFluffy.specialFriend] = $globalFluffies[_thisFluffy.specialFriend]>>
-				<<set _thisFluffy.specialFriend = -1>>
+			<<if $globalFluffies[_ef].specialFriend != -1>>
+				<<set $globalFluffies[$globalFluffies[_ef].specialFriend].specialFriend = -1>>
+				<<set $globalFluffies[_ef].specialFriend = -1>>
 			<</if>>
 <<run console.log("Sell Test 1 " + $ourStore.fluffies.length)>>			
-			<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
-			<<run $ourStore.fluffies.delete(_thisFluffy.ID)>>
+			<<run $ourStore.fluffies.delete($globalFluffies[_ef].ID)>>
 <<run console.log("Sell Test 2 " + $ourStore.fluffies.length)>>
 <<run console.log("Sell Test 3 " + $ourStore.fluffies)>>
 <<run console.log("Sell Test 4 " + $globalFluffies[0].name + " | " + $globalFluffies[1].name + " | "+ $globalFluffies[2].name)>>
 
 
-			<<if Number(_thisFluffy.age) == 0 && Number(_thisFluffy.ageWeeks) <= _thisFluffy.maturity>>
+			<<if Number($globalFluffies[_ef].age) == 0 && Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
 				<<set $ourStore.foals-->>
-			<<elseif _thisFluffy.gender == "male">>
+			<<elseif $globalFluffies[_ef].gender == "male">>
 				<<set $ourStore.stallions-->>
 			<<else>>
 				<<set $ourStore.mares-->>
@@ -277,85 +313,85 @@
 		<</if>>
 	<</if>>
 
-<<run console.log("Count test 0: Age = " + (_thisFluffy.ageWeeks + (_thisFluffy.age * 52)) + " gender = " + _thisFluffy.gender)>>
+<<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
 
 	/* ***
 	 *	Feed them.
 	 *** */
 	 <<set _foodBonus = 0>>
-	 <<switch _thisFluffy.foodType>>
+	 <<switch $globalFluffies[_ef].foodType>>
 	 	<<case "Kibble">>
-	 		<<if _thisFluffy.foodQuality > 3>>
+	 		<<if $globalFluffies[_ef].foodQuality > 3>>
 	 		/* Quality has some boni */
-	 			<<set _thisFluffy.happy++>>
-	 			<<set _thisFluffy.stress-->>
-	 			<<set _thisFluffy.trauma-->>
-	 			<<set _thisFluffy.temperament++>> 			
-	 		<<elseif _thisFluffy.foodQuality < 2>>
+	 			<<set $globalFluffies[_ef].happy++>>
+	 			<<set $globalFluffies[_ef].stress-->>
+	 			<<set $globalFluffies[_ef].trauma-->>
+	 			<<set $globalFluffies[_ef].temperament++>> 			
+	 		<<elseif $globalFluffies[_ef].foodQuality < 2>>
 	 		/* Cheap has some malus */
-	 			<<set _thisFluffy.happy-->>
-	 			<<set _thisFluffy.stress++>>
-	 			<<set _thisFluffy.temperament-->>
-	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 			<<set $globalFluffies[_ef].happy-->>
+	 			<<set $globalFluffies[_ef].stress++>>
+	 			<<set $globalFluffies[_ef].temperament-->>
+	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
 	 		/* Trash has more malus */
-	 			<<set _thisFluffy.happy -= 2>>
-	 			<<set _thisFluffy.stress += 2>>
-	 			<<set _thisFluffy.trauma++>>
-	 			<<set _thisFluffy.trust-->>
-	 			<<set _thisFluffy.temperament-->>
+	 			<<set $globalFluffies[_ef].happy -= 2>>
+	 			<<set $globalFluffies[_ef].stress += 2>>
+	 			<<set $globalFluffies[_ef].trauma++>>
+	 			<<set $globalFluffies[_ef].trust-->>
+	 			<<set $globalFluffies[_ef].temperament-->>
 	 		<</if>>
 
 	 	<<case "Greens">>
-	 		<<if _thisFluffy.foodQuality > 3>>
+	 		<<if $globalFluffies[_ef].foodQuality > 3>>
 	 		/* Quality has some boni */
-	 			<<set _thisFluffy.stress-->>
-	 			<<set _thisFluffy.trauma-->>
-	 		<<elseif _thisFluffy.foodQuality < 2>>
+	 			<<set $globalFluffies[_ef].stress-->>
+	 			<<set $globalFluffies[_ef].trauma-->>
+	 		<<elseif $globalFluffies[_ef].foodQuality < 2>>
 	 		/* Cheap has some malus */
-	 			<<set _thisFluffy.happy-->>
-	 			<<set _thisFluffy.trust-->>
-	 			<<set _thisFluffy.temperament-->>
-	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 			<<set $globalFluffies[_ef].happy-->>
+	 			<<set $globalFluffies[_ef].trust-->>
+	 			<<set $globalFluffies[_ef].temperament-->>
+	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
 	 		/* Trash has more malus */
-	 			<<set _thisFluffy.happy -= 3>>
-	 			<<set _thisFluffy.stress += 3>>
-	 			<<set _thisFluffy.trust -= 2>>
-	 			<<set _thisFluffy.temperament-->>
+	 			<<set $globalFluffies[_ef].happy -= 3>>
+	 			<<set $globalFluffies[_ef].stress += 3>>
+	 			<<set $globalFluffies[_ef].trust -= 2>>
+	 			<<set $globalFluffies[_ef].temperament-->>
 	 		<</if>>
 	 		
 	 	<<case "Sketti">>
-	 		<<if _thisFluffy.foodQuality > 3>>
+	 		<<if $globalFluffies[_ef].foodQuality > 3>>
 	 		/* Quality has some boni */
-	 			<<set _thisFluffy.happy += 3>>
-	 			<<set _thisFluffy.trust += 3>>
-	 			<<set _thisFluffy.stress -= 2>>
-	 			<<set _thisFluffy.temperament += 5>>
-	 		<<elseif _thisFluffy.foodQuality > 2>>
+	 			<<set $globalFluffies[_ef].happy += 3>>
+	 			<<set $globalFluffies[_ef].trust += 3>>
+	 			<<set $globalFluffies[_ef].stress -= 2>>
+	 			<<set $globalFluffies[_ef].temperament += 5>>
+	 		<<elseif $globalFluffies[_ef].foodQuality > 2>>
 	 		/* Good has some boni */
-	 			<<set _thisFluffy.happy += 2>>
-	 			<<set _thisFluffy.trust += 2>>
-	 			<<set _thisFluffy.stress -= 1>>
-	 			<<set _thisFluffy.temperament += 4>>
-	 		<<elseif _thisFluffy.foodQuality > 1>>
+	 			<<set $globalFluffies[_ef].happy += 2>>
+	 			<<set $globalFluffies[_ef].trust += 2>>
+	 			<<set $globalFluffies[_ef].stress -= 1>>
+	 			<<set $globalFluffies[_ef].temperament += 4>>
+	 		<<elseif $globalFluffies[_ef].foodQuality > 1>>
 	 		/* Basic has some boni */
-	 			<<set _thisFluffy.happy += 1>>
-	 			<<set _thisFluffy.trust += 1>>
-	 			<<set _thisFluffy.stress -= 1>>
-	 			<<set _thisFluffy.temperament += 3>>
-	 		<<elseif _thisFluffy.foodQuality < 1>>
+	 			<<set $globalFluffies[_ef].happy += 1>>
+	 			<<set $globalFluffies[_ef].trust += 1>>
+	 			<<set $globalFluffies[_ef].stress -= 1>>
+	 			<<set $globalFluffies[_ef].temperament += 3>>
+	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
 	 		/* Trash has some malus */
-	 			<<set _thisFluffy.happy -= 1>>
-	 			<<set _thisFluffy.stress += 3>>
-	 			<<set _thisFluffy.trust -= 1>>
+	 			<<set $globalFluffies[_ef].happy -= 1>>
+	 			<<set $globalFluffies[_ef].stress += 3>>
+	 			<<set $globalFluffies[_ef].trust -= 1>>
 	 		<</if>>
 	 		
 	 	<<case "Nothing">>
 	 		/* Quality doesn't matter */
-			<<set _thisFluffy.stress += 10>>
-			<<set _thisFluffy.trauma += 5>>
-			<<set _thisFluffy.happy -= 5>>
- 			<<set _thisFluffy.trust -= 2>>
- 			<<set _thisFluffy.temperament -= 2>>
+			<<set $globalFluffies[_ef].stress += 10>>
+			<<set $globalFluffies[_ef].trauma += 5>>
+			<<set $globalFluffies[_ef].happy -= 5>>
+ 			<<set $globalFluffies[_ef].trust -= 2>>
+ 			<<set $globalFluffies[_ef].temperament -= 2>>
 	 <</switch>>
 	 
 
@@ -363,39 +399,39 @@
 	/* ***
 	 *	Grow foals.
 	 *** */
-<<run console.log("Growth test 0: age = " + _thisFluffy.age)>>
-	 <<if _thisFluffy.age == 0 && Number(_thisFluffy.ageWeeks) <= 44>>
-<<run console.log("Growth test 0: weight = " + _thisFluffy.weight + " age = " + _thisFluffy.ageWeeks)>>
+<<run console.log("Growth test 0: age = " + $globalFluffies[_ef].age)>>
+	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) <= 44>>
+<<run console.log("Growth test 0: weight = " + $globalFluffies[_ef].weight + " age = " + $globalFluffies[_ef].ageWeeks)>>
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
 	 	<<set _lMultiBase = 0.22>>
 	 	<<set _lMultiAdd = 0.0177>>
-	 	<<set _newWMulti = Number((_thisFluffy.ageWeeks * 0.0227)).toFixed(4)>>
+	 	<<set _newWMulti = Number(($globalFluffies[_ef].ageWeeks * 0.0227)).toFixed(4)>>
 	 	<<set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)>>
 	 	
 /*
-		<<set _newW =  Number(_thisFluffy.maxWeight * _newWMulti)>>
-	 	<<set _newL = _newW / _thisFluffy.weightMulti>>
-	 	<<set _newH = _newL * (_thisFluffy.heightMulti)>>
+		<<set _newW =  Number($globalFluffies[_ef].maxWeight * _newWMulti)>>
+	 	<<set _newL = _newW / $globalFluffies[_ef].weightMulti>>
+	 	<<set _newH = _newL * ($globalFluffies[_ef].heightMulti)>>
 */
-	 	<<set _lengthRatio = Number(_thisFluffy.maxLength / _thisFluffy.maxWeight).toFixed(3)>>
-	 	<<set _heightRatio = Number(_thisFluffy.maxHeight / _thisFluffy.maxWeight).toFixed(3)>>
+	 	<<set _lengthRatio = Number($globalFluffies[_ef].maxLength / $globalFluffies[_ef].maxWeight).toFixed(3)>>
+	 	<<set _heightRatio = Number($globalFluffies[_ef].maxHeight / $globalFluffies[_ef].maxWeight).toFixed(3)>>
 <<run console.log("ratio test 0: " + _lengthRatio)>>
 <<run console.log("ratio test 1: " + _heightRatio)>>
 
-		<<set _mom = $globalFluffies[_thisFluffy.mother]>>
+		<<set _mom = $globalFluffies[$globalFluffies[_ef].mother]>>
 		
-		<<if _thisFluffy.foodType == "Nursing">>
+		<<if $globalFluffies[_ef].foodType == "Nursing">>
 			<<if _mom.nursingMax < _mom.nursing>>
 <<run console.log("Growth test 0.1: mother lacking milk")>>
 	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
-<<run console.log("Growth test 0.3 - nursed: " + _thisFluffy.maxLength)>>
+<<run console.log("Growth test 0.3 - nursed: " + $globalFluffies[_ef].maxLength)>>
 	 		<</if>>
-		<<elseif _thisFluffy.foodType == "Nothing">>
+		<<elseif $globalFluffies[_ef].foodType == "Nothing">>
 			<<set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)>>
 	 	<<else>> 
-	 		<<run console.log("Growth test 0.2 - non nursed: " + _newWMulti  + " " + Number(Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)))>>
-	 		<<switch _thisFluffy.foodQuality>>
+	 		<<run console.log("Growth test 0.2 - non nursed: " + _newWMulti  + " " + Number(Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)))>>
+	 		<<switch $globalFluffies[_ef].foodQuality>>
 	 			<<case 0>>
 	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
 	 			<<case 1>>
@@ -407,144 +443,148 @@
 	 		<</switch>>
 	 		
 	 		/*
-	 		<<set _lMultiBase = Number(_lMultiBase * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
-	 		<<set _lMultiAdd = Number(_lMultiAdd * Number(1 + Number(_thisFluffy.foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
+	 		<<set _lMultiBase = Number(_lMultiBase * Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
+	 		<<set _lMultiAdd = Number(_lMultiAdd * Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
 	 		*/
 	 		<<run console.log("Growth test 0.3 - non nursed: " + _newWMulti)>>
 		<</if>>
 
 
-		<<set _newW = Number(_thisFluffy.maxWeight * _newWMulti).toFixed(3)>>
-		<<set _thisFluffy.weight = Number(_newW).toFixed(3)>>
+		<<set _newW = Number($globalFluffies[_ef].maxWeight * _newWMulti).toFixed(3)>>
+		<<set $globalFluffies[_ef].weight = Number(_newW).toFixed(3)>>
 		
-	 	<<set _newL = Number(_thisFluffy.weight * _lengthRatio).toFixed(3)>>
-	 	<<set _newH = Number(_thisFluffy.weight * _heightRatio).toFixed(3)>>
+	 	<<set _newL = Number($globalFluffies[_ef].weight * _lengthRatio).toFixed(3)>>
+	 	<<set _newH = Number($globalFluffies[_ef].weight * _heightRatio).toFixed(3)>>
 	 	
-	 	<<set _thisFluffy.height = Number(_newL).toFixed(2)>>
-		<<set _thisFluffy.length = Number(_newH).toFixed(2)>>
+	 	<<set $globalFluffies[_ef].height = Number(_newL).toFixed(2)>>
+		<<set $globalFluffies[_ef].length = Number(_newH).toFixed(2)>>
 
 /*
-		<<set _thisFluffy.height = Number(_thisFluffy.maxHeight * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
-		<<set _thisFluffy.length = Number(_thisFluffy.maxLength * (_lMultiBase + (_thisFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
+		<<set $globalFluffies[_ef].height = Number($globalFluffies[_ef].maxHeight * (_lMultiBase + ($globalFluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)>>
+		<<set $globalFluffies[_ef].length = Number($globalFluffies[_ef].maxLength * (_lMultiBase + ($globalFluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)>>
 */
 
 <<run console.log("Growth test 0.4: _newW = " + _newW + " _newL = " + _newL + " _newH " + _newH )>>
-<<run console.log("Growth test 0.5: weight = " + _thisFluffy.weight + " length = " + _thisFluffy.length + " height " + _thisFluffy.height )>>
+<<run console.log("Growth test 0.5: weight = " + $globalFluffies[_ef].weight + " length = " + $globalFluffies[_ef].length + " height " + $globalFluffies[_ef].height )>>
 
-<<run console.log("Growth test 1: weight % = " + Number(_thisFluffy.weight / _thisFluffy.maxWeight))>>
-		<<if (_thisFluffy.weight / _thisFluffy.maxWeight) > 0.14 && _thisFluffy.weaned == false>> 	
-	 		<<set $globalFluffies[_thisFluffy.mother].nursing-->>
+<<run console.log("Growth test 1: weight % = " + Number($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight))>>
+		<<if ($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight) > 0.14 && $globalFluffies[_ef].weaned == false>> 	
+	 		<<set $globalFluffies[$globalFluffies[_ef].mother].nursing-->>
 
-			<br><<print _thisFluffy.name>> is ready for solid food
-	 		<<if _thisFluffy.foodType == "Nothing">>
+			<br><<print $globalFluffies[_ef].name>> is ready for solid food
+	 		<<if $globalFluffies[_ef].foodType == "Nothing">>
 	 			, if it was being fed.
 	 		<<else>>
 	 			.
-	 			<<set _thisFluffy.foodType = $globalFluffies[_thisFluffy.mother].foodType>>
-	 			<<set _thisFluffy.foodQuality = $globalFluffies[_thisFluffy.mother].foodQuality>>
+	 			<<set $globalFluffies[_ef].foodType = $globalFluffies[$globalFluffies[_ef].mother].foodType>>
+	 			<<set $globalFluffies[_ef].foodQuality = $globalFluffies[$globalFluffies[_ef].mother].foodQuality>>
 	 		<</if>>
 	 		
-	 		<<set _thisFluffy.weaned = true>>
+	 		<<set $globalFluffies[_ef].weaned = true>>
 
-	 		<<if $globalFluffies[_thisFluffy.mother].nursing == 0>>
-	 			<br><<print $globalFluffies[_thisFluffy.mother].name>> is done nursing.
+	 		<<if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0>>
+	 			<br><<print $globalFluffies[$globalFluffies[_ef].mother].name>> is done nursing.
 	 		<</if>> 
-	 		
-
-	 		
-	 		<<set $globalFluffies[_thisFluffy.mother] = $globalFluffies[_thisFluffy.mother]>>
 	 	<</if>>
 	<</if>>
 	
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
-	 <<if _thisFluffy.age == 0 && Number(_thisFluffy.ageWeeks) >= _thisFluffy.maturity>>
-			<<switch _thisFluffy.traits[0]>>
+	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) >= $globalFluffies[_ef].maturity>>
+			<<switch $globalFluffies[_ef].traits[0]>>
 				<<case "Fussy">>
 					<<if random(0, 1) == 0>>
-						<<set _thisFluffy.traits[0] = "Diligent">>
-						<<set _thisFluffy.learning++>>
-						<<set _thisFluffy.temperament += 20>>
-						<<set _thisFluffy.happy -= 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Diligent">>
+						<<set $globalFluffies[_ef].learning++>>
+						<<set $globalFluffies[_ef].temperament += 20>>
+						<<set $globalFluffies[_ef].happy -= 10>>
 					<<else>>
-						<<set _thisFluffy.traits[0] = "Bossy">>
-						<<set _thisFluffy.charm-->>
-						<<set _thisFluffy.temperament += 30>>
-						<<set _thisFluffy.happy -= 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Bossy">>
+						<<set $globalFluffies[_ef].charm-->>
+						<<set $globalFluffies[_ef].temperament += 30>>
+						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Shy">>
 					<<if random(0, 1) == 0>>
-						<<set _thisFluffy.traits[0] = "Curious">>
-						<<set _thisFluffy.energy++>>
+						<<set $globalFluffies[_ef].traits[0] = "Curious">>
+						<<set $globalFluffies[_ef].energy++>>
 					<<else>>
-						<<set _thisFluffy.traits[0] = "Timid">>
-						<<set _thisFluffy.strength-->>
-						<<set _thisFluffy.happy -= 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Timid">>
+						<<set $globalFluffies[_ef].strength-->>
+						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Lazy">>
 					<<if random(0, 1) == 0>>
-						<<set _thisFluffy.traits[0] = "Pensive">>
-						<<set _thisFluffy.learning++>>
+						<<set $globalFluffies[_ef].traits[0] = "Pensive">>
+						<<set $globalFluffies[_ef].learning++>>
 					<<else>>
-						<<set _thisFluffy.traits[0] = "Lackadaisical">>
-						<<set _thisFluffy.energy-->>
+						<<set $globalFluffies[_ef].traits[0] = "Lackadaisical">>
+						<<set $globalFluffies[_ef].energy-->>
 					<</if>>
 				<<case "Cute">>
 					<<if random(0, 1) == 0>>
-						<<set _thisFluffy.traits[0] = "Sweet">>
-						<<set _thisFluffy.learning++>>
-						<<set _thisFluffy.temperament -= 10>>
-						<<set _thisFluffy.happy += 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Sweet">>
+						<<set $globalFluffies[_ef].learning++>>
+						<<set $globalFluffies[_ef].temperament -= 10>>
+						<<set $globalFluffies[_ef].happy += 10>>
 					<<else>>
-						<<set _thisFluffy.traits[0] = "Haughty">>
-						<<set _thisFluffy.learning-->>
-						<<set _thisFluffy.temperament += 20>>
-						<<set _thisFluffy.happy -= 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Haughty">>
+						<<set $globalFluffies[_ef].learning-->>
+						<<set $globalFluffies[_ef].temperament += 20>>
+						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Peppy">>
 					<<if random(0, 1) == 0>>
-						<<set _thisFluffy.traits[0] = "Playful">>
-						<<set _thisFluffy.charm++>>
-						<<set _thisFluffy.temperament -= 10>>
-						<<set _thisFluffy.happy += 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Playful">>
+						<<set $globalFluffies[_ef].charm++>>
+						<<set $globalFluffies[_ef].temperament -= 10>>
+						<<set $globalFluffies[_ef].happy += 10>>
 					<<else>>
-						<<set _thisFluffy.traits[0] = "Rowdy">>
-						<<set _thisFluffy.charm-->>
-						<<set _thisFluffy.temperament += 10>>
-						<<set _thisFluffy.happy += 10>>
+						<<set $globalFluffies[_ef].traits[0] = "Rowdy">>
+						<<set $globalFluffies[_ef].charm-->>
+						<<set $globalFluffies[_ef].temperament += 10>>
+						<<set $globalFluffies[_ef].happy += 10>>
 					<</if>>
 			<</switch>>
 	 <</if>>
 
 
-<<run console.log("Mating test 1: " + _thisFluffy.specialFriend + " | " + _thisFluffy.gender)>>
+<<run console.log("Mating test 1: " + $globalFluffies[_ef].specialFriend + " | " + $globalFluffies[_ef].gender)>>
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
-	<<if _thisFluffy.gender == "female">>
-		<<set $mom = _thisFluffy>>
+	<<if $globalFluffies[_ef].gender == "female">>
 		
-		<<if _thisFluffy.specialFriend != -1>>
+		<<if $globalFluffies[_ef].specialFriend != -1>>
 			/* Push to event stack  */
-			<<run $eventMating.push($mom)>>
+			<<run $eventMating.push($globalFluffies[_ef].ID)>>
 		<</if>>
 		
-		<<if $mom.pregnant && Number($mom.dueDate) < Number($week)>>
-<<run console.log("Birth test 0:  " + $mom.name + " added to birth even queue.")>>
-			/* Push to event stack  */
-			<<run $eventBirths.push($mom)>>
+		<<if $globalFluffies[_ef].pregnant>>
+			<<if $globalFluffies[_ef].dueDate == 0>>
+<<run console.log("Birth test 0:  " + $globalFluffies[_ef].name + " added to birth even queue.")>>
+				/* Push to event stack  */
+				<<run $eventBirths.push($globalFluffies[_ef].ID)>>
+				
+				<<set $globalFluffies[_ef].dueDate = -1>>
+				<<set $globalFluffies[_ef].pregnant = false>>
 
-		<<elseif $mom.nursing > 0>>
-			 <br>$mom.name is nursing foals.
-			 <<set $globalFluffies[$mom.ID] = $mom>>
-
+			<<elseif $globalFluffies[_ef].nursing > 0>>
+				 <br><<- $globalFluffies[_ef].name>> is nursing foals.
+			<<else>>
+				<<if $globalFluffies[_ef].dueDate < 0>>
+					<<set $globalFluffies[_ef].dueDate = -1>>
+				<<else>>
+					<<set $globalFluffies[_ef].dueDate-->>
+				<</if>>
+			<</if>>
+		<<else>>
+			<<set $globalFluffies[_ef].dueDate = -1>>
 		<</if>>
 	<</if>>
-	
-	<<set $globalFluffies[_thisFluffy.ID] = _thisFluffy>>
 <</for>>
 
 /%
@@ -552,6 +592,8 @@
 %/
 <<set $week++>>
 <<set $actions = 10>>
+
+<<set $eventCustomer = false>>
 
 <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 

@@ -16,49 +16,47 @@
 /*<<for _i = 0; i < $eventBirths.length; i++>>*/
 /* Each birth even entry is the mother giving birth */
 /* Pick a random fulffy from the list and run the birth */
-<<set $mom = $eventBirths.pluck()>>
+<<set _mom = $globalFluffies[$eventBirths.pluck()]>>
 
-<<set $dad = $globalFluffies[$mom.pregnantBy]>>
+<<set _dad = $globalFluffies[_mom.pregnantBy]>>
 
-<<if ndef $dad>>
+<<if ndef _dad>>
 	<br><br>@@.red;Event Birth - mare pregnant without a father!  Virgin birth is not headcannon!@@<br><br>
 	
-	<<set $mom.litter = 0>>
-	<<set $mom.dueDate = -1>>
-	<<set $mom.pregnant = false>>
-	<<set $mom.pregnantBy = -1>>
-	<<set $mom.nursingTime = 0>>
-	<<set $mom.nursingMax = 0>>
-	
-	<<set $globalFluffies[$mom.ID] = $mom>>
+	<<set $globalFluffies[_mom.ID].litter = 0>>
+	<<set $globalFluffies[_mom.ID].dueDate = -1>>
+	<<set $globalFluffies[_mom.ID].pregnant = false>>
+	<<set $globalFluffies[_mom.ID].pregnantBy = -1>>
+	<<set $globalFluffies[_mom.ID].nursingTime = 0>>
+	<<set $globalFluffies[_mom.ID].nursingMax = 0>>
 	
 	<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
 <<else>>
-	
-	<br>$mom.name is giving birth to $mom.litter foals.
+	<h1>Birth</h1>
+	<br>_mom.name is giving birth to _mom.litter foals.
 	<br>@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 	<br>
 	<hr>
 	
-	<<run console.log("Birth test 3: " + $mom.litter)>>
+	<<run console.log("Birth test 3: " + _mom.litter)>>
 	<<capture _fo, _section, _sectionP, _line>>
 	
-	<<for _fo = 0; _fo < $mom.litter; _fo++>>
+	<<for _fo = 0; _fo < _mom.litter; _fo++>>
 		
 		/* Base chance for still births is based on the mare's fertility and number of prior children */
-		<<if $mom.fertility < 1>>
-			<<set _diff = 35 - $mom.children.length>>
-		<<elseif $mom.fertility < 2>>
-			<<set _diff = 55 - $mom.children.length>>
-		<<elseif $mom.fertility < 3>>
-			<<set _diff = 75 - $mom.children.length>>
+		<<if _mom.fertility < 1>>
+			<<set _diff = 35 - _mom.children.length>>
+		<<elseif _mom.fertility < 2>>
+			<<set _diff = 55 - _mom.children.length>>
+		<<elseif _mom.fertility < 3>>
+			<<set _diff = 75 - _mom.children.length>>
 		<<else>>
-			<<set _diff = 95 - $mom.children.length>>
+			<<set _diff = 95 - _mom.children.length>>
 		<</if>>
 		
 		/* Creates a new fluffy as $activeFluffy */
-		<<breedFluffies $mom $dad>>
+		<<breedFluffies _mom _dad>>
 	
 	<<run console.log("Birth test 4: " + _diff)>>
 	
@@ -66,8 +64,8 @@
 		<<if random(0, 100) >= _diff>>
 			<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
 			<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
-			<<set $mom.stress += 25>>
-			<<set $mom.trauma += 1>>
+			<<set _mom.stress += 25>>
+			<<set _mom.trauma += 1>>
 			<br>
 			<br>
 			<hr>
@@ -95,21 +93,20 @@
 			<<set $activeFluffy.ageWeeks = 0>>
 			<<set $activeFluffy.ID = $globalFluffies.length>>
 			<<set $activeFluffy.name += " " + $globalFluffies.length>>
-			<<set $mom.children.push($activeFluffy.ID)>>
-			<<set $dad.children.push($activeFluffy.ID)>>
+			<<set _mom.children.push($activeFluffy.ID)>>
+			<<set _dad.children.push($activeFluffy.ID)>>
+
 			<<run $ourStore.fluffies.push($activeFluffy.ID)>>
 			<<run $globalFluffies.push($activeFluffy)>>
 				
-			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-				
 			<<set $ourStore.foals++>>
 				
-			<<set $mom.nursing++>>
-			<<set $mom.stress += 5>>
+			<<set _mom.nursing++>>
+			<<set _mom.stress += 5>>
 			
 			<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
 				/* Push to event stack  */
-				<<run $eventBirthRejection.push($activeFluffy)>>
+				<<run $eventBirthRejection.push($activeFluffy.ID)>>
 			<</if>> 
 		<</if>> /* Close stillbirth test */
 	
@@ -118,37 +115,51 @@
 	<<run console.log("Birth test 7: " + $globalFluffies.length)>>
 	
 	/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count */
-	<<if $mom.fertility > 0>>
-		<<set _fertileChance = $mom.litter>>
-		<<set _fertileChance += $mom.children.length>>
+	<<if _mom.fertility > 0>>
+		<<set _fertileChance = _mom.litter>>
+		<<set _fertileChance += _mom.children.length>>
 		<<set _fertileChance = 2 * _fertileChance>>
 		
 		/* Test for fertility drop */
 		<<if random(0,100) >= _fertileChance>> 
-			<<set $mom.fertility-->>
-			<<set $mom.stress += 5>>
-			<<set $mom.trauma += 1>>
+			<<set _mom.fertility-->>
+			<<set _mom.stress += 5>>
+			<<set _mom.trauma += 1>>
 			<br>@@.cyan;Why special place hurties?@@
 		<</if>> /* Close fertilty drop test */
 	<<else>>
 		/* 0 fertility left */
-		<<set $mom.stress += 50>>
-		<<set $mom.trauma += 5>>
+		<<set _mom.stress += 50>>
+		<<set _mom.trauma += 5>>
 		<br>@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
 	<</if>> /* Close fertilty > 0 test */
 	
 	/* Update the mom: */
-	<<set $mom.litter = 0>>
-	<<set $mom.dueDate = -1>>
-	<<set $mom.pregnant = false>>
-	<<set $mom.pregnantBy = -1>>
-	<<set $mom.nursingTime = $week + 5>>
-	<<set $mom.nursingMax = $mom.nursing>>
-	<<set $mom.nursingMax -= random(0,1)>>			
+	<<set _mom.litter = 0>>
+	<<set _mom.dueDate = -1>>
+	<<set _mom.pregnant = false>>
+	<<set _mom.pregnantBy = -1>>
+	<<set _mom.nursingTime = $week + 5>>
+	<<set _mom.nursingMax = _mom.nursing>>
+	<<set _mom.nursingMax -= random(0,1)>>			
 	
 	/* Save changes to mom and dad*/ 
-	<<set $globalFluffies[$mom.ID] = $mom>>
-	<<set $globalFluffies[$dad.ID] = $dad>>
+	<<if _mom.ID == $globalFluffies[_mom.ID].ID>> 
+		<<set $globalFluffies[_mom.ID] = _mom>>
+	<<else>>
+		<<run console.log("eventBirth - invalid mom ID: " + _mom.ID + ". Should be " + $globalFluffies[_mom.ID].ID)>>
+		<<set _mom.ID = $globalFluffies[_mom.ID].ID>>
+		<<set $globalFluffies[_mom.ID] = _mom>>
+	<</if>>
+	
+	<<if _dad.ID == $globalFluffies[_dad.ID].ID>> 
+		<<set $globalFluffies[_dad.ID] = _dad>>
+	<<else>>
+		<<run console.log("eventBirth - invalid _dad ID: " + _dad.ID + ". Should be " + $globalFluffies[_dad.ID].ID)>>
+		<<set _dad.ID = $globalFluffies[_dad.ID].ID>>
+		<<set $globalFluffies[_dad.ID] = _dad>>
+	<</if>>
+	
 	 	
 	/*<</for>>*/ /* Close birth event loop */
 	 <</capture>>
@@ -158,4 +169,4 @@
 	
 	<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
-<</if>> /* Close null $dad check */
+<</if>> /* Close null _dad check */
