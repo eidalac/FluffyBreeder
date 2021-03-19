@@ -7109,20 +7109,22 @@ Inbreeding:
 	/*&lt;&lt;colorValue&gt;&gt;*/
 	&lt;&lt;statValue&gt;&gt;
 
-	 /* Clamp these to 0-200 */
-	 &lt;&lt;set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)&gt;&gt;
-	 &lt;&lt;set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)&gt;&gt;
-	 &lt;&lt;set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)&gt;&gt;
-	 &lt;&lt;set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)&gt;&gt;
-	 &lt;&lt;set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)&gt;&gt;
-	 &lt;&lt;set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)&gt;&gt;
+	/* Clamp these to 0-200 */
+	&lt;&lt;set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)&gt;&gt;
+	&lt;&lt;set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)&gt;&gt;
+	&lt;&lt;set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)&gt;&gt;
+	&lt;&lt;set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)&gt;&gt;
+	&lt;&lt;set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)&gt;&gt;
+	&lt;&lt;set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)&gt;&gt;
 	 
-	&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;run console.log(&quot;FluffyDesc - invalid $activeFluffy ID: &quot; + $activeFluffy.ID + &quot;. Should be &quot; + $globalFluffies[$activeFluffy.ID].ID)&gt;&gt;
-		&lt;&lt;set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+	&lt;&lt;if def $activeFluffy.ID &amp;&amp; $activeFluffy.ID &gt;= 0&gt;&gt;
+		&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run console.log(&quot;FluffyDesc - invalid $activeFluffy ID: &quot; + $activeFluffy.ID + &quot;. Should be &quot; + $globalFluffies[$activeFluffy.ID].ID)&gt;&gt;
+			&lt;&lt;set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.

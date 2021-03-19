@@ -62,20 +62,22 @@
 	/*<<colorValue>>*/
 	<<statValue>>
 
-	 /* Clamp these to 0-200 */
-	 <<set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)>>
-	 <<set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)>>
-	 <<set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)>>
-	 <<set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)>>
-	 <<set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)>>
-	 <<set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)>>
+	/* Clamp these to 0-200 */
+	<<set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)>>
+	<<set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)>>
+	<<set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)>>
+	<<set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)>>
+	<<set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)>>
+	<<set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)>>
 	 
-	<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
-		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-	<<else>>
-		<<run console.log("FluffyDesc - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
-		<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
-		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<<if def $activeFluffy.ID && $activeFluffy.ID >= 0>>
+		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<else>>
+			<<run console.log("FluffyDesc - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+			<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<</if>>
 	<</if>>
 	
 	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
