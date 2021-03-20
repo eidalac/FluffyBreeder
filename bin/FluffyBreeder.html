@@ -5754,10 +5754,12 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
 		
-		&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
-		
+&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
+		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
 		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
 		
 		&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
@@ -6009,18 +6011,20 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	/* Clear both special friends flag, ending breeding*/
 	&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 	&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
 
-	&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+	&lt;&lt;set _specialName = &quot;friend&quot;&gt;&gt;
 	
 	&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;set _specialName = $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		
 	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _sf.name&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _specialName&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
@@ -6336,7 +6340,12 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
 		&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt; and $activeFluffy.name are no longer special friends.
 		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
-			
+
+&lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
+		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
 		&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
 		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 &lt;&lt;run console.log(&quot;Display check 1: &quot; + $activeFluffy.specialFriend)&gt;&gt;
@@ -6349,7 +6358,13 @@ Bulk Actions (all checked fluffies)
 
 &lt;&lt;run console.log(&quot;Display check 2: &quot; + $activeFluffy.onDisplay)&gt;&gt;
 
-	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+	&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run console.log(&quot;fluffySelling - invalid $activeFluffy ID: &quot; + $activeFluffy.ID + &quot;. Should be &quot; + $globalFluffies[$activeFluffy.ID].ID)&gt;&gt;
+		&lt;&lt;set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;capture _fl&gt;&gt;

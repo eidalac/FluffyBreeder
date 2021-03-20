@@ -51,18 +51,20 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 	/* Clear both special friends flag, ending breeding*/
 	<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 	<br>@@.cyan;HUHUHU WORST SADIES.@@
+<<run console.log("Details test 0: $activeFluffy.specialFriend  = " + $activeFluffy.specialFriend + " | $activeFluffy.name = " + $activeFluffy.name + " | ")>>
 
-	<<set _sf = $globalFluffies[$activeFluffy.specialFriend]>>
+	<<set _specialName = "friend">>
 	
 	<<if def $globalFluffies[$activeFluffy.specialFriend]>>
 		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set _specialName = $globalFluffies[$activeFluffy.specialFriend].name>>
 	<</if>>
 	
 	<<set $activeFluffy.specialFriend = -1>>
 	<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		
 	<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>
-	<<replace "#breed-message">><br><<print _sf.name>> and $activeFluffy.name are no longer special friends.<br>@@.cyan;HUHUHU WORST SADIES.@@<</replace>>
+	<<replace "#breed-message">><br><<print _specialName>> and $activeFluffy.name are no longer special friends.<br>@@.cyan;HUHUHU WORST SADIES.@@<</replace>>
 	<<replace "#fluffy-name">><<PlayerStatus>><br><<FluffyDesc>><</replace>>
 	<</button>>
 <</if>>
