@@ -51,12 +51,14 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 	/* Clear both special friends flag, ending breeding*/
 	<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 	<br>@@.cyan;HUHUHU WORST SADIES.@@
-		
+
 	<<set _sf = $globalFluffies[$activeFluffy.specialFriend]>>
+	
+	<<if def $globalFluffies[$activeFluffy.specialFriend]>>
+		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+	<</if>>
+	
 	<<set $activeFluffy.specialFriend = -1>>
-	<<set _sf.specialFriend = -1>>
-		
-	<<set $globalFluffies[_sf.ID] = _sf>>
 	<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		
 	<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>

@@ -3929,7 +3929,7 @@ Mother, Father and any children
 &lt;&lt;run console.log(&quot;Breeding test 0.1: &quot; + $globalFluffies[_ef].name + &quot; | &quot; + $globalFluffies[_ef].gender)&gt;&gt;
 
 	/* some logic checking */
-	&lt;&lt;if ndef $globalFluffies[_ef].nursing &gt;&gt;
+	&lt;&lt;if ndef $globalFluffies[_ef].nursing&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].nursing = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
@@ -4292,7 +4292,7 @@ Mother, Father and any children
 	 *** */
 	&lt;&lt;if $globalFluffies[_ef].gender == &quot;female&quot;&gt;&gt;
 		
-		&lt;&lt;if $globalFluffies[_ef].specialFriend != -1&gt;&gt;
+		&lt;&lt;if $globalFluffies[_ef].specialFriend != -1 &amp;&amp; $globalFluffies[_ef].pregnant == false &amp;&amp; $globalFluffies[_ef].nursing &lt;= 0&gt;&gt;
 			/* Push to event stack  */
 			&lt;&lt;run $eventMating.push($globalFluffies[_ef].ID)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -6009,12 +6009,14 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	/* Clear both special friends flag, ending breeding*/
 	&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
 	&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
-		
+
 	&lt;&lt;set _sf = $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+	
+	&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
 	&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
-	&lt;&lt;set _sf.specialFriend = -1&gt;&gt;
-		
-	&lt;&lt;set $globalFluffies[_sf.ID] = _sf&gt;&gt;
 	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		
 	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
