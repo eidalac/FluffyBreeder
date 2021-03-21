@@ -2703,6 +2703,16 @@ console.log("cleared defects parts = " + this.genes[index])
 	
 	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
 
+&lt;&lt;elseif ndef _mom&gt;&gt;&gt;
+	/* Shouldn&#39;t happen, but just in case*/
+	&lt;&lt;run console.log(&quot;Birth test 3: Skipped due to invalid mother.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;elseif $ourStore.fluffies.includes(_mom.ID) == false&gt;&gt;
+	/* Mother was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Birth test 3: Skipped due to mother not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
 &lt;&lt;else&gt;&gt;
 	&lt;h1&gt;Birth&lt;/h1&gt;
 	&lt;br&gt;_mom.name is giving birth to _mom.litter foals.
@@ -2852,323 +2862,346 @@ console.log("cleared defects parts = " + this.genes[index])
  
  
 /* Each birth even entry is the foal involved */
+&lt;&lt;run console.log(&quot;Rejection test 2: On event page.&quot;)&gt;&gt;
 
 /* Pick a random fulffy from the list and run the event */
 &lt;&lt;set $activeFluffy = $globalFluffies[$eventBirthRejection.pluck()]&gt;&gt;
 
 
-/* Check if this is a brown foal rejection: */
-&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
-
-	/* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
-	&lt;&lt;if $globalFluffies[$activeFluffy.mother].colorGroup[0] == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
-		/* Skip this info for now */
-		&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
-		/*
-		&lt;br&gt;@@.cyan;Mumah wuvs aaaawww babhes.@@
-		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-		*/
-		
-	/* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
-	&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &lt; 10&gt;&gt;
-		&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; halp... bad miwkie thief..save good fluffy mama, &lt;&lt;- $title&gt;&gt;...hu hu hu...@@
-		&lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 25&gt;&gt;
-		&lt;&lt;set $globalFluffies[$activeFluffy.mother].trauma += 5&gt;&gt;
-		&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-		
-	/* The main event: */
-	&lt;&lt;else&gt;&gt;
-		&lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting a foal.
-		&lt;br&gt;
-		
-		&lt;br&gt;
-		/* Temperament and personality checks*/
-		&lt;&lt;switch $globalFluffies[$activeFluffy.mother].traits[0]&gt;&gt;
-			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh...@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
-					
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Bossy&quot;&gt;&gt; 
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Nu gib miwkies and wub to wowstes&#39; poopie babbeh!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;NU! gu way! nu wan miwkie thief!@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Poopie babbehs nu nee wub ow huggies.@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Nu wan gib wub to wowstes&#39; poopie babbeh...@@
-					
-				&lt;&lt;/if&gt;&gt;
-				
-			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Nu wike poopie babbeh... nu wub.@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Why nu smeww wike gud babbehs?@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Nu wike wowstes&#39; babbeh...@@
-					
-				&lt;&lt;/if&gt;&gt;
-				
-			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;&lt;&lt;- $title&gt;&gt;, nu wan ugwy babbeh.@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Dis am ugwy babbeh, &lt;&lt;- $title&gt;&gt;...@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Nu wub... nu smeww pwetty...@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
-					
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Nu wan gib wub an&#39; huggies to poopie babbeh.@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Udda babbehs need miwkies a wot mowe…@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Nu wike poopie babbeh.@@
-					
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Nu cawe &#39;bout poopie babbeh! Nu wub!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Nu wike poopie babbeh.@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Too much babbehs awready anyways...@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Poopie babbeh... nu get wub ow huggies.@@
-					
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;&lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;, hewp &lt;&lt;- $title&gt;&gt;, gib wowstes&#39; babbeh nu wub.@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Wowstes&#39; poopie babbeh nu need wub ow huggies.@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting…@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Poopie babbeh... nu wan... huu huu....@@
-					
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs!@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Wub and huggies //bad// fow poopie babbehs.@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Ugwy, nu smeww pwetty babbeh am wowstes babbeh!@@
-					
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;Mummah wub babbehs... except poopie babbeh.@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Mummah nu wub poopie babbeh!@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...@@
-					
-				&lt;&lt;/if&gt;&gt;
-	
-			&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-				/* &gt;= 190 - smarty */
-				&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-					@@.cyan;&lt;&lt;- $title&gt;&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh!@@
-				
-				/* &gt;= 130 - bratty */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-					@@.cyan;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.@@
-									
-				/* &gt;= 70 - Normal */
-				&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-					@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong.@@
-
-				/* &gt;= 10 - Meek */
-				&lt;&lt;else&gt;&gt;
-					@@.cyan;Nu wan&#39; stupi dummeh poopie babbeh.@@
-					
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;default&gt;&gt;
-				&lt;br&gt;@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
-		&lt;&lt;/switch&gt;&gt;
-		&lt;br&gt; 
-		&lt;&lt;set _punishString = &quot;Punish &quot; + $globalFluffies[$activeFluffy.mother].name&gt;&gt;
-		&lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
-		&lt;br&gt;
-	&lt;span id=&quot;reaction-msg&quot;&gt;
-		
-		&lt;&lt;button _punishString&gt;&gt;
-			&lt;&lt;set $training += 3&gt;&gt;
-			&lt;&lt;set $hugbox += 1&gt;&gt;
-			&lt;&lt;set $stress += 10&gt;&gt;
-			
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 5&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].trust--&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].training++&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament -= 5&gt;&gt;
-			
-			&lt;&lt;set _difficulty = 0&gt;&gt;
-			
-			
-			&lt;&lt;if $pooBaby == 0&gt;&gt;
-				&lt;&lt;set _difficulty = Number(2 * $training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
-			&lt;&lt;elseif $pooBaby == 1&gt;&gt;
-				&lt;&lt;set _difficulty = Number($training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.mother].training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set _difficulty = Number($training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.mother].training)&gt;&gt;
-				&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		
-&lt;&lt;run console.log(&quot;Rejection test 3: Training difficulty: &quot; + _difficulty)&gt;&gt;
-	
-			&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
-				&lt;&lt;set $globalFluffies[$activeFluffy.mother].traits.push(&quot;Good Mama&quot;)&gt;&gt;
-				&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set _reactionString = &quot;@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@&quot;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			
-			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/button&gt;&gt;
-		@@.orange;Neutral option.@@
-		
-		&lt;br&gt;&lt;br&gt;
-		&lt;&lt;button &quot;Ignore it&quot;&gt;&gt;
-			&lt;&lt;set $abuse += 3&gt;&gt;
-			
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
-			
-			&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
-			
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-			&lt;&lt;set _reactionString = &quot;@@.cyan;Nu miwkies for bad babbeh!@@&quot;&gt;&gt;
-			
-			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/button&gt;&gt;
-		@@.orange;Abuse option.@@
-		
-		&lt;br&gt;&lt;br&gt;
-		&lt;&lt;button &quot;Take the Foal&quot;&gt;&gt;
-			&lt;&lt;set $hugbox += 3&gt;&gt;
-			&lt;&lt;set $training += 1&gt;&gt;
-			
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
-			
-			&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
-
-			&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
-				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;run console.log(&quot;eventBirthRejection - invalid $activeFluffy ID: &quot; + $activeFluffy.ID + &quot;. Should be &quot; + $globalFluffies[$activeFluffy.ID].ID)&gt;&gt;
-				&lt;&lt;set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID&gt;&gt;
-				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;set _reactionString = &quot;@@.cyan;Take bad babbehs for trashies?@@&quot;&gt;&gt;
-			
-			&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/button&gt;&gt;
-		@@.orange;Hugbox option.@@
-	&lt;/span&gt;
-	&lt;&lt;/if&gt;&gt; /* Close mother trait check */
-&lt;&lt;elseif $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
-	/* for now skip a brown mane */
+&lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
+	/* Shouldn&#39;t happen, but just in case*/
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to invalid/missing fluffy.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
-&lt;&lt;/if&gt;&gt; /* Close brown foal birth rejection */
+	
+&lt;&lt;elseif ndef $activeFluffy.mother&gt;&gt;
+	/* Shouldn&#39;t happen, but just in case*/
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to invalid/missing mother.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
+&lt;&lt;elseif $ourStore.fluffies.includes($activeFluffy.mother) == false&gt;&gt;
+	/* Mother was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to mother not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;elseif $ourStore.fluffies.includes($activeFluffy.ID) == false&gt;&gt;
+	/* foal was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to foal not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;else&gt;&gt;
+
+	/* Check if this is a brown foal rejection: */
+	&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
+	
+		/* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
+		&lt;&lt;if $globalFluffies[$activeFluffy.mother].colorGroup[0] == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
+			/* Skip this info for now */
+			&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+			/*
+			&lt;br&gt;@@.cyan;Mumah wuvs aaaawww babhes.@@
+			&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+			*/
+			
+		/* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
+		&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &lt; 10&gt;&gt;
+			&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; halp... bad miwkie thief..save good fluffy mama, &lt;&lt;- $title&gt;&gt;...hu hu hu...@@
+			&lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 25&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.mother].trauma += 5&gt;&gt;
+			&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+			
+		/* The main event: */
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting a foal.
+			&lt;br&gt;
+			
+			&lt;br&gt;
+			/* Temperament and personality checks*/
+			&lt;&lt;switch $globalFluffies[$activeFluffy.mother].traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh...@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
+						
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Bossy&quot;&gt;&gt; 
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Nu gib miwkies and wub to wowstes&#39; poopie babbeh!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;NU! gu way! nu wan miwkie thief!@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Poopie babbehs nu nee wub ow huggies.@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Nu wan gib wub to wowstes&#39; poopie babbeh...@@
+						
+					&lt;&lt;/if&gt;&gt;
+					
+				&lt;&lt;case &quot;Curious&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Nu wike poopie babbeh... nu wub.@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Why nu smeww wike gud babbehs?@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Nu wike wowstes&#39; babbeh...@@
+						
+					&lt;&lt;/if&gt;&gt;
+					
+				&lt;&lt;case &quot;Timid&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;&lt;&lt;- $title&gt;&gt;, nu wan ugwy babbeh.@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Dis am ugwy babbeh, &lt;&lt;- $title&gt;&gt;...@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Nu wub... nu smeww pwetty...@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
+						
+					&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Nu wan gib wub an&#39; huggies to poopie babbeh.@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Udda babbehs need miwkies a wot mowe…@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Nu wike poopie babbeh.@@
+						
+					&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Nu cawe &#39;bout poopie babbeh! Nu wub!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Nu wike poopie babbeh.@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Too much babbehs awready anyways...@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Poopie babbeh... nu get wub ow huggies.@@
+						
+					&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;&lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;, hewp &lt;&lt;- $title&gt;&gt;, gib wowstes&#39; babbeh nu wub.@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Wowstes&#39; poopie babbeh nu need wub ow huggies.@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting…@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Poopie babbeh... nu wan... huu huu....@@
+						
+					&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs!@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Wub and huggies //bad// fow poopie babbehs.@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Ugwy, nu smeww pwetty babbeh am wowstes babbeh!@@
+						
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Playful&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;Mummah wub babbehs... except poopie babbeh.@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Mummah nu wub poopie babbeh!@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...@@
+						
+					&lt;&lt;/if&gt;&gt;
+		
+				&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
+					/* &gt;= 190 - smarty */
+					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
+						@@.cyan;&lt;&lt;- $title&gt;&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh!@@
+					
+					/* &gt;= 130 - bratty */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
+						@@.cyan;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.@@
+										
+					/* &gt;= 70 - Normal */
+					&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
+						@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong.@@
+	
+					/* &gt;= 10 - Meek */
+					&lt;&lt;else&gt;&gt;
+						@@.cyan;Nu wan&#39; stupi dummeh poopie babbeh.@@
+						
+					&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;default&gt;&gt;
+					&lt;br&gt;@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
+			&lt;&lt;/switch&gt;&gt;
+			&lt;br&gt; 
+			&lt;&lt;set _punishString = &quot;Punish &quot; + $globalFluffies[$activeFluffy.mother].name&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
+			&lt;br&gt;
+		&lt;span id=&quot;reaction-msg&quot;&gt;
+			
+			&lt;&lt;button _punishString&gt;&gt;
+				&lt;&lt;set $training += 3&gt;&gt;
+				&lt;&lt;set $hugbox += 1&gt;&gt;
+				&lt;&lt;set $stress += 10&gt;&gt;
+				
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 5&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].trust--&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].training++&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament -= 5&gt;&gt;
+				
+				&lt;&lt;set _difficulty = 0&gt;&gt;
+				
+				
+				&lt;&lt;if $pooBaby == 0&gt;&gt;
+					&lt;&lt;set _difficulty = Number(2 * $training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
+				&lt;&lt;elseif $pooBaby == 1&gt;&gt;
+					&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.mother].training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.mother].training)&gt;&gt;
+					&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			
+	&lt;&lt;run console.log(&quot;Rejection test 3: Training difficulty: &quot; + _difficulty)&gt;&gt;
+		
+				&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
+					&lt;&lt;set $globalFluffies[$activeFluffy.mother].traits.push(&quot;Good Mama&quot;)&gt;&gt;
+					&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _reactionString = &quot;@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				
+				&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+			@@.orange;Neutral option.@@
+			
+			&lt;br&gt;&lt;br&gt;
+			&lt;&lt;button &quot;Ignore it&quot;&gt;&gt;
+				&lt;&lt;set $abuse += 3&gt;&gt;
+				
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
+				
+				&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
+				&lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
+				
+				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+				&lt;&lt;set _reactionString = &quot;@@.cyan;Nu miwkies for bad babbeh!@@&quot;&gt;&gt;
+				
+				&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+			@@.orange;Abuse option.@@
+			
+			&lt;br&gt;&lt;br&gt;
+			&lt;&lt;button &quot;Take the Foal&quot;&gt;&gt;
+				&lt;&lt;set $hugbox += 3&gt;&gt;
+				&lt;&lt;set $training += 1&gt;&gt;
+				
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
+				
+				&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;
+				&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
+	
+				&lt;&lt;if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID&gt;&gt; 
+					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run console.log(&quot;eventBirthRejection - invalid $activeFluffy ID: &quot; + $activeFluffy.ID + &quot;. Should be &quot; + $globalFluffies[$activeFluffy.ID].ID)&gt;&gt;
+					&lt;&lt;set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID&gt;&gt;
+					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+	
+				&lt;&lt;set _reactionString = &quot;@@.cyan;Take bad babbehs for trashies?@@&quot;&gt;&gt;
+				
+				&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+			@@.orange;Hugbox option.@@
+		&lt;/span&gt;
+		&lt;&lt;/if&gt;&gt; /* Close mother trait check */
+	&lt;&lt;elseif $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+		/* for now skip a brown mane */
+		&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close brown foal birth rejection */
+&lt;&lt;/if&gt;&gt; /* Close validation checks */
 
 
 
@@ -3191,9 +3224,16 @@ console.log("cleared defects parts = " + this.genes[index])
  
  
 &lt;&lt;run console.log(&quot;Customer test 2:  on event page&quot;)&gt;&gt;
+
+/* Just using this is a counter for now */
+&lt;&lt;run $eventCustomer.pluck()&gt;&gt;
+
  
  /* First, we build a customer, starting with how many wants it has, up to 6 */
 &lt;&lt;set _customerWants = random(0, 6)&gt;&gt;
+
+/* How picky the customer is and how many fails they will put up with */
+&lt;&lt;set _customerTolerance = random(0, 3)&gt;&gt;
 
 /* List of possible needs we will check.  Some are duplciated to be more common*/
 &lt;&lt;set _possibleNeeds = [ &quot;Personality&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Stat&quot;, &quot;Temperament&quot;, &quot;Age&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Gender&quot;, ]&gt;&gt;
@@ -3222,27 +3262,28 @@ console.log("cleared defects parts = " + this.genes[index])
 
 /* Now some of these needs are general, so we need to pick a more specific version*/
 &lt;&lt;for _need range _customerBasicNeeds&gt;&gt;
-	/*&lt;&lt;set _customerNeeds.delete(_need)&gt;&gt;*/
 	
 	&lt;&lt;switch _need&gt;&gt;
 		&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-				&lt;&lt;set _customerDetailedNeeds.push($fluffyPersonalities.random())&gt;&gt;
+			&lt;&lt;set _customerDetailedNeeds.push($fluffyPersonalities.random())&gt;&gt;
 		&lt;&lt;case &quot;Gender&quot;&gt;&gt;
-				&lt;&lt;if random(0,1) == 0&gt;&gt;
+			&lt;&lt;if random(0,1) == 0&gt;&gt;
 				&lt;&lt;set _customerDetailedNeeds.push(&quot;Male&quot;)&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;set _customerDetailedNeeds.push(&quot;Female&quot;)&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case &quot;Breed&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 10)&gt;&gt;
+			&lt;&lt;switch random(0, 9)&gt;&gt;
 				&lt;&lt;case 0 1&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Earthie&quot;)&gt;&gt;
-				&lt;&lt;case 3 4 5&gt;&gt;
+					&lt;&lt;set _customerDetailedNeeds.push(&quot;Earthy&quot;)&gt;&gt;
+				&lt;&lt;case 2 3 4&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Unicorn&quot;)&gt;&gt;
-				&lt;&lt;case 6 7 8&gt;&gt;
+				&lt;&lt;case 5 6 7&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Pegasus&quot;)&gt;&gt;
-				&lt;&lt;case 9 10&gt;&gt;
+				&lt;&lt;case 8 9&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Alicorn&quot;)&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;set _customerDetailedNeeds.push(&quot;Earthy&quot;)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;case &quot;Coat&quot;&gt;&gt;
 			&lt;&lt;set _customerDetailedNeeds.push($Colors.random().Group + &quot; coat&quot;)&gt;&gt;
@@ -3264,6 +3305,8 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Learning&quot;)&gt;&gt;
 				&lt;&lt;case 12&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Fertility&quot;)&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;set _customerDetailedNeeds.push(&quot;Charm&quot;)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
 			&lt;&lt;switch random(0, 7)&gt;&gt;
@@ -3273,15 +3316,19 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Normal Temperament&quot;)&gt;&gt;
 				&lt;&lt;case 7&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;High Temperament&quot;)&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;set _customerDetailedNeeds.push(&quot;Normal Temperament&quot;)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;case &quot;Age&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 7)&gt;&gt;
+			&lt;&lt;switch random(0, 5)&gt;&gt;
 				&lt;&lt;case 0 1&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Baby&quot;)&gt;&gt;
-				&lt;&lt;case 4 5 6&gt;&gt;
+				&lt;&lt;case 2 3 4&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Foal&quot;)&gt;&gt;
-				&lt;&lt;case 7&gt;&gt;
+				&lt;&lt;case 5&gt;&gt;
 					&lt;&lt;set _customerDetailedNeeds.push(&quot;Adult&quot;)&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;set _customerDetailedNeeds.push(&quot;Foal&quot;)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/for&gt;&gt;
@@ -3302,52 +3349,341 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;/for&gt;&gt;
 	@@
 &lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Customer needs test {&quot; + _customerDetailedNeeds.length + &quot; == &quot; + _customerBasicNeeds.length + &quot;}&quot;)&gt;&gt;
+
 &lt;br&gt;
 &lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
-
+&lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
 &lt;hr&gt;
 &lt;&lt;capture _fl&gt;&gt;
-	&lt;&lt;for _fl to 0; _fl &lt; $ourStore.fluffies.length; _fl++&gt;&gt;
-		&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
-		&lt;&lt;set _buttonString = &quot;Offer &quot; + _listFluff.name&gt;&gt;
-		
-		&lt;p class=&quot;hang&quot;&gt;
-		&lt;&lt;button _buttonString&gt;&gt;
-			&lt;&lt;set _needsMatch = 0&gt;&gt;
-			&lt;&lt;for _i = 0; _i &lt; _customerBasicNeeds.length; _i++&gt;&gt;
-
-				&lt;&lt;switch _customerBasicNeeds[_i]&gt;&gt;
-					&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].traits[0] == _customerDetailedNeeds[_i]&gt;&gt;
-							&lt;&lt;set _needsMatch += 2&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Gender&quot;&gt;&gt;
-						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].gender == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
-							&lt;&lt;set _needsMatch += 2&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Breed&quot;&gt;&gt;
-						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].breed == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
-							&lt;&lt;set _needsMatch += 2&gt;&gt;
-						&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Earthie&quot;&gt;&gt;
-							&lt;&lt;set _needsMatch += 1&gt;&gt;
-						&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Unicorn&quot; &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].breed == &quot;pegasus&quot;&gt;&gt;
-							&lt;&lt;set _needsMatch += 1&gt;&gt;
-						&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Pegasus&quot; &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].breed == &quot;unicorn&quot;&gt;&gt;
-							&lt;&lt;set _needsMatch += 1&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set _needsMatch += 0&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/switch&gt;&gt;
+&lt;span id=&quot;selling-list&quot;&gt;
+	&lt;&lt;if _customerTolerance &gt;= 0&gt;&gt;
+		&lt;&lt;for _fl to 0; _fl &lt; $ourStore.fluffies.length; _fl++&gt;&gt;
+			&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_fl]]&gt;&gt;
+			&lt;&lt;set _buttonString = &quot;Offer &quot; + _listFluff.name&gt;&gt;
+			
+			&lt;p class=&quot;hang&quot;&gt;
+			&lt;&lt;button _buttonString&gt;&gt;
+				&lt;&lt;set _needsMatch = 0&gt;&gt;
+				&lt;&lt;for _i = 0; _i &lt; _customerBasicNeeds.length; _i++&gt;&gt;
+					&lt;&lt;run console.log(&quot;Customer Test: _customerBasicNeeds[_i] = &quot; + _customerBasicNeeds[_i])&gt;&gt;
+					&lt;&lt;switch _customerBasicNeeds[_i]&gt;&gt;
+						&lt;&lt;case &quot;Personality&quot;&gt;&gt;
+							&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].traits[0] == _customerDetailedNeeds[_i]&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Personality match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 2&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+						&lt;&lt;case &quot;Gender&quot;&gt;&gt;
+							&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].gender == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Gender match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 2&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+						&lt;&lt;case &quot;Breed&quot;&gt;&gt;
+							&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].breed == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Breed match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 2&gt;&gt;
+							&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Earthy&quot;&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Breed half match E&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 1&gt;&gt;
+							&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Unicorn&quot; &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].breed == &quot;pegasus&quot;&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Breed half match U&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 1&gt;&gt;
+							&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Pegasus&quot; &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].breed == &quot;unicorn&quot;&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Breed half match P&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 1&gt;&gt;
+							&lt;&lt;else&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Breed no match&quot;)&gt;&gt;						
+								&lt;&lt;set _needsMatch += 0&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+						&lt;&lt;case &quot;Coat&quot;&gt;&gt;
+							&lt;&lt;run console.log(&quot;Customer Test: Coat match {&quot; + $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0]))&gt;&gt;
+							
+							&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0])&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Coat match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 2&gt;&gt;
+							&lt;&lt;else&gt;&gt;
+								/* ***
+								 *	Complimentary pairs:
+								 *		Blue - Orange
+								 *		Red - Green
+								 *		Yellow - Purple
+								 *** */
+								 &lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Blue&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Orange&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Orange&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Blue&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Red&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Green&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Green&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Red&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Yellow&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Purple&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0] == &quot;Purple&quot; &amp;&amp; _customerDetailedNeeds[_i] == &quot;Yellow&quot;&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+						&lt;&lt;case &quot;Mane&quot;&gt;&gt;
+							&lt;&lt;run console.log(&quot;Customer Test: Mane match {&quot; + $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1]))&gt;&gt;
+							
+							&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[0])&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Mane match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 2&gt;&gt;
+							&lt;&lt;else&gt;&gt;
+								/* ***
+								 *	Complimentary pairs:
+								 *		Blue - Orange
+								 *		Red - Green
+								 *		Yellow - Purple
+								 *** */
+								 &lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Blue&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Orange&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Orange&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Blue&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Red&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Green&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Green&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Red&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Yellow&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Purple&quot;)&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[1] == &quot;Purple&quot; &amp;&amp; _customerDetailedNeeds[_i] == &quot;Yellow&quot;&gt;&gt;
+								 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
+								 	&lt;&lt;set _needsMatch += 1&gt;&gt;
+								 &lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+						&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
+							&lt;&lt;run console.log(&quot;Customer Test: Eyes match {&quot; + $globalFluffies[$ourStore.fluffies[_fl]].colorGroup[2] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[2]))&gt;&gt;
+							
+							&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[$ourStore.fluffies[_fl]].colorGroup[2])&gt;&gt;
+								&lt;&lt;run console.log(&quot;Customer Test: Eyes match&quot;)&gt;&gt;
+								&lt;&lt;set _needsMatch += 1&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
 	
-			&lt;&lt;/for&gt;&gt;
-			&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;@@.orange;Match points = &lt;&lt;- _needsMatch&gt;&gt;.@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/button&gt;&gt;
-		&lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
-		&lt;br&gt;
-		&lt;&lt;shortDesc _listFluff&gt;&gt;
-		&lt;/p&gt;
-		&lt;hr&gt;
-	&lt;&lt;/for&gt;&gt;
+						&lt;&lt;case &quot;Stat&quot;&gt;&gt;
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Strength&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].strength &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].strength &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Strength check*/
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Energy&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].energy &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].energy &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Energy check*/
+	
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Charm&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].charm &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].charm &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Charm check*/
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Thinking&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].thinking &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].thinking &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Thinking check*/
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Learning&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].learning &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].learning &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Learning check*/
+
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Fertility&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].Fertility &gt; 5&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].Fertility &gt; 3&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close inclued Fertility check*/
+	
+						&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Low Temperament&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].temperament &lt; 10&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].temperament &lt; 70&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include low temperament check */
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Normal Temperament&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].temperament &gt;= 70 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].temperament &lt; 100&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].temperament &gt;= 100 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].temperament &lt; 130&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include normal temperament check */
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;High Temperament&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].temperament &gt;= 190&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].temperament &gt;= 130&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include high temperament check */
+			
+						&lt;&lt;case &quot;Age&quot;&gt;&gt;
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Baby&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].weaned == false&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								 &lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].age == 0 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].ageWeeks &lt; $globalFluffies[$ourStore.fluffies[_fl]].maturity&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include Baby */
+							
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Foal&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].age == 0 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].ageWeeks &lt; $globalFluffies[$ourStore.fluffies[_fl]].maturity&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].age == 0 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].weaned == true&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include Foal */
+					
+							&lt;&lt;if _customerDetailedNeeds.includes(&quot;Adult&quot;)&gt;&gt;
+								&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].age &gt; 0&gt;&gt;
+									&lt;&lt;set _needsMatch += 2&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].age == 0 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].ageWeeks &gt;= $globalFluffies[$ourStore.fluffies[_fl]].maturity&gt;&gt;
+									&lt;&lt;set _needsMatch += 1&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;/if&gt;&gt; /* close include Foal */
+							
+					&lt;&lt;/switch&gt;&gt;
+		/* 	&quot;Stat&quot;, &quot;Temperament&quot;, &quot;Age&quot; */
+				&lt;&lt;/for&gt;&gt;
+				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
+					&lt;br&gt;@@.orange;Match points = &lt;&lt;- _needsMatch&gt;&gt;.@@
+					&lt;br&gt;@@.orange;Possible points = &lt;&lt;print Number(_customerDetailedNeeds.length * 2)&gt;&gt;.@@
+					&lt;br&gt;@@.orange;Match % = &lt;&lt;print Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2))&gt;&gt;.@@
+					
+					&lt;&lt;set _price = Number($globalFluffies[$ourStore.fluffies[_fl]].training)&gt;&gt;
+					&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[$ourStore.fluffies[_fl]].trust/10))&gt;&gt;
+					&lt;&lt;switch $globalFluffies[$ourStore.fluffies[_fl]].breed&gt;&gt;
+						&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
+						&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
+						&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
+						&lt;&lt;default&gt;&gt;
+							&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
+					&lt;&lt;/switch&gt;&gt;
+			
+					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[$ourStore.fluffies[_fl]].statBonus)).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(_price * $globalFluffies[$ourStore.fluffies[_fl]].colorBonus).toFixed(2)&gt;&gt;
+					&lt;&lt;set _ageMulti = 1&gt;&gt;
+			
+					&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].age == 0 &amp;&amp; $globalFluffies[$ourStore.fluffies[_fl]].ageWeeks &lt; 45&gt;&gt;
+						&lt;&lt;set _ageMulti = Number(($globalFluffies[$ourStore.fluffies[_fl]].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+		
+					&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+			
+					&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
+						&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			
+					&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
+					
+					/* They want any fluffy */
+					&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
+						&lt;&lt;set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))&gt;&gt; 
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					
+					&lt;br&gt;@@.orange;Price Bonus = &lt;&lt;- _priceBonus&gt;&gt;.@@
+&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
+					&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
+					&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
+					/* Check if they will accept the offer */
+					&lt;&lt;if _customerDetailedNeeds.length &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &lt;= 33&gt;&gt;
+							&lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
+								&lt;&lt;set _customerTolerance--&gt;&gt;
+								&lt;br&gt;@@.orange;They are not at all pleased with &lt;&lt;- $globalFluffies[$ourStore.fluffies[_fl]].name&gt;&gt;.@@
+							&lt;&lt;else&gt;&gt;
+								&lt;br&gt;@@.orange;This customer is fed up.@@
+								&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;/if&gt;&gt;
+					&lt;&lt;else&gt;&gt; 
+						&lt;br&gt;@@.orange;They would pay = &lt;&lt;- _price&gt;&gt; for &lt;&lt;- $globalFluffies[$ourStore.fluffies[_fl]].name&gt;&gt;.@@
+						&lt;br&gt;
+						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].sold = true&gt;&gt;
+						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].onDisplay = false&gt;&gt;
+						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].pregnant = false&gt;&gt;
+							
+						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].nursing &gt; 0&gt;&gt;
+							&lt;&lt;for _child range _$globalFluffies[$ourStore.fluffies[_fl]].children&gt;&gt;
+								&lt;&lt;if def $globalFluffies[_child]&gt;&gt;
+									&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+										&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
+										&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
+									&lt;&lt;/if&gt;&gt; /* Close nursing check */
+								&lt;&lt;/if&gt;&gt; /* Close child validation check */
+							&lt;&lt;/for&gt;&gt; /* Close child check*/
+						&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+	
+						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].nursing = 0&gt;&gt;
+	
+						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].specialFriend != -1&gt;&gt;
+							&lt;&lt;set $globalFluffies[$globalFluffies[$ourStore.fluffies[_fl]].specialFriend].specialFriend = -1&gt;&gt;
+							&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].specialFriend = -1&gt;&gt;
+						&lt;&lt;/if&gt;&gt; /* Close special friend check */
+	
+						&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+		
+						&lt;&lt;if Number($globalFluffies[$ourStore.fluffies[_fl]].age) == 0 &amp;&amp; Number($globalFluffies[$ourStore.fluffies[_fl]].ageWeeks) &lt;= $globalFluffies[$ourStore.fluffies[_fl]].maturity&gt;&gt;
+							&lt;&lt;set $ourStore.foals--&gt;&gt;
+						&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].gender == &quot;male&quot;&gt;&gt;
+							&lt;&lt;set $ourStore.stallions--&gt;&gt;
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;set $ourStore.mares--&gt;&gt;
+						&lt;&lt;/if&gt;&gt; /* Close age check */
+						
+						/*
+						&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
+							&lt;&lt;set $repuation += random(0,1)&gt;&gt;
+						&lt;&lt;elseif Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &gt;= 66&gt;&gt;
+							&lt;&lt;set $repuation += 2&gt;&gt;
+						&lt;&lt;elseif Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &gt;= 33&gt;&gt;
+							&lt;&lt;set $repuation += 1&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+						*/
+						&lt;&lt;set $repuation += _priceBonus&gt;&gt;
+							
+						&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;Sold for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;
+					&lt;&lt;/if&gt;&gt; /* Close needs check */
+				&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+			&lt;br&gt;
+			&lt;&lt;shortDesc _listFluff&gt;&gt;
+			&lt;/p&gt;
+			&lt;hr&gt;
+		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close tolerance check */
+&lt;/span&gt;
 &lt;&lt;/capture&gt;&gt;
   
 
@@ -3363,10 +3699,9 @@ console.log("cleared defects parts = " + this.genes[index])
  
 &lt;&lt;set $showEncyclopedia = 0&gt;&gt;
 
-&lt;&lt;if $eventCustomer&gt;&gt;
+&lt;&lt;if $eventCustomer.length&gt;&gt;
+&lt;&lt;run console.log(&quot;Customer test 1:  going to event page&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;
-	&lt;&lt;set $eventCustomer = false&gt;&gt;
- 
 &lt;&lt;elseif $eventMating.length&gt;&gt;
 &lt;&lt;run console.log(&quot;Mating test 1:  going to mating event page&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Mating&quot;&gt;&gt;
@@ -3408,31 +3743,51 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;set _dad = $globalFluffies[_mom.specialFriend]&gt;&gt;
 &lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
 
-/* Check this here for now, may want to add events if the male is forcefull */				
-&lt;&lt;if _mom.pregnant || _mom.nursing != 0&gt;&gt;
-&lt;&lt;run console.log(&quot;Mating test 3 (pregant or nursing): &quot; + _mom.nursing + &quot; | &quot; + _mom.pregnant)&gt;&gt;
+&lt;&lt;if ndef _dad&gt;&gt;&gt;
+	/* Father was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to invalid/missing father.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
-&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
-&lt;h1&gt;Mating&lt;/h1&gt;
-&lt;&lt;run console.log(&quot;Mating test 4 (lacking shelter): &quot; + _mom.nursing + &quot; | &quot; + _mom.pregnant)&gt;&gt;
-	&lt;br&gt;_mom.name and _dad.name wanted to have special hugs, but there is no room for more foals, so you have to seperate them.
-	&lt;br&gt;@@.cyan;huhuhu@@
-	&lt;&lt;set _mom.pregnant = false&gt;&gt;
-	
+
+&lt;&lt;elseif ndef _mom&gt;&gt;&gt;
+	/* Shouldn&#39;t happen, but just in case*/
+	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to invalid mother.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;elseif $ourStore.fluffies.includes(_mom.ID) == false&gt;&gt;
+	/* Mother was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to mother not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;elseif $ourStore.fluffies.includes(_dad.ID) == false&gt;&gt;
+	/* Mother was removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to father not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
 &lt;&lt;else&gt;&gt;
-	&lt;br&gt;_mom.name and _dad.name have special hugs.
-	&lt;br&gt;enf enf enf
-	&lt;br&gt;//@@.cyan;GOODFEELS@@//
-
-	&lt;&lt;set _litter = Math.clamp(Math.round((_mom.fertility + _dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
-	&lt;&lt;set _mom.pregnant = true&gt;&gt;
-	&lt;&lt;set _mom.pregnantBy = _dad.ID&gt;&gt;
-	&lt;&lt;set _mom.dueDate = random(4, 6)&gt;&gt;
-	&lt;&lt;set _mom.litter = _litter&gt;&gt;
-	&lt;&lt;set _mom.preWeight = _mom.weight&gt;&gt;
-&lt;&lt;/if&gt;&gt; /* Close pregant/nursing check 
-
-/* Save changes to mom and dad*/ 
+	/* Check this here for now, may want to add events if the male is forcefull */				
+	&lt;&lt;if _mom.pregnant || _mom.nursing != 0&gt;&gt;
+	&lt;&lt;run console.log(&quot;Mating test 3 (pregant or nursing): &quot; + _mom.nursing + &quot; | &quot; + _mom.pregnant)&gt;&gt;
+		&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+	&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
+	&lt;h1&gt;Mating&lt;/h1&gt;
+	&lt;&lt;run console.log(&quot;Mating test 4 (lacking shelter): &quot; + _mom.nursing + &quot; | &quot; + _mom.pregnant)&gt;&gt;
+		&lt;br&gt;_mom.name and _dad.name wanted to have special hugs, but there is no room for more foals, so you have to seperate them.
+		&lt;br&gt;@@.cyan;huhuhu@@
+		&lt;&lt;set _mom.pregnant = false&gt;&gt;
+		
+	&lt;&lt;else&gt;&gt;
+		&lt;br&gt;_mom.name and _dad.name have special hugs.
+		&lt;br&gt;enf enf enf
+		&lt;br&gt;//@@.cyan;GOODFEELS@@//
+	
+		&lt;&lt;set _litter = Math.clamp(Math.round((_mom.fertility + _dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+		&lt;&lt;set _mom.pregnant = true&gt;&gt;
+		&lt;&lt;set _mom.pregnantBy = _dad.ID&gt;&gt;
+		&lt;&lt;set _mom.dueDate = random(4, 6)&gt;&gt;
+		&lt;&lt;set _mom.litter = _litter&gt;&gt;
+		&lt;&lt;set _mom.preWeight = _mom.weight&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close pregant/nursing check 
+	
 	/* Save changes to mom and dad*/ 
 	&lt;&lt;if _mom.ID == $globalFluffies[_mom.ID].ID&gt;&gt; 
 		&lt;&lt;set $globalFluffies[_mom.ID] = _mom&gt;&gt;
@@ -3450,15 +3805,11 @@ console.log("cleared defects parts = " + this.genes[index])
 		&lt;&lt;set $globalFluffies[_dad.ID] = _dad&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-
-
- 	
-
- 
-&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
-&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="8" name="Encyclopedia" tags="nobr" position="975,100" size="100,100">/* **********
+	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+	
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Encyclopedia" tags="nobr" position="975,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -3763,6 +4114,7 @@ Mother, Father and any children
 &lt;&lt;set $eventMating = []&gt;&gt;
 &lt;&lt;set $eventBirths = []&gt;&gt;
 &lt;&lt;set $eventBirthRejection = []&gt;&gt;
+&lt;&lt;set $eventCustomer = []&gt;&gt;
 
 
 /* ***
@@ -3978,6 +4330,9 @@ Mother, Father and any children
 	 *	Todo: This should be semi random and have non fixed prices.
 	 *** */
 	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
+		/* Push to event stack  */
+		&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
+	/*
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;&lt;set _price = 0&gt;&gt;
 
@@ -4045,6 +4400,7 @@ Mother, Father and any children
 			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+*/
 	&lt;&lt;/if&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + &quot; gender = &quot; + $globalFluffies[_ef].gender)&gt;&gt;
@@ -4327,8 +4683,6 @@ Mother, Father and any children
 &lt;&lt;set $week++&gt;&gt;
 &lt;&lt;set $actions = 10&gt;&gt;
 
-&lt;&lt;set $eventCustomer = false&gt;&gt;
-
 &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="10" name="Disclaimer" tags="nobr" position="1225,100" size="100,100">/* **********
  * Disclaimer.tw
  *
@@ -4560,9 +4914,6 @@ __&#39;&#39;World Settings&#39;&#39;__
 
 /* Set a name for the player. */
 &lt;br&gt;
-
-&lt;&lt;set $title = &quot;Ownah&quot;&gt;&gt;
-&lt;&lt;set $titleList = [&quot;Ownah&quot;, &quot;Mistah&quot;, &quot;Wady&quot;, &quot;Daddeh&quot;, &quot;Hoomin&quot;, &quot;Mummah&quot; ]&gt;&gt;
 
 &lt;&lt;set $title = $titleList.random()&gt;&gt;
 
@@ -4831,7 +5182,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;00.01.99c&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.2.1-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5128,9 +5479,10 @@ profitsTotal: 0
 	&lt;br&gt;Welcome to fluffy mart, do you see anything you like?
 &lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt;
 	&lt;br&gt;The mill operator hands you a carboard box.
-&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $repuation &gt;= 50&gt;&gt;
 	&lt;br&gt;The breeder has an opening to see you...
-	&lt;br&gt;@@.orange;TODO - Breeder should have a repuation check before they will see you, not implemented yet.@@
+&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $repuation &lt; 50&gt;&gt;
+	&lt;br&gt;You&#39;re reputation is to low, the breeder doesn&#39;t want to sell to you.
 &lt;&lt;elseif $shop == &quot;feral&quot;&gt;&gt;
 	&lt;br&gt;You check down a nearby alley...
 &lt;&lt;else&gt;&gt;
@@ -5148,212 +5500,205 @@ profitsTotal: 0
 /* ***
  *	need to add a repulation check for breeders.
  *** */
-/*&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;*/
-
-		/* ***
-		 *	Create a child and display it.
-		 *** */
+&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $repuation &lt; 50&gt;&gt;
+	&lt;br&gt;
+&lt;&lt;else&gt;&gt;
+	/* ***
+	 *	Create a child and display it.
+	 *** */
 		
-		/* Don&#39;t generate alicorns at a shop or mill*/
-		&lt;&lt;for&gt;&gt;
-&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
-			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-			&lt;&lt;newFromGene $testChild&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed == &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;if $shop == &quot;mart&quot; || $shop == &quot;mill&quot;&gt;&gt;
-					&lt;&lt;run console.log(&quot;alicorn regenerated in fluffy mart&quot;)&gt;&gt;
-					&lt;&lt;continue&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;break&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
+	/* Don&#39;t generate alicorns at a shop or mill*/
+	&lt;&lt;for&gt;&gt;
+		&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+		&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+		&lt;&lt;newFromGene $testChild&gt;&gt;
+		&lt;&lt;if $activeFluffy.breed == &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;if $shop == &quot;mart&quot; || $shop == &quot;mill&quot;&gt;&gt;
+				&lt;&lt;run console.log(&quot;alicorn regenerated in fluffy mart&quot;)&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;else&gt;&gt;
-&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 				&lt;&lt;break&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+			&lt;&lt;break&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
 	
-		/* ***
-		 * count gene defects
-		 *** */
-		 &lt;&lt;set _defectCount = 0&gt;&gt;
-		 &lt;&lt;set $defenctIndex = [12, 20, 28, 36, 44, 52, 80, 100, 120, 84, 104, 124]&gt;&gt;
+	/* ***
+	 * count gene defects
+	 *** */
+	 &lt;&lt;set _defectCount = 0&gt;&gt;
+	 &lt;&lt;set $defenctIndex = [12, 20, 28, 36, 44, 52, 80, 100, 120, 84, 104, 124]&gt;&gt;
 
-		 /* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
-		 &lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
-		 	&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
-	&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
-		 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
-		 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
-		 	 	&lt;&lt;run console.log(&quot;Fluffy mart defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
-		 	 	
-		 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
-		 	 	&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= 3&gt;&gt;
-		 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-		 	 	&lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= 5&gt;&gt;
-		 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-		 	 	&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= 1&gt;&gt;
-		 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-		 	 	&lt;&lt;else&gt;&gt;
-		 	 		&lt;&lt;set _defectCount++&gt;&gt;
-		 	 	&lt;&lt;/if&gt;&gt;
-		 	 	
-		 	 	&lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
-		 	 		&lt;&lt;break&gt;&gt;
-		 	 	&lt;&lt;/if&gt;&gt;
-		 	 &lt;&lt;/if&gt;&gt;
-		 &lt;&lt;/for&gt;&gt;
+	 /* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
+	 &lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
+	 	&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
+		&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+	 
+	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
+	 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
+	 	 	&lt;&lt;run console.log(&quot;Fluffy mart defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+	 	 	
+	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
+	 	 	&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= 3&gt;&gt;
+	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+	 	 	&lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= 5&gt;&gt;
+	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+	 	 	&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= 1&gt;&gt;
+	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+	 	 	&lt;&lt;else&gt;&gt;
+	 	 		&lt;&lt;set _defectCount++&gt;&gt;
+	 	 	&lt;&lt;/if&gt;&gt;
+	 	 	
+	 	 	&lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
+	 	 		&lt;&lt;break&gt;&gt;
+	 	 	&lt;&lt;/if&gt;&gt;
+	 	 &lt;&lt;/if&gt;&gt;
+	 &lt;&lt;/for&gt;&gt;
 		
 	&lt;&lt;run console.log(&quot;Fluffy mart defect count: &quot; + _defectCount)&gt;&gt;
 	
-		&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
-			
-		 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
-		 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
-		 	&lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
-		 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
-		 	&lt;&lt;set _newW =  Number($activeFluffy.maxWeight * _newWMulti)&gt;&gt;
-		 	&lt;&lt;set _newL = _newW / $activeFluffy.weightMulti&gt;&gt;
-		 	&lt;&lt;set _newH = _newL * ($activeFluffy.heightMulti)&gt;&gt;
-		 	
-		 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
-		 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+	&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
+		
+	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
+	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
+	 	&lt;&lt;set _newW =  Number($activeFluffy.maxWeight * _newWMulti)&gt;&gt;
+	 	&lt;&lt;set _newL = _newW / $activeFluffy.weightMulti&gt;&gt;
+	 	&lt;&lt;set _newH = _newL * ($activeFluffy.heightMulti)&gt;&gt;
+	 	
+	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
+	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+
+	 	&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+		&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Fluffy mill color test 0: &quot; + $activeFluffy.cColor)&gt;&gt;
+
+		&lt;&lt;limitColor 1 2&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Fluffy mill color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+
+	&lt;&lt;else&gt;&gt;
+		/* not a mill, generate adult traits */
+		&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
+			&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Diligent&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Bossy&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Curious&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Timid&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.strength--&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Pensive&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.energy--&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Haughty&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	
-		 	&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
-			&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-			&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Fluffy mill color test 0: &quot; + $activeFluffy.cColor)&gt;&gt;
-
-			&lt;&lt;limitColor 1 2&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Fluffy mill color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			/* not a mill, generate adult traits */
-
-			&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
-				&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Diligent&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Bossy&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Curious&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Timid&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.strength--&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Pensive&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.energy--&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Sweet&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Haughty&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.learning--&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Playful&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $activeFluffy.traits[0] = &quot;Rowdy&quot;&gt;&gt;
-						&lt;&lt;set $activeFluffy.charm--&gt;&gt;
-						&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Fluffy breeder color test 0: &quot; + $shop)&gt;&gt;
-		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-&lt;&lt;run console.log(&quot;Fluffy breeder color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
-
-			&lt;&lt;limitColor 4 6&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Fluffy breeder color test 2: &quot; + $activeFluffy.cColor)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;run console.log(&quot;Fluffy breeder color test 0: &quot; + $shop)&gt;&gt;
+	&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+		&lt;&lt;run console.log(&quot;Fluffy breeder color test 1: &quot; + $activeFluffy.cColor)&gt;&gt;
+		&lt;&lt;limitColor 4 6&gt;&gt;
+		&lt;&lt;run console.log(&quot;Fluffy breeder color test 2: &quot; + $activeFluffy.cColor)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 		
-		&lt;br&gt;
-		&lt;br&gt;You find this fluffy:
-		&lt;hr&gt;
+	&lt;br&gt;
+	&lt;br&gt;You find this fluffy:
+	&lt;hr&gt;
 	
-		&lt;&lt;set _inbreed = String(random(0,50) + &quot;/&quot; + random(50,99)) + &quot;;&quot;&gt;&gt;
-		&lt;&lt;run $activeFluffy.genes.setInbreeding(_inbreed)&gt;&gt;
-		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-		
-		&lt;&lt;colorValue&gt;&gt;
-		&lt;&lt;colorGroup&gt;&gt;
-		&lt;&lt;statValue&gt;&gt;
-		
+	&lt;&lt;set _inbreed = String(random(0,50) + &quot;/&quot; + random(50,99)) + &quot;;&quot;&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setInbreeding(_inbreed)&gt;&gt;
+	&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+	
+	&lt;&lt;colorValue&gt;&gt;
+	&lt;&lt;colorGroup&gt;&gt;
+	&lt;&lt;statValue&gt;&gt;
+	
 /*		&lt;&lt;set _shopFluffy = clone($activeFluffy)&gt;&gt;*/
-		&lt;&lt;FluffyDesc&gt;&gt;
-		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
-
-
+	&lt;&lt;FluffyDesc&gt;&gt;
+	&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
 	
-		&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-			&lt;&lt;set _price = 0&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
-&lt;&lt;run console.log(&quot;Feral test 0: &quot; + $activeFluffy.traits)&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;switch $activeFluffy.breed&gt;&gt;
-				&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+	&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+		&lt;&lt;set _price = 0&gt;&gt;
+		&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Feral test 0: &quot; + $activeFluffy.traits)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;switch $activeFluffy.breed&gt;&gt;
+			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+				&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
+				/*
+				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-					/*
-					&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _price = 0&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					*/
-				&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
+					&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
+				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
+					&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _price = 0&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				*/
+			&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+				&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
+				/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-					/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _price = 0&gt;&gt;
-					&lt;&lt;/if&gt;&gt;*/
-				&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + $alicornPrice.deluxe)&gt;&gt;
-&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + _price)&gt;&gt;
-&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + Number(Number($alicornPrice.deluxe) + Number(_price)))&gt;&gt;
-					&lt;&lt;set _price = Number(Number($alicornPrice.deluxe) + Number(_price))&gt;&gt;
-&lt;&lt;run console.log(&quot;Alicorn test 1: &quot; + _price)&gt;&gt;
-					/*
-					&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number(Number($alicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _price = 0&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					*/
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
+				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
+					&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
+				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+					&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _price = 0&gt;&gt;
+				&lt;&lt;/if&gt;&gt;*/
+			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + $alicornPrice.deluxe)&gt;&gt;
+				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + _price)&gt;&gt;
+				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + Number(Number($alicornPrice.deluxe) + Number(_price)))&gt;&gt;
+				&lt;&lt;set _price = Number(Number($alicornPrice.deluxe) + Number(_price))&gt;&gt;
+				&lt;&lt;run console.log(&quot;Alicorn test 1: &quot; + _price)&gt;&gt;
+
+			&lt;&lt;default&gt;&gt;
+				&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
 					/*
 					&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
 						&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
@@ -5365,66 +5710,62 @@ profitsTotal: 0
 						&lt;&lt;set _price = 0&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 					*/
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
-			&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
-			&lt;&lt;set _price = Number(_price) + Number($activeFluffy.training)&gt;&gt;
-			&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
+		&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
+		&lt;&lt;set _price = Number(_price) + Number($activeFluffy.training)&gt;&gt;
+		&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
-		&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
-			&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 
-		@@.green;¤_price.@@
-		&lt;hr&gt;
-		&lt;&lt;if $actions &lt; 1&gt;&gt;
-			//You are too tired for more shopping// | 
-		&lt;&lt;else&gt;&gt;
-			[[Keep Looking|Buy Fluffies][$actions--]]  |
-		&lt;&lt;/if&gt;&gt; 
-		&lt;&lt;if $actions &lt; 1&gt;&gt;
-			//You are too tired for more shopping// | 
-		&lt;&lt;elseif Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
-			&lt;&lt;link &quot;Add to the cart&quot; &quot;Buy Fluffies&quot;&gt;&gt;
-				&lt;&lt;set $cash-= _price&gt;&gt;
-				&lt;&lt;set $actions--&gt;&gt;
-				
-				
-				/* Add to the global list and store list*/
-				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-				&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;
-				&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+	@@.green;¤_price.@@
+	&lt;hr&gt;
+	&lt;&lt;if $actions &lt; 1&gt;&gt;
+		//You are too tired for more shopping// | 
+	&lt;&lt;else&gt;&gt;
+		[[Keep Looking|Buy Fluffies][$actions--]]  |
+	&lt;&lt;/if&gt;&gt; 
+	&lt;&lt;if $actions &lt; 1&gt;&gt;
+		//You are too tired for more shopping// | 
+	&lt;&lt;elseif Number($cash) &gt;= Number(_price)  || Number(_price) == 0&gt;&gt;
+		&lt;&lt;link &quot;Add to the cart&quot; &quot;Buy Fluffies&quot;&gt;&gt;
+			&lt;&lt;set $cash-= _price&gt;&gt;
+			&lt;&lt;set $actions--&gt;&gt;
+			
+			
+			/* Add to the global list and store list*/
+			&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+			&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;
+			&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
 
-				&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
-					&lt;&lt;set $ourStore.foals++&gt;&gt;
-				&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
-					&lt;&lt;set $ourStore.stallions++&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $ourStore.mares++&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				
-				&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
-			&lt;&lt;/link&gt;&gt; | 
-		&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
-			//You don&#39;t have enough room to take this fluffy// | 
-		&lt;&lt;else&gt;&gt;
-			//You lack the necessary funds to buy this fluffy// | 
-		&lt;&lt;/if&gt;&gt;
-		 [[End Shopping|Week Start][$actions--]]
-/*
+			&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+				&lt;&lt;set $ourStore.foals++&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
+				&lt;&lt;set $ourStore.stallions++&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $ourStore.mares++&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			
+			&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/link&gt;&gt; | 
+	&lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
+		//You don&#39;t have enough room to take this fluffy// | 
+	&lt;&lt;else&gt;&gt;
+		//You lack the necessary funds to buy this fluffy// | 
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-
-[[End Shopping|Week Start]]
-*/</tw-passagedata><tw-passagedata pid="17" name="Buy Food" tags="nobr" position="850,225" size="100,100">/* **********
+[[End Shopping|Week Start][$actions--]]</tw-passagedata><tw-passagedata pid="17" name="Buy Food" tags="nobr" position="850,225" size="100,100">/* **********
  * Buy Food.tw
  *
  * Package: FluffyBreeder
@@ -6046,7 +6387,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Daddeh am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;

@@ -32,6 +32,16 @@
 	
 	<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
+<<elseif ndef _mom>>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log("Birth test 3: Skipped due to invalid mother.")>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes(_mom.ID) == false>>
+	/* Mother was removed in a prior event. */
+	<<run console.log("Birth test 3: Skipped due to mother not being in store.")>>
+	<<goto "Event Main">>
+
 <<else>>
 	<h1>Birth</h1>
 	<br>_mom.name is giving birth to _mom.litter foals.

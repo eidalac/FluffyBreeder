@@ -29,6 +29,7 @@
 <<set $eventMating = []>>
 <<set $eventBirths = []>>
 <<set $eventBirthRejection = []>>
+<<set $eventCustomer = []>>
 
 
 /* ***
@@ -244,6 +245,9 @@
 	 *	Todo: This should be semi random and have non fixed prices.
 	 *** */
 	<<if $globalFluffies[_ef].onDisplay == true>>
+		/* Push to event stack  */
+		<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
+	/*
 		<<if random(0, 1) == 1>>
 			<<set _price = 0>>
 
@@ -311,6 +315,7 @@
 			<</if>>
 			<<continue>>
 		<</if>>
+*/
 	<</if>>
 
 <<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
@@ -592,8 +597,6 @@
 %/
 <<set $week++>>
 <<set $actions = 10>>
-
-<<set $eventCustomer = false>>
 
 <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
