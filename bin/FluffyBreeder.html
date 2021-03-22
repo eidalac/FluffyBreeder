@@ -2758,7 +2758,7 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
 	
 			/* Print the foal info */	
-			&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Colapse]&quot;&gt;&gt;
+			&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Collapse]&quot;&gt;&gt;
 			/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
 			&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
 			&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
@@ -3630,6 +3630,12 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;else&gt;&gt; 
 						&lt;br&gt;@@.orange;They would pay = &lt;&lt;- _price&gt;&gt; for &lt;&lt;- $globalFluffies[$ourStore.fluffies[_fl]].name&gt;&gt;.@@
 						&lt;br&gt;
+						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].ID != $ourStore.fluffies[_fl]&gt;&gt;
+							&lt;&lt;run console.log(&quot;Logic Test 1 - Invalid ID found: &quot; + $globalFluffies[$ourStore.fluffies[_fl]].ID + &quot;. Should be &quot; + $ourStore.fluffies[_fl])&gt;&gt;
+							/* &lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;*/
+							&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].ID = $ourStore.fluffies[_fl]&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+						
 						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].sold = true&gt;&gt;
 						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].onDisplay = false&gt;&gt;
 						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].pregnant = false&gt;&gt;
@@ -3646,14 +3652,16 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;/if&gt;&gt; /* Close Nursing check */
 	
 						&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].nursing = 0&gt;&gt;
+						
+						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].foodType == &quot;Nursing&quot;&gt;&gt;
+							&lt;&lt;set $globalFluffies[$globalFluffies[$ourStore.fluffies[_fl]].mother].nursing--&gt;&gt;
+						&lt;&lt;/if&gt;&gt; /* Close nursing check */
 	
 						&lt;&lt;if $globalFluffies[$ourStore.fluffies[_fl]].specialFriend != -1&gt;&gt;
 							&lt;&lt;set $globalFluffies[$globalFluffies[$ourStore.fluffies[_fl]].specialFriend].specialFriend = -1&gt;&gt;
 							&lt;&lt;set $globalFluffies[$ourStore.fluffies[_fl]].specialFriend = -1&gt;&gt;
 						&lt;&lt;/if&gt;&gt; /* Close special friend check */
 	
-						&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
-		
 						&lt;&lt;if Number($globalFluffies[$ourStore.fluffies[_fl]].age) == 0 &amp;&amp; Number($globalFluffies[$ourStore.fluffies[_fl]].ageWeeks) &lt;= $globalFluffies[$ourStore.fluffies[_fl]].maturity&gt;&gt;
 							&lt;&lt;set $ourStore.foals--&gt;&gt;
 						&lt;&lt;elseif $globalFluffies[$ourStore.fluffies[_fl]].gender == &quot;male&quot;&gt;&gt;
@@ -3661,7 +3669,7 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;else&gt;&gt;
 							&lt;&lt;set $ourStore.mares--&gt;&gt;
 						&lt;&lt;/if&gt;&gt; /* Close age check */
-						
+		
 						/*
 						&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
 							&lt;&lt;set $repuation += random(0,1)&gt;&gt;
@@ -3673,7 +3681,10 @@ console.log("cleared defects parts = " + this.genes[index])
 						*/
 						&lt;&lt;set $repuation += _priceBonus&gt;&gt;
 							
-						&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;Sold for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;
+						&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;Sold &lt;&lt;- $globalFluffies[$ourStore.fluffies[_fl]].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;
+						
+						&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+						
 					&lt;&lt;/if&gt;&gt; /* Close needs check */
 				&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/button&gt;&gt;
@@ -4331,7 +4342,9 @@ Mother, Father and any children
 	 *** */
 	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
 		/* Push to event stack  */
-		&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
+		&lt;&lt;if $eventCustomer.length &lt; 10&gt;&gt;
+			&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	/*
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;&lt;set _price = 0&gt;&gt;
@@ -4703,7 +4716,7 @@ Mother, Father and any children
 
 /* Disclamer text */
 &lt;br&gt;
-&#39;&#39;This is an beta release.&#39;&#39; That means the game is missing content, is full of bugs, is imbalanced, and is generally in an incomplete state. The game will keep a start of turn autosave. If you encounter a bug, I strongly recommend you reload your start of turn autosave immediately. 
+&#39;&#39;This is a beta release.&#39;&#39; That means the game is missing content, is full of bugs, is imbalanced, and is generally in an incomplete state. The game will keep a start of turn autosave. If you encounter a bug, I strongly recommend you reload your start of turn autosave immediately. 
 &lt;br&gt;&lt;br&gt;
 @@.orange;This is a text-based game that includes descriptions of fantastic animal abuse and other subjects not suitable for persons under the age of 18. This is a work of fiction; any resemblance to actual persons, places, or events is unintended.@@
 &lt;br&gt;

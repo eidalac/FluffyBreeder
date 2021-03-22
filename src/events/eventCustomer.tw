@@ -418,6 +418,12 @@
 					<<else>> 
 						<br>@@.orange;They would pay = <<- _price>> for <<- $globalFluffies[$ourStore.fluffies[_fl]].name>>.@@
 						<br>
+						<<if $globalFluffies[$ourStore.fluffies[_fl]].ID != $ourStore.fluffies[_fl]>>
+							<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[$ourStore.fluffies[_fl]].ID + ". Should be " + $ourStore.fluffies[_fl])>>
+							/* <<run $ourStore.fluffies.delete(_fl)>>*/
+							<<set $globalFluffies[$ourStore.fluffies[_fl]].ID = $ourStore.fluffies[_fl]>>
+						<</if>>
+						
 						<<set $globalFluffies[$ourStore.fluffies[_fl]].sold = true>>
 						<<set $globalFluffies[$ourStore.fluffies[_fl]].onDisplay = false>>
 						<<set $globalFluffies[$ourStore.fluffies[_fl]].pregnant = false>>
@@ -434,14 +440,16 @@
 						<</if>> /* Close Nursing check */
 	
 						<<set $globalFluffies[$ourStore.fluffies[_fl]].nursing = 0>>
+						
+						<<if $globalFluffies[$ourStore.fluffies[_fl]].foodType == "Nursing">>
+							<<set $globalFluffies[$globalFluffies[$ourStore.fluffies[_fl]].mother].nursing-->>
+						<</if>> /* Close nursing check */
 	
 						<<if $globalFluffies[$ourStore.fluffies[_fl]].specialFriend != -1>>
 							<<set $globalFluffies[$globalFluffies[$ourStore.fluffies[_fl]].specialFriend].specialFriend = -1>>
 							<<set $globalFluffies[$ourStore.fluffies[_fl]].specialFriend = -1>>
 						<</if>> /* Close special friend check */
 	
-						<<run $ourStore.fluffies.delete(_fl)>>
-		
 						<<if Number($globalFluffies[$ourStore.fluffies[_fl]].age) == 0 && Number($globalFluffies[$ourStore.fluffies[_fl]].ageWeeks) <= $globalFluffies[$ourStore.fluffies[_fl]].maturity>>
 							<<set $ourStore.foals-->>
 						<<elseif $globalFluffies[$ourStore.fluffies[_fl]].gender == "male">>
@@ -449,7 +457,7 @@
 						<<else>>
 							<<set $ourStore.mares-->>
 						<</if>> /* Close age check */
-						
+		
 						/*
 						<<if _customerDetailedNeeds.length == 0>>
 							<<set $repuation += random(0,1)>>
@@ -461,7 +469,10 @@
 						*/
 						<<set $repuation += _priceBonus>>
 							
-						<<replace "#selling-list">>Sold for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>>
+						<<replace "#selling-list">>Sold <<- $globalFluffies[$ourStore.fluffies[_fl]].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>>
+						
+						<<run $ourStore.fluffies.delete(_fl)>>
+						
 					<</if>> /* Close needs check */
 				<</replace>>
 			<</button>>
