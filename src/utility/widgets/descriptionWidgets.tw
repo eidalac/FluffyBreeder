@@ -40,12 +40,26 @@
 /* ***
  *	Called as <<displayStat $stat>>
  *	Returns a display of this stat value based on the player xp level.
+ *	Normal ranges for a stat are 0-6
  *** */
 <<widget "displayStat">>
 	<<if  $debugMode>>
 		@@.orange;$args[0]@@
 	<<else>>
-		<<- $training >= 60 ? $args[0] : $training >= 40 ? $args[0] < 3 ? "@@.red;Low@@" : $args[0] < 5 ? "@@.yellow;Average@@" : "@@.green;High@@" : "?">>
+		<<- $training >= 60 ? $args[0] < 3 ? "@@.red;$args[0]@@" : $args[0] < 5 ? "@@.yellow;$args[0]@@" : "@@.green;$args[0]@@"  : $training >= 40 ? $args[0] < 3 ? "@@.red;Low@@" : $args[0] < 5 ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;Unk@@">>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<displayAttribute $attribute>>
+ *	Returns a display of this atrributed value based on the player xp level.
+ *	Attributes can range from 0 to 200.
+ *** */
+<<widget "displayAttribute">>
+	<<if  $debugMode>>
+		@@.orange;$args[0]@@
+	<<else>>
+		<<- $training >= 100 ? $args[0] < 67 ? "@@.red;$args[0]@@" : $args[0] < 101 ? "@@.yellow;$args[0]@@" : "@@.green;$args[0]@@" : $training >= 50 ? $args[0] < 67 ? "@@.red;Low@@" : $args[0] < 101 ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;Unk@@">>
 	<</if>>
 <</widget>>
 
@@ -94,51 +108,29 @@
 	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
 	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor>> eyes<</if>>. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
-	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
-	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
+	<br><<They>> weighs $activeFluffy.weight <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxWeight)" : "">> KG.  <<They>> is $activeFluffy.length cm long <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxLength)" : "">> and is $activeFluffy.height cm tall <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxHeight)" : "">>.  
+	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of <<displayStat $activeFluffy.fertility>>.
 	<br>Strength: [<<displayStat $activeFluffy.strength>>], Energy [<<displayStat $activeFluffy.energy>>], Charm [<<displayStat $activeFluffy.charm>>], Thinking [<<displayStat $activeFluffy.thinking>>], Learning [<<displayStat $activeFluffy.learning>>].
+	
+	<br>Trust [<<displayAttribute $activeFluffy.trust>>] Training [<<displayAttribute $activeFluffy.training>>] Temperament [<<displayAttribute $activeFluffy.temperament>>] Happiness [<<displayAttribute $activeFluffy.happy>>] Stress [<<displayAttribute $activeFluffy.stress>>] Trauma [<<displayAttribute $activeFluffy.trauma>>]
+	<br>Traits: 
+	<<for _i = 1; _i < $activeFluffy.traits.length; _i++>>
+		<<- $activeFluffy.traits[_i]>> | 
+	<</for>>
+	<br><<Their>> mother is <<if $activeFluffy.mother == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[$activeFluffy.mother].name>>@@<</if>>. 
+	 <<Their>> father is <<if $activeFluffy.father == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[$activeFluffy.father].name>>@@<</if>>. 
+	 <<if $activeFluffy.specialFriend != -1>><<Their>> "Special Friend" is @@.cyan;<<print $globalFluffies[$activeFluffy.specialFriend].name>>@@<</if>>.
+	
+	<<set _children = "">>
+	<<for _i = 0; _i < $activeFluffy.children.length; _i++>>
+		<<run _children += "@@.cyan;" + $globalFluffies[$activeFluffy.children[_i]].name + "@@ | ">> 
+	<</for>>
+	
+	<br>Children: <<linkreplace "$activeFluffy.children.length">>_children<</linkreplace>>
 
-/*	<br> Color Bonus: $activeFluffy.colorBonus. 
-	<br> Stat Bonus: $activeFluffy.statBonus.*/
-	/*
-	<<set _price = Number($activeFluffy.training)>>
-<<run console.log("Price test 1: " + _price)>>
-	<<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
-<<run console.log("Price test 2: " + _price)>>
-	<<switch $activeFluffy.breed>>
-		<<case "unicorn">>
-			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
-		<<case "pegasus">>
-			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
-		<<case "alicorn">>
-			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
-		<<default>>
-			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
-	<</switch>>
+	<<if $activeFluffy.pregnant == true>><br><<They>> is due to give birth in <<- $activeFluffy.dueDate>> weeks<</if>>
+	<<if $activeFluffy.nursing > 0>><br><<They>> is nursing <<print $activeFluffy.nursing >> foals<</if>>
 	
-	<<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
-<<run console.log("Price test 5: " + _price)>>
-	<<set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)>>
-<<run console.log("Price test 6: " + _price)>>
-
-	<<set _ageMulti = 1>>
-	
-	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks < 45>>
-		<<set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)>>
-	<</if>>
-<<run console.log("Price test 7: " + _ageMulti)>>
-	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
-	
-	
-<<run console.log("Price test 8: " + $activeFluffy.traits)>>
-	<<if $activeFluffy.traits.includes("Feral") == true>>
-<<run console.log("Price test 8: " + Number(_price / 4).toFixed(2))>>
-		<<set _price = Number(_price / 4).toFixed(2)>>
-	<</if>>
-	
-<<run console.log("Price test 9: " + _price)>>
-*/
-	/*<br>[Price: _price]*/
 	
 <</widget>>
 
@@ -177,8 +169,8 @@
 
 
 	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
-	<br>Strength: [<<displayStat _fluffy.strength>>], Energy [<<displayStat _fluffy.energy>>], Charm [<<displayStat _fluffy.charm>>], Thinking [<<displayStat _fluffy.thinking>>], Learning [<<displayStat _fluffy.learning>>].
-	<br>Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
+	<br>Strength: [<<displayStat _fluffy.strength>>], Energy [<<displayStat _fluffy.energy>>], Charm [<<displayStat _fluffy.charm>>], Thinking [<<displayStat _fluffy.thinking>>], Learning [<<displayStat _fluffy.learning>>], Fertility [<<displayStat _fluffy.fertility>>]
+	<br>Trust [<<displayAttribute _fluffy.trust>>] Training [<<displayAttribute _fluffy.training>>] Temperament [<<displayAttribute _fluffy.temperament>>] Happiness [<<displayAttribute _fluffy.happy>>] Stress [<<displayAttribute _fluffy.stress>>] Trauma [<<displayAttribute _fluffy.trauma>>]
 	<br>_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
 	<br>Traits: 
 	<<for _i = 1; _i < _fluffy.traits.length; _i++>>

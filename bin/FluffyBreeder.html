@@ -4061,6 +4061,9 @@ Fluffies can be Earth/Earthie, Unicorns, Pegaus/Pegasi or Alicorns.
 &lt;hr&gt;
 &lt;h3&gt;@@.coral;Abilities@@&lt;/h3&gt;
 These represent the physical and mental abilities of the fluffy, based on genetics.   The first 5 can be between 1-6 before bonus from personality.  Fertility can be between 0-8 and is not affected by personalities, but is reduced in mares over time as they give birth.
+&lt;br&gt;
+&lt;br&gt;The scores will show as &quot;@@.yellow;Unk@@&quot; (Unknown) until your training level is at least 40.  They will display as &quot;@@.red;Low@@&quot;, &quot;@@.yellow;Average@@&quot; or &quot;@@.green;High@@&quot; below training level 60.  Above 60 you will see the exact number.
+&lt;br&gt;
 &lt;br&gt;Abilities affect the @@.yellowgreen;¤@@price of the fluffy based on the average of all abilities, with Charm counted twice. 
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Strength@@ - General physical ability and coordination.  Fussy, Dilligent and Bossy fluffies have a bonus to Strength.&lt;/p&gt;
 
@@ -4077,7 +4080,9 @@ These represent the physical and mental abilities of the fluffy, based on geneti
 &lt;h3&gt;@@.coral;Social and Health@@&lt;/h3&gt;
 These represent the social ability and general well being of a fluffy.  Most range from 0 to a max of 200.
 &lt;br&gt;@@.orange;Note - Most of these have not been fully implemented so have no affect yet.@@
-
+&lt;br&gt;
+&lt;br&gt;The scores will show as &quot;@@.yellow;Unk@@&quot; (Unknown) until your training level is at least 66.  They will display as &quot;@@.red;Low@@&quot;, &quot;@@.yellow;Average@@&quot; or &quot;@@.green;High@@&quot; below training level 100.  Above 100 you will see the exact number.
+&lt;br&gt;
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Trust@@ - This represents how much the fluffy trusts humans in general and you in particular.  Every 10 points of trust raises the base price of the fluffy by +1, before multipliers due to color and other factors.&lt;/p&gt;
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Training@@ - This indicates how much the fluffy has been trained and taught to behave and obey its owner.  This directly increases the base price by +1 per point. &lt;/p&gt;
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Temperament@@ - How willful the fluffy is and is based on personality and treatment.  0 would indicate a fluffy that is afraid to the point of trauma.  200 would be a stubborn and willful fluffy such as a Smarty.&lt;/p&gt;
@@ -4095,6 +4100,30 @@ Physical measurements
 &lt;h3&gt;@@.coral;Family@@&lt;/h3&gt;
 Mother, Father and any children
 
+&lt;&lt;case &quot;Fluffy Interaction&quot;&gt;&gt;
+&lt;h1&gt;Fluffy Interaction&lt;/h1&gt;
+This page shows some details of the selected fluffy and specific interactions you can do with them.
+&lt;br&gt;
+&lt;br&gt;For details on the owner stats, see &#39;Owner Status&#39; on the [[Running your Store|Encyclopedia][$encyclopedia = &quot;Running your Store&quot;]] page.  For details of the various Fluffy stats, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = &quot;Fluffy Statistics&quot;]] page.
+&lt;br&gt;
+&lt;br&gt;If enabled (on by default currenlty), there is a link for the [[Gene Lab|Encyclopedia][$encyclopedia = &quot;Gene Lab&quot;]] editing tool under the fluffy information.
+&lt;br&gt;
+&lt;h2&gt;@@.coral;Interactions@@&lt;/h2&gt;
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Name@@ - You can rename the fluffy here.  @@.orange;Currently names are only cosmetic - fluffies do not react to good/bad name@@.&lt;/p&gt;
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Play@@ - Play with the fluffy.  This costs @@.mediumorchid;Stamina@@.  Playing reduces player and fluffy @@.mediumorchid;Stress@@ and increases fluffy @@.hotpink;Trust@@, @@.hotpink;Happiness@@ and @@.hotpink;Temperament@@.  It raises your @@.hotpink;Hugbox@@ rating. &lt;/p&gt;
+/* 
+		&lt;&lt;set $stress += 1&gt;&gt;
+		&lt;&lt;set $actions--&gt;&gt;
+		&lt;&lt;set $training += 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.training++&gt;&gt;
+		
+&lt;br&gt;@@.hotpink;Hot pink text@@ means an increase in a value.
+&lt;br&gt;@@.mediumorchid;Orchid text@@ means a decrease in a value.
+*/
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Train@@ - You spend time training the fluffy.  This costs @@.mediumorchid;Stamina@@ and raises player @@.hotpink;Stress@@.  It increases the fluffy&#39;s @@.hotpink;Trust@@ and @@.hotpink;Training@@ levels.&lt;/p&gt;
+
+
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Abuse@@ - Abuse the fluffy.  This costs @@.mediumorchid;Stamina@@.  Abuse reduces player @@.mediumorchid;Stress@@ significantly.  Abuse decreases fluffy @@.mediumorchid;Trust@@, @@.mediumorchid;Happiness@@ and @@.mediumorchid;Temperament@@.  It raises your @@.hotpink;Abuse@@ rating and increases the fluffy @@.hotpink;Stress@@. &lt;/p&gt;
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
@@ -5209,6 +5238,7 @@ a text-based fluffy management game
  *	Enables debug mode
  *********** */
 &lt;&lt;set $debugMode = false&gt;&gt;
+&lt;&lt;set $unlockGeneLab = true&gt;&gt;
 
 /* **********
  *	Sets the starting week, month, day and year.
@@ -6314,10 +6344,10 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
 &lt;br&gt;
 &lt;br&gt;
-&lt;&lt;set $nextButton to &quot;CONTINUE.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
+&lt;&lt;set $nextButton to &quot;Back to the fluffy list.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
 
 &lt;span id=&quot;fluffy-name&quot;&gt;
-	&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;
+	&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;
 	&lt;&lt;FluffyDesc&gt;&gt;
 &lt;/span&gt;
 &lt;hr&gt;
@@ -6325,7 +6355,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
-&lt;&lt;if $debugMode == true&gt;&gt;
+&lt;&lt;if $debugMode == true || $unlockGeneLab == true&gt;&gt;
 	[[Enter the Gene Lab|Gene Lab]]
 	&lt;hr&gt;
 &lt;&lt;/if&gt;&gt;
@@ -6383,7 +6413,9 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set $hugbox += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
+		&lt;&lt;set $activeFluffy.happy++&gt;&gt;
 		&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+		&lt;&lt;set $activeFluffy.stress--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -6406,6 +6438,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $actions--&gt;&gt;
 		&lt;&lt;set $training += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.training++&gt;&gt;
+		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -6429,6 +6462,8 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $abuse += 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.stress++&gt;&gt;
 		&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
+		&lt;&lt;set $activeFluffy.happy--&gt;&gt;
+		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -6630,11 +6665,11 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;capture _fl, _listFluff&gt;&gt;
 		&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
 		&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
-		[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] &lt;&lt;shortDesc _listFluff&gt;&gt;
+		[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Interaction&quot;]] &lt;&lt;shortDesc _listFluff&gt;&gt;
 		&lt;/p&gt;
-		[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
+		[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]] |
 		&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
-		| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
+		| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Feeding&quot;]] _listFluff.foodType
 		&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
 			&lt;&lt;case 0&gt;&gt; (trash)
 			&lt;&lt;case 1&gt;&gt; (cheap)
@@ -7455,12 +7490,26 @@ Inbreeding:
 /* ***
  *	Called as &lt;&lt;displayStat $stat&gt;&gt;
  *	Returns a display of this stat value based on the player xp level.
+ *	Normal ranges for a stat are 0-6
  *** */
 &lt;&lt;widget &quot;displayStat&quot;&gt;&gt;
 	&lt;&lt;if  $debugMode&gt;&gt;
 		@@.orange;$args[0]@@
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- $training &gt;= 60 ? $args[0] : $training &gt;= 40 ? $args[0] &lt; 3 ? &quot;@@.red;Low@@&quot; : $args[0] &lt; 5 ? &quot;@@.yellow;Average@@&quot; : &quot;@@.green;High@@&quot; : &quot;?&quot;&gt;&gt;
+		&lt;&lt;- $training &gt;= 60 ? $args[0] &lt; 3 ? &quot;@@.red;$args[0]@@&quot; : $args[0] &lt; 5 ? &quot;@@.yellow;$args[0]@@&quot; : &quot;@@.green;$args[0]@@&quot;  : $training &gt;= 40 ? $args[0] &lt; 3 ? &quot;@@.red;Low@@&quot; : $args[0] &lt; 5 ? &quot;@@.yellow;Average@@&quot; : &quot;@@.green;High@@&quot; : &quot;@@.yellow;Unk@@&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Called as &lt;&lt;displayAttribute $attribute&gt;&gt;
+ *	Returns a display of this atrributed value based on the player xp level.
+ *	Attributes can range from 0 to 200.
+ *** */
+&lt;&lt;widget &quot;displayAttribute&quot;&gt;&gt;
+	&lt;&lt;if  $debugMode&gt;&gt;
+		@@.orange;$args[0]@@
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- $training &gt;= 100 ? $args[0] &lt; 67 ? &quot;@@.red;$args[0]@@&quot; : $args[0] &lt; 101 ? &quot;@@.yellow;$args[0]@@&quot; : &quot;@@.green;$args[0]@@&quot; : $training &gt;= 50 ? $args[0] &lt; 67 ? &quot;@@.red;Low@@&quot; : $args[0] &lt; 101 ? &quot;@@.yellow;Average@@&quot; : &quot;@@.green;High@@&quot; : &quot;@@.yellow;Unk@@&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -7509,51 +7558,29 @@ Inbreeding:
 	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 3&gt;&gt;, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt;&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 1&gt;&gt; and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;. 
 	&lt;br&gt;&lt;&lt;They&gt;&gt; is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
-	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
-	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
+	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxWeight)&quot; : &quot;&quot;&gt;&gt; KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxLength)&quot; : &quot;&quot;&gt;&gt; and is $activeFluffy.height cm tall &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxHeight)&quot; : &quot;&quot;&gt;&gt;.  
+	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of &lt;&lt;displayStat $activeFluffy.fertility&gt;&gt;.
 	&lt;br&gt;Strength: [&lt;&lt;displayStat $activeFluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat $activeFluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat $activeFluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat $activeFluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat $activeFluffy.learning&gt;&gt;].
+	
+	&lt;br&gt;Trust [&lt;&lt;displayAttribute $activeFluffy.trust&gt;&gt;] Training [&lt;&lt;displayAttribute $activeFluffy.training&gt;&gt;] Temperament [&lt;&lt;displayAttribute $activeFluffy.temperament&gt;&gt;] Happiness [&lt;&lt;displayAttribute $activeFluffy.happy&gt;&gt;] Stress [&lt;&lt;displayAttribute $activeFluffy.stress&gt;&gt;] Trauma [&lt;&lt;displayAttribute $activeFluffy.trauma&gt;&gt;]
+	&lt;br&gt;Traits: 
+	&lt;&lt;for _i = 1; _i &lt; $activeFluffy.traits.length; _i++&gt;&gt;
+		&lt;&lt;- $activeFluffy.traits[_i]&gt;&gt; | 
+	&lt;&lt;/for&gt;&gt;
+	&lt;br&gt;&lt;&lt;Their&gt;&gt; mother is &lt;&lt;if $activeFluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;. 
+	 &lt;&lt;Their&gt;&gt; father is &lt;&lt;if $activeFluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;. 
+	 &lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;&lt;&lt;Their&gt;&gt; &quot;Special Friend&quot; is @@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;.
+	
+	&lt;&lt;set _children = &quot;&quot;&gt;&gt;
+	&lt;&lt;for _i = 0; _i &lt; $activeFluffy.children.length; _i++&gt;&gt;
+		&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[$activeFluffy.children[_i]].name + &quot;@@ | &quot;&gt;&gt; 
+	&lt;&lt;/for&gt;&gt;
+	
+	&lt;br&gt;Children: &lt;&lt;linkreplace &quot;$activeFluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;
 
-/*	&lt;br&gt; Color Bonus: $activeFluffy.colorBonus. 
-	&lt;br&gt; Stat Bonus: $activeFluffy.statBonus.*/
-	/*
-	&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 1: &quot; + _price)&gt;&gt;
-	&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 2: &quot; + _price)&gt;&gt;
-	&lt;&lt;switch $activeFluffy.breed&gt;&gt;
-		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;default&gt;&gt;
-			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
+	&lt;&lt;if $activeFluffy.pregnant == true&gt;&gt;&lt;br&gt;&lt;&lt;They&gt;&gt; is due to give birth in &lt;&lt;- $activeFluffy.dueDate&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if $activeFluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;&lt;&lt;They&gt;&gt; is nursing &lt;&lt;print $activeFluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 5: &quot; + _price)&gt;&gt;
-	&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
-
-	&lt;&lt;set _ageMulti = 1&gt;&gt;
-	
-	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
-		&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 7: &quot; + _ageMulti)&gt;&gt;
-	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-	
-	
-&lt;&lt;run console.log(&quot;Price test 8: &quot; + $activeFluffy.traits)&gt;&gt;
-	&lt;&lt;if $activeFluffy.traits.includes(&quot;Feral&quot;) == true&gt;&gt;
-&lt;&lt;run console.log(&quot;Price test 8: &quot; + Number(_price / 4).toFixed(2))&gt;&gt;
-		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-&lt;&lt;run console.log(&quot;Price test 9: &quot; + _price)&gt;&gt;
-*/
-	/*&lt;br&gt;[Price: _price]*/
 	
 &lt;&lt;/widget&gt;&gt;
 
@@ -7592,8 +7619,8 @@ Inbreeding:
 
 
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;Strength: [&lt;&lt;displayStat _fluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat _fluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat _fluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat _fluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat _fluffy.learning&gt;&gt;].
-	&lt;br&gt;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
+	&lt;br&gt;Strength: [&lt;&lt;displayStat _fluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat _fluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat _fluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat _fluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat _fluffy.learning&gt;&gt;], Fertility [&lt;&lt;displayStat _fluffy.fertility&gt;&gt;]
+	&lt;br&gt;Trust [&lt;&lt;displayAttribute _fluffy.trust&gt;&gt;] Training [&lt;&lt;displayAttribute _fluffy.training&gt;&gt;] Temperament [&lt;&lt;displayAttribute _fluffy.temperament&gt;&gt;] Happiness [&lt;&lt;displayAttribute _fluffy.happy&gt;&gt;] Stress [&lt;&lt;displayAttribute _fluffy.stress&gt;&gt;] Trauma [&lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;]
 	&lt;br&gt;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
 	&lt;br&gt;Traits: 
 	&lt;&lt;for _i = 1; _i &lt; _fluffy.traits.length; _i++&gt;&gt;

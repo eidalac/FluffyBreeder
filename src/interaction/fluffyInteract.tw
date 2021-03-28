@@ -15,10 +15,10 @@
 <<set $ui = "main">>
 <br>
 <br>
-<<set $nextButton to "CONTINUE.", $nextLink to "Fluffy List">>
+<<set $nextButton to "Back to the fluffy list.", $nextLink to "Fluffy List">>
 
 <span id="fluffy-name">
-	<<PlayerStatus>><br>
+	<<PlayerStatus>><hr>
 	<<FluffyDesc>>
 </span>
 <hr>
@@ -26,7 +26,7 @@
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
-<<if $debugMode == true>>
+<<if $debugMode == true || $unlockGeneLab == true>>
 	[[Enter the Gene Lab|Gene Lab]]
 	<hr>
 <</if>>
@@ -84,7 +84,9 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<if $stress < 0>><<set $stress = 0>><</if>>
 		<<set $hugbox += 1>>
 		<<set $activeFluffy.trust++>>
+		<<set $activeFluffy.happy++>>
 		<<set $activeFluffy.temperament++>>
+		<<set $activeFluffy.stress-->>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#play-msg">><br>@@.cyan;<<- $title>> am bestest at pwayin! Pway AWW da games wit <<print $activeFluffy.name>> heheheh!.@@<</replace>>
 		<<replace "#fluffy-name">><<PlayerStatus>><br><<FluffyDesc>><</replace>>
@@ -107,6 +109,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<set $actions-->>
 		<<set $training += 1>>
 		<<set $activeFluffy.training++>>
+		<<set $activeFluffy.trust++>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
 		<<replace "#fluffy-name">><<PlayerStatus>><br><<FluffyDesc>><</replace>>
@@ -130,6 +133,8 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<set $abuse += 1>>
 		<<set $activeFluffy.stress++>>
 		<<set $activeFluffy.temperament-->>
+		<<set $activeFluffy.happy-->>
+		<<set $activeFluffy.trust-->>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#abuse-msg">><br>@@.cyan;Huhuhu why hurt good fluffy?.@@<</replace>>
 		<<replace "#fluffy-name">><<PlayerStatus>><br><<FluffyDesc>><</replace>>
