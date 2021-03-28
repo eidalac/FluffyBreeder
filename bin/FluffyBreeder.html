@@ -2756,7 +2756,10 @@ console.log("cleared defects parts = " + this.genes[index])
 		&lt;&lt;else&gt;&gt;
 	
 	&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
-	
+			/* Set any traits from bad genes: */
+			&lt;&lt;setGeneTraits&gt;&gt;
+
+
 			/* Print the foal info */	
 			&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Collapse]&quot;&gt;&gt;
 			/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
@@ -2789,6 +2792,8 @@ console.log("cleared defects parts = " + this.genes[index])
 				/* Push to event stack  */
 				&lt;&lt;run $eventBirthRejection.push($activeFluffy.ID)&gt;&gt;
 			&lt;&lt;/if&gt;&gt; 
+
+			
 		&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
 	
 	&lt;&lt;/for&gt;&gt; /* Close litter itteration */
@@ -3793,7 +3798,12 @@ console.log("cleared defects parts = " + this.genes[index])
 		&lt;br&gt;enf enf enf
 		&lt;br&gt;//@@.cyan;GOODFEELS@@//
 	
+&lt;&lt;run console.log(&quot;eventMating - _mom.fertility: &quot; + _mom.fertility + &quot;. _dad.fertility: &quot; + _dad.fertility)&gt;&gt;
+
 		&lt;&lt;set _litter = Math.clamp(Math.round((_mom.fertility + _dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+		
+&lt;&lt;run console.log(&quot;eventMating - _litter: &quot; + _litter)&gt;&gt;
+
 		&lt;&lt;set _mom.pregnant = true&gt;&gt;
 		&lt;&lt;set _mom.pregnantBy = _dad.ID&gt;&gt;
 		&lt;&lt;set _mom.dueDate = random(4, 6)&gt;&gt;
@@ -4331,7 +4341,6 @@ This page shows some details of the selected fluffy and specific interactions yo
 	&lt;&lt;if ndef $globalFluffies[_ef].nursing&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].nursing = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
 	&lt;&lt;if $globalFluffies[_ef].nursing &lt; 0&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].nursing = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -4686,8 +4695,23 @@ This page shows some details of the selected fluffy and specific interactions yo
 						&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
-	 &lt;&lt;/if&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 
+		/* Clamp values: */
+		&lt;&lt;set $globalFluffies[_ef].strength = Math.clamp(Math.trunc($globalFluffies[_ef].strength), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].energy = Math.clamp(Math.trunc($globalFluffies[_ef].energy), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].charm = Math.clamp(Math.trunc($globalFluffies[_ef].charm), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].thinking = Math.clamp(Math.trunc($globalFluffies[_ef].thinking), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].learning = Math.clamp(Math.trunc($globalFluffies[_ef].learning), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].fertility = Math.clamp(Math.trunc($globalFluffies[_ef].fertility), 0, 10)&gt;&gt;
+
+		/* Clamp these to 0-200 */
+		&lt;&lt;set $globalFluffies[_ef].trust = Math.clamp(Math.trunc($globalFluffies[_ef].trust), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].training = Math.clamp(Math.trunc($globalFluffies[_ef].training), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].temperament = Math.clamp(Math.trunc($globalFluffies[_ef].temperament), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].happy = Math.clamp(Math.trunc($globalFluffies[_ef].happy), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].stress = Math.clamp(Math.trunc($globalFluffies[_ef].stress), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].trauma = Math.clamp(Math.trunc($globalFluffies[_ef].trauma), 0, 200)&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Mating test 1: &quot; + $globalFluffies[_ef].specialFriend + &quot; | &quot; + $globalFluffies[_ef].gender)&gt;&gt;
 
@@ -5235,7 +5259,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.4.12-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.5.13-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5588,19 +5612,24 @@ profitsTotal: 0
 	 /* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
 	 &lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
 	 	&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
-		&lt;&lt;run console.log(&quot;Fluffy shopping gene test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+		&lt;&lt;run console.log(&quot;Fluffy shopping gene defect test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 	 
-	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
-	 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
-	 	 	&lt;&lt;run console.log(&quot;Fluffy mart defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3)
+	 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
+	 	 	&lt;&lt;run console.log(&quot;Fluffy shopping gene defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 	 	 	
 	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
-	 	 	&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= 3&gt;&gt;
+	 	 	&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= Number(2 + random(0,1))&gt;&gt;
 	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-	 	 	&lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= 5&gt;&gt;
+	 	 		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+	 	 	&lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= Number(4 + random(0,1))&gt;&gt;
 	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-	 	 	&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= 1&gt;&gt;
+	 	 		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+	 	 	&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= Number(0 + random(0,1))&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy shopping gene: clearing index &quot; + _ri)&gt;&gt;
 	 	 		&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+	 	 		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+&lt;&lt;run console.log(&quot;Fluffy shopping gene: after clearing: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 	 	 	&lt;&lt;else&gt;&gt;
 	 	 		&lt;&lt;set _defectCount++&gt;&gt;
 	 	 	&lt;&lt;/if&gt;&gt;
@@ -5690,6 +5719,9 @@ profitsTotal: 0
 				&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	/* Set any traits from bad genes: */
+	&lt;&lt;setGeneTraits&gt;&gt;
 	
 	&lt;&lt;run console.log(&quot;Fluffy breeder color test 0: &quot; + $shop)&gt;&gt;
 	&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
@@ -6738,6 +6770,21 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 
+	/* Clamp values: */
+	&lt;&lt;set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)&gt;&gt;
+
+	/* Clamp these to 0-200 */
+	&lt;&lt;set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)&gt;&gt;
 
 &lt;&lt;capture _fl, _listFluff&gt;&gt;
 		&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
@@ -6876,7 +6923,7 @@ You are editing the genes of:
  *** */
 &lt;hr&gt;Gender: 
 &lt;span id=&quot;gender&quot;&gt;
-	&lt;&lt;if String($activeFluffy.genes.getGender()) == &quot;XX&quot;&gt;&gt;XX (Female)
+	&lt;&lt;if String($activeFluffy.genes.getGender()) === &quot;XX&quot;&gt;&gt;XX (Female)
 	&lt;&lt;else&gt;&gt;XY (Male)
 	&lt;&lt;/if&gt;&gt;
 &lt;/span&gt;
@@ -7134,19 +7181,19 @@ Breed:
 		/* Alicorn checks: */
 		&lt;&lt;switch $alicornRarity&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
 				&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
-				&lt;&lt;if random(0, 1) == 0&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;if random(0, 1) === 0&gt;&gt;
 					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toLowerCase() == &quot;alicorn&quot; or $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+			&lt;&lt;if $activeFluffy.breed.toLowerCase() === &quot;alicorn&quot; or $activeFluffy.breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
 				&lt;&lt;switch random(0, 5)&gt;&gt;
 				&lt;&lt;case 0 1&gt;&gt;
 					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
@@ -7472,56 +7519,56 @@ Inbreeding:
 &lt;br&gt; Defect Genes:  If both are recessive (lower case), we have a defect.  
 &lt;br&gt; For inbreeding, if both numbers match we have a big problem
 &lt;br&gt;
-&lt;&lt;if $activeFluffy.geneString.substring(12,13) == $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) == $activeFluffy.geneString.substring(12,13).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()&gt;&gt;
 	&lt;br&gt; Joint defect found [ &lt;&lt;print $activeFluffy.geneString.substring(12,15)&gt;&gt; ]  
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(20,21) == $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) == $activeFluffy.geneString.substring(20,21).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase()&gt;&gt;
 	&lt;br&gt; Lungs defect found [ &lt;&lt;print $activeFluffy.geneString.substring(20,23)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(28,29) == $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) == $activeFluffy.geneString.substring(28,29).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase()&gt;&gt;
 	&lt;br&gt; Weight defect found [ &lt;&lt;print $activeFluffy.geneString.substring(28,31)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(36,37) == $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) == $activeFluffy.geneString.substring(36,37).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()&gt;&gt;
 	&lt;br&gt; Heart defect found [ &lt;&lt;print $activeFluffy.geneString.substring(36,39)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(44,45) == $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) == $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
 	&lt;br&gt; Fertility defect found [ &lt;&lt;print $activeFluffy.geneString.substring(44,47)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(52,53) == $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) == $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
 	&lt;br&gt; Growth defect found [ &lt;&lt;print $activeFluffy.geneString.substring(52,55)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(80,81) == $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) == $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
 	&lt;br&gt; Stomach defect found [ &lt;&lt;print $activeFluffy.geneString.substring(80,83)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(100,101) == $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) == $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
 	&lt;br&gt; Brain defect found [ &lt;&lt;print $activeFluffy.geneString.substring(100,103)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(120,121) == $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) == $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
 	&lt;br&gt; Eye defect found [ &lt;&lt;print $activeFluffy.geneString.substring(120,123)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(84,85) == $activeFluffy.geneString.substring(86,87) &amp;&amp; $activeFluffy.geneString.substring(84,85) == $activeFluffy.geneString.substring(84,85).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(84,85) === $activeFluffy.geneString.substring(86,87) &amp;&amp; $activeFluffy.geneString.substring(84,85) === $activeFluffy.geneString.substring(84,85).toLowerCase()&gt;&gt;
 	&lt;br&gt; Misc1 defect found [ &lt;&lt;print $activeFluffy.geneString.substring(84,87)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(104,105) == $activeFluffy.geneString.substring(106,107) &amp;&amp; $activeFluffy.geneString.substring(104,105) == $activeFluffy.geneString.substring(104,105).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(104,105) === $activeFluffy.geneString.substring(106,107) &amp;&amp; $activeFluffy.geneString.substring(104,105) === $activeFluffy.geneString.substring(104,105).toLowerCase()&gt;&gt;
 	&lt;br&gt; Misc2 defect found [ &lt;&lt;print $activeFluffy.geneString.substring(104,107)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $activeFluffy.geneString.substring(124,125) == $activeFluffy.geneString.substring(126,127) &amp;&amp; $activeFluffy.geneString.substring(124,125) == $activeFluffy.geneString.substring(124,125).toLowerCase()&gt;&gt;
+&lt;&lt;if $activeFluffy.geneString.substring(124,125) === $activeFluffy.geneString.substring(126,127) &amp;&amp; $activeFluffy.geneString.substring(124,125) === $activeFluffy.geneString.substring(124,125).toLowerCase()&gt;&gt;
 	&lt;br&gt; Misc3 defect found [ &lt;&lt;print $activeFluffy.geneString.substring(124,127)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;set _inbreed = $activeFluffy.geneString.substring(168).split(&#39;/&#39;)&gt;&gt;
-&lt;&lt;if Number(_inbreed[0]) == Number(_inbreed[1])&gt;&gt;
+&lt;&lt;if Number(_inbreed[0]) === Number(_inbreed[1])&gt;&gt;
 	&lt;br&gt; Inbreeding found [ &lt;&lt;print $activeFluffy.geneString.substring(168)&gt;&gt; ]
 &lt;&lt;/if&gt;&gt;
 
@@ -7915,42 +7962,220 @@ Inbreeding:
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
 
-	/* Pick a random child trait:*/
-	&lt;&lt;switch random(0,4)&gt;&gt;
-		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.strength++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 140&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
-		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Shy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 80&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Lazy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 80&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 100&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
-		&lt;&lt;case 4&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Peppy&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 120&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
-		&lt;&lt;default&gt;&gt;
-			&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperment = 120&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
+		/* Pick a random child trait:*/
+		&lt;&lt;switch random(0,4)&gt;&gt;
+			&lt;&lt;case 0&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.strength++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 140&gt;&gt;
+				&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
+			&lt;&lt;case 1&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Shy&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 80&gt;&gt;
+				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+			&lt;&lt;case 2&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Lazy&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 80&gt;&gt;
+				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+			&lt;&lt;case 3&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 100&gt;&gt;
+				&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
+			&lt;&lt;case 4&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Peppy&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 120&gt;&gt;
+				&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
+			&lt;&lt;default&gt;&gt;
+				&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
+				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperment = 120&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;&lt;br&gt;@@.red; newFromGene called with no gene.@@&lt;br&gt;&lt;br&gt;
 	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+/* ***
+ *	Call as &lt;&lt;setGeneTraits&gt;&gt;
+ *
+ *	Set genetic traits on $activeFluffy
+ *** */
+&lt;&lt;widget &quot;setGeneTraits&quot;&gt;&gt;
+
+
+/* 3 possible &#39;misc&#39; defects (used to rate general defect severity)*/
+&lt;&lt;set _defectLevel = 1&gt;&gt;
+
+&lt;&lt;if $activeFluffy.geneString.substring(84,85) === $activeFluffy.geneString.substring(86,87) &amp;&amp; $activeFluffy.geneString.substring(84,85) === $activeFluffy.geneString.substring(84,85).toLowerCase()&gt;&gt;
+	&lt;&lt;set _defectLevel++&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;if $activeFluffy.geneString.substring(104,105) === $activeFluffy.geneString.substring(106,107) &amp;&amp; $activeFluffy.geneString.substring(104,105) === $activeFluffy.geneString.substring(104,105).toLowerCase()&gt;&gt;
+	&lt;&lt;set _defectLevel++&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;if $activeFluffy.geneString.substring(124,125) === $activeFluffy.geneString.substring(126,127) &amp;&amp; $activeFluffy.geneString.substring(124,125) === $activeFluffy.geneString.substring(124,125).toLowerCase()&gt;&gt;
+	&lt;&lt;set _defectLevel++&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+ /* Inbreeding */
+&lt;&lt;set _inbreed = $activeFluffy.geneString.substring(168).split(&#39;/&#39;)&gt;&gt;
+&lt;&lt;if Number(_inbreed[0]) == Number(_inbreed[1])&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Inbred &quot;)&gt;&gt;
+	&lt;&lt;set $activeFluffy.strength -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.energy -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.charm -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.thinking -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.learning -= _defectLevel&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Leg defect */
+&lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Limp&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Hobbled&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Lame&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Disabled&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Lung defect */
+&lt;&lt;if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase()&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Dyspnea&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength--&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Asthmatic&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Bronchitis&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;One Lung&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 3&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Weight defect */
+&lt;&lt;if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase()&gt;&gt;
+&lt;&lt;run console.log(&quot;Gene Defect: &quot; + $activeFluffy.geneString.substring(28,29) + &quot;/&quot; + $activeFluffy.geneString.substring(30,31))&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Large&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Overweight&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Fat&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Obese&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+
+/* Heart defect */
+&lt;&lt;if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Heart &quot; + _defectLevel)&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Fertility defect */
+&lt;&lt;if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Fertilty &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;set $activeFluffy.fertility -= _defectLevel&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Growth Defect */
+&lt;&lt;if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Growth &quot; + _defectLevel)&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Stomach defect */
+&lt;&lt;if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Stomach &quot; + _defectLevel)&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Mental defect */
+&lt;&lt;if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Slow&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Dense&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Dumb&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Imbecile&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* Eye defect */
+&lt;&lt;if $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Eyes&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Nearsighted&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 1&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;One Eyed&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Blind&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***

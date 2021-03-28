@@ -85,19 +85,24 @@
 	 /* Pick a random defect gene, remove it from the list, check if it's defective and if it is, up the defect cont*/
 	 <<for $defenctIndex.length > 0>>
 	 	<<set _ri = $defenctIndex.pluck()>>
-		<<run console.log("Fluffy shopping gene test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
+		<<run console.log("Fluffy shopping gene defect test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
 	 
-	 	<<if $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri+2,_ri+3)
-	 	 && $activeFluffy.geneString.substring(_ri,_ri+1) == $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
-	 	 	<<run console.log("Fluffy mart defect found: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
+	 	<<if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3)
+	 	 && $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
+	 	 	<<run console.log("Fluffy shopping gene defect found: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
 	 	 	
 	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
-	 	 	<<if $shop == "mart" && _defectCount >= 3>>
+	 	 	<<if $shop == "mart" && _defectCount >= Number(2 + random(0,1))>>
 	 	 		<<run $activeFluffy.genes.clearDefect(_ri)>>
-	 	 	<<elseif $shop == "mill" && _defectCount >= 5>>
+	 	 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+	 	 	<<elseif $shop == "mill" && _defectCount >= Number(4 + random(0,1))>>
 	 	 		<<run $activeFluffy.genes.clearDefect(_ri)>>
-	 	 	<<elseif $shop == "breeder" && _defectCount >= 1>>
+	 	 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+	 	 	<<elseif $shop == "breeder" && _defectCount >= Number(0 + random(0,1))>>
+<<run console.log("Fluffy shopping gene: clearing index " + _ri)>>
 	 	 		<<run $activeFluffy.genes.clearDefect(_ri)>>
+	 	 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+<<run console.log("Fluffy shopping gene: after clearing: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
 	 	 	<<else>>
 	 	 		<<set _defectCount++>>
 	 	 	<</if>>
@@ -187,6 +192,9 @@
 				<</if>>
 		<</switch>>
 	<</if>>
+	
+	/* Set any traits from bad genes: */
+	<<setGeneTraits>>
 	
 	<<run console.log("Fluffy breeder color test 0: " + $shop)>>
 	<<if $shop == "breeder">>

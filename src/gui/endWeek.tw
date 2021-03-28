@@ -200,7 +200,6 @@
 	<<if ndef $globalFluffies[_ef].nursing>>
 		<<set $globalFluffies[_ef].nursing = -1>>
 	<</if>>
-	
 	<<if $globalFluffies[_ef].nursing < 0>>
 		<<set $globalFluffies[_ef].nursing = 0>>
 	<</if>>
@@ -555,8 +554,23 @@
 						<<set $globalFluffies[_ef].happy += 10>>
 					<</if>>
 			<</switch>>
-	 <</if>>
+		<</if>>
 
+		/* Clamp values: */
+		<<set $globalFluffies[_ef].strength = Math.clamp(Math.trunc($globalFluffies[_ef].strength), 0, 10)>>
+		<<set $globalFluffies[_ef].energy = Math.clamp(Math.trunc($globalFluffies[_ef].energy), 0, 10)>>
+		<<set $globalFluffies[_ef].charm = Math.clamp(Math.trunc($globalFluffies[_ef].charm), 0, 10)>>
+		<<set $globalFluffies[_ef].thinking = Math.clamp(Math.trunc($globalFluffies[_ef].thinking), 0, 10)>>
+		<<set $globalFluffies[_ef].learning = Math.clamp(Math.trunc($globalFluffies[_ef].learning), 0, 10)>>
+		<<set $globalFluffies[_ef].fertility = Math.clamp(Math.trunc($globalFluffies[_ef].fertility), 0, 10)>>
+
+		/* Clamp these to 0-200 */
+		<<set $globalFluffies[_ef].trust = Math.clamp(Math.trunc($globalFluffies[_ef].trust), 0, 200)>>
+		<<set $globalFluffies[_ef].training = Math.clamp(Math.trunc($globalFluffies[_ef].training), 0, 200)>>
+		<<set $globalFluffies[_ef].temperament = Math.clamp(Math.trunc($globalFluffies[_ef].temperament), 0, 200)>>
+		<<set $globalFluffies[_ef].happy = Math.clamp(Math.trunc($globalFluffies[_ef].happy), 0, 200)>>
+		<<set $globalFluffies[_ef].stress = Math.clamp(Math.trunc($globalFluffies[_ef].stress), 0, 200)>>
+		<<set $globalFluffies[_ef].trauma = Math.clamp(Math.trunc($globalFluffies[_ef].trauma), 0, 200)>>
 
 <<run console.log("Mating test 1: " + $globalFluffies[_ef].specialFriend + " | " + $globalFluffies[_ef].gender)>>
 
