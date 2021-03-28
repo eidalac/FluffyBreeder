@@ -3993,6 +3993,8 @@ This list shows all fluffies in your store that are not on display (up for sale)
 &lt;br&gt;The &lt;&lt;button &quot;Bulk Sell&quot;&gt;&gt;&lt;&lt;/button&gt;&gt; button will put all selected fluffies on display (for sale), but will ignore unweaned foals, nursing and pregnant mothers.
 &lt;br&gt;There will eventually be support for selling nursing foals/pregnant mothers. 
 &lt;br&gt;
+&lt;br&gt;The &lt;&lt;button &quot;Bulk Removal&quot;&gt;&gt;&lt;&lt;/button&gt;&gt; button will remove the selected fluffies with the option picked in the box to the left.  @@.coral;Euthanize@@ is a @@.lightcoral;Hugbox@@ action, @@.coral;Murder@@ is considered  a @@.lightcoral;Abuse@@ and @@.coral;Release@@ is a neutral action.
+&lt;br&gt;
 &lt;br&gt;The &lt;&lt;button &quot;Bulk Feeding&quot;&gt;&gt;&lt;&lt;/button&gt;&gt; button will set the selected food type and quality to all selected fluffies.  This will ignore nursing foals unless Formula is selected, and will ignore adults if Formula is selected.
 &lt;h2&gt;@@.coral;Fluffy Status@@&lt;/h2&gt;
 The list displays a basic stat block for each fluffy.
@@ -4122,8 +4124,10 @@ This page shows some details of the selected fluffy and specific interactions yo
 */
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Train@@ - You spend time training the fluffy.  This costs @@.mediumorchid;Stamina@@ and raises player @@.hotpink;Stress@@.  It increases the fluffy&#39;s @@.hotpink;Trust@@ and @@.hotpink;Training@@ levels.&lt;/p&gt;
 
-
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Abuse@@ - Abuse the fluffy.  This costs @@.mediumorchid;Stamina@@.  Abuse reduces player @@.mediumorchid;Stress@@ significantly.  Abuse decreases fluffy @@.mediumorchid;Trust@@, @@.mediumorchid;Happiness@@ and @@.mediumorchid;Temperament@@.  It raises your @@.hotpink;Abuse@@ rating and increases the fluffy @@.hotpink;Stress@@. &lt;/p&gt;
+
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Remove@@ - Removes the fluffy.  @@.coral;Euthanize@@ is a @@.lightcoral;Hugbox@@ action, @@.coral;Murder@@ is considered  a @@.lightcoral;Abuse@@ and @@.coral;Release@@ is a neutral action.&lt;/p&gt;
+
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
@@ -5231,7 +5235,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.2.3c-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.4.12-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -6477,8 +6481,47 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 /* Form for error message to display*/
 &lt;span id=&quot;abuse-msg&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
+&lt;br&gt;
+&lt;div id=&quot;remove-form&quot;&gt;
+&lt;&lt;listbox &quot;_removeType&quot; autoselect&gt;&gt;
+	&lt;&lt;option &quot;Euthanize&quot;&gt;&gt;
+	&lt;&lt;option &quot;Release&quot;&gt;&gt;
+	&lt;&lt;option &quot;Murder&quot;&gt;&gt;
+&lt;&lt;/listbox&gt;&gt;
+&lt;&lt;set _desc = &quot;Remove &quot; + $activeFluffy.name&gt;&gt; 
 
+&lt;&lt;button _desc&gt;&gt;
+	&lt;&lt;replace &quot;#remove-msg&quot;&gt;&gt;&lt;br&gt;Are you sure you want to &lt;&lt;- _desc&gt;&gt;?
+		&lt;&lt;button [[Yes, do it.|Fluffy List]]&gt;&gt;
+			&lt;&lt;if _removeType == &quot;Euthanize&quot;&gt;&gt;
+				&lt;&lt;set $hugbox++&gt;&gt;
+			&lt;&lt;elseif _removeType == &quot;Murder&quot;&gt;&gt;
+				&lt;&lt;set $abuse++&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead == true&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].onDisplay = false&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].pregnant = false&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].nursing = 0&gt;&gt;
+					
+			&lt;&lt;if $globalFluffies[$activeFluffy.ID].specialFriend != -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.ID].specialFriend = -1&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+				
+			&lt;&lt;if $globalFluffies[$activeFluffy.ID].foodType == &quot;Nursing&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
+			&lt;&lt;/if&gt;&gt; /* Close nursing check */
+			
+			&lt;&lt;run $ourStore.fluffies.delete($activeFluffy.ID)&gt;&gt;
+		&lt;&lt;/button&gt;&gt;
 
+	&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+
+/* Form for error message to display*/
+&lt;span id=&quot;remove-msg&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
 
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Fluffy List" tags="nobr" position="225,350" size="100,100">/* **********
@@ -6581,6 +6624,40 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/if&gt;&gt;
 
 &amp;nbsp;|&amp;nbsp;
+&lt;&lt;listbox &quot;_removeType&quot; autoselect&gt;&gt;
+	&lt;&lt;option &quot;Euthanize&quot;&gt;&gt;
+	&lt;&lt;option &quot;Release&quot;&gt;&gt;
+	&lt;&lt;option &quot;Murder&quot;&gt;&gt;
+&lt;&lt;/listbox&gt;&gt;
+&lt;&lt;button [[Bulk Removal|Fluffy List]]&gt;&gt;
+	&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+		&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+			&lt;&lt;if _removeType == &quot;Euthanize&quot;&gt;&gt;
+				&lt;&lt;set $hugbox++&gt;&gt;
+			&lt;&lt;elseif _removeType == &quot;Murder&quot;&gt;&gt;
+				&lt;&lt;set $abuse++&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;set $globalFluffies[_bf].dead == true&gt;&gt;
+			&lt;&lt;set $globalFluffies[_bf].onDisplay = false&gt;&gt;
+			&lt;&lt;set $globalFluffies[_bf].pregnant = false&gt;&gt;
+			&lt;&lt;set $globalFluffies[_bf].nursing = 0&gt;&gt;
+			
+			&lt;&lt;if $globalFluffies[_bf].specialFriend != -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_bf].specialFriend = -1&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			
+			&lt;&lt;if $globalFluffies[_bf].foodType == &quot;Nursing&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+			&lt;&lt;/if&gt;&gt; /* Close nursing check */
+		
+			&lt;&lt;run $ourStore.fluffies.delete(_bf)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+
+&lt;br&gt;&lt;br&gt;
 &lt;&lt;listbox &quot;_foodType&quot; autoselect&gt;&gt;
 	&lt;&lt;option &quot;Kibble&quot;&gt;&gt;
 	&lt;&lt;option &quot;Greens&quot;&gt;&gt;

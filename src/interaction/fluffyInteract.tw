@@ -148,8 +148,47 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 /* Form for error message to display*/
 <span id="abuse-msg"></span>
 </div>
+<br>
+<div id="remove-form">
+<<listbox "_removeType" autoselect>>
+	<<option "Euthanize">>
+	<<option "Release">>
+	<<option "Murder">>
+<</listbox>>
+<<set _desc = "Remove " + $activeFluffy.name>> 
 
+<<button _desc>>
+	<<replace "#remove-msg">><br>Are you sure you want to <<- _desc>>?
+		<<button [[Yes, do it.|Fluffy List]]>>
+			<<if _removeType == "Euthanize">>
+				<<set $hugbox++>>
+			<<elseif _removeType == "Murder">>
+				<<set $abuse++>>
+			<</if>>
+		
+			<<set $globalFluffies[$activeFluffy.ID].dead == true>>
+			<<set $globalFluffies[$activeFluffy.ID].onDisplay = false>>
+			<<set $globalFluffies[$activeFluffy.ID].pregnant = false>>
+			<<set $globalFluffies[$activeFluffy.ID].nursing = 0>>
+					
+			<<if $globalFluffies[$activeFluffy.ID].specialFriend != -1>>
+				<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1>>
+				<<set $globalFluffies[$activeFluffy.ID].specialFriend = -1>>
+			<</if>>
+				
+			<<if $globalFluffies[$activeFluffy.ID].foodType == "Nursing">>
+				<<set $globalFluffies[$activeFluffy.mother].nursing-->>
+			<</if>> /* Close nursing check */
+			
+			<<run $ourStore.fluffies.delete($activeFluffy.ID)>>
+		<</button>>
 
+	<</replace>>
+<</button>>
+
+/* Form for error message to display*/
+<span id="remove-msg"></span>
+</div>
 
 /* Sidebar link for mobile users */
 <<SidebarButton>>

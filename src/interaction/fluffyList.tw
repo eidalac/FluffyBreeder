@@ -100,6 +100,40 @@ Bulk Actions (all checked fluffies)
 <</if>>
 
 &nbsp;|&nbsp;
+<<listbox "_removeType" autoselect>>
+	<<option "Euthanize">>
+	<<option "Release">>
+	<<option "Murder">>
+<</listbox>>
+<<button [[Bulk Removal|Fluffy List]]>>
+	<<for _bf range $ourStore.fluffies>>
+		<<if $globalFluffies[_bf].isChecked == true>>
+			<<if _removeType == "Euthanize">>
+				<<set $hugbox++>>
+			<<elseif _removeType == "Murder">>
+				<<set $abuse++>>
+			<</if>>
+
+			<<set $globalFluffies[_bf].dead == true>>
+			<<set $globalFluffies[_bf].onDisplay = false>>
+			<<set $globalFluffies[_bf].pregnant = false>>
+			<<set $globalFluffies[_bf].nursing = 0>>
+			
+			<<if $globalFluffies[_bf].specialFriend != -1>>
+				<<set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1>>
+				<<set $globalFluffies[_bf].specialFriend = -1>>
+			<</if>>
+			
+			<<if $globalFluffies[_bf].foodType == "Nursing">>
+				<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+			<</if>> /* Close nursing check */
+		
+			<<run $ourStore.fluffies.delete(_bf)>>
+		<</if>>
+	<</for>>
+<</button>>
+
+<br><br>
 <<listbox "_foodType" autoselect>>
 	<<option "Kibble">>
 	<<option "Greens">>
