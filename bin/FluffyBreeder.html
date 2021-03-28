@@ -3684,7 +3684,7 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
-						&lt;&lt;run $ourStore.fluffies.deleteAt(_fl)&gt;&gt;
+						&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
 &lt;&lt;run console.log(&quot;Customer test post removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;
 &lt;&lt;run console.log(&quot;Customer test post removal:&quot; + $ourStore.fluffies)&gt;&gt;
 					&lt;&lt;/if&gt;&gt; /* Close needs check */
@@ -5202,7 +5202,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.2.2c-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.2.3c-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -6581,61 +6581,73 @@ Bulk Actions (all checked fluffies)
 &amp;nbsp;|&amp;nbsp;
 &lt;hr&gt;
 
-	&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
-		&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
+&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
+	&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
+	
+	/* Double check we are removing sold fluffies: */
+	&lt;&lt;if $globalFluffies[_fl].sold == true&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	/* Double check we are removing dead fluffies: */
+	&lt;&lt;if $globalFluffies[_fl].dead == true&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-		/* &lt; 1 year old */
-		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
-			&lt;&lt;set $ourStore.foals++&gt;&gt;
-			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-				&lt;&lt;continue&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.stallions++&gt;&gt;
-			&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-				&lt;&lt;continue&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $ourStore.mares++&gt;&gt;
-
-			&lt;&lt;if $listType != &quot;Mares&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-				&lt;&lt;continue&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+	/* &lt; 1 year old */
+	&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
+		&lt;&lt;set $ourStore.foals++&gt;&gt;
+		&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
+		&lt;&lt;set $ourStore.stallions++&gt;&gt;
+		&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $ourStore.mares++&gt;&gt;
 
-		&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+		&lt;&lt;if $listType != &quot;Mares&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;else&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;else&gt;&gt;
 
 
 &lt;&lt;capture _fl, _listFluff&gt;&gt;
-			&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
-			&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
-			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] &lt;&lt;shortDesc _listFluff&gt;&gt;
-			&lt;/p&gt;
-			[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
-			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
-			| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
-			&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
-				&lt;&lt;case 0&gt;&gt; (trash)
-				&lt;&lt;case 1&gt;&gt; (cheap)
-				&lt;&lt;case 2&gt;&gt; (basic)
-				&lt;&lt;case 3&gt;&gt; (good)
-				&lt;&lt;case 4&gt;&gt; (quality)
-				&lt;&lt;case -1&gt;&gt; 
-			&lt;&lt;/switch&gt;&gt; 
-			&lt;/label&gt;
+		&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
+		&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
+		[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] &lt;&lt;shortDesc _listFluff&gt;&gt;
+		&lt;/p&gt;
+		[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
+		&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
+		| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
+		&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
+			&lt;&lt;case 0&gt;&gt; (trash)
+			&lt;&lt;case 1&gt;&gt; (cheap)
+			&lt;&lt;case 2&gt;&gt; (basic)
+			&lt;&lt;case 3&gt;&gt; (good)
+			&lt;&lt;case 4&gt;&gt; (quality)
+			&lt;&lt;case -1&gt;&gt; 
+		&lt;&lt;/switch&gt;&gt; 
+		&lt;/label&gt;
 &lt;&lt;/capture&gt;&gt;
-			&lt;hr&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
+		&lt;hr&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/for&gt;&gt;
 	
 
 

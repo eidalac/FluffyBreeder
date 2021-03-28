@@ -135,61 +135,73 @@ Bulk Actions (all checked fluffies)
 &nbsp;|&nbsp;
 <hr>
 
-	<<for _fl range $ourStore.fluffies>>
-		<<set _listFluff = $globalFluffies[_fl]>>
+<<for _fl range $ourStore.fluffies>>
+	<<set _listFluff = $globalFluffies[_fl]>>
+	
+	/* Double check we are removing sold fluffies: */
+	<<if $globalFluffies[_fl].sold == true>>
+		<<run $ourStore.fluffies.delete(_fl)>>
+		<<continue>>
+	<</if>>
+	
+	/* Double check we are removing dead fluffies: */
+	<<if $globalFluffies[_fl].dead == true>>
+		<<run $ourStore.fluffies.delete(_fl)>>
+		<<continue>>
+	<</if>>
 
-		/* < 1 year old */
-		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
-			<<set $ourStore.foals++>>
-			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
-				<<continue>>
-			<</if>>
-		<<elseif _listFluff.gender == "male">>
-			<<set $ourStore.stallions++>>
-			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
-				<<continue>>
-			<</if>>
-		<<else>>
-			<<set $ourStore.mares++>>
-
-			<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
-				<<continue>>
-			<</if>>
+	/* < 1 year old */
+	<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
+		<<set $ourStore.foals++>>
+		<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
+			<<continue>>
 		<</if>>
+	<<elseif _listFluff.gender == "male">>
+		<<set $ourStore.stallions++>>
+		<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
+			<<continue>>
+		<</if>>
+	<<else>>
+		<<set $ourStore.mares++>>
 
-		<<if _listFluff.onDisplay == true && $listType != "Display">>
+		<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
 			<<set $globalFluffies[_fl].isChecked = false>>
 			<<continue>>
-		<<elseif _listFluff.onDisplay == false && $listType == "Display">>
-			<<set $globalFluffies[_fl].isChecked = false>>
-			<<continue>>
-		<<else>>
+		<</if>>
+	<</if>>
+
+	<<if _listFluff.onDisplay == true && $listType != "Display">>
+		<<set $globalFluffies[_fl].isChecked = false>>
+		<<continue>>
+	<<elseif _listFluff.onDisplay == false && $listType == "Display">>
+		<<set $globalFluffies[_fl].isChecked = false>>
+		<<continue>>
+	<<else>>
 
 
 <<capture _fl, _listFluff>>
-			<label>	<p class="hang">
-			<<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>>
-			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] <<shortDesc _listFluff>>
-			</p>
-			[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
-			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]<</if>>
-			| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
-			<<switch _listFluff.foodQuality>>
-				<<case 0>> (trash)
-				<<case 1>> (cheap)
-				<<case 2>> (basic)
-				<<case 3>> (good)
-				<<case 4>> (quality)
-				<<case -1>> 
-			<</switch>> 
-			</label>
+		<label>	<p class="hang">
+		<<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>>
+		[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff]] <<shortDesc _listFluff>>
+		</p>
+		[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1]] |
+		<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]<</if>>
+		| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]] _listFluff.foodType
+		<<switch _listFluff.foodQuality>>
+			<<case 0>> (trash)
+			<<case 1>> (cheap)
+			<<case 2>> (basic)
+			<<case 3>> (good)
+			<<case 4>> (quality)
+			<<case -1>> 
+		<</switch>> 
+		</label>
 <</capture>>
-			<hr>
-		<</if>>
-	<</for>>
+		<hr>
+	<</if>>
+<</for>>
 	
 
 
