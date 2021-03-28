@@ -37,6 +37,17 @@
  *** */
 <<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@border:4px solid "+$args[0]+";"+$args[0]>><</if>><</widget>>
 
+/* ***
+ *	Called as <<displayStat $stat>>
+ *	Returns a display of this stat value based on the player xp level.
+ *** */
+<<widget "displayStat">>
+	<<if  $debugMode>>
+		@@.orange;$args[0]@@
+	<<else>>
+		<<- $training >= 60 ? $args[0] : $training >= 40 ? $args[0] < 3 ? "@@.red;Low@@" : $args[0] < 5 ? "@@.yellow;Average@@" : "@@.green;High@@" : "?">>
+	<</if>>
+<</widget>>
 
 
 <<widget statValue>>
@@ -85,10 +96,11 @@
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  <<They>> is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
-	<br>Strength: [$activeFluffy.strength], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
-	<br> Color Bonus: $activeFluffy.colorBonus. 
-	<br> Stat Bonus: $activeFluffy.statBonus.
-	
+	<br>Strength: [<<displayStat $activeFluffy.strength>>], Energy [<<displayStat $activeFluffy.energy>>], Charm [<<displayStat $activeFluffy.charm>>], Thinking [<<displayStat $activeFluffy.thinking>>], Learning [<<displayStat $activeFluffy.learning>>].
+
+/*	<br> Color Bonus: $activeFluffy.colorBonus. 
+	<br> Stat Bonus: $activeFluffy.statBonus.*/
+	/*
 	<<set _price = Number($activeFluffy.training)>>
 <<run console.log("Price test 1: " + _price)>>
 	<<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
@@ -125,7 +137,8 @@
 	<</if>>
 	
 <<run console.log("Price test 9: " + _price)>>
-	<br>[Price: _price]
+*/
+	/*<br>[Price: _price]*/
 	
 <</widget>>
 
@@ -162,8 +175,9 @@
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<</if>>
 
+
 	<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
-	<br>Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	<br>Strength: [<<displayStat _fluffy.strength>>], Energy [<<displayStat _fluffy.energy>>], Charm [<<displayStat _fluffy.charm>>], Thinking [<<displayStat _fluffy.thinking>>], Learning [<<displayStat _fluffy.learning>>].
 	<br>Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
 	<br>_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
 	<br>Traits: 

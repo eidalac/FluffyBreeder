@@ -2911,9 +2911,10 @@ console.log("cleared defects parts = " + this.genes[index])
 			
 		/* The main event: */
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting a foal.
+			&lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting &lt;&lt;- $activeFluffy.name&gt;&gt;.
+			&lt;br&gt;&lt;&lt;They&gt;&gt; is a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.
 			&lt;br&gt;
-			
+
 			&lt;br&gt;
 			/* Temperament and personality checks*/
 			&lt;&lt;switch $globalFluffies[$activeFluffy.mother].traits[0]&gt;&gt;
@@ -4127,6 +4128,7 @@ Mother, Father and any children
 &lt;&lt;set $eventBirths = []&gt;&gt;
 &lt;&lt;set $eventBirthRejection = []&gt;&gt;
 &lt;&lt;set $eventCustomer = []&gt;&gt;
+&lt;&lt;set $eventStress = []&gt;&gt;
 
 
 /* ***
@@ -4697,6 +4699,10 @@ Mother, Father and any children
 &lt;&lt;set $week++&gt;&gt;
 &lt;&lt;set $actions = 10&gt;&gt;
 
+&lt;&lt;for _stressCount = 10; _stressCount &lt;= $stress; _stressCount += 10&gt;&gt;
+	&lt;&lt;run $eventStress.push(_stressCount)&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
 &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="10" name="Disclaimer" tags="nobr" position="1225,100" size="100,100">/* **********
  * Disclaimer.tw
  *
@@ -5196,7 +5202,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.2.1c-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.2.2c-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5672,78 +5678,56 @@ profitsTotal: 0
 	
 /*		&lt;&lt;set _shopFluffy = clone($activeFluffy)&gt;&gt;*/
 	&lt;&lt;FluffyDesc&gt;&gt;
-	&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
-	
+
+	&lt;&lt;set _price = 0&gt;&gt;
+		
 	&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-		&lt;&lt;set _price = 0&gt;&gt;
 		&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
 		&lt;&lt;run console.log(&quot;Feral test 0: &quot; + $activeFluffy.traits)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
+		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
+		
+		&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
+			&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 1: &quot; + _price)&gt;&gt;		
+
+		&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Price test 2: &quot; + _price)&gt;&gt;
+
 		&lt;&lt;switch $activeFluffy.breed&gt;&gt;
 			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-				&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-				/*
-				&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($unicornPrice.mart).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($unicornPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number(Number($unicornPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				*/
+				&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 			&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-				/*&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($pegasusPrice.mart).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-					&lt;&lt;set _price = Number($pegasusPrice.mill).toFixed(2)&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set _price = Number(Number($pegasusPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _price = 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;*/
+				&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + $alicornPrice.deluxe)&gt;&gt;
-				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + _price)&gt;&gt;
-				&lt;&lt;run console.log(&quot;Alicorn test 0: &quot; + Number(Number($alicornPrice.deluxe) + Number(_price)))&gt;&gt;
-				&lt;&lt;set _price = Number(Number($alicornPrice.deluxe) + Number(_price))&gt;&gt;
-				&lt;&lt;run console.log(&quot;Alicorn test 1: &quot; + _price)&gt;&gt;
-
+				&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 			&lt;&lt;default&gt;&gt;
-				&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
-					/*
-					&lt;&lt;if $shop == &quot;mart&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($earthPrice.mart).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt; 
-						&lt;&lt;set _price = Number($earthPrice.mill).toFixed(2)&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(Number($earthPrice.deluxe).toFixed(2) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _price = 0&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					*/
+				&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
+		
+		&lt;&lt;set _ageMulti = 1&gt;&gt;
+		
+&lt;&lt;run console.log(&quot;Price test 5: &quot; + _price)&gt;&gt;
+		&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 6: &quot; + _price)&gt;&gt;
+		&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 7: &quot; + _price)&gt;&gt;
+		&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
+			&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
+		&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+
+		@@.green;¤_price.@@
+		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-		&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
-		&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
-		&lt;&lt;set _price = Number(_price) + Number($activeFluffy.training)&gt;&gt;
-		&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
-	&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
-
-	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
-		&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-
-	@@.green;¤_price.@@
-	&lt;hr&gt;
+	
+	
 	&lt;&lt;if $actions &lt; 1&gt;&gt;
 		//You are too tired for more shopping// | 
 	&lt;&lt;else&gt;&gt;
@@ -7456,6 +7440,17 @@ Inbreeding:
  *** */
 &lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;- &quot;@@border:4px solid &quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Called as &lt;&lt;displayStat $stat&gt;&gt;
+ *	Returns a display of this stat value based on the player xp level.
+ *** */
+&lt;&lt;widget &quot;displayStat&quot;&gt;&gt;
+	&lt;&lt;if  $debugMode&gt;&gt;
+		@@.orange;$args[0]@@
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- $training &gt;= 60 ? $args[0] : $training &gt;= 40 ? $args[0] &lt; 3 ? &quot;@@.red;Low@@&quot; : $args[0] &lt; 5 ? &quot;@@.yellow;Average@@&quot; : &quot;@@.green;High@@&quot; : &quot;?&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
 
 
 &lt;&lt;widget statValue&gt;&gt;
@@ -7504,10 +7499,11 @@ Inbreeding:
 	&lt;br&gt;&lt;&lt;They&gt;&gt; is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight (max $activeFluffy.maxWeight) KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long (max $activeFluffy.maxLength) and is $activeFluffy.height cm tall (max $activeFluffy.maxHeight).  
 	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of $activeFluffy.fertility.
-	&lt;br&gt;Strength: [$activeFluffy.strength], Energy [$activeFluffy.energy], Charm [$activeFluffy.charm], Thinking [$activeFluffy.thinking], Learning [$activeFluffy.learning].
-	&lt;br&gt; Color Bonus: $activeFluffy.colorBonus. 
-	&lt;br&gt; Stat Bonus: $activeFluffy.statBonus.
-	
+	&lt;br&gt;Strength: [&lt;&lt;displayStat $activeFluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat $activeFluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat $activeFluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat $activeFluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat $activeFluffy.learning&gt;&gt;].
+
+/*	&lt;br&gt; Color Bonus: $activeFluffy.colorBonus. 
+	&lt;br&gt; Stat Bonus: $activeFluffy.statBonus.*/
+	/*
 	&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
 &lt;&lt;run console.log(&quot;Price test 1: &quot; + _price)&gt;&gt;
 	&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
@@ -7544,7 +7540,8 @@ Inbreeding:
 	&lt;&lt;/if&gt;&gt;
 	
 &lt;&lt;run console.log(&quot;Price test 9: &quot; + _price)&gt;&gt;
-	&lt;br&gt;[Price: _price]
+*/
+	/*&lt;br&gt;[Price: _price]*/
 	
 &lt;&lt;/widget&gt;&gt;
 
@@ -7581,8 +7578,9 @@ Inbreeding:
 		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
+
 	&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;Strength [_fluffy.strength] Energy [_fluffy.energy] Charm [_fluffy.charm] Thinking [_fluffy.thinking] Learning [_fluffy.learning] Fertility [_fluffy.fertility]
+	&lt;br&gt;Strength: [&lt;&lt;displayStat _fluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat _fluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat _fluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat _fluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat _fluffy.learning&gt;&gt;].
 	&lt;br&gt;Trust [_fluffy.trust] Training [_fluffy.training] Temperament [_fluffy.temperament] Happiness [_fluffy.happy] Stress [_fluffy.stress] Trauma [_fluffy.trauma]
 	&lt;br&gt;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
 	&lt;br&gt;Traits: 
