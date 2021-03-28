@@ -57,9 +57,11 @@ The exception to this is if the player suffers high levels of stress, which may 
 
 5. How to play
 
-The current build is at https://github.com/eidalac/FluffyBreeder/releases/tag/00.00.10
+Download fluffyBreeder.html from the current build link above.
 
-Download and lauch FluffyBreeder.html
+It should run on any browser that supports JavaScript, but there are reports that iOS does not run it correctly (information about TWINE support for iOS is unclear).
+
+If it fails to run in your normal browser/OS, check for a TWINE player application for your device.
 
 That's all.
 
