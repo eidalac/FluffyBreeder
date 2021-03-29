@@ -70,8 +70,30 @@
 	
 	<<run console.log("Birth test 4: " + _diff)>>
 	
-		/* Stillbirth chance; we display some info about the foal (type and color), so this happens after generating it. */
+		<<set _stillbirth = false>>
+		
+		/* Random based on fertility: */
 		<<if random(0, 100) >= _diff>>
+			<<set _stillbirth = true>>
+		<</if>>
+		
+		/* bad gene trifect 1: */
+		<<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
+			<<set _stillbirth = true>>
+		<</if>>
+
+		/* bad gene trifect 2: */
+		<<if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &&$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
+			<<set _stillbirth = true>>
+		<</if>>
+
+		/* bad gene trifect 3: */
+		<<if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) && $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
+			<<set _stillbirth = true>>
+		<</if>>
+	
+		/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
+		<<if _stillbirth>
 			<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
 			<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
 			<<set _mom.stress += 25>>
@@ -87,6 +109,8 @@
 	<<run console.log("Birth test 6: " + _diff)>>
 			/* Set any traits from bad genes: */
 			<<setGeneTraits>>
+
+
 
 
 			/* Print the foal info */	

@@ -273,6 +273,7 @@
 	<<set $activeFluffy.charm -= _defectLevel>>
 	<<set $activeFluffy.thinking -= _defectLevel>>
 	<<set $activeFluffy.learning -= _defectLevel>>
+	<<set _defectLevel++>>
 <</if>>
 
 /* Leg defect */
@@ -282,7 +283,7 @@
 			<<run $activeFluffy.traits.push("Limp")>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Hobbled")>>
+			<<run $activeFluffy.traits.push("Limp")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 1>>
 		<<case 3>>
@@ -291,7 +292,7 @@
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Disabled")>>
+			<<run $activeFluffy.traits.push("Lame")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -302,21 +303,21 @@
 <<if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Dyspnea")>>
+			<<run $activeFluffy.traits.push("Breathless")>>
 			<<set $activeFluffy.energy-->>
 			<<set $activeFluffy.strength-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Asthmatic")>>
+			<<run $activeFluffy.traits.push("Breathless")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 1>>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Bronchitis")>>
+			<<run $activeFluffy.traits.push("Asthmatic")>>
 			<<set $activeFluffy.energy  -= 3>>
 			<<set $activeFluffy.strength -= 3>>
 			<<set $activeFluffy.charm -= 2>>
 		<<default>>
-			<<run $activeFluffy.traits.push("One Lung")>>
+			<<run $activeFluffy.traits.push("Asthmatic")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 4>>
 			<<set $activeFluffy.charm -= 3>>
@@ -333,7 +334,7 @@
 
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Large")>>
+			<<run $activeFluffy.traits.push("Overweight")>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
 			<<run $activeFluffy.traits.push("Overweight")>>
@@ -345,7 +346,7 @@
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Obese")>>
+			<<run $activeFluffy.traits.push("Fat")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -355,12 +356,37 @@
 
 /* Heart defect */
 <<if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()>>
-	<<run $activeFluffy.traits.push("Bad Heart " + _defectLevel)>>
+	<<run $activeFluffy.traits.push("feeble" + _defectLevel)>>
+
+	<<set _multiplier = Number(Number(10 + _defectLevel) / 8).toFixed(2)>>
+	<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+	<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+
+	<<switch _defectLevel>>
+		<<case 1>>
+			<<run $activeFluffy.traits.push("Feeble")>>
+			<<set $activeFluffy.energy -= 2>>
+			<<set $activeFluffy.strength -= 1>>
+		<<case 2>>
+			<<run $activeFluffy.traits.push("Feeble")>>
+			<<set $activeFluffy.energy -= 3>>
+			<<set $activeFluffy.strength -= 2>>
+		<<case 3>>
+			<<run $activeFluffy.traits.push("Sickly")>>
+			<<set $activeFluffy.energy -= 4>>
+			<<set $activeFluffy.strength -= 3>>
+			<<set $activeFluffy.charm -= 1>>
+		<<default>>
+			<<run $activeFluffy.traits.push("Sickly")>>
+			<<set $activeFluffy.energy -= 4>>
+			<<set $activeFluffy.strength -= 4>>
+			<<set $activeFluffy.charm -= 2>>
+	<</switch>>
 <</if>>
 
 /* Fertility defect */
 <<if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()>>
-	<<run $activeFluffy.traits.push("Infertile " + _defectLevel)>>
+	<<run $activeFluffy.traits.push("Infertile")>>
 	<<set $activeFluffy.fertility -= _defectLevel>>
 <</if>>
 
@@ -387,21 +413,21 @@
 <<if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Gastritis")>>
+			<<run $activeFluffy.traits.push("Delicate")>>
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Gastritis")>>
+			<<run $activeFluffy.traits.push("Delicate")>>
 			<<set $activeFluffy.thinking -= 2>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Crohn's disease")>>
+			<<run $activeFluffy.traits.push("Faint")>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Stomach Cancer")>>
+			<<run $activeFluffy.traits.push("Faint")>>
 			<<set $activeFluffy.thinking -= 4>>
 			<<set $activeFluffy.learning -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -419,16 +445,16 @@
 <<if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Slow")>>
+			<<run $activeFluffy.traits.push("Simple")>>
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Dense")>>
+			<<run $activeFluffy.traits.push("Simple")>>
 			<<set $activeFluffy.thinking -= 2>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Dumb")>>
+			<<run $activeFluffy.traits.push("Imbecile")>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
@@ -444,14 +470,14 @@
 <<if $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Bad Eyes")>>
+			<<run $activeFluffy.traits.push("Nearsighted")>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
 			<<run $activeFluffy.traits.push("Nearsighted")>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.energy -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("One Eyed")>>
+			<<run $activeFluffy.traits.push("Near Blind")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
