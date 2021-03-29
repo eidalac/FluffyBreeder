@@ -3646,13 +3646,11 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;set $globalFluffies[_fl].pregnant = false&gt;&gt;
 							
 						&lt;&lt;if $globalFluffies[_fl].nursing &gt; 0&gt;&gt;
-							&lt;&lt;for _child range _$globalFluffies[_fl].children&gt;&gt;
-								&lt;&lt;if def $globalFluffies[_child]&gt;&gt;
-									&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
-										&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
-										&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
+							&lt;&lt;for _child range $globalFluffies[_fl].children&gt;&gt;
+								&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+									&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+									&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
 									&lt;&lt;/if&gt;&gt; /* Close nursing check */
-								&lt;&lt;/if&gt;&gt; /* Close child validation check */
 							&lt;&lt;/for&gt;&gt; /* Close child check*/
 						&lt;&lt;/if&gt;&gt; /* Close Nursing check */
 	
@@ -5259,7 +5257,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.5.13-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.5.24-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -8086,6 +8084,11 @@ Inbreeding:
 /* Weight defect */
 &lt;&lt;if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase()&gt;&gt;
 &lt;&lt;run console.log(&quot;Gene Defect: &quot; + $activeFluffy.geneString.substring(28,29) + &quot;/&quot; + $activeFluffy.geneString.substring(30,31))&gt;&gt;
+	
+	&lt;&lt;set _multiplier = Number(Number(10 + _defectLevel) / 10).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)&gt;&gt;
+
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Large&quot;)&gt;&gt;
@@ -8115,18 +8118,59 @@ Inbreeding:
 
 /* Fertility defect */
 &lt;&lt;if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Fertilty &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Infertile &quot; + _defectLevel)&gt;&gt;
 	&lt;&lt;set $activeFluffy.fertility -= _defectLevel&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Growth Defect */
 &lt;&lt;if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Growth &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Runt &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Gene Defect = Runt. _multiplier = &quot; + _multiplier)&gt;&gt;
+&lt;&lt;run console.log(&quot;Gene Defect = Runt. maxLength = &quot; + $activeFluffy.maxLength + &quot;. maxHeight = &quot; + $activeFluffy.maxHeight + &quot;. maxWeight = &quot; + $activeFluffy.maxWeight)&gt;&gt;
+	&lt;&lt;set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)&gt;&gt;
+&lt;&lt;run console.log(&quot;Gene Defect = Runt. maxLength = &quot; + $activeFluffy.maxLength + &quot;. maxHeight = &quot; + $activeFluffy.maxHeight + &quot;. maxWeight = &quot; + $activeFluffy.maxWeight)&gt;&gt;
+
+	&lt;&lt;set $activeFluffy.energy -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.strength -= _defectLevel&gt;&gt;
+	&lt;&lt;set $activeFluffy.charm -= _defectLevel&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Stomach defect */
 &lt;&lt;if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Bad Stomach &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;switch _defectLevel&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Gastritis&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Gastritis&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Crohn&#39;s disease&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Stomach Cancer&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+	
+	&lt;&lt;set _multiplier = Number(Number(10 - _defectLevel) / 8).toFixed(2)&gt;&gt;
+	
+	&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)&gt;&gt;
+	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)&gt;&gt;
+	
+	&lt;&lt;set $activeFluffy.energy -= _defectLevel&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Mental defect */
