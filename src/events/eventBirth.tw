@@ -13,10 +13,8 @@
  
 <<run console.log("Birth test 2:  on birth event page")>>
  
-/*<<for _i = 0; i < $eventBirths.length; i++>>*/
-/* Each birth even entry is the mother giving birth */
-/* Pick a random fulffy from the list and run the birth */
-<<set _mom = $globalFluffies[$eventBirths.pluck()]>>
+/* Each birth event target is the mother giving birth */
+<<set _mom = $globalFluffies[$currentEvent.target]>>
 
 <<set _dad = $globalFluffies[_mom.pregnantBy]>>
 
@@ -43,7 +41,7 @@
 	<<goto "Event Main">>
 
 <<else>>
-	<h1>Birth</h1>
+	<h1>Birth Event</h1>
 	<br>_mom.name is giving birth to _mom.litter foals.
 	<br>@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 	<br>
@@ -143,7 +141,7 @@
 			
 			<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
 				/* Push to event stack  */
-				<<run $eventBirthRejection.push($activeFluffy.ID)>>
+				<<run $eventList.push( { target: $activeFluffy.ID, type: "Rejection" } )>>
 			<</if>> 
 
 			

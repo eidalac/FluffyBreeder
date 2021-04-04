@@ -2684,10 +2684,8 @@ console.log("cleared defects parts = " + this.genes[index])
  
 &lt;&lt;run console.log(&quot;Birth test 2:  on birth event page&quot;)&gt;&gt;
  
-/*&lt;&lt;for _i = 0; i &lt; $eventBirths.length; i++&gt;&gt;*/
-/* Each birth even entry is the mother giving birth */
-/* Pick a random fulffy from the list and run the birth */
-&lt;&lt;set _mom = $globalFluffies[$eventBirths.pluck()]&gt;&gt;
+/* Each birth event target is the mother giving birth */
+&lt;&lt;set _mom = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 &lt;&lt;set _dad = $globalFluffies[_mom.pregnantBy]&gt;&gt;
 
@@ -2714,7 +2712,7 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
 &lt;&lt;else&gt;&gt;
-	&lt;h1&gt;Birth&lt;/h1&gt;
+	&lt;h1&gt;Birth Event&lt;/h1&gt;
 	&lt;br&gt;_mom.name is giving birth to _mom.litter foals.
 	&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
 	&lt;br&gt;
@@ -2814,7 +2812,7 @@ console.log("cleared defects parts = " + this.genes[index])
 			
 			&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
 				/* Push to event stack  */
-				&lt;&lt;run $eventBirthRejection.push($activeFluffy.ID)&gt;&gt;
+				&lt;&lt;run $eventList.push( { target: $activeFluffy.ID, type: &quot;Rejection&quot; } )&gt;&gt;
 			&lt;&lt;/if&gt;&gt; 
 
 			
@@ -2890,11 +2888,10 @@ console.log("cleared defects parts = " + this.genes[index])
  *********** */
  
  
-/* Each birth even entry is the foal involved */
 &lt;&lt;run console.log(&quot;Rejection test 2: On event page.&quot;)&gt;&gt;
 
-/* Pick a random fulffy from the list and run the event */
-&lt;&lt;set $activeFluffy = $globalFluffies[$eventBirthRejection.pluck()]&gt;&gt;
+/* Each rejection event is the foal being rejected */
+&lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 
 &lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
@@ -3255,8 +3252,8 @@ console.log("cleared defects parts = " + this.genes[index])
  
 &lt;&lt;run console.log(&quot;Customer test 2:  on event page&quot;)&gt;&gt;
 
-/* Just using this is a counter for now */
-&lt;&lt;run $eventCustomer.pluck()&gt;&gt;
+/* Each customer is &#39;generated&#39; per fluffy on display.  Don&#39;t do anything with this, but in the future want to make the customer lean towards wanting traits thsi fluffy has */
+&lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
  
  /* First, we build a customer, starting with how many wants it has, up to 6 */
@@ -3739,6 +3736,43 @@ console.log("cleared defects parts = " + this.genes[index])
  
 &lt;&lt;set $showEncyclopedia = 0&gt;&gt;
 
+/* All events are put into this master list */
+&lt;&lt;if $eventList.length&gt;&gt;
+	
+	/* Pick a random event, remove it from the list*/
+	&lt;&lt;set $currentEvent = $eventList.pluck()&gt;&gt;
+
+	/* Run that event based on the type: */
+	&lt;&lt;switch $currentEvent.type&gt;&gt;
+		&lt;&lt;case &quot;Customer&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Customer test 1:  going to event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;
+		&lt;&lt;case &quot;Mating&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Mating test 1:  going to mating event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Mating&quot;&gt;&gt;
+		&lt;&lt;case &quot;Birth&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Birth test 1:  going to birth event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Birth&quot;&gt;&gt;
+		&lt;&lt;case &quot;Rejection&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Rejection test 1:  going to birth event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Birth Rejection&quot;&gt;&gt;
+		&lt;&lt;case &quot;Stress&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Stress test 1:  going to birth event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Stress&quot;&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;run console.log(&quot;Error: invalid event type called [ &quot; + event.type + &quot; ]&quot;)&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+
+&lt;&lt;else&gt;&gt;
+	
+	/* no events fired*/
+	&lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
+	&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;
+	
+&lt;&lt;/if&gt;&gt; /* Close event list */
+
+
+/*
 &lt;&lt;if $eventCustomer.length&gt;&gt;
 &lt;&lt;run console.log(&quot;Customer test 1:  going to event page&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;
@@ -3751,12 +3785,8 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;elseif $eventBirthRejection.length&gt;&gt;
 &lt;&lt;run console.log(&quot;Rejection test 1:  going to birth event page&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Birth Rejection&quot;&gt;&gt;
-&lt;&lt;else&gt;&gt;
-	/* no events fired*/
-	&lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
-	&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;
-	
-&lt;&lt;/if&gt;&gt; /* Close event list */
+*/
+
 
 
 &lt;br&gt;&lt;br&gt;[[CONTINUE|Week Start][$showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;]]
@@ -3777,9 +3807,9 @@ console.log("cleared defects parts = " + this.genes[index])
  
 &lt;&lt;run console.log(&quot;Mating test 2:  on event page&quot;)&gt;&gt;
  
-/* Each birth even entry is the mother involved */
-/* Pick a random fulffy from the list and run the breeding */
-&lt;&lt;set _mom = $globalFluffies[$eventMating.pluck()]&gt;&gt;
+/* Each mating event target is the mare being mated */
+&lt;&lt;set _mom = $globalFluffies[$currentEvent.target]&gt;&gt;
+
 &lt;&lt;set _dad = $globalFluffies[_mom.specialFriend]&gt;&gt;
 &lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
 
@@ -3804,6 +3834,9 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
 &lt;&lt;else&gt;&gt;
+
+&lt;h1&gt;Mating Event&lt;/h1&gt;
+
 	/* Check this here for now, may want to add events if the male is forcefull */				
 	&lt;&lt;if _mom.pregnant || _mom.nursing != 0&gt;&gt;
 	&lt;&lt;run console.log(&quot;Mating test 3 (pregant or nursing): &quot; + _mom.nursing + &quot; | &quot; + _mom.pregnant)&gt;&gt;
@@ -3854,7 +3887,372 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 	
 	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Encyclopedia" tags="nobr" position="975,100" size="100,100">/* **********
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Event Stress" tags="nobr" position="975,100" size="100,100">/* **********
+ * eventStress.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Player stress events
+ *
+ *********** */
+ /*
+ &lt;&lt;for _stressCount = 10; _stressCount &lt;= $stress; _stressCount += 10&gt;&gt;
+	&lt;&lt;run $eventStress.push(_stressCount)&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+*/
+ 
+ 
+&lt;&lt;run console.log(&quot;Stress test 2:  on birth event page&quot;)&gt;&gt;
+
+
+/* 0-10 outcomes 0 is pure hugbox, 1-5 are non abuse, 6-10 are abusive.  Higher the number the worse the outcome. */
+&lt;&lt;set _subEvent = 0&gt;&gt;
+
+
+/* Each stress event is the &#39;level&#39; that generated it, in increments of 10 (20,30,50,100,140, etc) */
+&lt;&lt;set _stressLevel = $currentEvent.target&gt;&gt;
+
+
+
+/* Special case: if the player has no abuse points, we will not force an abuse type event on them, only do a hugbox or neutral event */
+&lt;&lt;if $abuse == 0&gt;&gt;
+	&lt;&lt;set _subEvent = random(0, 4)&gt;&gt;
+	
+&lt;&lt;else&gt;&gt;
+
+	/* How much do we lean to hubox vs abuse? */
+	&lt;&lt;set _leaning = Number($hugbox - $abuse)&gt;&gt;
+&lt;&lt;run console.log(&quot;Stress test 3: _leaning = &quot; + _leaning)&gt;&gt;
+	/* More hugbox */
+	&lt;&lt;if _leaning &gt; 0&gt;&gt;
+		&lt;&lt;set _subEvent = random(1, 5)&gt;&gt;
+	/* More abuse */
+	&lt;&lt;elseif _leaning &lt; 0&gt;&gt;
+		&lt;&lt;set _subEvent = random(6, 10)&gt;&gt;
+	/* Filthy neutral! (= 0) */
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _subEvent = random(3, 7)&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close leaning check*/
+	
+&lt;&lt;run console.log(&quot;Stress test 4: _subEvent = &quot; + _subEvent)&gt;&gt;
+ 	/* Now a random chance to raise/lower the event number based on player xp and stress */
+ 	
+ 	/* Higher the stress trigger, more likely for a bad event. */
+ 	&lt;&lt;if _stressLevel &gt;= random(0,199)&gt;&gt;
+ 		&lt;&lt;set _subEvent++&gt;&gt;
+ 	&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 5: _subEvent = &quot; + _subEvent)&gt;&gt;
+ 	/* Better results from higher hubox stat */
+ 	&lt;&lt;if $hugbox &gt;= random(0,199)&gt;&gt;
+  		&lt;&lt;set _subEvent--&gt;&gt;
+ 	&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 6: _subEvent = &quot; + _subEvent)&gt;&gt; 	
+ 	/* Worse events from higher abuse stat: */
+ 	&lt;&lt;if $abuse &gt;= random(0,199)&gt;&gt;
+  		&lt;&lt;set _subEvent--&gt;&gt;
+ 	&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 7: _subEvent = &quot; + _subEvent)&gt;&gt;
+	/* Clamp in the existing range*/
+	&lt;&lt;set _subEvent = Math.clamp(Math.trunc(_subEvent), 0, 10)&gt;&gt;
+ 	
+&lt;&lt;/if&gt;&gt; /* Close abuse 0 check */
+
+
+/* Pick some random fluffies to target*/
+&lt;&lt;set _fluffyCount = random(1, $ourStore.fluffies.length)&gt;&gt;
+
+/* cap at 5 as a sanity limit */ 
+&lt;&lt;set _fluffyCount = Math.clamp(Math.trunc(_fluffyCount), 0, 5)&gt;&gt;
+
+/* Random chance to drop if there are more than 2 or 4: */
+&lt;&lt;if _fluffyCount &gt; 4 &amp;&amp; random(0,1) == 1&gt;&gt;
+	&lt;&lt;set _fluffyCount--&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;if _fluffyCount &gt; 2 &amp;&amp; random(0,1) == 1&gt;&gt;
+	&lt;&lt;set _fluffyCount--&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+/* We now have 1-5 random fluffies to use for the event */
+&lt;&lt;set _eventFluffies = $ourStore.fluffies.randomMany(_fluffyCount)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 8: &quot; + _eventFluffies.length)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 9: &quot; + _subEvent)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 10: &quot; + $stress)&gt;&gt;
+
+&lt;h1&gt;Stress Event&lt;/h1&gt;
+
+&lt;&lt;switch _subEvent&gt;&gt;
+
+	/* Hubox: Play time */
+	&lt;&lt;case 1&gt;&gt;
+		&lt;br&gt;You close &lt;&lt;- $ourStore.name&gt;&gt; early one day and take some time to play with 
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].happy++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].stress--&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+		
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;much better@@!
+			&lt;&lt;set $stress -= Number(random(2,5) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 10&gt;&gt;
+			&lt;&lt;set $hugbox++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;better@@!
+			&lt;&lt;set $stress -= Number(random(1,3) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+	/* Hubox: Training */
+	&lt;&lt;case 2&gt;&gt;
+		&lt;br&gt;You close &lt;&lt;- $ourStore.name&gt;&gt; early one day to train 
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].training++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament--&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very good@@ about the results.
+			&lt;&lt;set $stress -= Number(random(2,4) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 5&gt;&gt;
+			&lt;&lt;set $hugbox++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;satisfied@@ with the results. 
+			&lt;&lt;set $stress -= Number(random(1,2) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 2&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+	/* Neutral: Netflix */
+	&lt;&lt;case 3&gt;&gt;
+		&lt;br&gt;You spend the weekend on a Neflix binge.
+		&lt;br&gt;
+		&lt;&lt;if random(0,5) == 0&gt;&gt;
+			&lt;br&gt;It was terrible, but you could not stop watching.  You feel @@.hotpink;sleep deprived@@ all week.
+			&lt;&lt;set $stress++&gt;&gt;
+		&lt;&lt;elseif random(0,2) == 0&gt;&gt;
+			&lt;br&gt;It was fantastic.  You feel @@.mediumorchid;amazing@@ this week.
+			&lt;&lt;set $stress -= 10&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;It was nice.  You feel @@.mediumorchid;pretty good@@ this week.
+			&lt;&lt;set $stress -= 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt; 
+
+	/* Neutral: Date */
+	&lt;&lt;case 4&gt;&gt;
+		&lt;br&gt;You go out on date on the weekend.
+		&lt;br&gt;
+		&lt;&lt;if random(0,5) == 0&gt;&gt;
+			&lt;br&gt;It was a disaster.  You feel @@.hotpink;unhappy@@ all week.
+			&lt;&lt;set $stress++&gt;&gt;
+		&lt;&lt;elseif random(0,2) == 0&gt;&gt;
+			&lt;br&gt;It was fantastic.  You feel @@.mediumorchid;amazing@@ this week.
+			&lt;&lt;set $stress -= 20&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;It was nice.  You feel @@.mediumorchid;pretty good@@ this week.
+			&lt;&lt;set $stress -= 10&gt;&gt;
+		&lt;&lt;/if&gt;&gt; 
+
+	/* Neutral: hang with friends */
+	&lt;&lt;case 5&gt;&gt;
+		&lt;br&gt;You hung out with some friends over the weekend.
+		&lt;br&gt;
+		&lt;&lt;if random(0,5) == 0&gt;&gt;
+			&lt;br&gt;It was a disaster.  You feel @@.hotpink;unhappy@@ all week.
+			&lt;&lt;set $stress++&gt;&gt;
+		&lt;&lt;elseif random(0,2) == 0&gt;&gt;
+			&lt;br&gt;You really got to blow off some steam.  You feel @@.mediumorchid;amazing@@ this week.
+			&lt;&lt;set $stress -= 10&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;It was a nice time to relax.  You feel @@.mediumorchid;pretty good@@ this week.
+			&lt;&lt;set $stress -= 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt; 
+	
+	/* Abuse: Displine */
+	&lt;&lt;case 6&gt;&gt;
+		&lt;br&gt;You are forced to &lt;&lt;- $ourStore.name&gt;&gt; early one day to discipline some problem fluffies.   
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].training++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust--&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament--&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].stress++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].happy--&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very good@@ about the results.
+			&lt;&lt;set $stress -= Number(random(2,4) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 6&gt;&gt;
+			&lt;&lt;set $abuse++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;satisfied@@ with the results. 
+			&lt;&lt;set $stress -= Number(random(1,2) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 3&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+
+	/* Abuse: Stress */
+	&lt;&lt;case 7&gt;&gt;
+		&lt;br&gt;You have had enough, and grab
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].stress++&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust--&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament--&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].happy--&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		as some &#39;stress balls&#39;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very good@@ about the results.
+			&lt;&lt;set $stress -= Number(random(2,5) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 7&gt;&gt;
+			&lt;&lt;set $abuse++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;satisfied@@ with the results. 
+			&lt;&lt;set $stress -= Number(random(1,3) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 4&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+	/* Abuse: Trama */
+	&lt;&lt;case 8&gt;&gt;
+		&lt;br&gt;Enraged, you attempt to beat the stupid out of
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].stress += 4&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trama += 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust -= 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament -= 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].happy -= 2&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very good@@ about the results.
+			&lt;&lt;set $stress -= Number(random(3,6) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 8&gt;&gt;
+			&lt;&lt;set $abuse++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;satisfied@@ with the results. 
+			&lt;&lt;set $stress -= Number(random(2,4) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+	/* Abuse: Injury */
+	&lt;&lt;case 9&gt;&gt;
+		&lt;br&gt;You black out.  When you come to, you find a bloody mess around
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].stress += 6&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trama += 3&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].trust -= 3&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].temperament -= 3&gt;&gt;
+			&lt;&lt;set $globalFluffies[_eFluff].happy -= 3&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;strangely pleased@@.
+			&lt;&lt;set $stress -= Number(random(4,7) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 8&gt;&gt;
+			&lt;&lt;set $abuse += 2&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very little@@ about it. 
+			&lt;&lt;set $stress -= Number(random(3,5) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 5&gt;&gt;
+			&lt;&lt;set $abuse += 1&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+	/* Abuse: Murder */
+	&lt;&lt;case 10&gt;&gt;
+		&lt;br&gt;Your would fades to shades of red and black.  You have a vague sense of ripping and tearing.  When it is done you stand over the remains of 
+
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_eFluff].dead = true&gt;&gt;
+				&lt;&lt;set $globalFluffies[_eFluff].onDisplay = false&gt;&gt;
+				&lt;&lt;set $globalFluffies[_eFluff].pregnant = false&gt;&gt;
+				&lt;&lt;set $globalFluffies[_eFluff].nursing = 0&gt;&gt;
+			
+				&lt;&lt;if $globalFluffies[_eFluff].specialFriend != -1&gt;&gt;
+					&lt;&lt;set $globalFluffies[$globalFluffies[_eFluff].specialFriend].specialFriend = -1&gt;&gt;
+					&lt;&lt;set $globalFluffies[_eFluff].specialFriend = -1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+	
+			&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_eFluff].ID)&gt;&gt;
+	
+			&lt;&lt;if $globalFluffies[_eFluff].gender == &quot;male&quot;&gt;&gt;
+				&lt;&lt;set $ourStore.stallions--&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $ourStore.mares--&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+		&lt;br&gt;
+
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;strangely pleased@@.
+			&lt;&lt;set $stress -= Number(random(5,10) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 10&gt;&gt;
+			&lt;&lt;set $abuse += 3&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;very little@@ about it. 
+			&lt;&lt;set $stress -= Number(random(4,8) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 8&gt;&gt;
+			&lt;&lt;set $abuse += 2&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+	
+	/* Default/0: rare hugbox */
+	&lt;&lt;default&gt;&gt;
+		&lt;br&gt;After a long and stressful day, you close up &lt;&lt;- $ourStore.name&gt;&gt; and just collapse from exhaustion.
+		&lt;br&gt;  
+		&lt;br&gt;As you lay there 
+		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
+		&lt;&lt;run console.log(&quot;Stress test 7: &quot; + _i)&gt;&gt;
+			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;&#39;&gt;&gt;
+		&lt;&lt;/for&gt;&gt; all form a makeshift &#39;fluff pile&#39; to try and confort you.
+		&lt;br&gt;
+		
+		&lt;&lt;if _fluffyCount &gt;= random(0, 4) &amp;&amp; _fluffyCount &gt;= random(1, 5)&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;much better@@!
+			&lt;&lt;set $stress -= Number(random(2,5) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 10&gt;&gt;
+			&lt;&lt;set $hugbox++&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;You feel @@.mediumorchid;better@@!
+			&lt;&lt;set $stress -= Number(random(1,3) * _fluffyCount)&gt;&gt;
+			&lt;&lt;set $stress -= 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		
+&lt;&lt;/switch&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Stress test 6: &quot; + $stress)&gt;&gt;
+
+ 	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+	
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="9" name="Encyclopedia" tags="nobr" position="1100,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -4163,7 +4561,7 @@ This page shows some details of the selected fluffy and specific interactions yo
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
-&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="9" name="End Week" tags="nobr" position="1100,100" size="100,100">/* **********
+&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="End Week" tags="nobr" position="1225,100" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -4189,6 +4587,8 @@ This page shows some details of the selected fluffy and specific interactions yo
 &lt;&lt;set _feedCost = 0&gt;&gt;
 
 /* clear event queues */
+&lt;&lt;set $eventList = []&gt;&gt;
+
 &lt;&lt;set $eventMating = []&gt;&gt;
 &lt;&lt;set $eventBirths = []&gt;&gt;
 &lt;&lt;set $eventBirthRejection = []&gt;&gt;
@@ -4349,6 +4749,14 @@ This page shows some details of the selected fluffy and specific interactions yo
 
 &lt;&lt;set $stress = $stress + $stressUp&gt;&gt;
 
+/* Build stress event list: Check once for every 10 points of stress the player has*/
+&lt;&lt;for _stressCount = 10; _stressCount &lt;= $stress; _stressCount += 10&gt;&gt;
+
+	/* Stress events are random, and more likely to fire at higher levels */
+	&lt;&lt;if _stressCount &gt;= random(0,199)&gt;&gt;
+		&lt;&lt;run $eventStress.push(_stressCount)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/for&gt;&gt;
 
 /* ***
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
@@ -4409,9 +4817,9 @@ This page shows some details of the selected fluffy and specific interactions yo
 	 *** */
 	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
 		/* Push to event stack  */
-		&lt;&lt;if $eventCustomer.length &lt; 10&gt;&gt;
+		/*&lt;&lt;if $eventCustomer.length &lt; 10&gt;&gt;*/
 			&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		/*&lt;&lt;/if&gt;&gt;*/
 	/*
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
 			&lt;&lt;set _price = 0&gt;&gt;
@@ -4778,11 +5186,36 @@ This page shows some details of the selected fluffy and specific interactions yo
 &lt;&lt;set $week++&gt;&gt;
 &lt;&lt;set $actions = 10&gt;&gt;
 
-&lt;&lt;for _stressCount = 10; _stressCount &lt;= $stress; _stressCount += 10&gt;&gt;
-	&lt;&lt;run $eventStress.push(_stressCount)&gt;&gt;
+
+/* Build the main event list from each sub list */
+&lt;&lt;for _subEvent range $eventMating&gt;&gt;
+	&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Mating&quot; } )&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="10" name="Disclaimer" tags="nobr" position="1225,100" size="100,100">/* **********
+&lt;&lt;for _subEvent range $eventBirths&gt;&gt;
+	&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Birth&quot; } )&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;set _customerCount = 0&gt;&gt;
+&lt;&lt;for _subEvent range $eventCustomer&gt;&gt;
+	&lt;&lt;set _customerCount++&gt;&gt;
+	
+	&lt;&lt;if _customerCount &lt; 11&gt;&gt;
+		&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Customer&quot; } )&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;for _subEvent range $eventStress&gt;&gt;
+	&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Stress&quot; } )&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;for _subEvent range $eventBirthRejection&gt;&gt;
+	&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Rejection&quot; } )&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;run $eventList.shuffle()&gt;&gt;
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="11" name="Disclaimer" tags="nobr" position="100,225" size="100,100">/* **********
  * Disclaimer.tw
  *
  * Package: FluffyBreeder
@@ -4808,7 +5241,7 @@ This page shows some details of the selected fluffy and specific interactions yo
 &lt;br&gt;
 
 /* Move to the next card */
-&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="11" name="Intro Summary" tags="nobr" position="100,225" size="100,100">/* **********
+&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="12" name="Intro Summary" tags="nobr" position="225,225" size="100,100">/* **********
  * introSummary.tw
  *
  * Package: FluffyBreeder
@@ -4950,7 +5383,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100), $encyclopedia = &quot;Shop Setup&quot;]]
 &lt;br&gt;
 &lt;br&gt;
-[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="12" name="Shop Intro" tags="nobr" position="225,225" size="100,100">/* **********
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="13" name="Shop Intro" tags="nobr" position="350,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -5074,7 +5507,7 @@ __&#39;&#39;World Settings&#39;&#39;__
  *** */
 /*&lt;br&gt;&lt;br&gt;[[Get Fluffies|Fluffy Intro][$cash = Number($storePoints + 100)]]*/
 
-&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="13" name="Week Start" tags="nobr" position="350,225" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[To The Shop|Week Start][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="14" name="Week Start" tags="nobr" position="475,225" size="100,100">/* **********
  * weekStart.tw
  *
  * Package: FluffyBreeder
@@ -5113,7 +5546,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;@@.coral;Get Fluffies@@
 &lt;br&gt;[[Visit Fluffy Mart|Buy Fluffies][$shop = &quot;mart&quot;]] | [[Visit a Fluffy Mill|Buy Fluffies][$shop = &quot;mill&quot;]] | [[Visit a Fluffy Breeder|Buy Fluffies][$shop = &quot;breeder&quot;]] | [[Hunt Ferals|Buy Fluffies][$shop = &quot;feral&quot;]]
 &lt;br&gt;
-&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="StoryCaption" tags="" position="475,225" size="100,100">/* **********
+&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="StoryCaption" tags="" position="600,225" size="100,100">/* **********
  *	storyCaption.tw
  *
  *	Package: FluffyBreeder
@@ -5256,7 +5689,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 	&lt;br&gt;
 	&lt;&lt;link &quot;Bug Report&quot;&gt;&gt;&lt;&lt;bugreport&gt;&gt;&lt;&lt;/link&gt;&gt;
 
-&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="init" tags="nobr" position="600,225" size="100,100">/* **********
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="init" tags="nobr" position="725,225" size="100,100">/* **********
   *	Fluffy Breeder
 a text-based fluffy management game
  *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
@@ -5281,7 +5714,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.5.36-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.6.46-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5549,7 +5982,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Buy Fluffies" tags="nobr" position="725,225" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Buy Fluffies" tags="nobr" position="850,225" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -5851,7 +6284,7 @@ profitsTotal: 0
 		//You lack the necessary funds to buy this fluffy// | 
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-[[End Shopping|Week Start][$actions--]]</tw-passagedata><tw-passagedata pid="17" name="Buy Food" tags="nobr" position="850,225" size="100,100">/* **********
+[[End Shopping|Week Start][$actions--]]</tw-passagedata><tw-passagedata pid="18" name="Buy Food" tags="nobr" position="975,225" size="100,100">/* **********
  * Buy Food.tw
  *
  * Package: FluffyBreeder
@@ -5989,7 +6422,7 @@ profitsTotal: 0
 
 &lt;br&gt;&lt;br&gt;
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="Buy Upgrades" tags="nobr" position="975,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="Buy Upgrades" tags="nobr" position="1100,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -6158,7 +6591,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="Fluffy Breeding" tags="nobr" position="1100,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="Fluffy Breeding" tags="nobr" position="1225,225" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -6251,7 +6684,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;/if&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="Fluffy Feeding" tags="nobr" position="1225,225" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="Fluffy Feeding" tags="nobr" position="100,350" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -6387,7 +6820,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="Fluffy Interact" tags="nobr" position="100,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Fluffy Interact" tags="nobr" position="225,350" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -6578,7 +7011,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;/div&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Fluffy List" tags="nobr" position="225,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="Fluffy List" tags="nobr" position="350,350" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -6842,7 +7275,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="Fluffy Selling" tags="nobr" position="350,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Fluffy Selling" tags="nobr" position="475,350" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -6921,7 +7354,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/capture&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Gene Lab" tags="nobr" position="475,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="Gene Lab" tags="nobr" position="600,350" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -7596,7 +8029,7 @@ Inbreeding:
 
 
 &lt;br&gt;
-[[Exit the Lab|Fluffy Interact]]</tw-passagedata><tw-passagedata pid="25" name="description widgets" tags="widget nobr" position="600,350" size="100,100">/* **********
+[[Exit the Lab|Fluffy Interact]]</tw-passagedata><tw-passagedata pid="26" name="description widgets" tags="widget nobr" position="725,350" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -7799,7 +8232,7 @@ Inbreeding:
 
 	
 &lt;&lt;/capture&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="26" name="fluffy creation widgets" tags="widget nobr" position="725,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="27" name="fluffy creation widgets" tags="widget nobr" position="850,350" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -8356,7 +8789,7 @@ Inbreeding:
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodType = &quot;Nursing&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="27" name="misc widgets" tags="nobr widget" position="850,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="misc widgets" tags="nobr widget" position="975,350" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -8635,7 +9068,7 @@ Inbreeding:
 	&lt;&lt;set $abuse = Math.clamp(Math.trunc($abuse), 0, 200)&gt;&gt;
 
 	&lt;br&gt;@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="pronoun widgets" tags="widget nobr" position="975,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="29" name="pronoun widgets" tags="widget nobr" position="1100,350" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

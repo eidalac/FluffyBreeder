@@ -13,9 +13,9 @@
  
 <<run console.log("Mating test 2:  on event page")>>
  
-/* Each birth even entry is the mother involved */
-/* Pick a random fulffy from the list and run the breeding */
-<<set _mom = $globalFluffies[$eventMating.pluck()]>>
+/* Each mating event target is the mare being mated */
+<<set _mom = $globalFluffies[$currentEvent.target]>>
+
 <<set _dad = $globalFluffies[_mom.specialFriend]>>
 <<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
 
@@ -40,6 +40,9 @@
 	<<goto "Event Main">>
 
 <<else>>
+
+<h1>Mating Event</h1>
+
 	/* Check this here for now, may want to add events if the male is forcefull */				
 	<<if _mom.pregnant || _mom.nursing != 0>>
 	<<run console.log("Mating test 3 (pregant or nursing): " + _mom.nursing + " | " + _mom.pregnant)>>

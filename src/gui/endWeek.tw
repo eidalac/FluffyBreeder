@@ -26,6 +26,8 @@
 <<set _feedCost = 0>>
 
 /* clear event queues */
+<<set $eventList = []>>
+
 <<set $eventMating = []>>
 <<set $eventBirths = []>>
 <<set $eventBirthRejection = []>>
@@ -186,6 +188,14 @@
 
 <<set $stress = $stress + $stressUp>>
 
+/* Build stress event list: Check once for every 10 points of stress the player has*/
+<<for _stressCount = 10; _stressCount <= $stress; _stressCount += 10>>
+
+	/* Stress events are random, and more likely to fire at higher levels */
+	<<if _stressCount >= random(0,199)>>
+		<<run $eventStress.push(_stressCount)>>
+	<</if>>
+<</for>>
 
 /* ***
  * $ourStore.fluffies is just a list of what global IDs are still in the store.
@@ -246,9 +256,9 @@
 	 *** */
 	<<if $globalFluffies[_ef].onDisplay == true>>
 		/* Push to event stack  */
-		<<if $eventCustomer.length < 10>>
+		/*<<if $eventCustomer.length < 10>>*/
 			<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
-		<</if>>
+		/*<</if>>*/
 	/*
 		<<if random(0, 1) == 1>>
 			<<set _price = 0>>
@@ -615,11 +625,39 @@
 <<set $week++>>
 <<set $actions = 10>>
 
-<<for _stressCount = 10; _stressCount <= $stress; _stressCount += 10>>
-	<<run $eventStress.push(_stressCount)>>
+
+/* Build the main event list from each sub list */
+<<for _subEvent range $eventMating>>
+	<<run $eventList.push( { target: _subEvent, type: "Mating" } )>>
 <</for>>
 
+<<for _subEvent range $eventBirths>>
+	<<run $eventList.push( { target: _subEvent, type: "Birth" } )>>
+<</for>>
+
+<<set _customerCount = 0>>
+<<for _subEvent range $eventCustomer>>
+	<<set _customerCount++>>
+	
+	<<if _customerCount < 11>>
+		<<run $eventList.push( { target: _subEvent, type: "Customer" } )>>
+	<</if>>
+<</for>>
+
+<<for _subEvent range $eventStress>>
+	<<run $eventList.push( { target: _subEvent, type: "Stress" } )>>
+<</for>>
+
+<<for _subEvent range $eventBirthRejection>>
+	<<run $eventList.push( { target: _subEvent, type: "Rejection" } )>>
+<</for>>
+
+<<run $eventList.shuffle()>>
+
 <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
 
 
 
