@@ -24,6 +24,9 @@
 <<set $ourStore.foals = 0>>
 
 <<set _feedCost = 0>>
+<<set _stressor = 1.00>>
+
+<<set $stressUp = 0>> 
 
 /* clear event queues */
 <<set $eventList = []>>
@@ -155,54 +158,6 @@
 		<<set $ourStore.mares++>>
 		<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<</if>>
-<</for>> 
-
-
-/* ***
- *	Final expenses:
- *** */
-  
-<<set $costs = Number(Number($costs) + Number(_feedCost))>>
-<<set $cashLastWeek = $cash>>
-<<set $cash = Number($cash - $costs)>>
-
-<br>Upkeep this week was $costs.
-
-
-/* ***
- *	Caculate stress
- *** */
-<<set _stressor = 1.00>>
-<<set $stressUp = 0>> 
-<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
-
-<<if _count < 10>>
-	<<set _stressor = 1.00>>
-<<else>>
-	<<set _stressor = 90 + _count >>
-	<<set _stressor = (_stressor/ 100)>>
-<</if>>
-
-<<set $stressUp = Math.round(_stressor * _count)>>
-<br>Stress this week was $stressUp.
-
-<<set $stress = $stress + $stressUp>>
-
-/* Build stress event list: Check once for every 10 points of stress the player has*/
-<<for _stressCount = 10; _stressCount <= $stress; _stressCount += 10>>
-
-	/* Stress events are random, and more likely to fire at higher levels */
-	<<if _stressCount >= random(0,199)>>
-		<<run $eventStress.push(_stressCount)>>
-	<</if>>
-<</for>>
-
-/* ***
- * $ourStore.fluffies is just a list of what global IDs are still in the store.
- * $globalFluffies has a list of ALL the fluffies, alive, dead or sold, so we can track parents without inerating through all of them.
- *
- *** */ 
-<<for _ef range $ourStore.fluffies>>
 		
 <<run console.log("Breeding test 0.1: " + $globalFluffies[_ef].name + " | " + $globalFluffies[_ef].gender)>>
 
@@ -256,78 +211,7 @@
 	 *** */
 	<<if $globalFluffies[_ef].onDisplay == true>>
 		/* Push to event stack  */
-		/*<<if $eventCustomer.length < 10>>*/
-			<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
-		/*<</if>>*/
-	/*
-		<<if random(0, 1) == 1>>
-			<<set _price = 0>>
-
-			<<set _price = Number($globalFluffies[_ef].training)>>
-<<run console.log("Price test 1: " + _price)>>
-			<<set _price = Number(_price) + Number(Number($globalFluffies[_ef].trust/10))>>
-<<run console.log("Price test 2: " + _price)>>
-			<<switch $globalFluffies[_ef].breed>>
-				<<case "unicorn">>
-					<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
-				<<case "pegasus">>
-					<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
-				<<case "alicorn">>
-					<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
-				<<default>>
-					<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
-			<</switch>>
-			
-			<<set _price = Number(Number(_price) * Number($globalFluffies[_ef].statBonus)).toFixed(2)>>
-		<<run console.log("Price test 5: " + _price)>>
-			<<set _price = Number(_price * $globalFluffies[_ef].colorBonus).toFixed(2)>>
-		<<run console.log("Price test 6: " + _price)>>
-
-	<<set _ageMulti = 1>>
-	
-	<<if $activeFluffy.age == 0 && $globalFluffies[_ef].ageWeeks < 45>>
-		<<set _ageMulti = Number(($globalFluffies[_ef].ageWeeks+1) / 44).toFixed(2)>>
-	<</if>>
-<<run console.log("Price test 7: " + _ageMulti)>>
-	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
-<<run console.log("Price test 8: " + _price)>>
-
-			<<if $globalFluffies[_ef].traits.includes("Feral")>>
-				<<set _price = Number(_price * .25).toFixed(2)>>
-			<</if>>
-
-			<<set _price = Number(_price * 2 / 3).toFixed(2)>>
-
-			<br>$globalFluffies[_ef].name was sold for _price
-			<<set $cash += Number(_price)>>
-			<br>
-<<run console.log("Sell Test 0 " + _ef + " | " + $globalFluffies[_ef].name)>>
-			<<set $globalFluffies[_ef].sold = true>>
-			<<set $globalFluffies[_ef].onDisplay = false>>
-			<<set $globalFluffies[_ef].pregnant = false>>
-			<<set $globalFluffies[_ef].nursing = 0>>
-
-			<<if $globalFluffies[_ef].specialFriend != -1>>
-				<<set $globalFluffies[$globalFluffies[_ef].specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[_ef].specialFriend = -1>>
-			<</if>>
-<<run console.log("Sell Test 1 " + $ourStore.fluffies.length)>>			
-			<<run $ourStore.fluffies.delete($globalFluffies[_ef].ID)>>
-<<run console.log("Sell Test 2 " + $ourStore.fluffies.length)>>
-<<run console.log("Sell Test 3 " + $ourStore.fluffies)>>
-<<run console.log("Sell Test 4 " + $globalFluffies[0].name + " | " + $globalFluffies[1].name + " | "+ $globalFluffies[2].name)>>
-
-
-			<<if Number($globalFluffies[_ef].age) == 0 && Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
-				<<set $ourStore.foals-->>
-			<<elseif $globalFluffies[_ef].gender == "male">>
-				<<set $ourStore.stallions-->>
-			<<else>>
-				<<set $ourStore.mares-->>
-			<</if>>
-			<<continue>>
-		<</if>>
-*/
+		<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
 	<</if>>
 
 <<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
@@ -425,12 +309,6 @@
 	 	<<set _lMultiAdd = 0.0177>>
 	 	<<set _newWMulti = Number(($globalFluffies[_ef].ageWeeks * 0.0227)).toFixed(4)>>
 	 	<<set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)>>
-	 	
-/*
-		<<set _newW =  Number($globalFluffies[_ef].maxWeight * _newWMulti)>>
-	 	<<set _newL = _newW / $globalFluffies[_ef].weightMulti>>
-	 	<<set _newH = _newL * ($globalFluffies[_ef].heightMulti)>>
-*/
 	 	<<set _lengthRatio = Number($globalFluffies[_ef].maxLength / $globalFluffies[_ef].maxWeight).toFixed(3)>>
 	 	<<set _heightRatio = Number($globalFluffies[_ef].maxHeight / $globalFluffies[_ef].maxWeight).toFixed(3)>>
 <<run console.log("ratio test 0: " + _lengthRatio)>>
@@ -617,7 +495,100 @@
 			<<set $globalFluffies[_ef].dueDate = -1>>
 		<</if>>
 	<</if>>
+
+	/* ***
+	 *	Caculate stress
+	 *** */
+	 
+	 <<run console.log("Stress test 0: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
+	 /* First get a value based on temperament: */
+	 /* >= 190 - smarty */
+	 <<if $globalFluffies[_ef].temperament >= 190>>
+	 	<<set _thisStress = 4>>
+	 
+	 /* >= 130 - bratty */
+	 <<elseif $globalFluffies[_ef].temperament >= 130>>
+	 	<<set _thisStress = 3>>
+	 
+	 /* >= 70 - Normal */
+	 <<elseif $globalFluffies[_ef].temperament >= 70>>
+	 	<<set _thisStress = 2>>
+	 
+	 /* >= 10 - Meek */
+	 <<elseif $globalFluffies[_ef].temperament >= 10>>
+	 	<<set _thisStress = 1>>
+	 /* < 10 - Afraid */
+	 <<else>>
+	 	<<set _thisStress + 2>>
+	 <</if>>
+	 
+	 <<run console.log("Stress test 1: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
+	 /* Then check based on personaity: */
+	 <<switch $globalFluffies[_ef].traits[0]>>
+		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+			<<set _thisStress += 3>>
+		<<case "Diligent", "Curious", "Peppy", "Playful">>
+			<<set _thisStress += 2>>
+		<<case "Lazy", "Cute", "Lackadaisical">>
+			<<set _thisStress += 1>>
+		<<case "Shy", "Timid", "Pensive", "Sweet">>
+			<<set _thisStress += 0>>
+	 <</switch>>
+	 
+	 <<run console.log("Stress test 2: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
+	 /* If this a foal being nursed by the mother, drop the stress: */
+	 <<if $globalFluffies[_ef].foodType == "Nursing">>
+	 	<<set _temp = Number(_thisStress / 80).toFixed(2)>>
+	 <<else>>
+	 	<<set _temp = Number(_thisStress / 8).toFixed(2)>>
+	 <</if>>
+
+<<run console.log("Stress test 3: _temp = " + _temp + ". _stressor = " + _stressor)>>
+
+	<<set _stressor = Number(Number(_stressor) + Number(_temp)).toFixed(2)>>
+	 
+	 
+	<<run console.log("Stress test 3: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
+
+<</for>> /* Close store loop */
+
+
+/* ***
+ *	Final expenses:
+ *** */
+  
+<<set $costs = Number(Number($costs) + Number(_feedCost))>>
+<<set $cashLastWeek = $cash>>
+<<set $cash = Number($cash - $costs)>>
+
+<br>Upkeep this week was $costs.
+
+
+<<run console.log("Stress test 4: _stressor = " + _stressor + ".")>>
+
+<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
+
+<<if _stressor < 1>>
+	<<set _stressor = 1.00>>
+<</if>>
+
+<<set $stressUp = _stressor>>
+<br>Stress this week was $stressUp.
+
+<<run console.log("Stress test 5: $stress  = " + $stress + ".")>>
+<<set $stress = Number(Number($stress) + Number($stressUp))>>
+<<run console.log("Stress test 6: $stress  = " + $stress + ".")>>
+
+/* Build stress event list: Check once for every 10 points of stress the player has*/
+<<for _stressCount = 10; _stressCount <= $stress; _stressCount += 10>>
+
+	/* Stress events are random, and more likely to fire at higher levels */
+	<<if _stressCount >= random(0,199)>>
+		<<run $eventStress.push(_stressCount)>>
+	<</if>>
 <</for>>
+	
+
 
 /%
  % Advance the date
