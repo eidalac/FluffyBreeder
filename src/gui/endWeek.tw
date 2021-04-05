@@ -143,14 +143,11 @@
 	<</switch>>
 
 	/* < 1 year old */
-	<<if Number($globalFluffies[_ef].age) == 0>>
-		<<if Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
-			<<set $ourStore.foals++>>
-			<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
-		<</if>>
-	<</if>>
+	<<if Number($globalFluffies[_ef].age) == 0 && if Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
+		<<set $ourStore.foals++>>
+		<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
 
-	<<if $globalFluffies[_ef].gender == "male">>
+	<<elseif $globalFluffies[_ef].gender == "male">>
 		<<set $ourStore.stallions++>>
 		<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<<else>>

@@ -4704,14 +4704,11 @@ This page shows some details of the selected fluffy and specific interactions yo
 	&lt;&lt;/switch&gt;&gt;
 
 	/* &lt; 1 year old */
-	&lt;&lt;if Number($globalFluffies[_ef].age) == 0&gt;&gt;
-		&lt;&lt;if Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
-			&lt;&lt;set $ourStore.foals++&gt;&gt;
-			&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if Number($globalFluffies[_ef].age) == 0 &amp;&amp; if Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
+		&lt;&lt;set $ourStore.foals++&gt;&gt;
+		&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
+	&lt;&lt;elseif $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
 		&lt;&lt;set $ourStore.stallions++&gt;&gt;
 		&lt;&lt;run console.log(&quot;Count test 1: Stallions =  &quot; + $ourStore.stallions + &quot; | &quot; + $globalFluffies[_ef].ID + &quot; | &quot; + $globalFluffies[_ef].gender)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -5851,7 +5848,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.7.67-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.7.68-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
