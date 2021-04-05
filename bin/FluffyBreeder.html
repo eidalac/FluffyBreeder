@@ -4708,7 +4708,6 @@ This page shows some details of the selected fluffy and specific interactions yo
 		&lt;&lt;if Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
 			&lt;&lt;set $ourStore.foals++&gt;&gt;
 			&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
@@ -4735,7 +4734,13 @@ This page shows some details of the selected fluffy and specific interactions yo
 		&lt;&lt;set $globalFluffies[_ef].ageWeeks = 0&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].age++&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
+	
+	/* Logic check if mother is no longer in the store: */
+	&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.contains($globalFluffies[_ef].mother) == false&gt;&gt;
+		&lt;br&gt;&lt;&lt;- $globalFluffies[_ef].name&gt;&gt; can&#39;t find it&#39;s mother!
+		&lt;&lt;set $globalFluffies[_ef].foodType == &quot;Nothing&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test -2: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
@@ -4744,26 +4749,66 @@ This page shows some details of the selected fluffy and specific interactions yo
 			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
 			&lt;br&gt;
 			&lt;&lt;set $globalFluffies[_ef].dead = true&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].onDisplay = false&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].pregnant = false&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].nursing = 0&gt;&gt;
+			&lt;&lt;removeFluffy $globalFluffies[_ef]&gt;&gt;
 			
-			&lt;&lt;if $globalFluffies[_ef].specialFriend != -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[$globalFluffies[_ef].specialFriend].specialFriend = -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;dead test 1 &quot; + $ourStore.fluffies)&gt;&gt;		
-		&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ef].ID)&gt;&gt;
-&lt;&lt;run console.log(&quot;dead test 2 &quot; + $ourStore.fluffies)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;if $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.stallions--&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $ourStore.mares--&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	/* ***
+	 *	Stress/Trauma ticks
+	 *** */
+	 
+	/* Flat dead at this level: */
+	&lt;&lt;if $globalFluffies[_ef].trauma &gt;= 200&gt;&gt;
+		/* Deaded */
+		&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died due to injury. 
+		&lt;br&gt;
+		&lt;&lt;set $globalFluffies[_ef].dead = true&gt;&gt;
+		&lt;&lt;removeFluffy $globalFluffies[_ef]&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if $globalFluffies[_ef].stress &gt;= 200&gt;&gt;
+		/* Deaded */
+		&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+		&lt;br&gt;
+		&lt;&lt;set $globalFluffies[_ef].dead = true&gt;&gt;
+		&lt;&lt;removeFluffy $globalFluffies[_ef]&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	/* High chance for death: */
+	&lt;&lt;if $globalFluffies[_ef].trauma &gt;= 180&gt;&gt;
+		&lt;&lt;if random(0, 2) == 0&gt;&gt;
+			/* Deaded */
+			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from wounds. 
+			&lt;br&gt;
+			&lt;&lt;set $globalFluffies[_ef].dead = true&gt;&gt;
+			&lt;&lt;removeFluffy $globalFluffies[_ef]&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if $globalFluffies[_ef].stress &gt;= 180&gt;&gt;
+		&lt;&lt;if random(0, 2) == 0&gt;&gt;
+			/* Deaded */
+			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+			&lt;br&gt;
+			&lt;&lt;set $globalFluffies[_ef].dead = true&gt;&gt;
+			&lt;&lt;removeFluffy $globalFluffies[_ef]&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].trauma += 2&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
 
 	/* ***
 	 *	Sell any display fluffies
@@ -4774,7 +4819,7 @@ This page shows some details of the selected fluffy and specific interactions yo
 		/* Push to event stack  */
 		&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Growth test -1: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 &lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + &quot; gender = &quot; + $globalFluffies[_ef].gender)&gt;&gt;
 
 	/* ***
@@ -4861,7 +4906,7 @@ This page shows some details of the selected fluffy and specific interactions yo
 	/* ***
 	 *	Grow foals.
 	 *** */
-&lt;&lt;run console.log(&quot;Growth test 0: age = &quot; + $globalFluffies[_ef].age)&gt;&gt;
+&lt;&lt;run console.log(&quot;Growth test 0: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 	 &lt;&lt;if $globalFluffies[_ef].age == 0 &amp;&amp; Number($globalFluffies[_ef].ageWeeks) &lt;= 44&gt;&gt;
 &lt;&lt;run console.log(&quot;Growth test 0: weight = &quot; + $globalFluffies[_ef].weight + &quot; age = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
@@ -5685,7 +5730,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.6.66-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.6.67-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -8760,7 +8805,52 @@ Inbreeding:
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodType = &quot;Nursing&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="misc widgets" tags="nobr widget" position="975,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;
+
+
+
+/* ***
+ *	Call as &lt;&lt;removeFluffy Fluffy&gt;&gt;
+ *
+ *	Removes a fluffy from the store
+ *** */
+&lt;&lt;widget &quot;removeFluffy&quot;&gt;&gt;
+	&lt;&lt;set _ID = $args[0].ID&gt;&gt;
+
+	&lt;&lt;set $globalFluffies[_ID].dead = true&gt;&gt;
+	&lt;&lt;set $globalFluffies[_ID].onDisplay = false&gt;&gt;
+	&lt;&lt;set $globalFluffies[_ID].pregnant = false&gt;&gt;
+	
+	&lt;&lt;if $globalFluffies[_ID].nursing &gt; 0&gt;&gt;
+		&lt;&lt;for _child range $globalFluffies[_ID].children&gt;&gt;
+			&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
+				&lt;&lt;set $globalFluffies[_child].stress += 30&gt;&gt;
+				&lt;&lt;set $globalFluffies[_child].trauma += 10&gt;&gt;
+				&lt;&lt;set $globalFluffies[_child].happy -= 10&gt;&gt;
+				&lt;br&gt;&lt;&lt;- $globalFluffies[_child].name&gt;&gt; can&#39;t find it&#39;s mother!
+			&lt;&lt;/if&gt;&gt; /* Close nursing check */
+		&lt;&lt;/for&gt;&gt; /* Close child check*/
+	&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+	
+	&lt;&lt;set $globalFluffies[_ID].nursing = 0&gt;&gt;
+	
+	&lt;&lt;if $globalFluffies[_ID].specialFriend != -1&gt;&gt;
+		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1&gt;&gt;
+		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20&gt;&gt;
+		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ID].specialFriend = -1&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ID].ID)&gt;&gt;
+	
+	&lt;&lt;if $globalFluffies[_ID].gender == &quot;male&quot;&gt;&gt;
+		&lt;&lt;set $ourStore.stallions--&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $ourStore.mares--&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widge&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="misc widgets" tags="nobr widget" position="975,350" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder

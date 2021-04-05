@@ -561,8 +561,45 @@
 
 
 
+/* ***
+ *	Call as <<removeFluffy Fluffy>>
+ *
+ *	Removes a fluffy from the store
+ *** */
+<<widget "removeFluffy">>
+	<<set _ID = $args[0].ID>>
 
-
-
-
-
+	<<set $globalFluffies[_ID].dead = true>>
+	<<set $globalFluffies[_ID].onDisplay = false>>
+	<<set $globalFluffies[_ID].pregnant = false>>
+	
+	<<if $globalFluffies[_ID].nursing > 0>>
+		<<for _child range $globalFluffies[_ID].children>>
+			<<if $globalFluffies[_child].foodType == "Nursing">>
+				<<set $globalFluffies[_child].foodType = "Nothing">>
+				<<set $globalFluffies[_child].foodQuality = -1>>
+				<<set $globalFluffies[_child].stress += 30>>
+				<<set $globalFluffies[_child].trauma += 10>>
+				<<set $globalFluffies[_child].happy -= 10>>
+				<br><<- $globalFluffies[_child].name>> can't find it's mother!
+			<</if>> /* Close nursing check */
+		<</for>> /* Close child check*/
+	<</if>> /* Close Nursing check */
+	
+	<<set $globalFluffies[_ID].nursing = 0>>
+	
+	<<if $globalFluffies[_ID].specialFriend != -1>>
+		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>
+		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
+		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
+		<<set $globalFluffies[_ID].specialFriend = -1>>
+	<</if>>
+	
+	<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
+	
+	<<if $globalFluffies[_ID].gender == "male">>
+		<<set $ourStore.stallions-->>
+	<<else>>
+		<<set $ourStore.mares-->>
+	<</if>>
+<</widge>>

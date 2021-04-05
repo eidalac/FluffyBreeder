@@ -147,7 +147,6 @@
 		<<if Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
 			<<set $ourStore.foals++>>
 			<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
-			<<continue>>
 		<</if>>
 	<</if>>
 
@@ -174,7 +173,13 @@
 		<<set $globalFluffies[_ef].ageWeeks = 0>>
 		<<set $globalFluffies[_ef].age++>>
 	<</if>>
-
+	
+	/* Logic check if mother is no longer in the store: */
+	<<if $globalFluffies[_ef].foodType == "Nursing" && $ourStore.fluffies.contains($globalFluffies[_ef].mother) == false>>
+		<br><<- $globalFluffies[_ef].name>> can't find it's mother!
+		<<set $globalFluffies[_ef].foodType == "Nothing">>
+	<</if>>
+<<run console.log("Growth test -2: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
@@ -183,26 +188,66 @@
 			<br><<print $globalFluffies[_ef].name>> does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
 			<br>
 			<<set $globalFluffies[_ef].dead = true>>
-			<<set $globalFluffies[_ef].onDisplay = false>>
-			<<set $globalFluffies[_ef].pregnant = false>>
-			<<set $globalFluffies[_ef].nursing = 0>>
+			<<removeFluffy $globalFluffies[_ef]>>
 			
-			<<if $globalFluffies[_ef].specialFriend != -1>>
-				<<set $globalFluffies[$globalFluffies[_ef].specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[_ef].specialFriend = -1>>
-			<</if>>
+			<<continue>>
 		<</if>>
-<<run console.log("dead test 1 " + $ourStore.fluffies)>>		
-		<<run $ourStore.fluffies.delete($globalFluffies[_ef].ID)>>
-<<run console.log("dead test 2 " + $ourStore.fluffies)>>
+	<</if>>
 
-		<<if $globalFluffies[_ef].gender == "male">>
-			<<set $ourStore.stallions-->>
-		<<else>>
-			<<set $ourStore.mares-->>
-		<</if>>
+	/* ***
+	 *	Stress/Trauma ticks
+	 *** */
+	 
+	/* Flat dead at this level: */
+	<<if $globalFluffies[_ef].trauma >= 200>>
+		/* Deaded */
+		<br><<print $globalFluffies[_ef].name>> has died due to injury. 
+		<br>
+		<<set $globalFluffies[_ef].dead = true>>
+		<<removeFluffy $globalFluffies[_ef]>>
 		<<continue>>
 	<</if>>
+
+	<<if $globalFluffies[_ef].stress >= 200>>
+		/* Deaded */
+		<br><<print $globalFluffies[_ef].name>> has died from stress. 
+		<br>
+		<<set $globalFluffies[_ef].dead = true>>
+		<<removeFluffy $globalFluffies[_ef]>>
+		<<continue>>
+	<</if>>
+
+	/* High chance for death: */
+	<<if $globalFluffies[_ef].trauma >= 180>>
+		<<if random(0, 2) == 0>>
+			/* Deaded */
+			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+			<<set $globalFluffies[_ef].stress += 5>>
+			<<set $globalFluffies[_ef].trauma += 5>>
+		<</if>>
+	<</if>>
+	
+	<<if $globalFluffies[_ef].stress >= 180>>
+		<<if random(0, 2) == 0>>
+			/* Deaded */
+			<br><<print $globalFluffies[_ef].name>> has died from stress. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+			<<set $globalFluffies[_ef].stress += 10>>
+			<<set $globalFluffies[_ef].trauma += 2>>
+		<</if>>
+	<</if>>
+
 
 	/* ***
 	 *	Sell any display fluffies
@@ -213,7 +258,7 @@
 		/* Push to event stack  */
 		<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
 	<</if>>
-
+<<run console.log("Growth test -1: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
 <<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
 
 	/* ***
@@ -300,7 +345,7 @@
 	/* ***
 	 *	Grow foals.
 	 *** */
-<<run console.log("Growth test 0: age = " + $globalFluffies[_ef].age)>>
+<<run console.log("Growth test 0: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
 	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) <= 44>>
 <<run console.log("Growth test 0: weight = " + $globalFluffies[_ef].weight + " age = " + $globalFluffies[_ef].ageWeeks)>>
 	 	<<set _wMultiBase = 0.0286>>
