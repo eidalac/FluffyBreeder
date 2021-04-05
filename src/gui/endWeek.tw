@@ -194,11 +194,12 @@
 		<</if>>
 	<</if>>
 
-	/* ***
-	 *	Stress/Trauma ticks
-	 *** */
-	 
-	/* Flat dead at this level: */
+	/* Trauma ticks */
+<<run console.log("Trauma test 0: Trauma = " + $globalFluffies[_ef].trauma)>>
+<<run console.log("Stress test 0: Stress = " + $globalFluffies[_ef].stress)>>	 
+	/*
+	 * 200 - Morbidity
+	 */
 	<<if $globalFluffies[_ef].trauma >= 200>>
 		/* Deaded */
 		<br><<print $globalFluffies[_ef].name>> has died due to injury. 
@@ -206,19 +207,10 @@
 		<<set $globalFluffies[_ef].dead = true>>
 		<<removeFluffy $globalFluffies[_ef]>>
 		<<continue>>
-	<</if>>
-
-	<<if $globalFluffies[_ef].stress >= 200>>
-		/* Deaded */
-		<br><<print $globalFluffies[_ef].name>> has died from stress. 
-		<br>
-		<<set $globalFluffies[_ef].dead = true>>
-		<<removeFluffy $globalFluffies[_ef]>>
-		<<continue>>
-	<</if>>
-
-	/* High chance for death: */
-	<<if $globalFluffies[_ef].trauma >= 180>>
+	/*
+	 * 180 - Increase without treatment, increasing risk of death
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 180>>
 		<<if random(0, 2) == 0>>
 			/* Deaded */
 			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
@@ -227,13 +219,81 @@
 			<<removeFluffy $globalFluffies[_ef]>>
 			<<continue>>
 		<<else>>
-			<br>@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
 			<<set $globalFluffies[_ef].stress += 5>>
 			<<set $globalFluffies[_ef].trauma += 5>>
 		<</if>>
+	/*
+	 * 160 - Increasing risk of death
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 160>>
+		<<if random(0, 4) == 0>>
+			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+		<</if>>
+	/*
+	 * 140 - Risk of death
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 140>>
+		<<if random(0, 6) == 0>>
+			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+		<</if>>
+	/*
+	 * 120 - No healing
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 120>>
+		<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+	/*
+	 * 80 - Trauma decays into stress
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 80>>
+		<<set $globalFluffies[_ef].trauma -= 5>>
+		<<set $globalFluffies[_ef].stress += 10>>
+	/*
+	 * 40 - Slow healing
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 40>>
+		<<set $globalFluffies[_ef].trauma -= 5>>
+	/*
+	 * 20 - Normal Healing
+	 */
+	<<elseif $globalFluffies[_ef].trauma >= 20>>
+	 	<<set $globalFluffies[_ef].trauma -= 5>>
+	/*
+	 * 10 - quick healing
+	 */
+	<<else>>
+		<<set $globalFluffies[_ef].trauma -= 10>>
 	<</if>>
 	
-	<<if $globalFluffies[_ef].stress >= 180>>
+	/* Stress ticks */
+<<run console.log("Trauma test 1: Trauma = " + $globalFluffies[_ef].trauma)>>
+<<run console.log("Stress test 1: Stress = " + $globalFluffies[_ef].stress)>>	
+	/*
+	 * 200 - Morbidity
+	 */
+	<<if $globalFluffies[_ef].stress >= 200>>
+		/* Deaded */
+		<br><<print $globalFluffies[_ef].name>> has died from stress. 
+		<br>
+		<<set $globalFluffies[_ef].dead = true>>
+		<<removeFluffy $globalFluffies[_ef]>>
+		<<continue>>
+	/*
+	 * 180 - Increase without treatment, increasing risk of death
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 180>>
 		<<if random(0, 2) == 0>>
 			/* Deaded */
 			<br><<print $globalFluffies[_ef].name>> has died from stress. 
@@ -242,12 +302,73 @@
 			<<removeFluffy $globalFluffies[_ef]>>
 			<<continue>>
 		<<else>>
-			<br>@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
 			<<set $globalFluffies[_ef].stress += 10>>
 			<<set $globalFluffies[_ef].trauma += 2>>
 		<</if>>
+	/*
+	 * 160 - Increasing risk of death
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 160>>
+		<<if random(0, 4) == 0>>
+			<br><<print $globalFluffies[_ef].name>> has died from stress. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+		<</if>>
+	/*
+	 * 140 - Risk of death
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 140>>
+		<<if random(0, 6) == 0>>
+			<br><<print $globalFluffies[_ef].name>> has died from stress. 
+			<br>
+			<<set $globalFluffies[_ef].dead = true>>
+			<<removeFluffy $globalFluffies[_ef]>>
+			<<continue>>
+		<<else>>
+			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+		<</if>>
+	/*
+	 * 120 - No healing
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 120>>
+		<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+	/*
+	 * 100 - Stress decays into Trauma
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 100>>
+		<<set $globalFluffies[_ef].trauma += 5>>
+		<<set $globalFluffies[_ef].stress -= 10>>
+
+	/*
+	 * 40 - Slow healing; blocked if trauma is over 59
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 40>>
+		<<if $globalFluffies[_ef].trauma < 60>>
+			<<set $globalFluffies[_ef].stress -= 5>>
+		<</if>>
+	/*
+	 * 20 - Normal Healing; blocked if trauma is over 59
+	 */
+	<<elseif $globalFluffies[_ef].stress >= 20>>
+		<<if $globalFluffies[_ef].trauma < 60>>
+	 		<<set $globalFluffies[_ef].stress -= 5>>
+	 	<</if>>
+	/*
+	 * 10 - quick healing; blocked if trauma is over 59
+	 */
+	<<else>>
+		<<if $globalFluffies[_ef].trauma < 60>>
+			<<set $globalFluffies[_ef].stress -= 10>>
+		<</if>>
 	<</if>>
 
+<<run console.log("Trauma test 2: Trauma = " + $globalFluffies[_ef].trauma)>>
+<<run console.log("Stress test 2: Stress = " + $globalFluffies[_ef].stress)>>
 
 	/* ***
 	 *	Sell any display fluffies
