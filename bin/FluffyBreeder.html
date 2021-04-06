@@ -3382,9 +3382,55 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;br&gt;
 &lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
 &lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
+
+/*▲˄˅▼*/
+&lt;br&gt;
+&lt;br&gt;Sort by Breed 
+&lt;&lt;link &quot;▼&quot;&gt;&gt;
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &lt; b.breed) ? 1 : (a.breed &gt; b.breed) ? -1 : 0;}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
+	&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ / 
+&lt;&lt;link &quot;▲&quot;&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &gt; b.breed) ? 1 : (a.breed &lt; b.breed) ? -1 : 0;}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
+	&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ | Sort by Age 
+&lt;&lt;link &quot;▼&quot;&gt;&gt;
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt;
+	&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt; 
+&lt;&lt;/link&gt;&gt;
+ / 
+&lt;&lt;link &quot;▲&quot;&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
+	&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt;
+&lt;br&gt;
+
 &lt;hr&gt;
+
+&lt;span id=&quot;selling-list&quot;&gt;&lt;/span&gt;
+
+
+/* Display the initial list */
+&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+
+
+
+  
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+ 
+&lt;&lt;widget &quot;SellingList&quot;&gt;&gt;
 &lt;&lt;capture _fl&gt;&gt;
-&lt;span id=&quot;selling-list&quot;&gt;
 	&lt;&lt;if _customerTolerance &gt;= 0&gt;&gt;
 		&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
 			&lt;&lt;set _buttonString = &quot;Offer &quot; + $globalFluffies[_fl].name&gt;&gt;
@@ -3720,11 +3766,8 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;hr&gt;
 		&lt;&lt;/for&gt;&gt;
 	&lt;&lt;/if&gt;&gt; /* Close tolerance check */
-&lt;/span&gt;
 &lt;&lt;/capture&gt;&gt;
-  
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="6" name="Event Main" tags="nobr" position="725,100" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Event Main" tags="nobr" position="725,100" size="100,100">/* **********
  * eventMain.tw
  *
  * Package: FluffyBreeder
@@ -5848,7 +5891,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.8.68-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.8.78-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -7203,21 +7246,23 @@ Bulk Actions (all checked fluffies)
 &lt;br&gt;
 
 /* Select All/Clear all buttons */
-&lt;&lt;button [[Clear All|Fluffy List]]&gt;&gt;
+&lt;&lt;button &quot;Clear All&quot;&gt;&gt;
 	&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 		&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
-&lt;&lt;button [[Select All|Fluffy List]]&gt;&gt;
+&lt;&lt;button &quot;Select All&quot;&gt;&gt;
 	&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 		&lt;&lt;set $globalFluffies[_bf].isChecked = true&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 &lt;br&gt;&lt;br&gt;
 
 /* Bulk sell / remove from sale buttons */
 &lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;
-	&lt;&lt;button [[Bulk Sell|Fluffy List]]&gt;&gt;
+	&lt;&lt;button &quot;Bulk Sell&quot;&gt;&gt;
 		&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 			&lt;&lt;if $globalFluffies[_bf].isChecked == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
 
@@ -7233,15 +7278,18 @@ Bulk Actions (all checked fluffies)
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
+		
+		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;else&gt;&gt;
-	&lt;&lt;button [[Remove from Sale|Fluffy List]]&gt;&gt;
+	&lt;&lt;button &quot;Remove from Sale&quot;&gt;&gt;
 		&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 			&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 				&lt;&lt;set $globalFluffies[_bf].onDisplay = false&gt;&gt;	
 				&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;				
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -7251,7 +7299,7 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;option &quot;Release&quot;&gt;&gt;
 	&lt;&lt;option &quot;Murder&quot;&gt;&gt;
 &lt;&lt;/listbox&gt;&gt;
-&lt;&lt;button [[Bulk Removal|Fluffy List]]&gt;&gt;
+&lt;&lt;button &quot;Bulk Removal&quot;&gt;&gt;
 	&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 		&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 			&lt;&lt;if _removeType == &quot;Euthanize&quot;&gt;&gt;
@@ -7277,6 +7325,8 @@ Bulk Actions (all checked fluffies)
 			&lt;&lt;run $ourStore.fluffies.delete(_bf)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+	
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 
 &lt;br&gt;&lt;br&gt;
@@ -7296,7 +7346,7 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;option &quot;Quality&quot; 4&gt;&gt;
 &lt;&lt;/listbox&gt;&gt;
 
-&lt;&lt;button [[Bulk Feeding|Fluffy List]]&gt;&gt;
+&lt;&lt;button &quot;Bulk Feeding&quot;&gt;&gt;
 	&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 		&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 			&lt;&lt;if _foodType == &quot;Formula&quot;&gt;&gt;
@@ -7311,121 +7361,45 @@ Bulk Actions (all checked fluffies)
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+	
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 &amp;nbsp;|&amp;nbsp;
 /*▲˄˅▼*/
 &lt;br&gt;
 &lt;br&gt;Sort by Breed 
-&lt;&lt;link [[▼|Fluffy List]]&gt;&gt; 
+&lt;&lt;link &quot;▼&quot;&gt;&gt; 
 	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &lt; b.breed) ? 1 : (a.breed &gt; b.breed) ? -1 : 0;}) &gt;&gt;*/
 	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/link&gt;&gt;
  / 
-&lt;&lt;link [[▲|Fluffy List]]&gt;&gt; 
+&lt;&lt;link &quot;▲&quot;&gt;&gt; 
 	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &gt; b.breed) ? 1 : (a.breed &lt; b.breed) ? -1 : 0;}) &gt;&gt;*/
 	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/link&gt;&gt;
  | Sort by Age 
-&lt;&lt;link [[▼|Fluffy List]]&gt;&gt;
+&lt;&lt;link &quot;▼&quot;&gt;&gt;
 	/*&lt;&lt;run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) &gt;&gt;*/
 	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/link&gt;&gt;
  / 
-&lt;&lt;link [[▲|Fluffy List]]&gt;&gt; 
+&lt;&lt;link &quot;▲&quot;&gt;&gt; 
 	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) &gt;&gt;*/
 	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/link&gt;&gt;
 &lt;br&gt;
 
 /* (function(a,b){return a[1] - b[1];}) */
 
 &lt;hr&gt;
-/*&lt;&lt;for _listFluff range $tempList&gt;&gt;
-	&lt;&lt;set _fl = _listFluff.ID&gt;&gt; */
 
-&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
-	&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
-	
-	/* Double check we are removing sold fluffies: */
-	&lt;&lt;if $globalFluffies[_fl].sold == true&gt;&gt;
-		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	/* Double check we are removing dead fluffies: */
-	&lt;&lt;if $globalFluffies[_fl].dead == true&gt;&gt;
-		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
 
-	/* &lt; 1 year old */
-	&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
-		&lt;&lt;set $ourStore.foals++&gt;&gt;
-		&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
-		&lt;&lt;set $ourStore.stallions++&gt;&gt;
-		&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set $ourStore.mares++&gt;&gt;
+&lt;span id=&quot;fluffy-list&quot;&gt;&lt;/span&gt;
 
-		&lt;&lt;if $listType != &quot;Mares&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-			&lt;&lt;continue&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
-		&lt;&lt;continue&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-
-	/* Clamp values: */
-	&lt;&lt;set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)&gt;&gt;
-
-	/* Clamp these to 0-200 */
-	&lt;&lt;set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)&gt;&gt;
-
-&lt;&lt;capture _fl, _listFluff&gt;&gt;
-		&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
-		&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
-		[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Interaction&quot;]] &lt;&lt;shortDesc _listFluff&gt;&gt;
-		&lt;/p&gt;
-		[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]] |
-		&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
-		| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Feeding&quot;]] _listFluff.foodType
-		&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
-			&lt;&lt;case 0&gt;&gt; (trash)
-			&lt;&lt;case 1&gt;&gt; (cheap)
-			&lt;&lt;case 2&gt;&gt; (basic)
-			&lt;&lt;case 3&gt;&gt; (good)
-			&lt;&lt;case 4&gt;&gt; (quality)
-			&lt;&lt;case -1&gt;&gt; 
-		&lt;&lt;/switch&gt;&gt; 
-		&lt;/label&gt;
-&lt;&lt;/capture&gt;&gt;
-		&lt;hr&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/for&gt;&gt;
-	
 
 
 /* Update the sidebar */
@@ -7436,6 +7410,98 @@ Bulk Actions (all checked fluffies)
 
 /* Update the page count */
 &lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+/* Display the initial list */
+&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+
+/*&lt;&lt;for _listFluff range $tempList&gt;&gt;
+	&lt;&lt;set _fl = _listFluff.ID&gt;&gt; */
+
+&lt;&lt;widget &quot;FluffyList&quot;&gt;&gt;
+	&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
+		&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
+		
+		/* Double check we are removing sold fluffies: */
+		&lt;&lt;if $globalFluffies[_fl].sold == true&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		
+		/* Double check we are removing dead fluffies: */
+		&lt;&lt;if $globalFluffies[_fl].dead == true&gt;&gt;
+			&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+		/* &lt; 1 year old */
+		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals++&gt;&gt;
+			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions++&gt;&gt;
+			&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares++&gt;&gt;
+	
+			&lt;&lt;if $listType != &quot;Mares&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+		&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+			&lt;&lt;continue&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+	
+		/* Clamp values: */
+		&lt;&lt;set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)&gt;&gt;
+	
+		/* Clamp these to 0-200 */
+		&lt;&lt;set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)&gt;&gt;
+	
+	&lt;&lt;capture _fl, _listFluff&gt;&gt;
+			&lt;label&gt;	&lt;p class=&quot;hang&quot;&gt;
+			&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;
+			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Interaction&quot;]] &lt;&lt;shortDesc _listFluff&gt;&gt;
+			&lt;/p&gt;
+			[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]] |
+			&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]&lt;&lt;/if&gt;&gt;
+			| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Feeding&quot;]] _listFluff.foodType
+			&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
+				&lt;&lt;case 0&gt;&gt; (trash)
+				&lt;&lt;case 1&gt;&gt; (cheap)
+				&lt;&lt;case 2&gt;&gt; (basic)
+				&lt;&lt;case 3&gt;&gt; (good)
+				&lt;&lt;case 4&gt;&gt; (quality)
+				&lt;&lt;case -1&gt;&gt; 
+			&lt;&lt;/switch&gt;&gt; 
+			&lt;/label&gt;
+	&lt;&lt;/capture&gt;&gt;
+			&lt;hr&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/for&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
 
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Fluffy Selling" tags="nobr" position="475,350" size="100,100">/* **********

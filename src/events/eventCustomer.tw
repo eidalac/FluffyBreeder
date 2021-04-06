@@ -143,9 +143,55 @@
 <br>
 <br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
 <span id="result-msg"></span>
+
+/*▲˄˅▼*/
+<br>
+<br>Sort by Breed 
+<<link "▼">>
+	/*<<run $tempList.sort(function(a,b){return (a.breed < b.breed) ? 1 : (a.breed > b.breed) ? -1 : 0;}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed < $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed > $globalFluffies[b].breed) ? -1 : 0;}) >>
+	<<replace "#selling-list">><<SellingList>><</replace>>
+<</link>>
+ / 
+<<link "▲">> 
+	/*<<run $tempList.sort(function(a,b){return (a.breed > b.breed) ? 1 : (a.breed < b.breed) ? -1 : 0;}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed < $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed > $globalFluffies[a].breed) ? -1 : 0;}) >>
+	<<replace "#selling-list">><<SellingList>><</replace>>
+<</link>>
+ | Sort by Age 
+<<link "▼">>
+	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) >>
+	<<replace "#selling-list">><<SellingList>><</replace>> 
+<</link>>
+ / 
+<<link "▲">> 
+	/*<<run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
+	<<replace "#selling-list">><<SellingList>><</replace>>
+<</link>>
+<br>
+
 <hr>
+
+<span id="selling-list"></span>
+
+
+/* Display the initial list */
+<<timed 100ms>><<replace "#selling-list">><<SellingList>><</replace>><</timed>>
+
+
+
+
+  
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+ 
+<<widget "SellingList">>
 <<capture _fl>>
-<span id="selling-list">
 	<<if _customerTolerance >= 0>>
 		<<for _fl range $ourStore.fluffies>>
 			<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
@@ -481,12 +527,5 @@
 			<hr>
 		<</for>>
 	<</if>> /* Close tolerance check */
-</span>
 <</capture>>
-  
-
-<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-
-
-
- 
+<</widget>>
