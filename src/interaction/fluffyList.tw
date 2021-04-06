@@ -167,7 +167,35 @@ Bulk Actions (all checked fluffies)
 	<</for>>
 <</button>>
 &nbsp;|&nbsp;
+/*▲˄˅▼*/
+<br>
+<br>Sort by Breed 
+<<link [[▼|Fluffy List]]>> 
+	/*<<run $tempList.sort(function(a,b){return (a.breed < b.breed) ? 1 : (a.breed > b.breed) ? -1 : 0;}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed < $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed > $globalFluffies[b].breed) ? -1 : 0;}) >>
+<</link>>
+ / 
+<<link [[▲|Fluffy List]]>> 
+	/*<<run $tempList.sort(function(a,b){return (a.breed > b.breed) ? 1 : (a.breed < b.breed) ? -1 : 0;}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed < $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed > $globalFluffies[a].breed) ? -1 : 0;}) >>
+<</link>>
+ | Sort by Age 
+<<link [[▼|Fluffy List]]>>
+	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) >> 
+<</link>>
+ / 
+<<link [[▲|Fluffy List]]>> 
+	/*<<run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
+<</link>>
+<br>
+
+/* (function(a,b){return a[1] - b[1];}) */
+
 <hr>
+/*<<for _listFluff range $tempList>>
+	<<set _fl = _listFluff.ID>> */
 
 <<for _fl range $ourStore.fluffies>>
 	<<set _listFluff = $globalFluffies[_fl]>>

@@ -4704,7 +4704,7 @@ This page shows some details of the selected fluffy and specific interactions yo
 	&lt;&lt;/switch&gt;&gt;
 
 	/* &lt; 1 year old */
-	&lt;&lt;if Number($globalFluffies[_ef].age) == 0 &amp;&amp; if Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
+	&lt;&lt;if Number($globalFluffies[_ef].age) == 0 &amp;&amp; Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
 		&lt;&lt;set $ourStore.foals++&gt;&gt;
 		&lt;&lt;run console.log(&quot;Count test 1: Foals =  &quot; + $ourStore.foals)&gt;&gt;
 
@@ -5848,7 +5848,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.7.68-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.8.68-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -5911,6 +5911,7 @@ a text-based fluffy management game
 &lt;&lt;set $storeFemales = 0&gt;&gt;
 &lt;&lt;set $storeFoals = 0&gt;&gt;
 &lt;&lt;set $fluffyChecks = []&gt;&gt;
+&lt;&lt;set $tempList = []&gt;&gt;
 
 &lt;&lt;set $storePoints = 111&gt;&gt;
 &lt;&lt;set $ourStore = {
@@ -7312,7 +7313,35 @@ Bulk Actions (all checked fluffies)
 	&lt;&lt;/for&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 &amp;nbsp;|&amp;nbsp;
+/*▲˄˅▼*/
+&lt;br&gt;
+&lt;br&gt;Sort by Breed 
+&lt;&lt;link [[▼|Fluffy List]]&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &lt; b.breed) ? 1 : (a.breed &gt; b.breed) ? -1 : 0;}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ / 
+&lt;&lt;link [[▲|Fluffy List]]&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.breed &gt; b.breed) ? 1 : (a.breed &lt; b.breed) ? -1 : 0;}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ | Sort by Age 
+&lt;&lt;link [[▼|Fluffy List]]&gt;&gt;
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
+&lt;&lt;/link&gt;&gt;
+ / 
+&lt;&lt;link [[▲|Fluffy List]]&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
+&lt;&lt;/link&gt;&gt;
+&lt;br&gt;
+
+/* (function(a,b){return a[1] - b[1];}) */
+
 &lt;hr&gt;
+/*&lt;&lt;for _listFluff range $tempList&gt;&gt;
+	&lt;&lt;set _fl = _listFluff.ID&gt;&gt; */
 
 &lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
 	&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
