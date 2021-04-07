@@ -2515,6 +2515,8 @@ console.log("cleared defects parts = " + this.genes[index])
 	
 	/* Divide by 6 to get the multplier (1-6) */
 	&lt;&lt;set _colorBonus = Number(_colorBonus / 12).toFixed(2)&gt;&gt;
+	
+	 /*&lt;&lt;set _colorBonus = Math.clamp(Math.trunc(_colorBonus), 0, 200)&gt;&gt;*/
 /*&lt;&lt;run console.log(&quot;Color Test 2: &quot; + _colorBonus)&gt;&gt;*/
 
 	/* ***
@@ -3664,6 +3666,12 @@ console.log("cleared defects parts = " + this.genes[index])
 			
 					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
+					
+					&lt;&lt;if _price == 0&gt;&gt;
+						&lt;&lt;run console.log(&quot;Customer Test: _price was 0.&quot;)&gt;&gt;
+						&lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					
 					&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
 					&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; 45&gt;&gt;
@@ -4601,6 +4609,86 @@ This page shows some details of the selected fluffy and specific interactions yo
 
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Remove@@ - Removes the fluffy.  @@.coral;Euthanize@@ is a @@.lightcoral;Hugbox@@ action, @@.coral;Murder@@ is considered  a @@.lightcoral;Abuse@@ and @@.coral;Release@@ is a neutral action.&lt;/p&gt;
 
+&lt;&lt;case &quot;Gene Lab&quot;&gt;&gt;
+&lt;h1&gt;Gene Lab&lt;/h1&gt;
+
+&lt;br&gt;@@.orange;Notice: This is a rough draft, not well formated and incomplete.@@
+&lt;br&gt;
+&lt;br&gt;
+The Gene Lab is primarily a debugging tool, used to see and edit the genes of a fluffy directly.
+&lt;br&gt;
+&lt;br&gt;The top of the page displays the fluffies information.  For details of the various Fluffy stats, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = &quot;Fluffy Statistics&quot;]] page. 
+&lt;br&gt;
+&lt;br&gt;Under the information is the full gene code for this fluffy.
+&lt;br&gt;
+&lt;br&gt;Each gene has a base pair (a single letter in most cases), separated by a ‘/’.  Each pair is separated by a ‘;’.  Traits may be controlled by 1-5 genes.  With one exception all genes take the form of a ‘Dominate’ (Upper case) and ‘Recessive” (Lower Case) letter
+&lt;br&gt;
+&lt;br&gt;An example gene: X/X;a/a;b/b;c/c;e/E;f/F;g/G;h/H;J/j;K/k;M/m;N/N;S/S;x/X;E/e;P/a;a/a;B/B;Y/Y;R/R;O/O;W/W;B/B;Y/Y;R/R;O/O;W/W;B/B;Y/Y;R/R;O/O;W/W;s/s;t/t;E/E;N/n;C/C;H/h;T/T;h/H;l/L;e/E;17/75
+&lt;br&gt;
+&lt;br&gt;Gender-Length-Height-Weight-Age-Fertility-Maturity-Breed-color-color-color-sta-sta-sta-sta-sta-stat-Inbreeding
+&lt;br&gt;
+&lt;br&gt;Under this is a series of fields where you can edit the genes, separated by the feature they code for.
+&lt;br&gt;
+&lt;br&gt;You can change any letter and click the “enter” button to save the change.  If the value entered is not valid for this gene, it will return an error - ie if you enter “w/a;b/b;c/c;” for the Length it will tell you this is invalid, as the gene must be in the format &quot;A/a;B/b;C/c;&quot;
+&lt;br&gt;
+&lt;br&gt;The very last gene is “Inbreeding”, which is a pair of numbers rather than letters.  If both numbers are the same the fluffy is considered to be inbreed.  So long as the numbers are different they do not matter.
+&lt;br&gt;
+&lt;h2&gt;Gene Info&lt;/h2&gt;
+
+&lt;br&gt;Some genes are ‘co-dominate’ - meaning if either letter is Upper Case (dominate), the other does not matter.  A/a is the same as a/A and A/A.  These can be abbreviated to just ‘A’ or ‘a’.
+&lt;br&gt;
+&lt;br&gt;Other genes have ‘incomplete dominant’, so both cases always matter (A/A is not the same as A/a or a/a).
+
+&lt;h2&gt;The Genes&lt;/h2&gt;
+
+&lt;h3&gt;Gender&lt;/h3&gt;
+
+This is defined as the first gene (0), X\X or X\Y.  
+&lt;br&gt;
+&lt;br&gt;X\X is Female, X\Y is Male.  Fluffies have a binary gender expression.  These are only upper case.
+
+&lt;h3&gt;Length&lt;/h3&gt;
+
+This controls the adult body length, in cm.
+&lt;br&gt;
+&lt;br&gt;This is defined as genes 1, 2 and 3, and has the format &quot;A/a;B/b;C/c;&quot;.
+&lt;br&gt;
+&lt;br&gt;All genes are ‘co-dominate’, so there are 8 phenotype combinations
+&lt;br&gt;
+&lt;&lt;click &quot;Length Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_length&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt;
+&lt;div id=&quot;section_length&quot; class=&quot;hidden&quot;&gt;
+Genes       Length (cm)
+[ A b c ]     39-40
+[ a B c ]     37-38
+[ a B C ]     35-36
+[ A B C ]     33-34
+[ A B c ]     31-32
+[ A b C ]     29-30
+[ a b C ]     27-28
+[ a b c ]     25-26
+&lt;/div&gt;
+
+&lt;h3&gt;Height&lt;/h3&gt;
+
+This gene controls the ‘height multiplier’, which is multiplied by the Length value to get the height, in cm.
+&lt;br&gt;
+&lt;br&gt;This is defined as genes 4 and 5, and has the format &quot;E/e;F/f;&quot;.
+&lt;br&gt;The “E/e” gene is ‘co-dominate’, while the “F/f” gene is ‘incomplete dominant’, so there are 6 phenotype combinations.
+&lt;br&gt;
+&lt;&lt;click &quot;Height Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_height&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt;
+&lt;div id=&quot;section_height&quot; class=&quot;hidden&quot;&gt;
+Genes       Height multiplier
+[ e f  ]     0.65-0.67
+[ E F  ]     0.62-0.64
+[ E fF ]     0.59-0.61
+[ E f  ]     0.56-0.58
+[ e fF ]     0.53-0.55
+[ e F  ]     0.50-0.52
+&lt;/div&gt;
+
+
+
+
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
@@ -5147,6 +5235,14 @@ This page shows some details of the selected fluffy and specific interactions yo
 	 		&lt;&lt;if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0&gt;&gt;
 	 			&lt;br&gt;&lt;&lt;print $globalFluffies[$globalFluffies[_ef].mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
+	 		
+	 		&lt;&lt;set $ourStore.foals--&gt;&gt;
+	 		
+			&lt;&lt;if $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
+				&lt;&lt;set $ourStore.stallions++&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $ourStore.mares++&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
@@ -5753,6 +5849,8 @@ __&#39;&#39;World Settings&#39;&#39;__
 	[[Fluffy Interaction|Encyclopedia][$encyclopedia = &quot;Fluffy Interaction&quot;]]
 	&lt;br&gt;
 	[[Fluffy Statistics|Encyclopedia][$encyclopedia = &quot;Fluffy Statistics&quot;]]
+	&lt;br&gt;
+	[[Gene Lab|Encyclopedia][$encyclopedia = &quot;Gene Lab&quot;]]
 &lt;&lt;elseif _Pass == &quot;Intro Summary&quot;&gt;&gt;\
 	&lt;&lt;SidebarDate&gt;&gt;	
 &lt;&lt;elseif _Pass == &quot;Shop Intro&quot;&gt;&gt;\
@@ -5891,7 +5989,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.8.78-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.8.80-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -7025,7 +7123,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
  *	Debug option to enter a genetic editing mode.
  *** */
 &lt;&lt;if $debugMode == true || $unlockGeneLab == true&gt;&gt;
-	[[Enter the Gene Lab|Gene Lab]]
+	[[Enter the Gene Lab|Gene Lab][$encyclopedia = &quot;Gene Lab&quot;]]
 	&lt;hr&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -7207,10 +7305,11 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;set $nextButton to &quot;Back to the shop.&quot;, $nextLink to $returnTo&gt;&gt;
 
 /* Since we are going over the list anyway, we can make sure this is current.*/
+/*
 &lt;&lt;set $ourStore.stallions = 0&gt;&gt;
 &lt;&lt;set $ourStore.mares = 0&gt;&gt;
 &lt;&lt;set $ourStore.foals = 0&gt;&gt;
-
+*/
 /* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
 &lt;span id=&quot;list-count&quot;&gt;&lt;/span&gt;
 &lt;br&gt;
@@ -7405,11 +7504,6 @@ Bulk Actions (all checked fluffies)
 /* Update the sidebar */
 &lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 
-/* Update the page count */
-/*&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;*/
-
-/* Update the page count */
-&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
 
 /* Display the initial list */
 &lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
@@ -7436,19 +7530,19 @@ Bulk Actions (all checked fluffies)
 	
 		/* &lt; 1 year old */
 		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
-			&lt;&lt;set $ourStore.foals++&gt;&gt;
+			/*&lt;&lt;set $ourStore.foals++&gt;&gt;*/
 			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.stallions++&gt;&gt;
+			/*&lt;&lt;set $ourStore.stallions++&gt;&gt;*/
 			&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $ourStore.mares++&gt;&gt;
+			/*&lt;&lt;set $ourStore.mares++&gt;&gt;*/
 	
 			&lt;&lt;if $listType != &quot;Mares&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
@@ -7502,6 +7596,12 @@ Bulk Actions (all checked fluffies)
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
+
+
+/* Update the page count */
+&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
+/*&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;br&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;br&gt;&lt;&lt;/replace&gt;&gt;*/
+&lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Fluffy Selling" tags="nobr" position="475,350" size="100,100">/* **********

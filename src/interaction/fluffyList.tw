@@ -18,10 +18,11 @@
 <<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
 
 /* Since we are going over the list anyway, we can make sure this is current.*/
+/*
 <<set $ourStore.stallions = 0>>
 <<set $ourStore.mares = 0>>
 <<set $ourStore.foals = 0>>
-
+*/
 /* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
 <span id="list-count"></span>
 <br>
@@ -216,11 +217,6 @@ Bulk Actions (all checked fluffies)
 /* Update the sidebar */
 <<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
 
-/* Update the page count */
-/*<<replace "#list-count">><</replace>>*/
-
-/* Update the page count */
-<<timed 100ms>><<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>><</timed>>
 
 /* Display the initial list */
 <<timed 100ms>><<replace "#fluffy-list">><<FluffyList>><</replace>><</timed>>
@@ -247,19 +243,19 @@ Bulk Actions (all checked fluffies)
 	
 		/* < 1 year old */
 		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
-			<<set $ourStore.foals++>>
+			/*<<set $ourStore.foals++>>*/
 			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
 				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<</if>>
 		<<elseif _listFluff.gender == "male">>
-			<<set $ourStore.stallions++>>
+			/*<<set $ourStore.stallions++>>*/
 			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
 				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<</if>>
 		<<else>>
-			<<set $ourStore.mares++>>
+			/*<<set $ourStore.mares++>>*/
 	
 			<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
 				<<set $globalFluffies[_fl].isChecked = false>>
@@ -313,6 +309,12 @@ Bulk Actions (all checked fluffies)
 		<</if>>
 	<</for>>
 <</widget>>
+
+
+/* Update the page count */
+<<timed 100ms>><<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+/*<<replace "#fluffy-count">><br><<SidebarFluffies>><br><</replace>>*/
+<</timed>>
 
 /* Sidebar link for mobile users */
 <<SidebarButton>>
