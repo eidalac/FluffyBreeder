@@ -1,0 +1,26 @@
+:: Gene Test
+
+/* **********
+ * weekSave.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Call on exit of the gene lab to check that the genes are valid
+ *
+ *********** */
+ 
+<<set _geneCheck = "">>
+
+<<run console.log("Gentic Test.  Gene = '" + $globalFluffies[$activeFluffy.ID].geneString + "'")>>
+
+<<set _geneCheck = $globalFluffies[$activeFluffy.ID].geneString.match(/(?:(?:[XY]\W){2}(?:(?:[aA]\W){2}(?:[bB]\W){2}(?:[cC]\W){2})(?:(?:[eE]\W){2}(?:[fF]\W){2})(?:(?:[gG]\W){2}(?:[hH]\W){2})(?:(?:[jJ]\W){2}(?:[kK]\W){2})(?:(?:[mM]\W){2}(?:[nN]\W){2})(?:(?:[sS]\W){2}(?:[xX]\W){2})(?:(?:[eE]\W){2}(?:[pPaA]\W){2}(?:[uUaA]\W){2})(?:(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}){3}(?:(?:[sS]\W){2}(?:[tT]\W){2})(?:(?:[eE]\W){2}(?:[nN]\W){2})(?:(?:[cC]\W){2}(?:[hH]\W){2})(?:(?:[tT]\W){2}(?:[hH]\W){2})(?:(?:[lL]\W){2}(?:[eE]\W){2})(?:\d+\W\d+))/)>>
+
+<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
+
+<<if _geneCheck === null>>
+	<br><br>@@.red;Invalid gene found:@@ '<<-$globalFluffies[$activeFluffy.ID].geneString>>'.
+	[[Return to Gene Lab|Gene Lab]]
+<<else>>
+	<<goto "Fluffy Interact">>
+<</if>>
