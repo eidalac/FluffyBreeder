@@ -203,6 +203,18 @@ Bulk Actions (all checked fluffies)
 	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
 	<<replace "#fluffy-list">><<FluffyList>><</replace>>
 <</link>>
+ | Sort by Gender 
+<<link "▼">>
+	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender < $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender > $globalFluffies[b].gender) ? -1 : 0;}) >>
+	<<replace "#fluffy-list">><<FluffyList>><</replace>>
+<</link>>
+ / 
+<<link "▲">> 
+	/*<<run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) >>*/
+	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender < $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender > $globalFluffies[a].gender) ? -1 : 0;}) >>
+	<<replace "#fluffy-list">><<FluffyList>><</replace>>
+<</link>>
 <br>
 
 /* (function(a,b){return a[1] - b[1];}) */

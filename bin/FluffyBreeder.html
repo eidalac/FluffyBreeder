@@ -107,6 +107,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 body {
 	color: #ddd;
 	background-color: #222;
+	font-size: 12px;
 }
 
 .hidden {
@@ -3683,6 +3684,15 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 						&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
+					
+					
+					/* Debug flag since I can&#39;t track down this issue yet. */
+					&lt;&lt;if _price &lt;= 0&gt;&gt;
+						&lt;br&gt;
+						&lt;br&gt;@@.red; ERROR: _price &lt;= 0.  Value dump: _ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, $globalFluffies[_fl].colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
+						&lt;br&gt;
+					&lt;&lt;/if&gt;&gt;
+					
 			
 					&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
 					
@@ -4947,23 +4957,23 @@ Genes       Height multiplier
 	 * 80 - Trauma decays into stress
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 80&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 	/*
 	 * 40 - Slow healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 40&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
 	/*
 	 * 20 - Normal Healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 20&gt;&gt;
-	 	&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
+	 	&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
 	/*
 	 * 10 - quick healing
 	 */
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 10&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].trauma -= 2&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	/* Stress ticks */
@@ -5030,8 +5040,8 @@ Genes       Height multiplier
 	 * 100 - Stress decays into Trauma
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 100&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].trauma += 1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
 
 	/*
 	 * 40 - Slow healing; blocked if trauma is over 59
@@ -7227,6 +7237,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $stress -= 50&gt;&gt;
 		&lt;&lt;set $actions--&gt;&gt;
 		&lt;&lt;set $abuse += 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.trauma += random(0,1)&gt;&gt;
 		&lt;&lt;set $activeFluffy.stress++&gt;&gt;
 		&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 		&lt;&lt;set $activeFluffy.happy--&gt;&gt;
@@ -7488,6 +7499,18 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;link &quot;▲&quot;&gt;&gt; 
 	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) &gt;&gt;*/
 	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ | Sort by Gender 
+&lt;&lt;link &quot;▼&quot;&gt;&gt;
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender &lt; $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender &gt; $globalFluffies[b].gender) ? -1 : 0;}) &gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+&lt;&lt;/link&gt;&gt;
+ / 
+&lt;&lt;link &quot;▲&quot;&gt;&gt; 
+	/*&lt;&lt;run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) &gt;&gt;*/
+	&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender &lt; $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender &gt; $globalFluffies[a].gender) ? -1 : 0;}) &gt;&gt;
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/link&gt;&gt;
 &lt;br&gt;
