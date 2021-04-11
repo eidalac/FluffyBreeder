@@ -12,13 +12,27 @@
 
 <<set $nextButton to "Back to the Store", $nextLink to "Week Start">>
 
+/* Validate data added in recent update: */
+<<if ndef $ourStore.upgrades>>
+	<<set $ourStore.upgrades = []>>
+<</if>>
+
+
+<h1>Store Upgrades</h1>
+
 <br>What improvements do you want to make to your store? @@.orange;Press 'enter' to set values.@@
 <br>
 <span id = "shop_cash"><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>></span>
+<br>
+Upgrades:
+<<for _i, _upgrade range $ourStore.upgrades>>
+	<<- _upgrade>><<- (_i < $ourStore.upgrades.length - 1) ? (_i < $ourStore.upgrades.length - 2) ? ',' : ', and' : ''>>
+<</for>>
 
- /* Space, used for upgrade to the store */
-<br>
-<br>
+<hr>
+<h1>Physical Space</h1>
+
+/* Space, used for upgrade to the store */
 Space: <span id="stats-space"><<print $ourStore.space>></span> How much space you have for upgrades.
 <div id="space-form">
 	<<button "Buy 1 (cost ¤100)">>
@@ -120,7 +134,7 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 
 /* Display, controls the maximum fluffy population you can support */
 <br>
-Display: <span id="stats-display"><<print $ourStore.display>></span> How many adult fluffies you can hold.
+Display: <span id="stats-display"><<print $ourStore.display>></span> How many adult fluffies you can put on display for sale.
 <div id="display-form">
 	<<button "Buy 1 (cost ¤100)">>
 		<<if $cash < 100>>
@@ -166,7 +180,67 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 /* Form for error message to display*/
 <span id="display-form-error"></span>
 </div>
+<br>
+<hr>
+<h1>Upgrades and Improvements</h1>
 
+<p class="hang">Add some @@.coral;Basic Toys@@ to <<- $ourStore.name>>. 
+<br>Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.</p>
+@@#basic_toys;<<button "Buy Basic Toys">>	
+	<<set $cash -= 100>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Basic Toys")>>
+    <<run $("#basic_toys button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Fancy Toys@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.</p>
+@@#fancy_toys;<<button "Buy Fancy Toys">>	
+	<<set $cash -= 500>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Fancy Toys")>>
+    <<run $("#fancy_toys button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Deluxe Toys@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.</p>
+@@#deluxe_toys;<<button "Buy Deluxe Toys">>	
+	<<set $cash -= 1000>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Deluxe Toys")>>
+    <<run $("#deluxe_toys button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<br><br>
+
+<<timed 100ms>>
+	<<if $ourStore.upgrades.includes("Basic Toys") == false && $cash >= 100 && $ourStore.space >= 1>>
+		<<run $("#basic_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#basic_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Fancy Toys") == false && $cash >= 500 && $ourStore.space >= 1>>
+		<<run $("#fancy_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#fancy_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
+		<<run $("#deluxe_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#deluxe_toys button").prop("disabled", true)>>
+	<</if>>
+<</timed>>
 
 /* Sidebar link for mobile users */
 <<SidebarButton>>

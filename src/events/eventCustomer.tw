@@ -144,6 +144,24 @@
 <br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
 <span id="result-msg"></span>
 
+
+<span id="selling-list"></span>
+
+
+/* Display the initial list */
+<<timed 100ms>><<replace "#selling-list">><<SellingList>><</replace>><</timed>>
+
+
+
+
+  
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+ 
+<<widget "SellingList">>
 /*▲˄˅▼*/
 <br>
 <br>Sort by Breed 
@@ -266,23 +284,6 @@
 
 <hr>
 
-<span id="selling-list"></span>
-
-
-/* Display the initial list */
-<<timed 100ms>><<replace "#selling-list">><<SellingList>><</replace>><</timed>>
-
-
-
-
-  
-
-<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-
-
-
- 
-<<widget "SellingList">>
 <<capture _fl>>
 	<<if _customerTolerance >= 0>>
 		<<for _fl range $ourStore.fluffies>>
@@ -552,7 +553,9 @@
 					<<else>>
 						<<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
 					<</if>>
-					
+<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
+
+<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
 					<br>@@.orange;Price Bonus = <<- _priceBonus>>.@@
 <<run console.log("Customer needs $cash = " + $cash)>>
 					<<set _price = Number(_price * _priceBonus).toFixed(2)>>
@@ -568,6 +571,8 @@
 								<<replace "#selling-list">><</replace>>
 							<</if>>
 					<<else>> 
+					
+
 						<br>@@.orange;They would pay = <<- _price>> for <<- $globalFluffies[_fl].name>>.@@
 						<br>
 						<<if $globalFluffies[_fl].ID != _fl>>
@@ -618,7 +623,26 @@
 						<</if>>
 						*/
 						<<set $repuation += _priceBonus>>
-							
+
+						/* Random chance to 'upsell'*/
+						<<set _chance = Number(($training + $repuation) / 4).toFixed(2)>>
+
+<<run console.log("Upgraded check _chance = " + _chance)>>
+						
+						<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
+							<br>You add some deluxe toys to the sale.
+							<br> 				
+							<<set _price = Number(Number(_price) + Number(random(15,20)))>>
+						<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > random(0, 90)>>
+							<br>You add some fancy toys to the sale.
+							<br> 				
+							<<set _price = Number(Number(_price) + Number(random(10,15)))>>
+						<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > random(0, 94)>>
+							<br>You add some basic toys to the sale.
+							<br> 				
+							<<set _price = Number(Number(_price) + Number(random(5,10)))>>
+						<</if>>
+
 						<<replace "#selling-list">>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>>
 
 <<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						

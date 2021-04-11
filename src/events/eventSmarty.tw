@@ -1,0 +1,282 @@
+:: Event Smarty [nobr]
+
+/* **********
+ * eventBirthRejection.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event(s) for smarties.
+ *
+ *********** */
+ 
+ 
+<<run console.log("Smarty event 2: On event page.")>>
+<<set $nextButton = " ">>
+
+/* Each rejection event is the foal being rejected */
+<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
+
+
+<<if ndef $activeFluffy>>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log("Rejection test 3: Skipped due to invalid/missing fluffy.")>>
+	<<goto "Event Main">>
+	
+<<elseif $ourStore.fluffies.includes($activeFluffy.ID) == false>>
+	/* Removed in a prior event. */
+	<<run console.log("Rejection test 3: Skipped due to foal not being in store.")>>
+	<<goto "Event Main">>
+
+<<else>>
+
+	<<run console.log("Smarty event 3: On event page.")>>
+	
+	<h1>Smarty Event</h1>
+	
+	<<- $activeFluffy.name>> is acting up...
+	<br>
+	
+	<<if $globalFluffies[$activeFluffy.ID].traits[0].includes("Smarty")>>
+		<<run console.log("Smarty event 4: Already a smarty.")>>
+		<<switch $globalFluffies[$activeFluffy.ID].traits[0]>>
+			/* These would be the worst personalities*/
+			<<case "Bossy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Bossy acts a smarty.@@
+			<<case "Haughty">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Haughty acts a smarty.@@
+			<<case "Rowdy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Rowdy acts a smarty.@@
+			
+			/* These are progressivly less 'hellgremlin' (and rare) */
+			<<case "Diligent">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Diligent acts a smarty.@@
+			<<case "Curious">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious acts a smarty.@@
+			<<case "Playful">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Playful acts a smarty.@@
+			<<case "Lackadaisical">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lackadaisical acts a smarty.@@
+			<<case "Timid">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid acts asmarty.@@
+			<<case "Pensive">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive acts a smarty.@@
+			<<case "Sweet">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Sweet acts a smarty.@@
+	
+			/* Foal traits, so these would be 'best babies'*/
+			
+			/* Worst combo */
+			<<case "Fussy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Fussy acts a smarty.@@
+			
+			/* Progressivly less nasty results */
+			<<case "Peppy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy acts a smarty.@@
+			<<case "Lazy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy acts a smarty.@@
+			<<case "Cute">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute acts a smarty.@@
+			<<case "Shy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy acts a smarty.@@
+			<<default>>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - <default> acts a smarty.@@
+		<</switch>>
+	<<else>>
+		<<run console.log("Smarty event 4: Not a smarty yet.")>>
+		
+		<<switch $globalFluffies[$activeFluffy.ID].traits[0]>>
+			/* These would be the worst personalities*/
+			<<case "Bossy">>
+				@@.cyan;<<- $activeFluffy.name>> am smarty now! Will make bestest herd from dummy <<- $ourStore.name>> fluffys!@@
+			<<case "Haughty">>
+				@@.cyan;Is best smarty now, dummys do what best smarty say!@@
+			<<case "Rowdy">>
+				@@.cyan;This is smarty land now!  Dummys do what Smarty say or get worstiest sorry hooves!@@
+			
+			/* These are progressivly less 'hellgremlin' (and rare) */
+			<<case "Diligent">>
+				@@.cyan;Wet Smarty go outside! Smarty <<- $activeFluffy.name>> wan have hewd, dummeh feral fluffys do what Smarty wan!@@
+			<<case "Curious">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious turns smarty.@@
+			<<case "Playful">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Playful turns smarty.@@
+			<<case "Lackadaisical">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lackadaisical turns smarty.@@
+			<<case "Timid">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid turns smarty.@@
+			<<case "Pensive">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive turns smarty.@@
+			<<case "Sweet">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Sweet turns smarty.@@
+	
+			/* Foal traits, so these would be 'best babies'*/
+			
+			/* Worst combo */
+			<<case "Fussy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious turns smarty.@@
+			
+			/* Progressivly less nasty results */
+			<<case "Peppy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy turns smarty.@@
+			<<case "Lazy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy turns smarty.@@
+			<<case "Cute">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute turns smarty.@@
+			<<case "Shy">>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy turns smarty.@@
+			<<default>>
+				@@.cyan;Placeholder - <<- $activeFluffy.name>> - <default> turns smarty.@@
+				
+		<</switch>>
+		
+	<</if>> /* Smarty trait check */
+	
+	<br>
+	<br>You need to do something about this.
+	<br>
+	
+	<<set _punishString = "Displine " + $globalFluffies[$activeFluffy.ID].name>>
+	<<set _reactionString = "">>
+	<br>
+	<span id="reaction-msg">
+			
+	<<button _punishString>>
+		<<set $training += 3>>
+		<<set $hugbox += 1>>
+		<<set $stress += 10>>
+		
+		<<set $globalFluffies[$activeFluffy.ID].stress += 5>>
+		<<set $globalFluffies[$activeFluffy.ID].trust-->>
+		<<set $globalFluffies[$activeFluffy.ID].training++>>
+		<<set $globalFluffies[$activeFluffy.ID].temperament -= 2>>
+		
+		<<set _difficulty = 0>>
+				
+				
+		<<if $smartySyndrom == 0>>
+			<<set _difficulty = Number(2 * $training)>>
+			<<set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<elseif $smartySyndrom == 1>>
+			<<set _difficulty = Number($training)>>
+			<<set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<else>>
+			<<set _difficulty = Number($training)>>
+			<<set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
+		<</if>>
+			
+		<<run console.log("Smarty Test 5: Training difficulty: " + _difficulty)>>
+		
+		<<if _difficulty >= random(0, 199)>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
+			<<set _reactionString = "@@.cyan;Place holder - " + $globalFluffies[$activeFluffy.ID].name + " is no longer a smarty.@@">>
+		<<else>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.pushUnique("Smarty")>>
+			<<set _reactionString = "@@.cyan;Dummeh " + $title + "! Smarty no need ou twaining!@@">>
+		<</if>>
+				
+		<<replace "#reaction-msg">><br>You discipline <<- $globalFluffies[$activeFluffy.ID].name>><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Neutral option.@@
+			
+	<br><br>
+	<<button "Beat it">>	
+		<<set $stress -= 50>>
+		<<set $abuse += 1>>
+		<<set $globalFluffies[$activeFluffy.ID].trauma += 10>>
+		<<set $globalFluffies[$activeFluffy.ID].stress += 30>>
+		<<set $globalFluffies[$activeFluffy.ID].temperament -= 10>>
+		<<set $globalFluffies[$activeFluffy.ID].happy-->>
+		<<set $globalFluffies[$activeFluffy.ID].trust-->>
+		
+		<<set _difficulty = 0>>
+				
+		<<if $smartySyndrom == 0>>
+			<<set _difficulty = Number(2 * $training)>>
+			<<set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<elseif $smartySyndrom == 1>>
+			<<set _difficulty = Number($training)>>
+			<<set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<else>>
+			<<set _difficulty = Number($training)>>
+			<<set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
+			<<set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
+		<</if>>
+			
+		<<run console.log("Smarty Test 5: Training difficulty: " + _difficulty)>>
+		
+		<<if _difficulty >= random(0, 199)>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
+			<<set _reactionString = "@@.cyan;Place holder - " + $globalFluffies[$activeFluffy.ID].name + " is no longer a smarty.@@">>
+		<<else>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.pushUnique("Smarty")>>
+			<<set _reactionString = "@@.cyan;SSSSCRRRRRRREEEEEEEEEEEEEE!@@">>
+		<</if>>
+				
+		<<replace "#reaction-msg">><br>You beat <<- $globalFluffies[$activeFluffy.ID].name>><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Abuse option.@@
+			
+	<br><br>
+	<<button "Kill it">>
+		<<run console.log("Smarty Test 5: Kill it")>>
+		<<set $hugbox++>>
+
+		<<set $globalFluffies[$activeFluffy.ID].dead == true>>
+		<<set $globalFluffies[$activeFluffy.ID].onDisplay = false>>
+		<<set $globalFluffies[$activeFluffy.ID].pregnant = false>>
+
+		<<if $globalFluffies[$activeFluffy.ID].nursing > 0>>
+			<<for _child range $globalFluffies[$activeFluffy.ID].children>>
+				<<if $globalFluffies[_child].foodType == "Nursing">>
+					<<set $globalFluffies[_child].foodType = "Nothing">>
+					<<set $globalFluffies[_child].foodQuality = -1>>
+				<</if>> /* Close nursing check */
+			<</for>> /* Close child check*/
+		<</if>> /* Close Nursing check */
+	
+		<<set $globalFluffies[$activeFluffy.ID].nursing = 0>>
+						
+		<<if $globalFluffies[$activeFluffy.ID].foodType == "Nursing">>
+			<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].mother].nursing-->>
+		<</if>> /* Close nursing check */
+	
+		<<if $globalFluffies[$activeFluffy.ID].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1>>
+			<<set $globalFluffies[$activeFluffy.ID].specialFriend = -1>>
+		<</if>> /* Close special friend check */
+	
+		<<if Number($globalFluffies[$activeFluffy.ID].age) == 0 && Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
+			<<set $ourStore.foals-->>
+		<<elseif $globalFluffies[$activeFluffy.ID].gender == "male">>
+			<<set $ourStore.stallions-->>
+		<<else>>
+			<<set $ourStore.mares-->>
+		<</if>> /* Close age check */
+		
+		<<run $ourStore.fluffies.delete($activeFluffy.ID)>>
+		
+		<<set _reactionString = "You snap " + $globalFluffies[$activeFluffy.ID].name + "'s neck.">>
+		
+		<<replace "#reaction-msg">><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Hugbox option?@@
+</span>
+
+<</if>> /* Close validation checks */
+
+
+
+ 	
+
+/*
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+*/

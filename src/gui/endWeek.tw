@@ -17,6 +17,15 @@
  *** */
 <<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)>>
 
+<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+	<<set $costs += 1>>
+<</if>>
+<<if $ourStore.upgrades.includes("Fancy Toys")>>
+	<<set $costs += 1>>
+<</if>>
+<<if $ourStore.upgrades.includes("Basic Toys")>>
+	<<set $costs += 1>>
+<</if>>
 
 /* moving the count updates to here, to prevent double loops */
 <<set $ourStore.stallions = 0>>
@@ -219,6 +228,8 @@
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
 			<<set $globalFluffies[_ef].stress += 5>>
 			<<set $globalFluffies[_ef].trauma += 5>>
+			<<set $globalFluffies[_ef].temperament -= 5>>
+			<<set $globalFluffies[_ef].happy -= 5>>
 		<</if>>
 	/*
 	 * 160 - Increasing risk of death
@@ -232,6 +243,8 @@
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+			<<set $globalFluffies[_ef].temperament -= 4>>
+			<<set $globalFluffies[_ef].happy -= 4>>
 		<</if>>
 	/*
 	 * 140 - Risk of death
@@ -245,18 +258,24 @@
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+			<<set $globalFluffies[_ef].temperament -= 3>>
+			<<set $globalFluffies[_ef].happy -= 3>>
 		<</if>>
 	/*
 	 * 120 - No healing
 	 */
 	<<elseif $globalFluffies[_ef].trauma >= 120>>
 		<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
+		<<set $globalFluffies[_ef].temperament -= 2>>
+		<<set $globalFluffies[_ef].happy -= 2>>
 	/*
 	 * 80 - Trauma decays into stress
 	 */
 	<<elseif $globalFluffies[_ef].trauma >= 80>>
 		<<set $globalFluffies[_ef].trauma -= 1>>
 		<<set $globalFluffies[_ef].stress += 5>>
+		<<set $globalFluffies[_ef].temperament -= 1>>
+		<<set $globalFluffies[_ef].happy -= 1>>
 	/*
 	 * 40 - Slow healing
 	 */
@@ -302,6 +321,8 @@
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
 			<<set $globalFluffies[_ef].stress += 10>>
 			<<set $globalFluffies[_ef].trauma += 2>>
+			<<set $globalFluffies[_ef].temperament -= 4>>
+			<<set $globalFluffies[_ef].happy -= 4>>
 		<</if>>
 	/*
 	 * 160 - Increasing risk of death
@@ -315,6 +336,8 @@
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+			<<set $globalFluffies[_ef].temperament -= 3>>
+			<<set $globalFluffies[_ef].happy -= 3>>
 		<</if>>
 	/*
 	 * 140 - Risk of death
@@ -328,6 +351,8 @@
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
+			<<set $globalFluffies[_ef].temperament -= 2>>
+			<<set $globalFluffies[_ef].happy -= 2>>
 		<</if>>
 	/*
 	 * 120 - No healing
@@ -340,6 +365,8 @@
 	<<elseif $globalFluffies[_ef].stress >= 100>>
 		<<set $globalFluffies[_ef].trauma += 1>>
 		<<set $globalFluffies[_ef].stress -= 5>>
+		<<set $globalFluffies[_ef].temperament -= 1>>
+		<<set $globalFluffies[_ef].happy -= 1>>
 
 	/*
 	 * 40 - Slow healing; blocked if trauma is over 59
@@ -366,6 +393,88 @@
 
 <<run console.log("Trauma test 2: Trauma = " + $globalFluffies[_ef].trauma)>>
 <<run console.log("Stress test 2: Stress = " + $globalFluffies[_ef].stress)>>
+
+
+	/* ***
+	 *	Temperament ticks
+	 *
+	 *** */
+	 
+	 /* 130 is the base where we can get a smarty. */
+	 <<if $globalFluffies[_ef].temperament >= 130>>
+	 
+	 	<<if $globalFluffies[_ef].traits[0].includes("Smarty")>>
+			<<if random(0,4) == 0>>
+				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+			<</if>>
+	 	<</if>>
+	
+		/* 190+ has the highest risk: */
+		<<if $globalFluffies[_ef].temperament >= 190>>
+			<<switch $globalFluffies[_ef].traits[0]>>
+				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+					<<if random(0,4) == 0>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Diligent", "Curious", "Peppy", "Playful">>
+					<<if random(0,16) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 75>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Lazy", "Cute", "Lackadaisical">>
+					<<if random(0,32) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 50>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Shy", "Timid", "Pensive", "Sweet">>
+					<<if random(0,64) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 25>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+			 <</switch>>
+
+		/* 160+ has lower risk: */
+		<<elseif $globalFluffies[_ef].temperament >= 160>>
+			<<switch $globalFluffies[_ef].traits[0]>>
+				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+					<<if random(0,8) == 0>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Diligent", "Curious", "Peppy", "Playful">>
+					<<if random(0,24) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 60>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Lazy", "Cute", "Lackadaisical">>
+					<<if random(0,48) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 30>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Shy", "Timid", "Pensive", "Sweet">>
+					<<if random(0,96) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 15>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+			 <</switch>>
+			 
+		/* 130+ has the lowest risk: */
+		<<else>>
+			<<switch $globalFluffies[_ef].traits[0]>>
+				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+					<<if random(0,16) == 0>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Diligent", "Curious", "Peppy", "Playful">>
+					<<if random(0,32) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 30>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Lazy", "Cute", "Lackadaisical">>
+					<<if random(0,64) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 15>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+				<<case "Shy", "Timid", "Pensive", "Sweet">>
+					<<if random(0,128) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 7>>
+						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+					<</if>>
+			 <</switch>>
+		 <</if>>
+		 
+	 <</if>> /* Close temperament check */
+	 
 
 	/* ***
 	 *	Sell any display fluffies
@@ -796,7 +905,7 @@
 
 <<run $eventList.shuffle()>>
 
-<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0, $nextButton = " "]]
 
 
 

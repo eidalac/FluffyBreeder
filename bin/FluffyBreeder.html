@@ -2904,7 +2904,7 @@ console.log("cleared defects parts = " + this.genes[index])
 
 /* Each rejection event is the foal being rejected */
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
-
+&lt;&lt;set $nextButton = &quot; &quot;&gt;&gt;
 
 &lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
 	/* Shouldn&#39;t happen, but just in case*/
@@ -3395,6 +3395,24 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
 &lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
 
+
+&lt;span id=&quot;selling-list&quot;&gt;&lt;/span&gt;
+
+
+/* Display the initial list */
+&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+
+
+
+  
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+ 
+&lt;&lt;widget &quot;SellingList&quot;&gt;&gt;
 /*▲˄˅▼*/
 &lt;br&gt;
 &lt;br&gt;Sort by Breed 
@@ -3517,23 +3535,6 @@ console.log("cleared defects parts = " + this.genes[index])
 
 &lt;hr&gt;
 
-&lt;span id=&quot;selling-list&quot;&gt;&lt;/span&gt;
-
-
-/* Display the initial list */
-&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;SellingList&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
-
-
-
-
-  
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-
-
-
- 
-&lt;&lt;widget &quot;SellingList&quot;&gt;&gt;
 &lt;&lt;capture _fl&gt;&gt;
 	&lt;&lt;if _customerTolerance &gt;= 0&gt;&gt;
 		&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
@@ -3803,7 +3804,9 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-					
+&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
 					&lt;br&gt;@@.orange;Price Bonus = &lt;&lt;- _priceBonus&gt;&gt;.@@
 &lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
@@ -3819,6 +3822,8 @@ console.log("cleared defects parts = " + this.genes[index])
 								&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 					&lt;&lt;else&gt;&gt; 
+					
+
 						&lt;br&gt;@@.orange;They would pay = &lt;&lt;- _price&gt;&gt; for &lt;&lt;- $globalFluffies[_fl].name&gt;&gt;.@@
 						&lt;br&gt;
 						&lt;&lt;if $globalFluffies[_fl].ID != _fl&gt;&gt;
@@ -3869,7 +3874,26 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;/if&gt;&gt;
 						*/
 						&lt;&lt;set $repuation += _priceBonus&gt;&gt;
-							
+
+						/* Random chance to &#39;upsell&#39;*/
+						&lt;&lt;set _chance = Number(($training + $repuation) / 4).toFixed(2)&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Upgraded check _chance = &quot; + _chance)&gt;&gt;
+						
+						&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; random(0, 80)&gt;&gt;
+							&lt;br&gt;You add some deluxe toys to the sale.
+							&lt;br&gt; 				
+							&lt;&lt;set _price = Number(Number(_price) + Number(random(15,20)))&gt;&gt;
+						&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; random(0, 90)&gt;&gt;
+							&lt;br&gt;You add some fancy toys to the sale.
+							&lt;br&gt; 				
+							&lt;&lt;set _price = Number(Number(_price) + Number(random(10,15)))&gt;&gt;
+						&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; random(0, 94)&gt;&gt;
+							&lt;br&gt;You add some basic toys to the sale.
+							&lt;br&gt; 				
+							&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+
 						&lt;&lt;replace &quot;#selling-list&quot;&gt;&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
@@ -3921,6 +3945,9 @@ console.log("cleared defects parts = " + this.genes[index])
 		&lt;&lt;case &quot;Stress&quot;&gt;&gt;
 			&lt;&lt;run console.log(&quot;Stress test 1:  going to birth event page&quot;)&gt;&gt;
 			&lt;&lt;goto &quot;Event Stress&quot;&gt;&gt;
+		&lt;&lt;case &quot;Smarty&quot;&gt;&gt;
+			&lt;&lt;run console.log(&quot;Smarty test 1:  going to birth event page&quot;)&gt;&gt;
+			&lt;&lt;goto &quot;Event Smarty&quot;&gt;&gt;
 		&lt;&lt;default&gt;&gt;
 			&lt;&lt;run console.log(&quot;Error: invalid event type called [ &quot; + event.type + &quot; ]&quot;)&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
@@ -4050,7 +4077,286 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 	
 	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Event Stress" tags="nobr" position="975,100" size="100,100">/* **********
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="8" name="Event Smarty" tags="nobr" position="975,100" size="100,100">/* **********
+ * eventBirthRejection.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event(s) for smarties.
+ *
+ *********** */
+ 
+ 
+&lt;&lt;run console.log(&quot;Smarty event 2: On event page.&quot;)&gt;&gt;
+&lt;&lt;set $nextButton = &quot; &quot;&gt;&gt;
+
+/* Each rejection event is the foal being rejected */
+&lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
+
+
+&lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
+	/* Shouldn&#39;t happen, but just in case*/
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to invalid/missing fluffy.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+	
+&lt;&lt;elseif $ourStore.fluffies.includes($activeFluffy.ID) == false&gt;&gt;
+	/* Removed in a prior event. */
+	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to foal not being in store.&quot;)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+
+&lt;&lt;else&gt;&gt;
+
+	&lt;&lt;run console.log(&quot;Smarty event 3: On event page.&quot;)&gt;&gt;
+	
+	&lt;h1&gt;Smarty Event&lt;/h1&gt;
+	
+	&lt;&lt;- $activeFluffy.name&gt;&gt; is acting up...
+	&lt;br&gt;
+	
+	&lt;&lt;if $globalFluffies[$activeFluffy.ID].traits[0].includes(&quot;Smarty&quot;)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Smarty event 4: Already a smarty.&quot;)&gt;&gt;
+		&lt;&lt;switch $globalFluffies[$activeFluffy.ID].traits[0]&gt;&gt;
+			/* These would be the worst personalities*/
+			&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Bossy acts a smarty.@@
+			&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Haughty acts a smarty.@@
+			&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Rowdy acts a smarty.@@
+			
+			/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
+			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Diligent acts a smarty.@@
+			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious acts a smarty.@@
+			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Playful acts a smarty.@@
+			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lackadaisical acts a smarty.@@
+			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Timid acts asmarty.@@
+			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Pensive acts a smarty.@@
+			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Sweet acts a smarty.@@
+	
+			/* Foal traits, so these would be &#39;best babies&#39;*/
+			
+			/* Worst combo */
+			&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Fussy acts a smarty.@@
+			
+			/* Progressivly less nasty results */
+			&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Peppy acts a smarty.@@
+			&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lazy acts a smarty.@@
+			&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Cute acts a smarty.@@
+			&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Shy acts a smarty.@@
+			&lt;&lt;default&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - &lt;default&gt; acts a smarty.@@
+		&lt;&lt;/switch&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run console.log(&quot;Smarty event 4: Not a smarty yet.&quot;)&gt;&gt;
+		
+		&lt;&lt;switch $globalFluffies[$activeFluffy.ID].traits[0]&gt;&gt;
+			/* These would be the worst personalities*/
+			&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
+				@@.cyan;&lt;&lt;- $activeFluffy.name&gt;&gt; am smarty now! Will make bestest herd from dummy &lt;&lt;- $ourStore.name&gt;&gt; fluffys!@@
+			&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
+				@@.cyan;Is best smarty now, dummys do what best smarty say!@@
+			&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
+				@@.cyan;This is smarty land now!  Dummys do what Smarty say or get worstiest sorry hooves!@@
+			
+			/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
+			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
+				@@.cyan;Wet Smarty go outside! Smarty &lt;&lt;- $activeFluffy.name&gt;&gt; wan have hewd, dummeh feral fluffys do what Smarty wan!@@
+			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
+			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Playful turns smarty.@@
+			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lackadaisical turns smarty.@@
+			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Timid turns smarty.@@
+			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Pensive turns smarty.@@
+			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Sweet turns smarty.@@
+	
+			/* Foal traits, so these would be &#39;best babies&#39;*/
+			
+			/* Worst combo */
+			&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
+			
+			/* Progressivly less nasty results */
+			&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Peppy turns smarty.@@
+			&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lazy turns smarty.@@
+			&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Cute turns smarty.@@
+			&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Shy turns smarty.@@
+			&lt;&lt;default&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - &lt;default&gt; turns smarty.@@
+				
+		&lt;&lt;/switch&gt;&gt;
+		
+	&lt;&lt;/if&gt;&gt; /* Smarty trait check */
+	
+	&lt;br&gt;
+	&lt;br&gt;You need to do something about this.
+	&lt;br&gt;
+	
+	&lt;&lt;set _punishString = &quot;Displine &quot; + $globalFluffies[$activeFluffy.ID].name&gt;&gt;
+	&lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
+	&lt;br&gt;
+	&lt;span id=&quot;reaction-msg&quot;&gt;
+			
+	&lt;&lt;button _punishString&gt;&gt;
+		&lt;&lt;set $training += 3&gt;&gt;
+		&lt;&lt;set $hugbox += 1&gt;&gt;
+		&lt;&lt;set $stress += 10&gt;&gt;
+		
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].stress += 5&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].trust--&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].training++&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].temperament -= 2&gt;&gt;
+		
+		&lt;&lt;set _difficulty = 0&gt;&gt;
+				
+				
+		&lt;&lt;if $smartySyndrom == 0&gt;&gt;
+			&lt;&lt;set _difficulty = Number(2 * $training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;elseif $smartySyndrom == 1&gt;&gt;
+			&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+			
+		&lt;&lt;run console.log(&quot;Smarty Test 5: Training difficulty: &quot; + _difficulty)&gt;&gt;
+		
+		&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].traits.delete(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;Place holder - &quot; + $globalFluffies[$activeFluffy.ID].name + &quot; is no longer a smarty.@@&quot;&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].traits.pushUnique(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;Dummeh &quot; + $title + &quot;! Smarty no need ou twaining!@@&quot;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+				
+		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.ID].name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;&lt;br&gt;&lt;&lt;set $nextButton = &quot;CONTINUE&quot;&gt;&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+	@@.orange;Neutral option.@@
+			
+	&lt;br&gt;&lt;br&gt;
+	&lt;&lt;button &quot;Beat it&quot;&gt;&gt;	
+		&lt;&lt;set $stress -= 50&gt;&gt;
+		&lt;&lt;set $abuse += 1&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].trauma += 10&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].stress += 30&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].temperament -= 10&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].happy--&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].trust--&gt;&gt;
+		
+		&lt;&lt;set _difficulty = 0&gt;&gt;
+				
+		&lt;&lt;if $smartySyndrom == 0&gt;&gt;
+			&lt;&lt;set _difficulty = Number(2 * $training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;elseif $smartySyndrom == 1&gt;&gt;
+			&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _difficulty = Number($training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)&gt;&gt;
+			&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+			
+		&lt;&lt;run console.log(&quot;Smarty Test 5: Training difficulty: &quot; + _difficulty)&gt;&gt;
+		
+		&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].traits.delete(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;Place holder - &quot; + $globalFluffies[$activeFluffy.ID].name + &quot; is no longer a smarty.@@&quot;&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].traits.pushUnique(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;set _reactionString = &quot;@@.cyan;SSSSCRRRRRRREEEEEEEEEEEEEE!@@&quot;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+				
+		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You beat &lt;&lt;- $globalFluffies[$activeFluffy.ID].name&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;&lt;br&gt;&lt;&lt;set $nextButton = &quot;CONTINUE&quot;&gt;&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+	@@.orange;Abuse option.@@
+			
+	&lt;br&gt;&lt;br&gt;
+	&lt;&lt;button &quot;Kill it&quot;&gt;&gt;
+		&lt;&lt;run console.log(&quot;Smarty Test 5: Kill it&quot;)&gt;&gt;
+		&lt;&lt;set $hugbox++&gt;&gt;
+
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead == true&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].onDisplay = false&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].pregnant = false&gt;&gt;
+
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].nursing &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $globalFluffies[$activeFluffy.ID].children&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
+				&lt;&lt;/if&gt;&gt; /* Close nursing check */
+			&lt;&lt;/for&gt;&gt; /* Close child check*/
+		&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+	
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].nursing = 0&gt;&gt;
+						
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].foodType == &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[$activeFluffy.ID].mother].nursing--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close nursing check */
+	
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].specialFriend != -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close special friend check */
+	
+		&lt;&lt;if Number($globalFluffies[$activeFluffy.ID].age) == 0 &amp;&amp; Number($globalFluffies[$activeFluffy.ID].ageWeeks) &lt;= $globalFluffies[$activeFluffy.ID].maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals--&gt;&gt;
+		&lt;&lt;elseif $globalFluffies[$activeFluffy.ID].gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions--&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close age check */
+		
+		&lt;&lt;run $ourStore.fluffies.delete($activeFluffy.ID)&gt;&gt;
+		
+		&lt;&lt;set _reactionString = &quot;You snap &quot; + $globalFluffies[$activeFluffy.ID].name + &quot;&#39;s neck.&quot;&gt;&gt;
+		
+		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;&lt;br&gt;&lt;&lt;set $nextButton = &quot;CONTINUE&quot;&gt;&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+	@@.orange;Hugbox option?@@
+&lt;/span&gt;
+
+&lt;&lt;/if&gt;&gt; /* Close validation checks */
+
+
+
+ 	
+
+/*
+&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+*/</tw-passagedata><tw-passagedata pid="9" name="Event Stress" tags="nobr" position="1100,100" size="100,100">/* **********
  * eventStress.tw
  *
  * Package: FluffyBreeder
@@ -4067,7 +4373,7 @@ console.log("cleared defects parts = " + this.genes[index])
  
  
 &lt;&lt;run console.log(&quot;Stress test 2:  on birth event page&quot;)&gt;&gt;
-
+&lt;&lt;set $nextButton = &quot; &quot;&gt;&gt;
 
 /* 0-10 outcomes 0 is pure hugbox, 1-5 are non abuse, 6-10 are abusive.  Higher the number the worse the outcome. */
 &lt;&lt;set _subEvent = 0&gt;&gt;
@@ -4415,7 +4721,7 @@ console.log("cleared defects parts = " + this.genes[index])
  	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 	
-	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="9" name="Encyclopedia" tags="nobr" position="1100,100" size="100,100">/* **********
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="10" name="Encyclopedia" tags="nobr" position="1225,100" size="100,100">/* **********
  * encylopedia.tw
  *
  * Package: FluffyBreeder
@@ -4804,7 +5110,7 @@ Genes       Height multiplier
 &lt;&lt;default&gt;&gt;
 	&lt;br&gt;nothing here
 
-&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="End Week" tags="nobr" position="1225,100" size="100,100">/* **********
+&lt;&lt;/switch&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -4821,6 +5127,15 @@ Genes       Height multiplier
  *** */
 &lt;&lt;set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)&gt;&gt;
 
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
 /* moving the count updates to here, to prevent double loops */
 &lt;&lt;set $ourStore.stallions = 0&gt;&gt;
@@ -5023,6 +5338,8 @@ Genes       Height multiplier
 			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 5&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 160 - Increasing risk of death
@@ -5036,6 +5353,8 @@ Genes       Height multiplier
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 140 - Risk of death
@@ -5049,18 +5368,24 @@ Genes       Height multiplier
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 120 - No healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 120&gt;&gt;
 		&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+		&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 	/*
 	 * 80 - Trauma decays into stress
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 80&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].temperament -= 1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].happy -= 1&gt;&gt;
 	/*
 	 * 40 - Slow healing
 	 */
@@ -5106,6 +5431,8 @@ Genes       Height multiplier
 			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
 			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 160 - Increasing risk of death
@@ -5119,6 +5446,8 @@ Genes       Height multiplier
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 140 - Risk of death
@@ -5132,6 +5461,8 @@ Genes       Height multiplier
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 120 - No healing
@@ -5144,6 +5475,8 @@ Genes       Height multiplier
 	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 100&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].trauma += 1&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].temperament -= 1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].happy -= 1&gt;&gt;
 
 	/*
 	 * 40 - Slow healing; blocked if trauma is over 59
@@ -5170,6 +5503,88 @@ Genes       Height multiplier
 
 &lt;&lt;run console.log(&quot;Trauma test 2: Trauma = &quot; + $globalFluffies[_ef].trauma)&gt;&gt;
 &lt;&lt;run console.log(&quot;Stress test 2: Stress = &quot; + $globalFluffies[_ef].stress)&gt;&gt;
+
+
+	/* ***
+	 *	Temperament ticks
+	 *
+	 *** */
+	 
+	 /* 130 is the base where we can get a smarty. */
+	 &lt;&lt;if $globalFluffies[_ef].temperament &gt;= 130&gt;&gt;
+	 
+	 	&lt;&lt;if $globalFluffies[_ef].traits[0].includes(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;if random(0,4) == 0&gt;&gt;
+				&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+	 	&lt;&lt;/if&gt;&gt;
+	
+		/* 190+ has the highest risk: */
+		&lt;&lt;if $globalFluffies[_ef].temperament &gt;= 190&gt;&gt;
+			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;if random(0,4) == 0&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;if random(0,16) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 75&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 50&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;if random(0,64) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 25&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			 &lt;&lt;/switch&gt;&gt;
+
+		/* 160+ has lower risk: */
+		&lt;&lt;elseif $globalFluffies[_ef].temperament &gt;= 160&gt;&gt;
+			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;if random(0,8) == 0&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;if random(0,24) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 60&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+					&lt;&lt;if random(0,48) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;if random(0,96) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 15&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			 &lt;&lt;/switch&gt;&gt;
+			 
+		/* 130+ has the lowest risk: */
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;if random(0,16) == 0&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+					&lt;&lt;if random(0,64) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 15&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;if random(0,128) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 7&gt;&gt;
+						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+			 &lt;&lt;/switch&gt;&gt;
+		 &lt;&lt;/if&gt;&gt;
+		 
+	 &lt;&lt;/if&gt;&gt; /* Close temperament check */
+	 
 
 	/* ***
 	 *	Sell any display fluffies
@@ -5600,7 +6015,7 @@ Genes       Height multiplier
 
 &lt;&lt;run $eventList.shuffle()&gt;&gt;
 
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="11" name="Disclaimer" tags="nobr" position="100,225" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0, $nextButton = &quot; &quot;]]</tw-passagedata><tw-passagedata pid="12" name="Disclaimer" tags="nobr" position="225,225" size="100,100">/* **********
  * Disclaimer.tw
  *
  * Package: FluffyBreeder
@@ -5627,7 +6042,7 @@ Genes       Height multiplier
 &lt;br&gt;
 
 /* Move to the next card */
-&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="12" name="Gene Test" tags="" position="225,225" size="100,100">/* **********
+&lt;br&gt;[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = &quot;World Setup&quot;]]</tw-passagedata><tw-passagedata pid="13" name="Gene Test" tags="" position="350,225" size="100,100">/* **********
  * weekSave.tw
  *
  * Package: FluffyBreeder
@@ -5650,7 +6065,7 @@ Genes       Height multiplier
 	[[Return to Gene Lab|Gene Lab]]
 &lt;&lt;else&gt;&gt;
 	&lt;&lt;goto &quot;Fluffy Interact&quot;&gt;&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="13" name="Intro Summary" tags="nobr" position="350,225" size="100,100">/* **********
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Intro Summary" tags="nobr" position="475,225" size="100,100">/* **********
  * introSummary.tw
  *
  * Package: FluffyBreeder
@@ -5792,7 +6207,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;[[Continue|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100), $encyclopedia = &quot;Shop Setup&quot;]]
 &lt;br&gt;
 &lt;br&gt;
-[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="14" name="Shop Intro" tags="nobr" position="475,225" size="100,100">/* **********
+[[Cheat Start|Shop Intro][$storePoints = Number((11 - ($smartySyndrom + $pooBaby + $alicornMonster + $alicornRarity + $economy)) * 100000), $debugMode = true, $encyclopedia = &quot;Shop Setup&quot;]] | //Intended for debugging: may have unexpected effects//</tw-passagedata><tw-passagedata pid="15" name="Shop Intro" tags="nobr" position="600,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -5916,7 +6331,7 @@ __&#39;&#39;World Settings&#39;&#39;__
  *** */
 /*&lt;br&gt;&lt;br&gt;[[Get Fluffies|Fluffy Intro][$cash = Number($storePoints + 100)]]*/
 
-&lt;br&gt;&lt;br&gt;[[To The Shop|Week Save][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="15" name="Week Save" tags="autosave" position="600,225" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[To The Shop|Week Save][$cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="16" name="Week Save" tags="autosave" position="725,225" size="100,100">/* **********
  * weekSave.tw
  *
  * Package: FluffyBreeder
@@ -5931,7 +6346,7 @@ __&#39;&#39;World Settings&#39;&#39;__
  
 
 &lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
-&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Week Start" tags="nobr" position="725,225" size="100,100">/* **********
+&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Week Start" tags="nobr" position="850,225" size="100,100">/* **********
  * weekStart.tw
  *
  * Package: FluffyBreeder
@@ -5970,7 +6385,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 &lt;br&gt;@@.coral;Get Fluffies@@
 &lt;br&gt;[[Visit Fluffy Mart|Buy Fluffies][$shop = &quot;mart&quot;]] | [[Visit a Fluffy Mill|Buy Fluffies][$shop = &quot;mill&quot;]] | [[Visit a Fluffy Breeder|Buy Fluffies][$shop = &quot;breeder&quot;]] | [[Hunt Ferals|Buy Fluffies][$shop = &quot;feral&quot;]]
 &lt;br&gt;
-&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="StoryCaption" tags="" position="850,225" size="100,100">/* **********
+&lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="StoryCaption" tags="" position="975,225" size="100,100">/* **********
  *	storyCaption.tw
  *
  *	Package: FluffyBreeder
@@ -6115,7 +6530,7 @@ __&#39;&#39;World Settings&#39;&#39;__
 	&lt;br&gt;
 	&lt;&lt;link &quot;Bug Report&quot;&gt;&gt;&lt;&lt;bugreport&gt;&gt;&lt;&lt;/link&gt;&gt;
 
-&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="init" tags="nobr" position="975,225" size="100,100">/* **********
+&lt;&lt;/nobr&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="init" tags="nobr" position="1100,225" size="100,100">/* **********
   *	Fluffy Breeder
 a text-based fluffy management game
  *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
@@ -6140,7 +6555,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.8.103-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.9.103-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -6215,7 +6630,8 @@ a text-based fluffy management game
 	fluffies: [],
 	stallions: 0,
 	mares: 0,
-	foals: 0
+	foals: 0,
+	upgrades: []
 }
 &gt;&gt;
 
@@ -6409,7 +6825,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="Buy Fluffies" tags="nobr" position="1100,225" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="Buy Fluffies" tags="nobr" position="1225,225" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -6711,7 +7127,7 @@ profitsTotal: 0
 		//You lack the necessary funds to buy this fluffy// | 
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-[[End Shopping|Week Start][$actions--]]</tw-passagedata><tw-passagedata pid="20" name="Buy Food" tags="nobr" position="1225,225" size="100,100">/* **********
+[[End Shopping|Week Start][$actions--]]</tw-passagedata><tw-passagedata pid="21" name="Buy Food" tags="nobr" position="100,350" size="100,100">/* **********
  * Buy Food.tw
  *
  * Package: FluffyBreeder
@@ -6849,7 +7265,7 @@ profitsTotal: 0
 
 &lt;br&gt;&lt;br&gt;
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="Buy Upgrades" tags="nobr" position="100,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Buy Upgrades" tags="nobr" position="225,350" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -6861,13 +7277,27 @@ profitsTotal: 0
 
 &lt;&lt;set $nextButton to &quot;Back to the Store&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
+/* Validate data added in recent update: */
+&lt;&lt;if ndef $ourStore.upgrades&gt;&gt;
+	&lt;&lt;set $ourStore.upgrades = []&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+
+&lt;h1&gt;Store Upgrades&lt;/h1&gt;
+
 &lt;br&gt;What improvements do you want to make to your store? @@.orange;Press &#39;enter&#39; to set values.@@
 &lt;br&gt;
 &lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;&lt;/span&gt;
+&lt;br&gt;
+Upgrades:
+&lt;&lt;for _i, _upgrade range $ourStore.upgrades&gt;&gt;
+	&lt;&lt;- _upgrade&gt;&gt;&lt;&lt;- (_i &lt; $ourStore.upgrades.length - 1) ? (_i &lt; $ourStore.upgrades.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;&#39;&gt;&gt;
+&lt;&lt;/for&gt;&gt;
 
- /* Space, used for upgrade to the store */
-&lt;br&gt;
-&lt;br&gt;
+&lt;hr&gt;
+&lt;h1&gt;Physical Space&lt;/h1&gt;
+
+/* Space, used for upgrade to the store */
 Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;/span&gt; How much space you have for upgrades.
 &lt;div id=&quot;space-form&quot;&gt;
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
@@ -6969,7 +7399,7 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 
 /* Display, controls the maximum fluffy population you can support */
 &lt;br&gt;
-Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;/span&gt; How many adult fluffies you can hold.
+Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;/span&gt; How many adult fluffies you can put on display for sale.
 &lt;div id=&quot;display-form&quot;&gt;
 	&lt;&lt;button &quot;Buy 1 (cost ¤100)&quot;&gt;&gt;
 		&lt;&lt;if $cash &lt; 100&gt;&gt;
@@ -7015,10 +7445,70 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 /* Form for error message to display*/
 &lt;span id=&quot;display-form-error&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
+&lt;br&gt;
+&lt;hr&gt;
+&lt;h1&gt;Upgrades and Improvements&lt;/h1&gt;
 
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Basic Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;. 
+&lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
+&lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
+@@#basic_toys;&lt;&lt;button &quot;Buy Basic Toys&quot;&gt;&gt;	
+	&lt;&lt;set $cash -= 100&gt;&gt;
+	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Toys&quot;)&gt;&gt;
+    &lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+    &lt;&lt;goto &quot;Buy Upgrades&quot;&gt;&gt;
+&lt;&lt;/button&gt;&gt;@@
+
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Fancy Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
+&lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+&lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
+@@#fancy_toys;&lt;&lt;button &quot;Buy Fancy Toys&quot;&gt;&gt;	
+	&lt;&lt;set $cash -= 500&gt;&gt;
+	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Toys&quot;)&gt;&gt;
+    &lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+    &lt;&lt;goto &quot;Buy Upgrades&quot;&gt;&gt;
+&lt;&lt;/button&gt;&gt;@@
+
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Deluxe Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
+&lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+&lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
+@@#deluxe_toys;&lt;&lt;button &quot;Buy Deluxe Toys&quot;&gt;&gt;	
+	&lt;&lt;set $cash -= 1000&gt;&gt;
+	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
+	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Toys&quot;)&gt;&gt;
+    &lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+    &lt;&lt;goto &quot;Buy Upgrades&quot;&gt;&gt;
+&lt;&lt;/button&gt;&gt;@@
+
+&lt;br&gt;&lt;br&gt;
+
+&lt;&lt;timed 100ms&gt;&gt;
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;) == false &amp;&amp; $cash &gt;= 100 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+		&lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) == false &amp;&amp; $cash &gt;= 500 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+		&lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) == false &amp;&amp; $cash &gt;= 1000 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+		&lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Fluffy Breeding" tags="nobr" position="225,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="Fluffy Breeding" tags="nobr" position="350,350" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -7111,7 +7601,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;&lt;/if&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="Fluffy Feeding" tags="nobr" position="350,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Fluffy Feeding" tags="nobr" position="475,350" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -7247,7 +7737,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="Fluffy Interact" tags="nobr" position="475,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="Fluffy Interact" tags="nobr" position="600,350" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -7334,6 +7824,18 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.happy++&gt;&gt;
 		&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
 		&lt;&lt;set $activeFluffy.stress--&gt;&gt;
+		
+		&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress--&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy++&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy++&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress--&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -7439,7 +7941,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;/div&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="Fluffy List" tags="nobr" position="600,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="26" name="Fluffy List" tags="nobr" position="725,350" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -7860,7 +8362,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/timed&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="26" name="Fluffy Selling" tags="nobr" position="725,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="27" name="Fluffy Selling" tags="nobr" position="850,350" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -7939,7 +8441,7 @@ Bulk Actions (all checked fluffies)
 &lt;&lt;/capture&gt;&gt;
 
 /* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="27" name="Gene Lab" tags="nobr" position="850,350" size="100,100">/* **********
+&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="Gene Lab" tags="nobr" position="975,350" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -8643,7 +9145,7 @@ Inbreeding:
 
 
 &lt;br&gt;
-[[Exit the Lab|Gene Test]]</tw-passagedata><tw-passagedata pid="28" name="description widgets" tags="widget nobr" position="975,350" size="100,100">/* **********
+[[Exit the Lab|Gene Test]]</tw-passagedata><tw-passagedata pid="29" name="description widgets" tags="widget nobr" position="1100,350" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -8846,7 +9348,7 @@ Inbreeding:
 
 	
 &lt;&lt;/capture&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="29" name="fluffy creation widgets" tags="widget nobr" position="1100,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="fluffy creation widgets" tags="widget nobr" position="1225,350" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -9448,7 +9950,7 @@ Inbreeding:
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set $ourStore.mares--&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="misc widgets" tags="nobr widget" position="1225,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="misc widgets" tags="nobr widget" position="100,475" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -9470,7 +9972,7 @@ Inbreeding:
 				&lt;&lt;goto $nextLink&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/link&gt;&gt;&lt;/strong&gt;
-		&lt;&lt;if $nextButton != &quot; &quot;&gt;&gt;@@.cyan;[Space]@@&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if $nextButton != &quot; &quot;&gt;&gt;@@.cyan;@@&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -9604,7 +10106,7 @@ Inbreeding:
 &lt;&lt;widget &quot;SidebarButton&quot;&gt;&gt;
 &lt;br&gt;&lt;br&gt;
 	&lt;&lt;if $nextButton == &quot;END WEEK&quot;&gt;&gt;
-		&lt;span id=&quot;endWeekButton&quot;&gt;&lt;strong&gt;&lt;&lt;link $nextButton $nextLink&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[Enter]@@
+		&lt;span id=&quot;endWeekButton&quot;&gt;&lt;strong&gt;&lt;&lt;link $nextButton $nextLink&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;@@
 	&lt;&lt;else&gt;&gt;
 		&lt;span id=&quot;nextButton&quot;&gt; /* target for miscWidgets&#39; &lt;&lt;UpdateNextButton&gt;&gt; */
 			&lt;strong&gt;&lt;&lt;link &quot;$nextButton&quot;&gt;&gt; /* must use link so spacebar shortcut will work */
@@ -9613,7 +10115,7 @@ Inbreeding:
 					&lt;&lt;goto $nextLink&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/link&gt;&gt;&lt;/strong&gt;
-			&lt;&lt;if $nextButton != &quot; &quot;&gt;&gt;@@.cyan;[Space]@@&lt;&lt;/if&gt;&gt;
+			&lt;&lt;if $nextButton != &quot; &quot;&gt;&gt;@@.cyan;@@&lt;&lt;/if&gt;&gt;
 		&lt;/span&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;
@@ -9727,7 +10229,7 @@ Inbreeding:
 	&lt;&lt;set $abuse = Math.clamp(Math.trunc($abuse), 0, 200)&gt;&gt;
 
 	&lt;br&gt;@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="pronoun widgets" tags="widget nobr" position="100,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="32" name="pronoun widgets" tags="widget nobr" position="225,475" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder
