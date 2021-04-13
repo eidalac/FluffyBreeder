@@ -799,28 +799,28 @@
 	 	<<set _thisStress = 1>>
 	 /* < 10 - Afraid */
 	 <<else>>
-	 	<<set _thisStress + 2>>
+	 	<<set _thisStress = 2>>
 	 <</if>>
 	 
 	 <<run console.log("Stress test 1: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 	 /* Then check based on personaity: */
 	 <<switch $globalFluffies[_ef].traits[0]>>
 		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
-			<<set _thisStress += 3>>
+			<<set _thisStress = Number(_thisStress) + 3>>
 		<<case "Diligent", "Curious", "Peppy", "Playful">>
-			<<set _thisStress += 2>>
+			<<set _thisStress = Number(_thisStress) + 2>>
 		<<case "Lazy", "Cute", "Lackadaisical">>
-			<<set _thisStress += 1>>
+			<<set _thisStress = Number(_thisStress) + 1>>
 		<<case "Shy", "Timid", "Pensive", "Sweet">>
-			<<set _thisStress += 0>>
+			<<set _thisStress = Number(_thisStress) + 0>>
 	 <</switch>>
 	 
 	 <<run console.log("Stress test 2: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 	 /* If this a foal being nursed by the mother, drop the stress: */
 	 <<if $globalFluffies[_ef].foodType == "Nursing">>
-	 	<<set _temp = Number(_thisStress / 80).toFixed(2)>>
+	 	<<set _temp = Number(Number(_thisStress) / 80).toFixed(2)>>
 	 <<else>>
-	 	<<set _temp = Number(_thisStress / 8).toFixed(2)>>
+	 	<<set _temp = Number(Number(_thisStress) / 8).toFixed(2)>>
 	 <</if>>
 
 <<run console.log("Stress test 3: _temp = " + _temp + ". _stressor = " + _stressor)>>
@@ -852,7 +852,7 @@
 	<<set _stressor = 1.00>>
 <</if>>
 
-<<set $stressUp = _stressor>>
+<<set $stressUp = Number(_stressor)>>
 <br>Stress this week was $stressUp.
 
 <<run console.log("Stress test 5: $stress  = " + $stress + ".")>>

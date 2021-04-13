@@ -505,6 +505,7 @@
 					
 					<<set _price = Number($globalFluffies[_fl].training)>>
 					<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
+										
 					<<switch $globalFluffies[_fl].breed>>
 						<<case "unicorn">>
 							<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
@@ -515,6 +516,8 @@
 						<<default>>
 							<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
 					<</switch>>
+					
+					<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
 			
 					<<set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)>>
 					<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
@@ -540,7 +543,7 @@
 					/* Debug flag since I can't track down this issue yet. */
 					<<if _price <= 0>>
 						<br>
-						<br>@@.red; ERROR: _price <= 0.  Value dump: _ageMulti = <<- _ageMulti>>, $globalFluffies[_fl].colorBonus = <<- $globalFluffies[_fl].colorBonus>>, Initial price = <<- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))>>.
+						<br>@@.red; ERROR: Price _price <= 0.  Value dump: StatBonus = <<- $globalFluffies[_fl].statBonus>>, ageMulti = <<- _ageMulti>>, colorBonus = <<- $globalFluffies[_fl].colorBonus>>, Initial price = <<- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))>>.
 						<br>
 					<</if>>
 					

@@ -2565,6 +2565,8 @@ console.log("cleared defects parts = " + this.genes[index])
 /*&lt;&lt;run console.log(&quot;Color Test 3: &quot; + _pairBonus)&gt;&gt;*/
 	&lt;&lt;set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)&gt;&gt;
 	
+	&lt;&lt;set $activeFluffy.colorBonus = Math.clamp($activeFluffy.colorBonus, 0.05, 5)&gt;&gt;
+	
 	/* Trending to high, try cutting down by 1 point overall.*/
 	/*&lt;&lt;set $activeFluffy.colorBonus--&gt;&gt;*/
 /*&lt;&lt;run console.log(&quot;Color Test 4: &quot; + $activeFluffy.colorBonus )&gt;&gt;*/
@@ -3756,6 +3758,7 @@ console.log("cleared defects parts = " + this.genes[index])
 					
 					&lt;&lt;set _price = Number($globalFluffies[_fl].training)&gt;&gt;
 					&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;
+										
 					&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
 						&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
 							&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
@@ -3766,6 +3769,8 @@ console.log("cleared defects parts = " + this.genes[index])
 						&lt;&lt;default&gt;&gt;
 							&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
 					&lt;&lt;/switch&gt;&gt;
+					
+					&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
 			
 					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
@@ -3791,7 +3796,7 @@ console.log("cleared defects parts = " + this.genes[index])
 					/* Debug flag since I can&#39;t track down this issue yet. */
 					&lt;&lt;if _price &lt;= 0&gt;&gt;
 						&lt;br&gt;
-						&lt;br&gt;@@.red; ERROR: _price &lt;= 0.  Value dump: _ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, $globalFluffies[_fl].colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
+						&lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $globalFluffies[_fl].statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
 						&lt;br&gt;
 					&lt;&lt;/if&gt;&gt;
 					
@@ -4127,7 +4132,8 @@ console.log("cleared defects parts = " + this.genes[index])
 			
 			/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
 			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Diligent acts a smarty.@@
+				Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Diligent acts a smarty
+				&lt;br&gt;@@.cyan;Smawty wan nyu homesies! Gib nyu dummeh mummah an&#39; daddeh!@@
 			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious acts a smarty.@@
 			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
@@ -4177,7 +4183,7 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
 			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Playful turns smarty.@@
+				@@.cyan;Dummeh poopie &lt;&lt;- $title&gt;&gt;! Swawty am bestest! Gib bestest toysies NAO!@@
 			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lackadaisical turns smarty.@@
 			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
@@ -4185,7 +4191,7 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Pensive turns smarty.@@
 			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Sweet turns smarty.@@
+				@@.cyan;Dis am DUMMEH! Fwuffy wan&#39; &#39;peshaw wub! FWUFFY am SMAWTY!@@
 	
 			/* Foal traits, so these would be &#39;best babies&#39;*/
 			
@@ -5909,28 +5915,28 @@ Genes       Height multiplier
 	 	&lt;&lt;set _thisStress = 1&gt;&gt;
 	 /* &lt; 10 - Afraid */
 	 &lt;&lt;else&gt;&gt;
-	 	&lt;&lt;set _thisStress + 2&gt;&gt;
+	 	&lt;&lt;set _thisStress = 2&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 	 
 	 &lt;&lt;run console.log(&quot;Stress test 1: _thisStress = &quot; + _thisStress + &quot;. _stressor = &quot; + _stressor + &quot;.&quot;)&gt;&gt;
 	 /* Then check based on personaity: */
 	 &lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
 		&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
-			&lt;&lt;set _thisStress += 3&gt;&gt;
+			&lt;&lt;set _thisStress = Number(_thisStress) + 3&gt;&gt;
 		&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
-			&lt;&lt;set _thisStress += 2&gt;&gt;
+			&lt;&lt;set _thisStress = Number(_thisStress) + 2&gt;&gt;
 		&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
-			&lt;&lt;set _thisStress += 1&gt;&gt;
+			&lt;&lt;set _thisStress = Number(_thisStress) + 1&gt;&gt;
 		&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
-			&lt;&lt;set _thisStress += 0&gt;&gt;
+			&lt;&lt;set _thisStress = Number(_thisStress) + 0&gt;&gt;
 	 &lt;&lt;/switch&gt;&gt;
 	 
 	 &lt;&lt;run console.log(&quot;Stress test 2: _thisStress = &quot; + _thisStress + &quot;. _stressor = &quot; + _stressor + &quot;.&quot;)&gt;&gt;
 	 /* If this a foal being nursed by the mother, drop the stress: */
 	 &lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot;&gt;&gt;
-	 	&lt;&lt;set _temp = Number(_thisStress / 80).toFixed(2)&gt;&gt;
+	 	&lt;&lt;set _temp = Number(Number(_thisStress) / 80).toFixed(2)&gt;&gt;
 	 &lt;&lt;else&gt;&gt;
-	 	&lt;&lt;set _temp = Number(_thisStress / 8).toFixed(2)&gt;&gt;
+	 	&lt;&lt;set _temp = Number(Number(_thisStress) / 8).toFixed(2)&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;run console.log(&quot;Stress test 3: _temp = &quot; + _temp + &quot;. _stressor = &quot; + _stressor)&gt;&gt;
@@ -5962,7 +5968,7 @@ Genes       Height multiplier
 	&lt;&lt;set _stressor = 1.00&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;set $stressUp = _stressor&gt;&gt;
+&lt;&lt;set $stressUp = Number(_stressor)&gt;&gt;
 &lt;br&gt;Stress this week was $stressUp.
 
 &lt;&lt;run console.log(&quot;Stress test 5: $stress  = &quot; + $stress + &quot;.&quot;)&gt;&gt;
@@ -6555,7 +6561,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.9.104-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.9.105-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -9219,6 +9225,8 @@ Inbreeding:
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 6).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
