@@ -26,5 +26,83 @@
 @@.orange;This is a text-based game that includes descriptions of fantastic animal abuse and other subjects not suitable for persons under the age of 18. This is a work of fiction; any resemblance to actual persons, places, or events is unintended.@@
 <br>
 
-/* Move to the next card */
-<br>[[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary][$encyclopedia = "World Setup"]]
+/* Move to the next passage */
+<br>
+<<button [[I am 18 or more years of age, I understand, and I wish to continue|Intro Summary]]>>
+	<<set $encyclopedia = "World Setup">>
+<</button>>
+
+<br><br>
+<<set _cList = []>>
+
+<<for _c range $Colors>>
+	<<run _cList.push(_c.Name)>>
+<</for>>
+
+Body:
+<<listbox "_ccolor">>
+	<<optionsfrom _cList>>
+<</listbox>>
+ Mane: 
+<<listbox "_mcolor">>
+	<<optionsfrom _cList>>
+<</listbox>>
+ Eyes: 
+<<listbox "_ecolor">>
+	<<optionsfrom _cList>>
+<</listbox>>
+
+<<button Set>>
+	<<set $testClass = _ccolor.toLowerCase() + "filter">>
+	<<set _mclass = _mcolor.toLowerCase() + "filter">>
+	<<set _eclass = _ecolor.toLowerCase() + "filter">>
+	<<timed 10ms>>
+	<<removeclass "#fluffy-base">>
+	<<removeclass "#fluffy-mane">>
+	<<removeclass "#fluffy-eye">>
+	<<addclass "#fluffy-base" $testClass>>
+	<<addclass "#fluffy-mane" _mclass>>
+	<<addclass "#fluffy-eye" _eclass>>
+	/*<<replace "#fluffy-image">><<FluffyImageTest>><</replace>>*/
+	<</timed>>
+	
+<</button>>
+
+<br><br>
+<div
+	id = "fluffy-image"
+	style="position: relative; width: 640px; height: 640px; padding: 5px; border: 2px solid grey">
+	
+	<<timed 10ms>>
+		<<FluffyImageTest>>
+	<</timed>>
+</div>
+
+
+<<widget "FluffyImageTest">>
+	<img
+		id = "fluffy-base"
+		src="art\fluffsprite.png"
+		style="position: absolute; left: 0; top: 0; width: 640px; height: 640px"
+		class ="gold">
+
+	<img
+		id = "fluffy-eye"
+		src="art\fluffspritemask.png"
+		style="position: absolute; left: 0; top: 0; width: 640px; height: 640px">
+
+	<img
+		
+		src="art\fluffspriteeyes.png"
+		style="position: absolute; left: 0; top: 0; width: 640px; height: 640px">
+
+	<img
+		id = "fluffy-mane"
+		src="art\fluffspritemane.png"
+		style="position: absolute; left: 0; top: 0; width: 640px; height: 640px">
+
+	<img
+		src="art\fluffspriteoutline.png"
+		style="position: absolute; left: 0; top: 0; width: 640px; height: 640px">
+
+<</widget>>

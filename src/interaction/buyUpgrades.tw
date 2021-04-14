@@ -222,6 +222,45 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 
 <br><br>
 
+<h2>Training Equipment</h2>
+<br>//Easy-carry toys for fetching, low jumps designed for stumpy legs, clickers and treats. You don't HAVE to use the sorry stick and sorry box. They can just sit there for... encouragement.//
+
+<p class="hang">Add some @@.coral;Basic Training Equipment@@ to <<- $ourStore.name>>. 
+<br>Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.</p>
+@@#basic_training;<<button "Buy Basic Training Equipment">>	
+	<<set $cash -= 100>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Basic Training Equipment")>>
+    <<run $("#basic_training button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Fancy Training Equipment@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.</p>
+@@#fancy_training;<<button "Buy Fancy Training Equipment">>	
+	<<set $cash -= 500>>
+	<<set $ourStore.space -= 1>>
+	<<run $ourStore.upgrades.pushUnique("Fancy Training Equipment")>>
+    <<run $("#fancy_training button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Deluxe Training Equipment@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.</p>
+@@#deluxe_training;<<button "Buy Deluxe Training Equipment">>	
+	<<set $cash -= 1000>>
+	<<set $ourStore.space -= 1>>
+	<<run $ourStore.upgrades.pushUnique("Deluxe Training Equipment")>>
+    <<run $("#deluxe_training button").prop("disabled", true)>>
+    <<goto "Buy Upgrades">>
+<</button>>@@
+
+<br><br>
+
 <<timed 100ms>>
 	<<if $ourStore.upgrades.includes("Basic Toys") == false && $cash >= 100 && $ourStore.space >= 1>>
 		<<run $("#basic_toys button").prop("disabled", false)>>
@@ -235,10 +274,28 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<run $("#fancy_toys button").prop("disabled", true)>>
 	<</if>>
 	
-	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
+	<<if $ourStore.upgrades.includes("Deluxe Training Equipment") == false && $cash >= 1000 && $ourStore.space >= 1>>
 		<<run $("#deluxe_toys button").prop("disabled", false)>>
 	<<else>>
 		<<run $("#deluxe_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Basic Training Equipment") == false && $cash >= 100 && $ourStore.space >= 1>>
+		<<run $("#basic_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#basic_training button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Fancy Training Equipment") == false && $cash >= 500 && $ourStore.space >= 1>>
+		<<run $("#fancy_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#fancy_training button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
+		<<run $("#deluxe_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#deluxe_training button").prop("disabled", true)>>
 	<</if>>
 <</timed>>
 

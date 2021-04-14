@@ -118,11 +118,41 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 <<set _desc = "Train " + $activeFluffy.name>> 
 <<button _desc>>
 	<<if $actions > 0>>
+
 		<<set $stress += 1>>
 		<<set $actions-->>
 		<<set $training += 1>>
 		<<set $activeFluffy.training++>>
 		<<set $activeFluffy.trust++>>
+		
+		<<if $ourStore.upgrades.includes("Deluxe Training Equipment")>>
+			<<if random(0, 1) == 0>>
+				<<set $activeFluffy.training++>>
+			<</if>>
+			
+			<<if random(0, 1) == 0>>
+				<<set $activeFluffy.stress++>>
+			<</if>>
+		<</if>>
+		<<if $ourStore.upgrades.includes("Fancy Training Equipment")>>
+			<<if random(0, 2) == 0>>
+				<<set $activeFluffy.training++>>
+			<</if>>
+			
+			<<if random(0, 2) == 0>>
+				<<set $activeFluffy.stress++>>
+			<</if>>
+		<</if>>
+		<<if $ourStore.upgrades.includes("Basic Training Equipment")>>
+			<<if random(0, 3) == 0>>
+				<<set $activeFluffy.training++>>
+			<</if>>
+			
+			<<if random(0, 3) == 0>>
+				<<set $activeFluffy.stress++>>
+			<</if>>
+		<</if>>
+		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
 		<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
