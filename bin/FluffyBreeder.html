@@ -3771,6 +3771,9 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;/switch&gt;&gt;
 					
 					&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
+					
+					&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
+					&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
 			
 					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
@@ -6561,7 +6564,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.9.105-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.9.116-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -7763,6 +7766,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;span id=&quot;fluffy-name&quot;&gt;
 	&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;
 	&lt;&lt;FluffyDesc&gt;&gt;
+	&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;
 &lt;/span&gt;
 &lt;hr&gt;
 
@@ -7779,7 +7783,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
 		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
@@ -7808,7 +7812,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		
 	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _specialName&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;/capture&gt;&gt;
@@ -7844,7 +7848,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -7867,7 +7871,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.trust++&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -7893,7 +7897,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;br&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for this right now.&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -9214,6 +9218,62 @@ Inbreeding:
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
+/* ***
+ *	Called as &lt;&lt;displayPrice $fluffy&gt;&gt;
+ *	Returns a display of this fluffys sale price, based on the player xp level.
+  *** */
+&lt;&lt;widget &quot;displayPrice&quot;&gt;&gt;
+	&lt;&lt;set _thisFluffy = $args[0]&gt;&gt;
+
+	&lt;&lt;set _price = Number($globalFluffies[_thisFluffy.ID].training)&gt;&gt;
+	&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_thisFluffy.ID].trust/10))&gt;&gt;
+										
+	&lt;&lt;switch $globalFluffies[_thisFluffy.ID].breed&gt;&gt;
+		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
+			&lt;&lt;set _low = Number($unicornPrice.mill)&gt;&gt;
+			&lt;&lt;set _mid = Number($unicornPrice.mart)&gt;&gt;
+		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
+			&lt;&lt;set _low = Number($pegasusPrice.mill)&gt;&gt;
+			&lt;&lt;set _mid = Number($pegasusPrice.mart)&gt;&gt;
+		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
+			&lt;&lt;set _low = Number($alicornPrice.mart)&gt;&gt;
+			&lt;&lt;set _mid = Number($alicornPrice.deluxe)&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
+			&lt;&lt;set _low = Number($unicornPrice.mill)&gt;&gt;
+			&lt;&lt;set _mid = Number($unicornPrice.mart)&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+					
+	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_thisFluffy.ID].colorBonus = Math.clamp($globalFluffies[_thisFluffy.ID].colorBonus, 0.05, 5)&gt;&gt;
+			
+	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)&gt;&gt;
+					
+	&lt;&lt;set _ageMulti = 1&gt;&gt;
+			
+	&lt;&lt;if $globalFluffies[_thisFluffy.ID].age == 0 &amp;&amp; $globalFluffies[_thisFluffy.ID].ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number(($globalFluffies[_thisFluffy.ID].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+		
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+			
+	&lt;&lt;if $globalFluffies[_thisFluffy.ID].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
+		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+
+	&lt;&lt;if  $debugMode&gt;&gt;
+		@@.orange;_price@@
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- $training &gt;= 100 ? _price &lt; _low ? &quot;@@.red;_price@@&quot; : _price &lt; _mid ? &quot;@@.yellow;_price@@&quot; : &quot;@@.green;_price@@&quot; : $training &gt;= 50 ? _price &lt; _low ? &quot;@@.red;Low@@&quot; : _price &lt; _mid ? &quot;@@.yellow;Average@@&quot; : &quot;@@.green;High@@&quot; : &quot;@@.yellow;??@@&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
 
 &lt;&lt;widget statValue&gt;&gt;
 	&lt;&lt;set _avg = $activeFluffy.strength + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking + $activeFluffy.learning + $activeFluffy.fertility&gt;&gt;
@@ -9292,7 +9352,6 @@ Inbreeding:
 	&lt;&lt;if $activeFluffy.pregnant == true&gt;&gt;&lt;br&gt;&lt;&lt;They&gt;&gt; is due to give birth in &lt;&lt;- $activeFluffy.dueDate&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $activeFluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;&lt;&lt;They&gt;&gt; is nursing &lt;&lt;print $activeFluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
 	
-	
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -9353,7 +9412,7 @@ Inbreeding:
 	&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;br&gt;Is due to give birth in &lt;&lt;- _fluffy.dueDate&gt;&gt; weeks&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;br&gt;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;&lt;/if&gt;&gt;
 	
-
+	&lt;br&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;
 	
 &lt;&lt;/capture&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="fluffy creation widgets" tags="widget nobr" position="1225,350" size="100,100">/* **********

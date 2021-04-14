@@ -63,6 +63,62 @@
 	<</if>>
 <</widget>>
 
+/* ***
+ *	Called as <<displayPrice $fluffy>>
+ *	Returns a display of this fluffys sale price, based on the player xp level.
+  *** */
+<<widget "displayPrice">>
+	<<set _thisFluffy = $args[0]>>
+
+	<<set _price = Number($globalFluffies[_thisFluffy.ID].training)>>
+	<<set _price = Number(_price) + Number(Number($globalFluffies[_thisFluffy.ID].trust/10))>>
+										
+	<<switch $globalFluffies[_thisFluffy.ID].breed>>
+		<<case "unicorn">>
+			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+			<<set _low = Number($unicornPrice.mill)>>
+			<<set _mid = Number($unicornPrice.mart)>>
+		<<case "pegasus">>
+			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+			<<set _low = Number($pegasusPrice.mill)>>
+			<<set _mid = Number($pegasusPrice.mart)>>
+		<<case "alicorn">>
+			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+			<<set _low = Number($alicornPrice.mart)>>
+			<<set _mid = Number($alicornPrice.deluxe)>>
+		<<default>>
+			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+			<<set _low = Number($unicornPrice.mill)>>
+			<<set _mid = Number($unicornPrice.mart)>>
+	<</switch>>
+					
+	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
+	<<set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)>>
+	<<set $globalFluffies[_thisFluffy.ID].colorBonus = Math.clamp($globalFluffies[_thisFluffy.ID].colorBonus, 0.05, 5)>>
+			
+	<<set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)>>
+	<<set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)>>
+					
+	<<set _ageMulti = 1>>
+			
+	<<if $globalFluffies[_thisFluffy.ID].age == 0 && $globalFluffies[_thisFluffy.ID].ageWeeks < 45>>
+		<<set _ageMulti = Number(($globalFluffies[_thisFluffy.ID].ageWeeks+1) / 44).toFixed(2)>>
+	<</if>>
+		
+	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+			
+	<<if $globalFluffies[_thisFluffy.ID].traits.includes("Feral") == true>>
+		<<set _price = Number(_price / 4).toFixed(2)>>
+	<</if>>
+
+
+	<<if  $debugMode>>
+		@@.orange;_price@@
+	<<else>>
+		<<- $training >= 100 ? _price < _low ? "@@.red;_price@@" : _price < _mid ? "@@.yellow;_price@@" : "@@.green;_price@@" : $training >= 50 ? _price < _low ? "@@.red;Low@@" : _price < _mid ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;??@@">>
+	<</if>>
+<</widget>>
+
 
 <<widget statValue>>
 	<<set _avg = $activeFluffy.strength + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking + $activeFluffy.learning + $activeFluffy.fertility>>
@@ -141,7 +197,6 @@
 	<<if $activeFluffy.pregnant == true>><br><<They>> is due to give birth in <<- $activeFluffy.dueDate>> weeks<</if>>
 	<<if $activeFluffy.nursing > 0>><br><<They>> is nursing <<print $activeFluffy.nursing >> foals<</if>>
 	
-	
 <</widget>>
 
 /* ***
@@ -202,7 +257,7 @@
 	<<if _fluffy.pregnant == true>><br>Is due to give birth in <<- _fluffy.dueDate>> weeks<</if>>
 	<<if _fluffy.nursing > 0>><br>Is nursing <<print _fluffy.nursing >> foals<</if>>
 	
-
+	<br>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>>
 	
 <</capture>>
 <</widget>>
