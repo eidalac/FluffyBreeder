@@ -5332,6 +5332,12 @@ Genes       Height multiplier
 	
 	/* Age up a week. */
 	&lt;&lt;set $globalFluffies[_ef].ageWeeks++&gt;&gt;
+	
+	/* turn 52 weeks into a year */
+	&lt;&lt;if Number($globalFluffies[_ef].ageWeeks) &gt; 52&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].ageWeeks = 0&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].age++&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
 		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
@@ -5369,12 +5375,7 @@ Genes       Height multiplier
 		&lt;&lt;set $globalFluffies[_ef].nursing = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	/* turn 52 weeks into a year */
-	&lt;&lt;if Number($globalFluffies[_ef].ageWeeks) &gt; 52&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].ageWeeks = 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].age++&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
+
 	/* Logic check if mother is no longer in the store: */
 	&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.contains($globalFluffies[_ef].mother) == false&gt;&gt;
 		&lt;br&gt;&lt;&lt;- $globalFluffies[_ef].name&gt;&gt; can&#39;t find it&#39;s mother!
@@ -5847,7 +5848,7 @@ Genes       Height multiplier
 	 		&lt;&lt;if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0&gt;&gt;
 	 			&lt;br&gt;&lt;&lt;print $globalFluffies[$globalFluffies[_ef].mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
-	 		
+	 		/*
 	 		&lt;&lt;set $ourStore.foals--&gt;&gt;
 	 		
 			&lt;&lt;if $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
@@ -5855,6 +5856,7 @@ Genes       Height multiplier
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;set $ourStore.mares++&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
+			*/
 	 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
@@ -6710,7 +6712,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.10.118-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.10.120-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********

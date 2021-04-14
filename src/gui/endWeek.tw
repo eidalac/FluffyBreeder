@@ -142,6 +142,12 @@
 	
 	/* Age up a week. */
 	<<set $globalFluffies[_ef].ageWeeks++>>
+	
+	/* turn 52 weeks into a year */
+	<<if Number($globalFluffies[_ef].ageWeeks) > 52>>
+		<<set $globalFluffies[_ef].ageWeeks = 0>>
+		<<set $globalFluffies[_ef].age++>>
+	<</if>>
 
 	<<switch $globalFluffies[_ef].foodType>>
 		<<case "Kibble">>
@@ -179,12 +185,7 @@
 		<<set $globalFluffies[_ef].nursing = 0>>
 	<</if>>
 
-	/* turn 52 weeks into a year */
-	<<if Number($globalFluffies[_ef].ageWeeks) > 52>>
-		<<set $globalFluffies[_ef].ageWeeks = 0>>
-		<<set $globalFluffies[_ef].age++>>
-	<</if>>
-	
+
 	/* Logic check if mother is no longer in the store: */
 	<<if $globalFluffies[_ef].foodType == "Nursing" && $ourStore.fluffies.contains($globalFluffies[_ef].mother) == false>>
 		<br><<- $globalFluffies[_ef].name>> can't find it's mother!
@@ -657,7 +658,7 @@
 	 		<<if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0>>
 	 			<br><<print $globalFluffies[$globalFluffies[_ef].mother].name>> is done nursing.
 	 		<</if>> 
-	 		
+	 		/*
 	 		<<set $ourStore.foals-->>
 	 		
 			<<if $globalFluffies[_ef].gender == "male">>
@@ -665,6 +666,7 @@
 			<<else>>
 				<<set $ourStore.mares++>>
 			<</if>>
+			*/
 	 	<</if>>
 	<</if>>
 	
