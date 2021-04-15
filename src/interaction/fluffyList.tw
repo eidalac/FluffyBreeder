@@ -17,6 +17,14 @@
 <br>
 <<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
 
+<div class="w3-row w3-container w3-mobile">
+
+	<<baseSprit>>
+	<<eyeSprite>>
+	<<eyeMask>>
+	<<maneSprite>>
+	<<outlineSprite>>
+
 /* Since we are going over the list anyway, we can make sure this is current.*/
 /*
 <<set $ourStore.stallions = 0>>
@@ -391,27 +399,50 @@ Bulk Actions (all checked fluffies)
 		<<set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)>>
 		<<set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)>>
 	
-	<<capture _fl, _listFluff>>
-			<label>	<p class="hang">
-			<<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>>
-			[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff, $encyclopedia = "Fluffy Interaction"]] <<shortDesc _listFluff>>
-			</p>
-			[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]] |
-			<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]<</if>>
-			| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = "Fluffy Feeding"]] _listFluff.foodType
-			<<switch _listFluff.foodQuality>>
-				<<case 0>> (trash)
-				<<case 1>> (cheap)
-				<<case 2>> (basic)
-				<<case 3>> (good)
-				<<case 4>> (quality)
-				<<case -1>> 
-			<</switch>> 
-			</label>
-	<</capture>>
-			<hr>
-		<</if>>
-	<</for>>
+		<<capture _fl, _listFluff>>
+
+<label>
+	<<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>>
+	<div class="w3-responsive" style="position: relative; top: -50px">
+		<table class="w3-table w3-small">
+			<tr>
+				<td>
+					[[_listFluff.name|Fluffy Interact][$activeFluffy = _listFluff, $encyclopedia = "Fluffy Interaction"]]
+				</td>
+				<td>
+					[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]] |
+					<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][_listFluff.onDisplay = false]]<</if>>
+
+					| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = "Fluffy Feeding"]] _listFluff.foodType
+					<<switch _listFluff.foodQuality>>
+						<<case 0>> (trash)
+						<<case 1>> (cheap)
+						<<case 2>> (basic)
+						<<case 3>> (good)
+						<<case 4>> (quality)
+						<<case -1>> 
+					<</switch>>
+				</td>
+			</tr> 
+			<tr>
+				<td style="position: relative;  width: 160px;  height: 160px;  border: 0px solid grey;">
+					<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.cColor.toLowerCase() + 'filter' + '">'>>
+					<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.eColor.toLowerCase() + 'filter' + '">'>>
+					<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+					<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.mColor.toLowerCase() + 'filter' + '">'>>
+					<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+				</td>
+				<td>
+					<<shortDesc _listFluff>>
+				</td>
+			</tr>
+		</table>
+	</div>
+</label>
+<hr>
+		<</capture>>
+	<</if>>
+<</for>>
 <</widget>>
 
 
@@ -422,3 +453,5 @@ Bulk Actions (all checked fluffies)
 
 /* Sidebar link for mobile users */
 <<SidebarButton>>
+
+</div>
