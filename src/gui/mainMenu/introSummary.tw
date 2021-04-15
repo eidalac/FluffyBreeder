@@ -43,12 +43,7 @@
  * Economy setting.
  *	Affects overall prices for fluffies.
  *** */
-<h2>@@.coral;Economy@@:</h2>
-In the years since the BioToys known as Fluffies were released from HasBio labs, the world has been greatly changed by this new addition.
-
-<p class = "hang">
-	@@.orange;In this world, Fluffies are@@
-	<br>
+<<widget "econDesc">>
 	<<if $economy == 1>>
 		@@.yellow;Default. @@ common pests.
 	<<elseif $economy == 0>>
@@ -56,22 +51,44 @@ In the years since the BioToys known as Fluffies were released from HasBio labs,
 	<<else>>
 		@@.yellow;Hard. @@ an economical and ecological nightmare.
 	<</if>>
+<</widget>>
+
+<h2>@@.coral;Economy@@:</h2>
+In the years since the BioToys known as Fluffies were released from HasBio labs, the world has been greatly changed by this new addition.
+
+<p class = "hang">
+	@@.orange;In this world, Fluffies are@@
+	<br>
+	<span id="economy_desc"><<econDesc>></span>
 </p>
 
 @@#economy_lite;<<button "Make things Easier">>
 	<<set $economy-->>
+	<<replace "#economy_desc">><<econDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 @@#economy_hard;| <<button "Make things Harder">>
 	<<set $economy++>>
+	<<replace "#economy_desc">><<econDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
+
+
 <hr>
 
 /* ***
  * Alicorn rarity .
  *	Affects both price and impacts which genes express Alicorns.
  *** */
+<<widget "alicornDesc">>
+	<<if $alicornRarity == 1>>
+		@@.yellow;Default. @@ rare and difficult to breed.
+	<<elseif $alicornRarity == 0>>
+		@@.yellow;Easy. @@ uncommon, but can be bred for.
+	<<else>>
+		@@.yellow;Hard. @@ very rare even with alicorn parents. 
+	<</if>>
+<</widget>>
 <br>
 <h2>@@.coral;Alicorn Rarity@@:</h2>
 Fluffies have four breeds.  The most common, “Earthies” have no special features.  Less common are “Pegasi”, with (non functional) wings, and “Unicorns”, with small horns. The rarest breed is the Alicorn, having both wings and a horn.
@@ -79,23 +96,18 @@ Fluffies have four breeds.  The most common, “Earthies” have no special feat
 <p class = "hang">
 	@@.orange;In this world, Alicorns are @@
 	<br>
-	<<if $economy == 1>>
-		@@.yellow;Default. @@ rare and difficult to breed.
-	<<elseif $economy == 0>>
-		@@.yellow;Easy. @@ uncommon, but can be bred for.
-	<<else>>
-		@@.yellow;Hard. @@ very rare even with alicorn parents. 
-	<</if>>
+	<span id="alicorn_desc"><<alicornDesc>></span>
 </p>
 
 @@#alicorn_lite;<<button "Make them more Common">>
 	<<set $alicornRarity-->>
+	<<replace "#alicorn_desc">><<alicornDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 @@#alicorn_hard;| <<button "Make them less Common">>
 	<<set $alicornRarity++>>
+	<<replace "#alicorn_desc">><<alicornDesc>><</replace>>
 	<<introButton>>
-	
 <</button>>@@
 <hr>
 
@@ -105,27 +117,32 @@ Fluffies have four breeds.  The most common, “Earthies” have no special feat
  * Alicorn treatment.
  *	Affects price and controls events related to alicorn abuse/abandomment.
  *** */
+<<widget "alicornDesc2">>
+	<<if $alicornMonster == 1>>
+		@@.yellow;Default. @@ a big problem, and training alicorn safe fluffies is difficult.
+	<<elseif $alicornMonster == 0>>
+		@@.yellow;Easy. @@ a nuisance, so long as you put in a bit of training to correct the issue.
+	<<else>>
+		@@.yellow;Hard. @@ genetically programmed in, requiring hand raising of rejected foals.
+	<</if>>
+<</widget>>
 <br>
 <h2>@@.coral;Alicorn Rejection@@:</h2>
 Fluffies are known to reject Alicorns as “monsters”, abandoning or killing them, making an already rare breed even rarer. 
 <p class = "hang">
 	@@.orange;This 'monster' treatment is @@
 	<br>
-	<<if $economy == 1>>
-		@@.yellow;Default. @@ a big problem, and training alicorn safe fluffies is difficult.
-	<<elseif $economy == 0>>
-		@@.yellow;Easy. @@ a nuisance, so long as you put in a bit of training to correct the issue.
-	<<else>>
-		@@.yellow;Hard. @@ genetically programmed in, requiring hand raising of rejected foals. 
-	<</if>>
+	<span id="alicorn_desc2"><<alicornDesc2>></span>
 </p>
 
 @@#monster_lite;<<button "Make them more Common">>
 	<<set $alicornMonster-->>
+	<<replace "#alicorn_desc2">><<alicornDesc2>><</replace>>
 	<<introButton>>
 <</button>>@@
 @@#monster_hard;| <<button "Make them less Common">>
 	<<set $alicornMonster++>>
+	<<replace "#alicorn_desc2">><<alicornDesc2>><</replace>>
 	<<introButton>>
 <</button>>@@
 <hr>
@@ -135,12 +152,7 @@ Fluffies are known to reject Alicorns as “monsters”, abandoning or killing t
  * Poopie Babies
  *	Controls events reated to abuse of brown fluffies.
  *** */
-<br>
-<h2>@@.coral;'Poopie Babbeh'@@:</h2>
-Fluffies are also known to reject babies with ‘bad colors’, especially greens and browns - so called ‘poopy babies’.
-<p class = "hang">  
-	@@.orange;This ‘poopie babbeh’ treatment is @@
-	<br>
+<<widget "poopDesc">>
 	<<if $pooBaby == 1>>
 		@@.yellow;Default. @@ part of the default programing, but this can normally be corrected with care and time.
 	<<elseif $pooBaby == 0>>
@@ -148,13 +160,24 @@ Fluffies are also known to reject babies with ‘bad colors’, especially green
 	<<else>>
 		@@.yellow;Hard. @@ genetically programmed in, requiring hand raising of rejected foals.
 	<</if>>
+<</widget>>
+
+<br>
+<h2>@@.coral;'Poopie Babbeh'@@:</h2>
+Fluffies are also known to reject babies with ‘bad colors’, especially greens and browns - so called ‘poopy babies’.
+<p class = "hang">  
+	@@.orange;This ‘poopie babbeh’ treatment is @@
+	<br>
+	<span id="poop_desc"><<poopDesc>></span>
 </p>
 @@#poop_lite;<<button "Make things Easier">>
 	<<set $pooBaby-->>
+	<<replace "#poop_desc">><<poopDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 @@#poop_hard;| <<button "Make things Harder">>
 	<<set $pooBaby++>>
+	<<replace "#poop_desc">><<poopDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 <hr>
@@ -165,12 +188,7 @@ Fluffies are also known to reject babies with ‘bad colors’, especially green
  * Smarties Babies
  *	Controls events reated to Smarties.  Must be set to 2 to enable the more extreme content (enf babbies, rape etc.)
  *** */
-<br>
-<h2>@@.coral;Smarty Syndrome@@:</h2>
-Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour and can even result in a fluffy attacking humans and foals!
-<p class = "hang">  
-	@@.orange;Smarty Syndrome is @@
-	<br>
+<<widget "smartDesc">>
 	<<if $smartySyndrom == 1>>
 		@@.yellow;Default. @@ dangerous if left untreated.
 	<<elseif $smartySyndrom == 0>>
@@ -178,13 +196,23 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	<<else>>
 		@@.yellow;Hard. @@ a menace!  Hell-gremlins must die. @@.orange;Unlocks hell-gremlin content.@@
 	<</if>>
+<</widget>>
+<br>
+<h2>@@.coral;Smarty Syndrome@@:</h2>
+Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour and can even result in a fluffy attacking humans and foals!
+<p class = "hang">  
+	@@.orange;Smarty Syndrome is @@
+	<br>
+	<span id="smart_desc"><<smartDesc>></span>
 </p>
 @@#smart_lite;<<button "Make things Easier">>
 	<<set $smartySyndrom-->>
+	<<replace "#smart_desc">><<smartDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 @@#smart_hard;| <<button "Make things Harder">>
 	<<set $smartySyndrom++>>
+	<<replace "#smart_desc">><<smartDesc>><</replace>>
 	<<introButton>>
 <</button>>@@
 <hr>
@@ -279,4 +307,6 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		<<run $("#smart_lite button").prop("disabled", false)>>
 	<</if>>
 <</widget>>
+
+
 
