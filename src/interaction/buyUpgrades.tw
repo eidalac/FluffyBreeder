@@ -23,15 +23,15 @@
 
 <h1>Store Upgrades</h1>
 
-<br>What improvements do you want to make to your store? @@.orange;Press 'enter' to set values.@@
+<br>What improvements do you want to make to your store?
 <br>
-<span id = "shop_cash"><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>></span>
+<span id = "shop_cash"><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>>
 <br>
 Upgrades:
 <<for _i, _upgrade range $ourStore.upgrades>>
 	<<- _upgrade>><<- (_i < $ourStore.upgrades.length - 1) ? (_i < $ourStore.upgrades.length - 2) ? ',' : ', and' : ''>>
 <</for>>
-
+</span>
 <hr>
 <h1>Physical Space</h1>
 
@@ -48,7 +48,7 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 			<<set $ourStore.space += 1>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -62,7 +62,7 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 			<<set $ourStore.space += 10>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -76,7 +76,7 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 			<<set $ourStore.space += 100>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 /* Form for error message to display*/
@@ -99,7 +99,7 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 			<<set $ourStore.shelter += 1>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -113,7 +113,7 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 			<<set $ourStore.shelter += 10>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -127,7 +127,7 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 			<<set $ourStore.shelter += 100>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 /* Form for error message to display*/
@@ -149,7 +149,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 			<<set $ourStore.display += 1>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -163,7 +163,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 			<<set $ourStore.display += 10>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 	
@@ -177,7 +177,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 			<<set $ourStore.display += 100>>
 			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
-			<<replace "#shop_cash">><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>><</replace>>
+			<<updateStoreButtons>>
 		<</if>>
 	<</button>>
 /* Form for error message to display*/
@@ -196,7 +196,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $costs += 1>>
 	<<run $ourStore.upgrades.pushUnique("Basic Toys")>>
     <<run $("#basic_toys button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <p class="hang">Add some @@.coral;Fancy Toys@@ to <<- $ourStore.name>>.
@@ -208,7 +208,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $costs += 1>>
 	<<run $ourStore.upgrades.pushUnique("Fancy Toys")>>
     <<run $("#fancy_toys button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <p class="hang">Add some @@.coral;Deluxe Toys@@ to <<- $ourStore.name>>.
@@ -220,7 +220,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $costs += 1>>
 	<<run $ourStore.upgrades.pushUnique("Deluxe Toys")>>
     <<run $("#deluxe_toys button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <br><br>
@@ -237,7 +237,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $costs += 1>>
 	<<run $ourStore.upgrades.pushUnique("Basic Training Equipment")>>
     <<run $("#basic_training button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <p class="hang">Add some @@.coral;Fancy Training Equipment@@ to <<- $ourStore.name>>.
@@ -248,7 +248,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $ourStore.space -= 1>>
 	<<run $ourStore.upgrades.pushUnique("Fancy Training Equipment")>>
     <<run $("#fancy_training button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <p class="hang">Add some @@.coral;Deluxe Training Equipment@@ to <<- $ourStore.name>>.
@@ -259,12 +259,14 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	<<set $ourStore.space -= 1>>
 	<<run $ourStore.upgrades.pushUnique("Deluxe Training Equipment")>>
     <<run $("#deluxe_training button").prop("disabled", true)>>
-    <<goto "Buy Upgrades">>
+    <<updateStoreButtons>>
 <</button>>@@
 
 <br><br>
 
-<<timed 100ms>>
+
+
+<<widget "updateStoreButtons">>
 	<<if $ourStore.upgrades.includes("Basic Toys") == false && $cash >= 100 && $ourStore.space >= 1>>
 		<<run $("#basic_toys button").prop("disabled", false)>>
 	<<else>>
@@ -277,10 +279,16 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<run $("#fancy_toys button").prop("disabled", true)>>
 	<</if>>
 	
-	<<if $ourStore.upgrades.includes("Deluxe Training Equipment") == false && $cash >= 1000 && $ourStore.space >= 1>>
+	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
 		<<run $("#deluxe_toys button").prop("disabled", false)>>
 	<<else>>
 		<<run $("#deluxe_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Deluxe Training Equipment") == false && $cash >= 1000 && $ourStore.space >= 1>>
+		<<run $("#deluxe_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#deluxe_training button").prop("disabled", true)>>
 	<</if>>
 	
 	<<if $ourStore.upgrades.includes("Basic Training Equipment") == false && $cash >= 100 && $ourStore.space >= 1>>
@@ -295,14 +303,19 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<run $("#fancy_training button").prop("disabled", true)>>
 	<</if>>
 	
-	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
-		<<run $("#deluxe_training button").prop("disabled", false)>>
-	<<else>>
-		<<run $("#deluxe_training button").prop("disabled", true)>>
-	<</if>>
-<</timed>>
-
-/* Sidebar link for mobile users */
-<<SidebarButton>>
+	
+	<<replace "#shop_cash">>
+<br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>>
+<br>
+Upgrades:
+<<for _i, _upgrade range $ourStore.upgrades>>
+	<<- _upgrade>><<- (_i < $ourStore.upgrades.length - 1) ? (_i < $ourStore.upgrades.length - 2) ? ',' : ', and' : ''>>
+<</for>>
+	<</replace>>
+<</widget>>
 
 </div>
+
+<<timed 100ms>>
+	<<updateStoreButtons>>
+<</timed>>

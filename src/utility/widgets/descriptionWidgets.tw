@@ -43,10 +43,8 @@
  *	Normal ranges for a stat are 0-6
  *** */
 <<widget "displayStat">>
-	<<if  $debugMode>>
-		@@.orange;$args[0]@@
-	<<else>>
-		<<- $training >= 60 ? $args[0] < 3 ? "@@.red;$args[0]@@" : $args[0] < 5 ? "@@.yellow;$args[0]@@" : "@@.green;$args[0]@@"  : $training >= 40 ? $args[0] < 3 ? "@@.red;Low@@" : $args[0] < 5 ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;??@@">>
+	<<if  $debugMode>>[@@.orange;$args[0]@@]<<else>>
+		<<- $training >= 60 ? $args[0] < 3 ? "[@@.red;$args[0]@@]" : $args[0] < 5 ? "[@@.yellow;$args[0]@@]" : "[@@.green;$args[0]@@]"  : $training >= 40 ? $args[0] < 3 ? "[@@.red;Low@@]" : $args[0] < 5 ? "[@@.yellow;Average@@]" : "[@@.green;High@@]" : "[@@.yellow;??@@]">>
 	<</if>>
 <</widget>>
 
@@ -57,10 +55,9 @@
  *** */
 <<widget "displayAttribute">>
 	<<if  $debugMode>>
-		@@.orange;$args[0]@@
+		[@@.orange;$args[0]@@]
 	<<else>>
-		<<- $training >= 100 ? $args[0] < 67 ? "@@.red;$args[0]@@" : $args[0] < 101 ? "@@.yellow;$args[0]@@" : "@@.green;$args[0]@@" : $training >= 50 ? $args[0] < 67 ? "@@.red;Low@@" : $args[0] < 101 ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;??@@">>
-	<</if>>
+		<<- $training >= 100 ? $args[0] < 67 ? "[@@.red;$args[0]@@]" : $args[0] < 101 ? "[@@.yellow;$args[0]@@]" : "[@@.green;$args[0]@@]" : $training >= 50 ? $args[0] < 67 ? "[@@.red;Low@@]" : $args[0] < 101 ? "[@.yellow;Average@@]" : "[@@.green;High@@]" : "[@@.yellow;??@@]">><</if>>
 <</widget>>
 
 /* ***
@@ -242,8 +239,8 @@
 	<</if>>
 
 <<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
-<br>Strength: [<<displayStat _fluffy.strength>>], Energy [<<displayStat _fluffy.energy>>], Charm [<<displayStat _fluffy.charm>>], Thinking [<<displayStat _fluffy.thinking>>], Learning [<<displayStat _fluffy.learning>>], Fertility [<<displayStat _fluffy.fertility>>]
-<br>Trust [<<displayAttribute _fluffy.trust>>] Training [<<displayAttribute _fluffy.training>>] Temperament [<<displayAttribute _fluffy.temperament>>] Happiness [<<displayAttribute _fluffy.happy>>] Stress [<<displayAttribute _fluffy.stress>>] Trauma [<<displayAttribute _fluffy.trauma>>]
+<br>Strength <<displayStat _fluffy.strength>> Energy <<displayStat _fluffy.energy>> Charm <<displayStat _fluffy.charm>> Thinking <<displayStat _fluffy.thinking>> Learning <<displayStat _fluffy.learning>> Fertility <<displayStat _fluffy.fertility>>
+<br>Trust <<displayAttribute _fluffy.trust>> Training <<displayAttribute _fluffy.training>> Temperament <<displayAttribute _fluffy.temperament>> Happiness <<displayAttribute _fluffy.happy>> Stress <<displayAttribute _fluffy.stress>> Trauma <<displayAttribute _fluffy.trauma>>
 <br>_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
 <br>Traits: 
 <<for _i = 1; _i < _fluffy.traits.length; _i++>>
