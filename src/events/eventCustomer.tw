@@ -33,6 +33,8 @@ button {
 <<set _customerWants = random(-2, 6)>>
 <<set _customerWants = Math.clamp(_customerWants, 0, 6)>>
 
+<<set _customerWants = 0>>
+
 /* How picky the customer is and how many fails they will put up with */
 <<set _customerTolerance = random(0, 3)>>
 
@@ -406,7 +408,11 @@ button {
 </div>
 
 <<widget "OfferFluffy">>
+
+	<<run console.log("Customer needs test Any fluffy test 3: fl= " + _fl)>>
+
 	<<set _needsMatch = 0>>
+
 	<<for _i = 0; _i < _customerBasicNeeds.length; _i++>>
 		<<run console.log("Customer Test: _customerBasicNeeds[_i] = " + _customerBasicNeeds[_i])>>
 		<<switch _customerBasicNeeds[_i]>>
@@ -613,158 +619,173 @@ button {
 		<</switch>>
 
 	<</for>>
-	<<replace "#result-msg">>
-		<br>@@.orange;Match points = <<- _needsMatch>>.@@
-		<br>@@.orange;Possible points = <<print Number(_customerDetailedNeeds.length * 2)>>.@@
-		<br>@@.orange;Match % = <<print Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2))>>.@@
+
+	<<set _msgString = "">>
+	<<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
+	<<set _msgString += "<br>@@.orange;Possible points = " + Number(_customerDetailedNeeds.length * 2) + ".@@">>
+	<<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) + ".@@">>
 		
-		<<set _price = Number($globalFluffies[_fl].training)>>
-		<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
+	<<set _price = Number($globalFluffies[_fl].training)>>
+	<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
 							
-		<<switch $globalFluffies[_fl].breed>>
-			<<case "unicorn">>
-				<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
-			<<case "pegasus">>
-				<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
-			<<case "alicorn">>
-				<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
-			<<default>>
-				<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
-		<</switch>>
-		
-		<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
-		
-		<<set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)>>
-		<<set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)>>
+	<<switch $globalFluffies[_fl].breed>>
+		<<case "unicorn">>
+			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+		<<case "pegasus">>
+			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+		<<case "alicorn">>
+			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+		<<default>>
+			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+	<</switch>>
+	
+	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
+	
+	<<set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)>>
+	<<set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)>>
 
-		<<set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)>>
-		<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
-		
-		<<if _price == 0>>
-			<<run console.log("Customer Test: _price was 0.")>>
-			<<set _price = Number($earthPrice.mart)>>
-		<</if>>
-		
-		<<set _ageMulti = 1>>
+	<<set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)>>
+	<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
+	
+	<<if _price == 0>>
+		<<run console.log("Customer Test: _price was 0.")>>
+		<<set _price = Number($earthPrice.mart)>>
+	<</if>>
+	
+	<<set _ageMulti = 1>>
 
-		<<if $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks < 45>>
-			<<set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)>>
-		<</if>>
+	<<if $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks < 45>>
+		<<set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)>>
+	<</if>>
 
-		<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
 
-		<<if $globalFluffies[_fl].traits.includes("Feral") == true>>
-			<<set _price = Number(_price / 4).toFixed(2)>>
-		<</if>>
-		
-		
-		/* Debug flag since I can't track down this issue yet. */
-		<<if _price <= 0>>
-			<br>
-			<br>@@.red; ERROR: Price _price <= 0.  Value dump: StatBonus = <<- $globalFluffies[_fl].statBonus>>, ageMulti = <<- _ageMulti>>, colorBonus = <<- $globalFluffies[_fl].colorBonus>>, Initial price = <<- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))>>.
-			<br>
-		<</if>>
-		
+	<<if $globalFluffies[_fl].traits.includes("Feral") == true>>
+		<<set _price = Number(_price / 4).toFixed(2)>>
+	<</if>>
+	
+	
+	/* Debug flag since I can't track down this issue yet. */
+	<<if _price <= 0>>
+		<br>
+		<br>@@.red; ERROR: Price _price <= 0.  Value dump: StatBonus = <<- $globalFluffies[_fl].statBonus>>, ageMulti = <<- _ageMulti>>, colorBonus = <<- $globalFluffies[_fl].colorBonus>>, Initial price = <<- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))>>.
+		<br>
+	<</if>>
+	
+	<br>@@.orange;Base price = <<- _price>>.@@
 
-		<br>@@.orange;Base price = <<- _price>>.@@
-		
-		/* They want any fluffy */
-		<<if _customerDetailedNeeds.length == 0>>
-			<<set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))>> 
-		<<else>>
-			<<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
-		<</if>>
-<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
+	<<run console.log("Customer needs test Any fluffy test 4: fl= " + _fl)>>	
+	
+	/* They want any fluffy */
+	<<if _customerDetailedNeeds.length == 0>>
+		<<set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))>> 
+	<<else>>
+		<<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
+	<</if>>
 
-<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
-		<br>@@.orange;Price Bonus = <<- _priceBonus>>.@@
-<<run console.log("Customer needs $cash = " + $cash)>>
-		<<set _price = Number(_price * _priceBonus).toFixed(2)>>
-		<<set $cash = Number(Number($cash) + Number(_price)).toFixed(2)>>
-<<run console.log("Customer needs $cash = " + $cash)>>
-		/* Check if they will accept the offer */
-		<<if _customerDetailedNeeds.length > 0 && Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) <= 33>>
-				<<if _customerTolerance > 0>>
-					<<set _customerTolerance-->>
-					<br>@@.orange;They are not at all pleased with <<- $globalFluffies[_fl].name>>.@@
-				<<else>>
-					<br>@@.orange;This customer is fed up.@@
-					<<replace "#fluffy-list">><</replace>>
-					<<replace "#navbar">><</replace>>
-				<</if>>
-		<<else>> 
-		
+	<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
 
-			<br>@@.orange;They would pay = <<- _price>> for <<- $globalFluffies[_fl].name>>.@@
-			<br>
-			<<if $globalFluffies[_fl].ID != _fl>>
-				<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_fl].ID + ". Should be " + _fl)>>
-				/* <<run $ourStore.fluffies.delete(_fl)>>*/
-				<<set $globalFluffies[_fl].ID = _fl>>
-			<</if>> 
-			
-			<<set $globalFluffies[_fl].sold = true>>
-			<<set $globalFluffies[_fl].onDisplay = false>>
-			<<set $globalFluffies[_fl].pregnant = false>>
-				
-			<<if $globalFluffies[_fl].nursing > 0>>
-				<<for _child range $globalFluffies[_fl].children>>
-					<<if $globalFluffies[_child].foodType == "Nursing">>
-						<<set $globalFluffies[_child].foodType = "Nothing">>
-						<<set $globalFluffies[_child].foodQuality = -1>>
-						<</if>> /* Close nursing check */
-				<</for>> /* Close child check*/
-			<</if>> /* Close Nursing check */
+	<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
+	
+	<<set _msgString += "<br>@@.orange;Price Bonus = "+ _priceBonus + ".@@">>
 
-			<<set $globalFluffies[_fl].nursing = 0>>
-			
-			<<if $globalFluffies[_fl].foodType == "Nursing">>
-				<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
-			<</if>> /* Close nursing check */
+	<<run console.log("Customer needs $cash = " + $cash)>>
+	
+	<<set _price = Number(_price * _priceBonus).toFixed(2)>>
+	<<set $cash = Number(Number($cash) + Number(_price)).toFixed(2)>>
 
-			<<if $globalFluffies[_fl].specialFriend != -1>>
-				<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[_fl].specialFriend = -1>>
-			<</if>> /* Close special friend check */
-
-			<<if Number($globalFluffies[_fl].age) == 0 && Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
-				<<set $ourStore.foals-->>
-			<<elseif $globalFluffies[_fl].gender == "male">>
-				<<set $ourStore.stallions-->>
+	<<run console.log("Customer needs $cash = " + $cash)>>
+	
+	/* Check if they will accept the offer */
+	<<if _customerDetailedNeeds.length > 0 && Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) <= 33>>
+			<<if _customerTolerance > 0>>
+				<<set _customerTolerance-->>
+				<<set _msgString += "<br>@@.orange;They are not at all pleased with " + $globalFluffies[_fl].name + ".@@">>
 			<<else>>
-				<<set $ourStore.mares-->>
-			<</if>> /* Close age check */
-
-			<<set $repuation += _priceBonus>>
-
-			/* Random chance to 'upsell'*/
-			<<set _chance = Number(($training + $repuation) / 4).toFixed(2)>>
-
-<<run console.log("Upgraded check _chance = " + _chance)>>
-			
-			<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
-				<br>You add some deluxe toys to the sale.
-				<br> 				
-				<<set _price = Number(Number(_price) + Number(random(15,20)))>>
-			<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > random(0, 90)>>
-				<br>You add some fancy toys to the sale.
-				<br> 				
-				<<set _price = Number(Number(_price) + Number(random(10,15)))>>
-			<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > random(0, 94)>>
-				<br>You add some basic toys to the sale.
-				<br> 				
-				<<set _price = Number(Number(_price) + Number(random(5,10)))>>
+				<<set _msgString += "<br>@@.orange;This customer is fed up.@@">>
+				<<replace "#result-msg">><<- _msgString>><</replace>>
+				<<replace "#fluffy-list">><</replace>>
+				<<replace "#navbar">><</replace>>
 			<</if>>
+	<<else>> 
 
-			<<replace "#navbar">><</replace>>
-			<<timed 10ms>><<replace "#fluffy-list">>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>><</timed>>
+		<<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$globalFluffies[_fl].name + ".@@<br>">>
+		
+		<<if $globalFluffies[_fl].ID != _fl>>
+			<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_fl].ID + ". Should be " + _fl)>>
+			/* <<run $ourStore.fluffies.delete(_fl)>>*/
+			<<set $globalFluffies[_fl].ID = _fl>>
+		<</if>> 
+		
+		<<set $globalFluffies[_fl].sold = true>>
+		<<set $globalFluffies[_fl].onDisplay = false>>
+		<<set $globalFluffies[_fl].pregnant = false>>
+			
+		<<if $globalFluffies[_fl].nursing > 0>>
+			<<for _child range $globalFluffies[_fl].children>>
+				<<if $globalFluffies[_child].foodType == "Nursing">>
+					<<set $globalFluffies[_child].foodType = "Nothing">>
+					<<set $globalFluffies[_child].foodQuality = -1>>
+					<</if>> /* Close nursing check */
+			<</for>> /* Close child check*/
+		<</if>> /* Close Nursing check */
 
-<<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						
-			<<run $ourStore.fluffies.delete(_fl)>>
-<<run console.log("Customer test post removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>
-<<run console.log("Customer test post removal:" + $ourStore.fluffies)>>
-		<</if>> /* Close needs check */
-	<</replace>>
+		<<set $globalFluffies[_fl].nursing = 0>>
+		
+		<<if $globalFluffies[_fl].foodType == "Nursing">>
+			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
+		<</if>> /* Close nursing check */
+
+		<<if $globalFluffies[_fl].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
+			<<set $globalFluffies[_fl].specialFriend = -1>>
+		<</if>> /* Close special friend check */
+
+		<<if Number($globalFluffies[_fl].age) == 0 && Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
+			<<set $ourStore.foals-->>
+		<<elseif $globalFluffies[_fl].gender == "male">>
+			<<set $ourStore.stallions-->>
+		<<else>>
+			<<set $ourStore.mares-->>
+		<</if>> /* Close age check */
+
+		<<set $reputation += _priceBonus>>
+
+		/* Random chance to 'upsell'*/
+		<<set _chance = Number(($training + $reputation) / 4).toFixed(2)>>
+
+		<<run console.log("Upgraded check _chance = " + _chance)>>
+		
+		<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
+			<br>You add some deluxe toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(15,20)))>>
+		<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > random(0, 90)>>
+			<br>You add some fancy toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(10,15)))>>
+		<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > random(0, 94)>>
+			<br>You add some basic toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(5,10)))>>
+		<</if>>
+
+
+		<<set _price = Number(_price).toFixed(2)>>
+
+		<<run console.log("Customer needs test Any fluffy test 5: fl= " + _fl)>>	
+		<<replace "#result-msg">>
+			_msgString
+			<br>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New reputation <<- $reputation>>.
+		<</replace>>
+		<<replace "#navbar">><</replace>>
+		<<timed 5ms>><<replace "#fluffy-list">><</replace>><</timed>>
+
+		<<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						
+		<<run $ourStore.fluffies.delete(_fl)>>
+		<<run console.log("Customer test post removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>
+		<<run console.log("Customer test post removal:" + $ourStore.fluffies.length)>>
+	<</if>> /* Close needs check */
 <</widget>>
 
 
@@ -780,7 +801,7 @@ button {
 			<<for _fList.length > 0>>
 				<<set _fl = _fList.pluck()>>
 				
-				<<run console.log("Customer needs test Any fluffy test 0." + $globalFluffies[_fl].onDisplay)>>
+				<<run console.log("Customer needs test Any fluffy test 0: fl= " + _fl + ". displayFlag =" + $globalFluffies[_fl].onDisplay)>>
 				
 				<<if $globalFluffies[_fl].onDisplay == true>>
 					

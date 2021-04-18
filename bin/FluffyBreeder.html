@@ -5402,6 +5402,8 @@ button {
 &lt;&lt;set _customerWants = random(-2, 6)&gt;&gt;
 &lt;&lt;set _customerWants = Math.clamp(_customerWants, 0, 6)&gt;&gt;
 
+&lt;&lt;set _customerWants = 0&gt;&gt;
+
 /* How picky the customer is and how many fails they will put up with */
 &lt;&lt;set _customerTolerance = random(0, 3)&gt;&gt;
 
@@ -5775,7 +5777,11 @@ button {
 &lt;/div&gt;
 
 &lt;&lt;widget &quot;OfferFluffy&quot;&gt;&gt;
+
+	&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 3: fl= &quot; + _fl)&gt;&gt;
+
 	&lt;&lt;set _needsMatch = 0&gt;&gt;
+
 	&lt;&lt;for _i = 0; _i &lt; _customerBasicNeeds.length; _i++&gt;&gt;
 		&lt;&lt;run console.log(&quot;Customer Test: _customerBasicNeeds[_i] = &quot; + _customerBasicNeeds[_i])&gt;&gt;
 		&lt;&lt;switch _customerBasicNeeds[_i]&gt;&gt;
@@ -5982,158 +5988,173 @@ button {
 		&lt;&lt;/switch&gt;&gt;
 
 	&lt;&lt;/for&gt;&gt;
-	&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
-		&lt;br&gt;@@.orange;Match points = &lt;&lt;- _needsMatch&gt;&gt;.@@
-		&lt;br&gt;@@.orange;Possible points = &lt;&lt;print Number(_customerDetailedNeeds.length * 2)&gt;&gt;.@@
-		&lt;br&gt;@@.orange;Match % = &lt;&lt;print Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2))&gt;&gt;.@@
+
+	&lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number(_customerDetailedNeeds.length * 2) + &quot;.@@&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
 		
-		&lt;&lt;set _price = Number($globalFluffies[_fl].training)&gt;&gt;
-		&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;
+	&lt;&lt;set _price = Number($globalFluffies[_fl].training)&gt;&gt;
+	&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;
 							
-		&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
-			&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-				&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
-			&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
-			&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
-			&lt;&lt;default&gt;&gt;
-				&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;/switch&gt;&gt;
-		
-		&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
-		
-		&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
+	&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
+		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+	
+	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
+	
+	&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
 
-		&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
-		&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
-		
-		&lt;&lt;if _price == 0&gt;&gt;
-			&lt;&lt;run console.log(&quot;Customer Test: _price was 0.&quot;)&gt;&gt;
-			&lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;set _ageMulti = 1&gt;&gt;
+	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
+	
+	&lt;&lt;if _price == 0&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer Test: _price was 0.&quot;)&gt;&gt;
+		&lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set _ageMulti = 1&gt;&gt;
 
-		&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; 45&gt;&gt;
-			&lt;&lt;set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 
-		&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
-			&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		
-		/* Debug flag since I can&#39;t track down this issue yet. */
-		&lt;&lt;if _price &lt;= 0&gt;&gt;
-			&lt;br&gt;
-			&lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $globalFluffies[_fl].statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
-			&lt;br&gt;
-		&lt;&lt;/if&gt;&gt;
-		
+	&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
+		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	
+	/* Debug flag since I can&#39;t track down this issue yet. */
+	&lt;&lt;if _price &lt;= 0&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $globalFluffies[_fl].statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
+		&lt;br&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
 
-		&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
-		
-		/* They want any fluffy */
-		&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
-			&lt;&lt;set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))&gt;&gt; 
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
+	&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 4: fl= &quot; + _fl)&gt;&gt;	
+	
+	/* They want any fluffy */
+	&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
+		&lt;&lt;set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))&gt;&gt; 
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
-		&lt;br&gt;@@.orange;Price Bonus = &lt;&lt;- _priceBonus&gt;&gt;.@@
-&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
-		&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
-		&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
-		/* Check if they will accept the offer */
-		&lt;&lt;if _customerDetailedNeeds.length &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &lt;= 33&gt;&gt;
-				&lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
-					&lt;&lt;set _customerTolerance--&gt;&gt;
-					&lt;br&gt;@@.orange;They are not at all pleased with &lt;&lt;- $globalFluffies[_fl].name&gt;&gt;.@@
-				&lt;&lt;else&gt;&gt;
-					&lt;br&gt;@@.orange;This customer is fed up.@@
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-		
+	&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
 
-			&lt;br&gt;@@.orange;They would pay = &lt;&lt;- _price&gt;&gt; for &lt;&lt;- $globalFluffies[_fl].name&gt;&gt;.@@
-			&lt;br&gt;
-			&lt;&lt;if $globalFluffies[_fl].ID != _fl&gt;&gt;
-				&lt;&lt;run console.log(&quot;Logic Test 1 - Invalid ID found: &quot; + $globalFluffies[_fl].ID + &quot;. Should be &quot; + _fl)&gt;&gt;
-				/* &lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;*/
-				&lt;&lt;set $globalFluffies[_fl].ID = _fl&gt;&gt;
-			&lt;&lt;/if&gt;&gt; 
-			
-			&lt;&lt;set $globalFluffies[_fl].sold = true&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].onDisplay = false&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].pregnant = false&gt;&gt;
-				
-			&lt;&lt;if $globalFluffies[_fl].nursing &gt; 0&gt;&gt;
-				&lt;&lt;for _child range $globalFluffies[_fl].children&gt;&gt;
-					&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
-						&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
-						&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
-						&lt;&lt;/if&gt;&gt; /* Close nursing check */
-				&lt;&lt;/for&gt;&gt; /* Close child check*/
-			&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+	&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
+	
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
 
-			&lt;&lt;set $globalFluffies[_fl].nursing = 0&gt;&gt;
-			
-			&lt;&lt;if $globalFluffies[_fl].foodType == &quot;Nursing&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[$globalFluffies[_fl].mother].nursing--&gt;&gt;
-			&lt;&lt;/if&gt;&gt; /* Close nursing check */
+	&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
+	
+	&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
+	&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
 
-			&lt;&lt;if $globalFluffies[_fl].specialFriend != -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[_fl].specialFriend = -1&gt;&gt;
-			&lt;&lt;/if&gt;&gt; /* Close special friend check */
-
-			&lt;&lt;if Number($globalFluffies[_fl].age) == 0 &amp;&amp; Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
-				&lt;&lt;set $ourStore.foals--&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
-				&lt;&lt;set $ourStore.stallions--&gt;&gt;
+	&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
+	
+	/* Check if they will accept the offer */
+	&lt;&lt;if _customerDetailedNeeds.length &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &lt;= 33&gt;&gt;
+			&lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
+				&lt;&lt;set _customerTolerance--&gt;&gt;
+				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They are not at all pleased with &quot; + $globalFluffies[_fl].name + &quot;.@@&quot;&gt;&gt;
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set $ourStore.mares--&gt;&gt;
-			&lt;&lt;/if&gt;&gt; /* Close age check */
-
-			&lt;&lt;set $repuation += _priceBonus&gt;&gt;
-
-			/* Random chance to &#39;upsell&#39;*/
-			&lt;&lt;set _chance = Number(($training + $repuation) / 4).toFixed(2)&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Upgraded check _chance = &quot; + _chance)&gt;&gt;
-			
-			&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; random(0, 80)&gt;&gt;
-				&lt;br&gt;You add some deluxe toys to the sale.
-				&lt;br&gt; 				
-				&lt;&lt;set _price = Number(Number(_price) + Number(random(15,20)))&gt;&gt;
-			&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; random(0, 90)&gt;&gt;
-				&lt;br&gt;You add some fancy toys to the sale.
-				&lt;br&gt; 				
-				&lt;&lt;set _price = Number(Number(_price) + Number(random(10,15)))&gt;&gt;
-			&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; random(0, 94)&gt;&gt;
-				&lt;br&gt;You add some basic toys to the sale.
-				&lt;br&gt; 				
-				&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
+				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;This customer is fed up.@@&quot;&gt;&gt;
+				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;&lt;&lt;- _msgString&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
+	&lt;&lt;else&gt;&gt; 
 
-			&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-			&lt;&lt;timed 10ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New repuation &lt;&lt;- $repuation&gt;&gt;. &lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+		&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$globalFluffies[_fl].name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_fl].ID != _fl&gt;&gt;
+			&lt;&lt;run console.log(&quot;Logic Test 1 - Invalid ID found: &quot; + $globalFluffies[_fl].ID + &quot;. Should be &quot; + _fl)&gt;&gt;
+			/* &lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;*/
+			&lt;&lt;set $globalFluffies[_fl].ID = _fl&gt;&gt;
+		&lt;&lt;/if&gt;&gt; 
+		
+		&lt;&lt;set $globalFluffies[_fl].sold = true&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].onDisplay = false&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].pregnant = false&gt;&gt;
+			
+		&lt;&lt;if $globalFluffies[_fl].nursing &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $globalFluffies[_fl].children&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
+					&lt;&lt;/if&gt;&gt; /* Close nursing check */
+			&lt;&lt;/for&gt;&gt; /* Close child check*/
+		&lt;&lt;/if&gt;&gt; /* Close Nursing check */
 
-&lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
-			&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer test post removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer test post removal:&quot; + $ourStore.fluffies)&gt;&gt;
-		&lt;&lt;/if&gt;&gt; /* Close needs check */
-	&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].nursing = 0&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_fl].foodType == &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].mother].nursing--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close nursing check */
+
+		&lt;&lt;if $globalFluffies[_fl].specialFriend != -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close special friend check */
+
+		&lt;&lt;if Number($globalFluffies[_fl].age) == 0 &amp;&amp; Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals--&gt;&gt;
+		&lt;&lt;elseif $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions--&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close age check */
+
+		&lt;&lt;set $reputation += _priceBonus&gt;&gt;
+
+		/* Random chance to &#39;upsell&#39;*/
+		&lt;&lt;set _chance = Number(($training + $reputation) / 4).toFixed(2)&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Upgraded check _chance = &quot; + _chance)&gt;&gt;
+		
+		&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; random(0, 80)&gt;&gt;
+			&lt;br&gt;You add some deluxe toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(15,20)))&gt;&gt;
+		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; random(0, 90)&gt;&gt;
+			&lt;br&gt;You add some fancy toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(10,15)))&gt;&gt;
+		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; random(0, 94)&gt;&gt;
+			&lt;br&gt;You add some basic toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+
+		&lt;&lt;set _price = Number(_price).toFixed(2)&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 5: fl= &quot; + _fl)&gt;&gt;	
+		&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
+			_msgString
+			&lt;br&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
+		&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;timed 5ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
+		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer test post removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer test post removal:&quot; + $ourStore.fluffies.length)&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close needs check */
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -6149,7 +6170,7 @@ button {
 			&lt;&lt;for _fList.length &gt; 0&gt;&gt;
 				&lt;&lt;set _fl = _fList.pluck()&gt;&gt;
 				
-				&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 0.&quot; + $globalFluffies[_fl].onDisplay)&gt;&gt;
+				&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 0: fl= &quot; + _fl + &quot;. displayFlag =&quot; + $globalFluffies[_fl].onDisplay)&gt;&gt;
 				
 				&lt;&lt;if $globalFluffies[_fl].onDisplay == true&gt;&gt;
 					
@@ -9175,7 +9196,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *********** */
 &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css&quot;&gt;
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.14.162-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.14.163-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 &lt;style&gt;
@@ -9426,7 +9447,7 @@ a text-based fluffy management game
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.14.162-beta&quot;, $releaseID = $COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.14.163-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -9466,7 +9487,7 @@ a text-based fluffy management game
 &lt;&lt;set $training = 0&gt;&gt;
 &lt;&lt;set $hugbox = 0&gt;&gt;
 &lt;&lt;set $abuse = 0&gt;&gt;
-&lt;&lt;set $repuation = 0&gt;&gt;
+&lt;&lt;set $reputation = 0&gt;&gt;
 &lt;&lt;set $title = &quot;Ownah&quot;&gt;&gt;
 &lt;&lt;set $titleList = [&quot;Ownah&quot;, &quot;Mistah&quot;, &quot;Wady&quot;, &quot;Daddeh&quot;, &quot;Hoomin&quot;, &quot;Mummah&quot; ]&gt;&gt;
 
@@ -9811,9 +9832,9 @@ profitsTotal: 0
 	&lt;br&gt;Welcome to fluffy mart, do you see anything you like?
 &lt;&lt;elseif $shop == &quot;mill&quot;&gt;&gt;
 	&lt;br&gt;The mill operator hands you a carboard box.
-&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $repuation &gt;= 50&gt;&gt;
+&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $reputation &gt;= 50&gt;&gt;
 	&lt;br&gt;The breeder has an opening to see you...
-&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $repuation &lt; 50&gt;&gt;
+&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 50&gt;&gt;
 	&lt;br&gt;You&#39;re reputation is to low, the breeder doesn&#39;t want to sell to you.
 &lt;&lt;elseif $shop == &quot;feral&quot;&gt;&gt;
 	&lt;br&gt;You check down a nearby alley...
@@ -9832,7 +9853,7 @@ profitsTotal: 0
 /* ***
  *	need to add a repulation check for breeders.
  *** */
-&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $repuation &lt; 50&gt;&gt;
+&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 50&gt;&gt;
 	&lt;br&gt;
 &lt;&lt;else&gt;&gt;
 	/* ***
@@ -13644,47 +13665,47 @@ Inbreeding:
 		@@color:rgb(255,0,0);■■■■■■■■■■@@
 	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;@@.lightcoral; Rep@@ | 
-	&lt;&lt;set $repuation = Math.clamp(Math.trunc($repuation), 0, 1000)&gt;&gt;
-	&lt;&lt;if $repuation &gt; 900&gt;&gt;
+	&lt;&lt;set $reputation = Math.clamp(Math.trunc($reputation), 0, 1000)&gt;&gt;
+	&lt;&lt;if $reputation &gt; 900&gt;&gt;
 		@@color:rgb(0,145,0);prestigious@@
-	&lt;&lt;elseif $repuation &gt; 800&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 800&gt;&gt;
 		@@color:rgb(0,150,0);renowned@@
-	&lt;&lt;elseif $repuation &gt; 700&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 700&gt;&gt;
 		@@color:rgb(0,155,0);famed@@
-	&lt;&lt;elseif $repuation &gt; 600&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 600&gt;&gt;
 		@@color:rgb(0,160,0);celebrated@@
-	&lt;&lt;elseif $repuation &gt; 500&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 500&gt;&gt;
 		@@color:rgb(0,165,0);honored@@
-	&lt;&lt;elseif $repuation &gt; 400&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 400&gt;&gt;
 		@@color:rgb(0,170,0);acclaimed@@
-	&lt;&lt;elseif $repuation &gt; 300&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 300&gt;&gt;
 		@@color:rgb(0,175,0);eminent@@
-	&lt;&lt;elseif $repuation &gt; 200&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 200&gt;&gt;
 		@@color:rgb(0,180,0);prominent@@
-	&lt;&lt;elseif $repuation &gt; 100&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 100&gt;&gt;
 		@@color:rgb(0,185,0);respected@@
-	&lt;&lt;elseif $repuation &gt; 90&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 90&gt;&gt;
 		@@color:rgb(0,190,0);recognized@@
-	&lt;&lt;elseif $repuation &gt; 80&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 80&gt;&gt;
 		@@color:rgb(0,195,0);known@@
-	&lt;&lt;elseif $repuation &gt; 70&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 70&gt;&gt;
 		@@color:rgb(0,200,0);rumored@@
-	&lt;&lt;elseif $repuation &gt; 60&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 60&gt;&gt;
 		@@color:rgb(0,205,0);envied@@
-	&lt;&lt;elseif $repuation &gt; 50&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 50&gt;&gt;
 		@@color:rgb(0,210,0);minor@@
-	&lt;&lt;elseif $repuation &gt; 40&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 40&gt;&gt;
 		@@color:rgb(0,215,0);obscure@@
-	&lt;&lt;elseif $repuation &gt; 30&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 30&gt;&gt;
 		@@color:rgb(0,220,0);reprobate@@
-	&lt;&lt;elseif $repuation &gt; 20&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 20&gt;&gt;
 		@@color:rgb(0,225,0);resented@@
-	&lt;&lt;elseif $repuation &gt; 10&gt;&gt;
+	&lt;&lt;elseif $reputation &gt; 10&gt;&gt;
 		@@color:rgb(0,230,0);disliked@@
 	&lt;&lt;else&gt;&gt;
 		@@color:rgb(0,240,0);unknown@@
 	&lt;&lt;/if&gt;&gt;
-($repuation)
+($reputation)
 
 	&lt;&lt;set $training = Math.clamp(Math.trunc($training), 0, 200)&gt;&gt;
 	&lt;&lt;set $hugbox = Math.clamp(Math.trunc($hugbox), 0, 200)&gt;&gt;
@@ -13699,7 +13720,7 @@ Inbreeding:
 	&lt;div class=&quot;w3-modal-content&quot;&gt;
 		&lt;header class=&quot;w3-container w3-teal&quot;&gt; 
 			&lt;span onclick=&quot;document.getElementById(&#39;id01&#39;).style.display=&#39;none&#39;&quot; class=&quot;w3-button w3-display-topright&quot;&gt;&amp;times;&lt;/span&gt;
-			&lt;h1&gt;Options&lt;/h1&gt;
+			&lt;h1&gt;Options&lt;/h&gt;
 		&lt;/header&gt;
 		&lt;div class=&quot;w3-container w3-dark-grey&quot;&gt;
 			&lt;p&gt;Placholder..&lt;/p&gt;
