@@ -11,6 +11,14 @@
  *	TODO: ALPHA:  several items
  *
  *********** */
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<<unset $releaseID>>
+<<set $ver = "1.14.162-beta", $releaseID = $COMMIT>>
+<<if ndef $releaseID>><<set $releaseID = 1>><</if>>
+
+<style>
+
+</style>
 
 /* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves here nicer named. */
 @@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
@@ -23,22 +31,67 @@
 <<set $nextButton = "END WEEK", $nextLink = "End Week", $showEncyclopedia = 1, $encyclopedia = "Running your Store">>
 
 
-<div class="w3-row w3-container w3-mobile">
+<div class="w3-mobile">
+
+	<div class="w3-top w3-col l11 s11">
+		<div id="navbar" class="w3-bar w3-dark-grey">
+			<div class="w3-dropdown-hover">
+			  	@@#sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+				@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+				@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
+					<<set $listType = "All", $encyclopedia = "Fluffy List">>
+				<</button>>@@
+			</div>
+			
+			<div class="w3-dropdown-hover">
+				<button class="w3-button w3-hover-cyan w3-dark-grey">Get Fluffies <i class="fa fa-caret-down"></i></button>     
+				<div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+				  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
+				  		<<set $shop = "mart">>
+				  	<</button>>@@
+				  	@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
+				  		<<set $shop = "mill">>
+				  	<</button>>@@
+				  	@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
+				  		<<set $shop = "breeder">>
+				  	<</button>>@@
+				  	@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
+				  		<<set $shop = "feral">>
+				  	<</button>>@@
+				</div>
+			</div>
+
+			<div class="w3-dropdown-hover w3-right">
+				<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i></button>
+			</div>
+
+			<div id="id01" class="w3-modal">
+				<<OptionsWidget>>
+			</div>
+		</div>
+	</div>  
+
+	<<timed 5ms>>
+	<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+	<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<</timed>>
+
 Open for business for the week
 	
-<br><br>
- 		<<PlayerStatus>>
-<br><br>
-		<<SidebarCash>>
-		<<SidebarStore>>
-<br><br>
-		[[Improve the Store|Buy Upgrades]]
-<br><br>
-		<span id="fluffy-count"><<SidebarFluffies>></span>
-		<br>[[Check the Fluffies|Fluffy List][$listType = "All", $encyclopedia = "Fluffy List"]] | [[Check displays|Fluffy List][$listType = "Display", $encyclopedia = "Fluffy List"]]
-<br><br>
-	
-	<br>[[Visit Fluffy Mart|Buy Fluffies][$shop = "mart"]] | [[Visit a Fluffy Mill|Buy Fluffies][$shop = "mill"]] | [[Visit a Fluffy Breeder|Buy Fluffies][$shop = "breeder"]] | [[Hunt Ferals|Buy Fluffies][$shop = "feral"]]
-		
+<br>
+<br><<PlayerStatus>>
+<br>
+<br><<SidebarCash>>
+<br><<SidebarStore>>
+<br>
+<br><span id="fluffy-count"><<SidebarFluffies>></span>
+<br>
 </div>
-<br><<SidebarButton>>
+
+

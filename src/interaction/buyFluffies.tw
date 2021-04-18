@@ -9,7 +9,14 @@
  * Buys fluffies at a fluffy mart.
  *
  *********** */
-<div class="w3-row w3-container w3-mobile">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<<baseSprit>>
+<<eyeSprite>>
+<<eyeMask>>
+<<maneSprite>>
+<<outlineSprite>>
+
 
 <<set $nextButton to "End Shopping", $nextLink to "Week Start">>
 
@@ -25,7 +32,84 @@
 
 <<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
 
-<<PlayerStatus>><br>
+<div class="w3-row w3-container w3-mobile">
+	<div class="w3-top w3-col l11 s11">
+		<div id="navbar" class="w3-bar w3-dark-grey">
+			<div class="w3-dropdown-hover">
+			  	@@#sortbutton;<<button "Back">>
+			  		<<set $actions-->>
+			  		<<goto $nextLink>>
+			  	<</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+			  	@@#shopbutton;<<button [[Keep Looking|Buy Fluffies]] >>
+			  		<<set $actions-->>
+			  	<</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+			  	@@#buybutton;<<button [[Take this Fluffy|Buy Fluffies]]>>
+					<<set $cash-= _price>>
+					<<set $actions-->>
+											
+					/* Add to the global list and store list*/
+					<<set $activeFluffy.ID = $globalFluffies.length>>
+					<<set $activeFluffy.name += " " + $globalFluffies.length>>
+					<<run $globalFluffies.push($activeFluffy)>>
+					<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+		
+					<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
+						<<set $ourStore.foals++>>
+					<<elseif $activeFluffy.gender == "male">>
+						<<set $ourStore.stallions++>>
+					<<else>>
+						<<set $ourStore.mares++>>
+					<</if>>
+					
+					<<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
+			  	<</button>>@@
+			</div>
+			
+			<div class="w3-dropdown-hover w3-right">
+				<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i></button>
+			</div>
+
+			<div id="id01" class="w3-modal">
+				<<OptionsWidget>>
+			</div>
+		</div>
+	</div>  
+
+	<<timed 5ms>>
+	<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+	<<run $("#shopbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<<run $("#buybutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<</timed>>
+	
+	<<timed 10ms>>
+		<<if $actions < 1>>
+			<<run $("#shopbutton button").addClass("w3-disabled")>>
+			<br>//You are too tired for more shopping//.
+			<br>
+		<</if>>
+		
+		<<if Number(_price) >  Number($cash) && Number(_price) != 0>>
+			<<run $("#buybutton button").addClass("w3-disabled")>>
+			<br>//You lack the necessary funds to buy this fluffy//.
+			<br>
+		<</if>>
+		<<if _count > $ourStore.shelter>>
+			<<run $("#buybutton button").addClass("w3-disabled")>>
+			<br>//You don't have enough room to take this fluffy//.			 
+			<br>
+		<</if>>
+	<</timed>>
+
+
+
+<br><<PlayerStatus>>
+<hr>
 
 <<if $shop == "mart">>
 	<br>Welcome to fluffy mart, do you see anything you like?
@@ -217,7 +301,20 @@
 	<<statValue>>
 	
 /*		<<set _shopFluffy = clone($activeFluffy)>>*/
-	<<FluffyDesc>>
+	/*<<FluffyDesc>>*/
+	
+	<div class="w3-container w3-card w3-dark-grey w3-small w3-margin-top">
+		<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
+			<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
+			<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.eColor.toLowerCase() + 'filter' + '">'>>
+			<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+			<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
+			<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+		</div>
+		<div class="w3-col m8 l9" style="white-space: nowrap">
+			<p class="hang"><<shortDesc $activeFluffy>></p>
+		</div>
+	</div>
 
 	<<set _price = 0>>
 		
@@ -266,43 +363,5 @@
 		@@.green;¤_price.@@
 		<hr>
 	<</if>>
-	
-	
-	<<if $actions < 1>>
-		//You are too tired for more shopping// | 
-	<<else>>
-		[[Keep Looking|Buy Fluffies][$actions--]]  |
-	<</if>> 
-	<<if $actions < 1>>
-		//You are too tired for more shopping// | 
-	<<elseif Number($cash) >= Number(_price)  || Number(_price) == 0>>
-		<<link "Add to the cart" "Buy Fluffies">>
-			<<set $cash-= _price>>
-			<<set $actions-->>
-			
-			
-			/* Add to the global list and store list*/
-			<<set $activeFluffy.ID = $globalFluffies.length>>
-			<<set $activeFluffy.name += " " + $globalFluffies.length>>
-			<<run $globalFluffies.push($activeFluffy)>>
-			<<run $ourStore.fluffies.push($activeFluffy.ID)>>
-
-			<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
-				<<set $ourStore.foals++>>
-			<<elseif $activeFluffy.gender == "male">>
-				<<set $ourStore.stallions++>>
-			<<else>>
-				<<set $ourStore.mares++>>
-			<</if>>
-			
-			<<replace "#fluffy-count">><<SidebarFluffies>><</replace>>
-		<</link>> | 
-	<<elseif _count > $ourStore.shelter>>
-		//You don't have enough room to take this fluffy// | 
-	<<else>>
-		//You lack the necessary funds to buy this fluffy// | 
-	<</if>>
 <</if>>
-[[End Shopping|Week Start][$actions--]]
-
 </div>
