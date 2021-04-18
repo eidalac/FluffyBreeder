@@ -9,6 +9,42 @@
  * Event a random customer looking for a fluffy
  *
  *********** */
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
+<<baseSprit>>
+<<eyeSprite>>
+<<eyeMask>>
+<<maneSprite>>
+<<outlineSprite>>
+
+<style>
+.w3-dropdown-content {min-width: 100px; width:140px;}
+.w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
+
+.header {
+  padding: 30px;
+  text-align: center;
+}
+
+.sticky {
+  position: fixed;
+  top: 0;
+  width: 100%;
+  z-index: 2;
+}
+
+.content {
+  padding: 16px;
+}
+
+.sticky + .content {
+  padding-top: 60px;
+}
+</style>
  
  
 <<run console.log("Customer test 2:  on event page")>>
@@ -120,36 +156,304 @@
 			<</switch>>
 	<</switch>>
 <</for>>
-
-<h1>Customer</h1>
-<br>A customer comes into <<- $ourStore.name>>. 
-<br>They are looking for 
-<<if _customerDetailedNeeds.length == 0>>
-	@@.coral; Any Fluffy.@@
-<<else>>
-	@@.coral; 
-	<<for _need range _customerDetailedNeeds>>
-		<<if _need == _customerDetailedNeeds.last()>>
-			<<- _need>>.
+<div class="w3-container w3-mobile">
+	<div class="header">
+		<h1>Customer</h1>
+		<br>A customer comes into <<- $ourStore.name>>. 
+		<br>They are looking for 
+		<<if _customerDetailedNeeds.length == 0>>
+			@@.coral; Any Fluffy.@@
 		<<else>>
-			<<- _need>>, 
-		<</if>> 
-	<</for>>
-	@@
-<</if>>
+			@@.coral; 
+			<<for _need range _customerDetailedNeeds>>
+				<<if _need == _customerDetailedNeeds.last()>>
+					<<- _need>>.
+				<<else>>
+					<<- _need>>, 
+				<</if>> 
+			<</for>>
+			@@
+		<</if>>
+	
+		<<run console.log("Customer needs test {" + _customerDetailedNeeds.length + " == " + _customerBasicNeeds.length + "}")>>
+		
+		<br>
+		<br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
+		<span id="result-msg"></span>
+	</div>
 
-<<run console.log("Customer needs test {" + _customerDetailedNeeds.length + " == " + _customerBasicNeeds.length + "}")>>
+	<div id="navbar" class="w3-bar w3-dark-grey">
+  
+		<div class="w3-dropdown-hover">
+			<button class="w3-button w3-hover-cyan w3-dark-grey">Show <i class="fa fa-caret-down"></i></button>     
+			<div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+			  	@@#sortbutton;<<button "All">><<set $listType = "All">>
+			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
+					<<run $("#sellbutton button").addClass("w3-show")>>
+					<<run $("#unsellbutton button").removeClass("w3-show")>>
+					<<run $("#unsellbutton button").addClass("w3-hide")>>
+			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			  	<</button>>@@
+			    @@#sortbutton;<<button "Only Babbies">><<set $listType = "Babbies">>
+			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
+					<<run $("#sellbutton button").addClass("w3-show")>>
+					<<run $("#unsellbutton button").removeClass("w3-show")>>
+					<<run $("#unsellbutton button").addClass("w3-hide")>>
+			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			  	<</button>>@@
+			    @@#sortbutton;<<button "Only Foals">><<set $listType = "Foals">>
+			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
+					<<run $("#sellbutton button").addClass("w3-show")>>
+					<<run $("#unsellbutton button").removeClass("w3-show")>>
+					<<run $("#unsellbutton button").addClass("w3-hide")>>
+			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			  	<</button>>@@
+			    @@#sortbutton;<<button "Only Stallions">><<set $listType = "Stallions">>
+			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
+					<<run $("#sellbutton button").addClass("w3-show")>>
+					<<run $("#unsellbutton button").removeClass("w3-show")>>
+					<<run $("#unsellbutton button").addClass("w3-hide")>>
+			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			  	<</button>>@@
+			    @@#sortbutton;<<button "Only Mares">><<set $listType = "Mares">><<replace "#fluffy-list">><<FluffyList>><</replace>><</button>>@@
+			    @@#sortbutton;<<button "Only Display">><<set $listType = "Display">>
+			    	<<run $("#sellbutton button").removeClass("w3-show")>>
+					<<run $("#sellbutton button").addClass("w3-hide")>>
+					<<run $("#unsellbutton button").removeClass("w3-hide")>>
+					<<run $("#unsellbutton button").addClass("w3-show")>>
+			    	<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			    <</button>>@@
+			</div>
+		</div>
+		
+        <div class="w3-dropdown-hover">
+            <button class="w3-button w3-hover-cyan w3-dark-grey">Sort <i class="fa fa-caret-down"></i></button>     
+            <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+                <div class="w3-dropdown-hover">
+                    <button class="w3-button w3-hover-cyan w3-grey">Breed <i class="fa fa-caret-right"></i></button>     
+                    <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+				      	@@#sortbutton;<<button "Descending ▼">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed < $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed > $globalFluffies[b].breed) ? -1 : 0;}) >>
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+				      	@@#sortbutton;<<button "Ascending ▲">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed < $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed > $globalFluffies[a].breed) ? -1 : 0;}) >>
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+                    </div>
+				</div>
+				<div class="w3-dropdown-hover">
+                    <button class="w3-button w3-hover-cyan w3-grey">Age <i class="fa fa-caret-right"></i></button>
+                    <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+				      	@@#sortbutton;<<button "Descending ▼">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) >> 
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+				      	@@#sortbutton;<<button "Ascending ▲">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+                    </div>  
+				</div>
+				<div class="w3-dropdown-hover">
+                    <button class="w3-button w3-hover-cyan w3-grey">Gender <i class="fa fa-caret-right"></i></button>
+                    <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+				      	@@#sortbutton;<<button "Descending ▼">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender < $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender > $globalFluffies[b].gender) ? -1 : 0;}) >> 
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+				      	@@#sortbutton;<<button "Ascending ▲">>
+							<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender < $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender > $globalFluffies[a].gender) ? -1 : 0;}) >>
+							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<</button>>@@
+                    </div>
+             	</div>
+             	<div class="w3-dropdown-hover">
+		            <button class="w3-button w3-hover-cyan w3-grey">Stats <i class="fa fa-caret-right"></i></button>     
+		            <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity" >
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Strength <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Energy <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Charm <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
 
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Thinking <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Learning <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Fertility <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+					</div>
+				</div>
+				
+             	<div class="w3-dropdown-hover">
+		            <button class="w3-button w3-hover-cyan w3-grey">Attributes <i class="fa fa-caret-right"></i></button>     
+		            <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity" >
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Trust <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Training <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Temperament <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Happiness <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happiness - $globalFluffies[a].happiness);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happiness - $globalFluffies[b].happiness);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Stress <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+		                <div class="w3-dropdown-hover">
+		                    <button class="w3-button w3-hover-cyan w3-grey">Trauma <i class="fa fa-caret-right"></i></button>     
+			                <div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
+						     @@#sortbutton;<<button "Descending ▼">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) >> 
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							     	@@#sortbutton;<<button "Ascending ▲">>
+									<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) >>
+									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+								<</button>>@@
+							</div>
+						</div>
+					</div>
+				</div>
+				
+			</div>
+        </div>
+        
+    
+	</div>
+
+<span id="fluffy-list"></span>
+</div>
+
+<<timed 10ms>>
+<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+<hr>
 <br>
-<br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
-<span id="result-msg"></span>
-
-
-<span id="selling-list"></span>
-
-
-/* Display the initial list */
-<<timed 100ms>><<replace "#selling-list">><<SellingList>><</replace>><</timed>>
+/* Display the initial list*/
+<<timed 100ms>><<replace "#fluffy-list">><<FluffyList>><</replace>><</timed>>
 
 
 
@@ -159,138 +463,7 @@
 <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
 
-
- 
-<<widget "SellingList">>
-/*▲˄˅▼*/
-<br>
-<br>Sort by Breed 
-<<link "▼">>
-	/*<<run $tempList.sort(function(a,b){return (a.breed < b.breed) ? 1 : (a.breed > b.breed) ? -1 : 0;}) >>*/
-	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed < $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed > $globalFluffies[b].breed) ? -1 : 0;}) >>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
- / 
-<<link "▲">> 
-	/*<<run $tempList.sort(function(a,b){return (a.breed > b.breed) ? 1 : (a.breed < b.breed) ? -1 : 0;}) >>*/
-	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed < $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed > $globalFluffies[a].breed) ? -1 : 0;}) >>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
- | Sort by Age 
-<<link "▼">>
-	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
-	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) >>
-	<<replace "#selling-list">><<SellingList>><</replace>> 
-<</link>>
- / 
-<<link "▲">> 
-	/*<<run $tempList.sort(function(a,b){return (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52));}) >>*/
-	<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
- | Sort by Stats <<listbox "_statType" autoselect>>
-	<<option "Strength">>
-	<<option "Energy">>
-	<<option "Charm">>
-	<<option "Thinking">>
-	<<option "Learning">>
-	<<option "Fertility">>
-<</listbox>>
-
-
-<<link "▼">>
-	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
-	<<switch _statType>>
-		<<case "Strength">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) >>
-		<<case "Energy">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) >>	
-		<<case "Charm">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) >>
-		<<case "Thinking">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) >>
-		<<case "Learning">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) >>
-		<<default>>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertiity - $globalFluffies[a].fertiity);}) >>
-	<</switch>>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
- / 
-<<link "▲">> 
-	<<switch _statType>>
-		<<case "Strength">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) >>
-		<<case "Energy">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) >>	
-		<<case "Charm">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) >>
-		<<case "Thinking">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) >>
-		<<case "Learning">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) >>
-		<<default>>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertiity - $globalFluffies[b].fertiity);}) >>
-	<</switch>>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
-| Sort by Attribute <<listbox "_attType" autoselect>>
-	<<option "Trust">>
-	<<option "Training">>
-	<<option "Temperament">>
-	<<option "Happiness">>
-	<<option "Stress">>
-	<<option "Trauma">>
-<</listbox>>
-
-
-<<link "▼">>
-	/*<<run $tempList.sort(function(a,b){return (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52));}) >>*/
-	<<switch _attType>>
-		<<case "Trust">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) >>
-		<<case "Training">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) >>	
-		<<case "Temperament">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) >>
-		<<case "Happiness">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happiness - $globalFluffies[a].happiness);}) >>
-		<<case "Stress">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) >>
-		<<default>>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) >>
-	<</switch>>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
- / 
-<<link "▲">> 
-	<<switch _attType>>
-		<<case "Trust">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) >>
-		<<case "Training">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) >>	
-		<<case "Temperament">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) >>
-		<<case "Happiness">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happiness - $globalFluffies[b].happiness);}) >>
-		<<case "Stress">>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) >>
-		<<default>>
-			<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) >>
-	<</switch>>
-	<<replace "#selling-list">><<SellingList>><</replace>>
-<</link>>
-<br>
-
-<hr>
-
-<<capture _fl>>
-	<<if _customerTolerance >= 0>>
-		<<for _fl range $ourStore.fluffies>>
-			<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
-			
-			<p class="hang">
-			<<button _buttonString>>
+<<widget "OfferFluffy">>
 				<<set _needsMatch = 0>>
 				<<for _i = 0; _i < _customerBasicNeeds.length; _i++>>
 					<<run console.log("Customer Test: _customerBasicNeeds[_i] = " + _customerBasicNeeds[_i])>>
@@ -574,7 +747,8 @@
 								<br>@@.orange;They are not at all pleased with <<- $globalFluffies[_fl].name>>.@@
 							<<else>>
 								<br>@@.orange;This customer is fed up.@@
-								<<replace "#selling-list">><</replace>>
+								<<replace "#fluffy-list">><</replace>>
+								<<replace "#navbar">><</replace>>
 							<</if>>
 					<<else>> 
 					
@@ -619,15 +793,6 @@
 							<<set $ourStore.mares-->>
 						<</if>> /* Close age check */
 		
-						/*
-						<<if _customerDetailedNeeds.length == 0>>
-							<<set $repuation += random(0,1)>>
-						<<elseif Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) >= 66>>
-							<<set $repuation += 2>>
-						<<elseif Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) >= 33>>
-							<<set $repuation += 1>>
-						<</if>>
-						*/
 						<<set $repuation += _priceBonus>>
 
 						/* Random chance to 'upsell'*/
@@ -649,7 +814,8 @@
 							<<set _price = Number(Number(_price) + Number(random(5,10)))>>
 						<</if>>
 
-						<<replace "#selling-list">>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>>
+						<<replace "#navbar">><</replace>>
+						<<replace "#fluffy-list">>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New repuation <<- $repuation>>. <</replace>>
 
 <<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						
 						<<run $ourStore.fluffies.delete(_fl)>>
@@ -657,12 +823,95 @@
 <<run console.log("Customer test post removal:" + $ourStore.fluffies)>>
 					<</if>> /* Close needs check */
 				<</replace>>
-			<</button>>
-			<br>
-			<<shortDesc $globalFluffies[_fl]>>
-			</p>
-			<hr>
-		<</for>>
-	<</if>> /* Close tolerance check */
-<</capture>>
+<</widget>>
+ 
+<<widget "FluffyList">>
+	<<for _fl range $ourStore.fluffies>>
+		<<set _listFluff = $globalFluffies[_fl]>>
+		
+		/* Double check we are removing sold fluffies: */
+		<<if $globalFluffies[_fl].sold == true>>
+			<<run $ourStore.fluffies.delete(_fl)>>
+			<<continue>>
+		<</if>>
+		
+		/* Double check we are removing dead fluffies: */
+		<<if $globalFluffies[_fl].dead == true>>
+			<<run $ourStore.fluffies.delete(_fl)>>
+			<<continue>>
+		<</if>>
+	
+		/* < 1 year old */
+		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
+			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
+		<<elseif _listFluff.gender == "male">>
+			<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
+		<<else>>
+			<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
+		<</if>>
+	
+		<<if _listFluff.onDisplay == true && $listType != "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
+			<<continue>>
+		<<elseif _listFluff.onDisplay == false && $listType == "Display">>
+			<<set $globalFluffies[_fl].isChecked = false>>
+			<<continue>>
+		<<else>>
+	
+		/* Clamp values: */
+		<<set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)>>
+		<<set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)>>
+		<<set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)>>
+		<<set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)>>
+		<<set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)>>
+		<<set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)>>
+	
+		/* Clamp these to 0-200 */
+		<<set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)>>
+		<<set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)>>
+		<<set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)>>
+		<<set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)>>
+		<<set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)>>
+		<<set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)>>
+	
+		<<capture _fl, _listFluff>>
+		
+		<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+
+	
+		<div class="w3-container w3-card w3-dark-grey w3-small w3-margin-top">
+			<div class="w3-col m4 l3" style="height: 16px; z-index: 2">
+				_listFluff.name
+			</div>
+			<div class="w3-col m8 l9">
+				<<button _buttonString>>
+					<<OfferFluffy>>
+				<</button>>
+			</div>
+			<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
+				<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.cColor.toLowerCase() + 'filter' + '">'>>
+				<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.eColor.toLowerCase() + 'filter' + '">'>>
+				<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+				<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.mColor.toLowerCase() + 'filter' + '">'>>
+				<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+			</div>
+			<div class="w3-col m8 l9" style="white-space: nowrap">
+				<p class="hang"><<shortDesc _listFluff>></p>
+			</div>
+				
+		</div>
+	
+
+		<</capture>>
+	<</if>>
+<</for>>
 <</widget>>

@@ -596,8 +596,10 @@
 	<</if>>
 	
 	<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
-	
-	<<if $globalFluffies[_ID].gender == "male">>
+
+	<<if Number($globalFluffies[_ID].age) == 0 && Number($globalFluffies[_ID].ageWeeks) <= $globalFluffies[_ID].maturity>>
+		<<set $ourStore.foals-->>
+	<<elseif $globalFluffies[_ID].gender == "male">>
 		<<set $ourStore.stallions-->>
 	<<else>>
 		<<set $ourStore.mares-->>
