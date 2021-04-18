@@ -156,32 +156,8 @@
 			<</switch>>
 	<</switch>>
 <</for>>
-<div class="w3-container w3-mobile">
-	<div class="header">
-		<h1>Customer</h1>
-		<br>A customer comes into <<- $ourStore.name>>. 
-		<br>They are looking for 
-		<<if _customerDetailedNeeds.length == 0>>
-			@@.coral; Any Fluffy.@@
-		<<else>>
-			@@.coral; 
-			<<for _need range _customerDetailedNeeds>>
-				<<if _need == _customerDetailedNeeds.last()>>
-					<<- _need>>.
-				<<else>>
-					<<- _need>>, 
-				<</if>> 
-			<</for>>
-			@@
-		<</if>>
-	
-		<<run console.log("Customer needs test {" + _customerDetailedNeeds.length + " == " + _customerBasicNeeds.length + "}")>>
-		
-		<br>
-		<br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
-		<span id="result-msg"></span>
-	</div>
 
+<div class="w3-top">
 	<div id="navbar" class="w3-bar w3-dark-grey">
   
 		<div class="w3-dropdown-hover">
@@ -194,7 +170,7 @@
 					<<run $("#unsellbutton button").addClass("w3-hide")>>
 			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
 			  	<</button>>@@
-			    @@#sortbutton;<<button "Only Babbies">><<set $listType = "Babbies">>
+			    @@#sortbutton;<<button "Only Babies">><<set $listType = "Babies">>
 			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
 					<<run $("#sellbutton button").addClass("w3-show")>>
 					<<run $("#unsellbutton button").removeClass("w3-show")>>
@@ -439,10 +415,34 @@
 				
 			</div>
         </div>
-        
-    
 	</div>
+</div>
 
+<div class="w3-container w3-mobile">
+	<div class="header">
+		<h1>Customer</h1>
+		<br>A customer comes into <<- $ourStore.name>>. 
+		<br>They are looking for 
+		<<if _customerDetailedNeeds.length == 0>>
+			@@.coral; Any Fluffy.@@
+		<<else>>
+			@@.coral; 
+			<<for _need range _customerDetailedNeeds>>
+				<<if _need == _customerDetailedNeeds.last()>>
+					<<- _need>>.
+				<<else>>
+					<<- _need>>, 
+				<</if>> 
+			<</for>>
+			@@
+		<</if>>
+	
+		<<run console.log("Customer needs test {" + _customerDetailedNeeds.length + " == " + _customerBasicNeeds.length + "}")>>
+		
+		<br>
+		<br>if you meet all <<- _customerDetailedNeeds.length>> of these requests, you may get a <<- Number(1 + Number(_customerDetailedNeeds.length / 5))>>x price bonus.
+		<span id="result-msg"></span>
+	</div>			  	
 <span id="fluffy-list"></span>
 </div>
 
@@ -841,8 +841,15 @@
 			<<continue>>
 		<</if>>
 	
-		/* < 1 year old */
-		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
+		/* Unweaned babbies */
+		<<if $globalFluffies[_fl].weaned === false>>
+			<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
+	
+		/* immature */
+		<<elseif Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
 			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
 				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>

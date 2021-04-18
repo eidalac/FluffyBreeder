@@ -5480,32 +5480,8 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/for&gt;&gt;
-&lt;div class=&quot;w3-container w3-mobile&quot;&gt;
-	&lt;div class=&quot;header&quot;&gt;
-		&lt;h1&gt;Customer&lt;/h1&gt;
-		&lt;br&gt;A customer comes into &lt;&lt;- $ourStore.name&gt;&gt;. 
-		&lt;br&gt;They are looking for 
-		&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
-			@@.coral; Any Fluffy.@@
-		&lt;&lt;else&gt;&gt;
-			@@.coral; 
-			&lt;&lt;for _need range _customerDetailedNeeds&gt;&gt;
-				&lt;&lt;if _need == _customerDetailedNeeds.last()&gt;&gt;
-					&lt;&lt;- _need&gt;&gt;.
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;- _need&gt;&gt;, 
-				&lt;&lt;/if&gt;&gt; 
-			&lt;&lt;/for&gt;&gt;
-			@@
-		&lt;&lt;/if&gt;&gt;
-	
-		&lt;&lt;run console.log(&quot;Customer needs test {&quot; + _customerDetailedNeeds.length + &quot; == &quot; + _customerBasicNeeds.length + &quot;}&quot;)&gt;&gt;
-		
-		&lt;br&gt;
-		&lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
-		&lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
-	&lt;/div&gt;
 
+&lt;div class=&quot;w3-top&quot;&gt;
 	&lt;div id=&quot;navbar&quot; class=&quot;w3-bar w3-dark-grey&quot;&gt;
   
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -5518,7 +5494,7 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
 			  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			  	&lt;&lt;/button&gt;&gt;@@
-			    @@#sortbutton;&lt;&lt;button &quot;Only Babbies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babbies&quot;&gt;&gt;
+			    @@#sortbutton;&lt;&lt;button &quot;Only Babies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babies&quot;&gt;&gt;
 			  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
 					&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
 					&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
@@ -5763,10 +5739,34 @@ console.log("cleared defects parts = " + this.genes[index])
 				
 			&lt;/div&gt;
         &lt;/div&gt;
-        
-    
 	&lt;/div&gt;
+&lt;/div&gt;
 
+&lt;div class=&quot;w3-container w3-mobile&quot;&gt;
+	&lt;div class=&quot;header&quot;&gt;
+		&lt;h1&gt;Customer&lt;/h1&gt;
+		&lt;br&gt;A customer comes into &lt;&lt;- $ourStore.name&gt;&gt;. 
+		&lt;br&gt;They are looking for 
+		&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
+			@@.coral; Any Fluffy.@@
+		&lt;&lt;else&gt;&gt;
+			@@.coral; 
+			&lt;&lt;for _need range _customerDetailedNeeds&gt;&gt;
+				&lt;&lt;if _need == _customerDetailedNeeds.last()&gt;&gt;
+					&lt;&lt;- _need&gt;&gt;.
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;- _need&gt;&gt;, 
+				&lt;&lt;/if&gt;&gt; 
+			&lt;&lt;/for&gt;&gt;
+			@@
+		&lt;&lt;/if&gt;&gt;
+	
+		&lt;&lt;run console.log(&quot;Customer needs test {&quot; + _customerDetailedNeeds.length + &quot; == &quot; + _customerBasicNeeds.length + &quot;}&quot;)&gt;&gt;
+		
+		&lt;br&gt;
+		&lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
+		&lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
+	&lt;/div&gt;			  	
 &lt;span id=&quot;fluffy-list&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
 
@@ -6165,8 +6165,15 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	
-		/* &lt; 1 year old */
-		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
+		/* Unweaned babbies */
+		&lt;&lt;if $globalFluffies[_fl].weaned === false&gt;&gt;
+			&lt;&lt;if $listType != &quot;Babies&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+	
+		/* immature */
+		&lt;&lt;elseif Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
 			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
@@ -10837,11 +10844,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;outlineSprite&gt;&gt;
 
 &lt;style&gt;
-.w3-dropdown-content {min-width: 100px; width:140px;}
-.w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
+
 
 .header {
   padding: 30px;
@@ -10849,9 +10852,8 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 }
 
 .sticky {
-  position: fixed;
   top: 0;
-  width: 100%;
+  position: sticky;
   z-index: 2;
 }
 
@@ -10862,17 +10864,22 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 .sticky + .content {
   padding-top: 60px;
 }
+
+.w3-dropdown-content {min-width: 100px; width:140px;}
+.w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%;}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%;}
 &lt;/style&gt;
 
 
 
-&lt;div class=&quot;w3-container w3-mobile&quot;&gt;
-	&lt;div class=&quot;header&quot;&gt;
-		&lt;h1&gt;Store Fluffies&lt;/h1&gt;
-		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
-		&lt;span id=&quot;list-count&quot;&gt;&lt;/span&gt;
-	&lt;/div&gt;
+&lt;div class=&quot;w3-top&quot;&gt;
 	&lt;div id=&quot;navbar&quot; class=&quot;w3-bar w3-dark-grey&quot;&gt;
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+		  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;	&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+	
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			@@#selectbutton;&lt;&lt;button &quot;Check None&quot;&gt;&gt;
 				&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -10900,7 +10907,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 					&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
 			  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			  	&lt;&lt;/button&gt;&gt;@@
-			    @@#sortbutton;&lt;&lt;button &quot;Only Babbies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babbies&quot;&gt;&gt;
+			    @@#sortbutton;&lt;&lt;button &quot;Only Babies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babies&quot;&gt;&gt;
 			  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
 					&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
 					&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
@@ -11448,12 +11455,17 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
-		&lt;/div&gt;
-    
+		&lt;/div&gt;    
 	&lt;/div&gt;
+&lt;/div&gt;
 
-
-&lt;&lt;timed 10ms&gt;&gt;
+&lt;div class=&quot;w3-container w3-mobile&quot;&gt;
+	&lt;div class=&quot;header&quot;&gt;
+		&lt;h1&gt;Store Fluffies&lt;/h1&gt;
+		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
+		&lt;span id=&quot;list-count&quot;&gt;&lt;/span&gt;
+	&lt;/div&gt;
+&lt;&lt;timed 5ms&gt;&gt;
 &lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
 &lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
@@ -11484,9 +11496,16 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 			&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+		
+		/* Unweaned babbies */
+		&lt;&lt;if $globalFluffies[_fl].weaned === false&gt;&gt;
+			&lt;&lt;if $listType != &quot;Babies&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
+				&lt;&lt;continue&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 	
-		/* &lt; 1 year old */
-		&lt;&lt;if Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
+		/* immature */
+		&lt;&lt;elseif Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
 			&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
@@ -11571,7 +11590,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 
 /* Update the page count */
-&lt;&lt;timed 100ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
+&lt;&lt;timed 10ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 /*&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;br&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;br&gt;&lt;&lt;/replace&gt;&gt;*/
 &lt;&lt;/timed&gt;&gt;
 
@@ -11580,6 +11599,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;/div&gt;
 
 &lt;script&gt;
+/*
 window.onscroll = function() {myFunction()};
 
 var navbar = document.getElementById(&quot;navbar&quot;);
@@ -11592,6 +11612,7 @@ function myFunction() {
     navbar.classList.remove(&quot;sticky&quot;);
   }
 }
+*/
 &lt;/script&gt;
 
 &lt;br&gt;&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="Fluffy Selling" tags="nobr" position="975,350" size="100,100">/* **********
@@ -13397,7 +13418,6 @@ Inbreeding:
 
 
 &lt;&lt;widget &quot;SidebarButton&quot;&gt;&gt;
-&lt;br&gt;&lt;br&gt;
 	&lt;&lt;if $nextButton == &quot;END WEEK&quot;&gt;&gt;
 		&lt;span id=&quot;endWeekButton&quot;&gt;&lt;strong&gt;&lt;&lt;link $nextButton $nextLink&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;@@
 	&lt;&lt;else&gt;&gt;
@@ -13411,7 +13431,6 @@ Inbreeding:
 			&lt;&lt;if $nextButton != &quot; &quot;&gt;&gt;@@.cyan;@@&lt;&lt;/if&gt;&gt;
 		&lt;/span&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;br&gt;
 &lt;&lt;/widget&gt;&gt;
 
 

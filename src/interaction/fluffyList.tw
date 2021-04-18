@@ -23,11 +23,7 @@
 <<outlineSprite>>
 
 <style>
-.w3-dropdown-content {min-width: 100px; width:140px;}
-.w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
-.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%}
+
 
 .header {
   padding: 30px;
@@ -35,9 +31,8 @@
 }
 
 .sticky {
-  position: fixed;
   top: 0;
-  width: 100%;
+  position: sticky;
   z-index: 2;
 }
 
@@ -48,17 +43,22 @@
 .sticky + .content {
   padding-top: 60px;
 }
+
+.w3-dropdown-content {min-width: 100px; width:140px;}
+.w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%;}
+.w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content {display:inline;right:-100%;}
 </style>
 
 
 
-<div class="w3-container w3-mobile">
-	<div class="header">
-		<h1>Store Fluffies</h1>
-		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
-		<span id="list-count"></span>
-	</div>
+<div class="w3-top">
 	<div id="navbar" class="w3-bar w3-dark-grey">
+		<div class="w3-dropdown-hover">
+		  	@@#sortbutton;<<button "Back">><<goto $nextLink>>	<</button>>@@
+		</div>
+	
 		<div class="w3-dropdown-hover">
 			@@#selectbutton;<<button "Check None">>
 				<<for _bf range $ourStore.fluffies>>
@@ -86,7 +86,7 @@
 					<<run $("#unsellbutton button").addClass("w3-hide")>>
 			  		<<replace "#fluffy-list">><<FluffyList>><</replace>>
 			  	<</button>>@@
-			    @@#sortbutton;<<button "Only Babbies">><<set $listType = "Babbies">>
+			    @@#sortbutton;<<button "Only Babies">><<set $listType = "Babies">>
 			  		<<run $("#sellbutton button").removeClass("w3-hide")>>
 					<<run $("#sellbutton button").addClass("w3-show")>>
 					<<run $("#unsellbutton button").removeClass("w3-show")>>
@@ -634,12 +634,17 @@
 					</div>
 				</div>
 			</div>
-		</div>
-    
+		</div>    
 	</div>
+</div>
 
-
-<<timed 10ms>>
+<div class="w3-container w3-mobile">
+	<div class="header">
+		<h1>Store Fluffies</h1>
+		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */
+		<span id="list-count"></span>
+	</div>
+<<timed 5ms>>
 <<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
 <<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
 <<run $("#sellbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
@@ -670,9 +675,16 @@
 			<<run $ourStore.fluffies.delete(_fl)>>
 			<<continue>>
 		<</if>>
+		
+		/* Unweaned babbies */
+		<<if $globalFluffies[_fl].weaned === false>>
+			<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
 	
-		/* < 1 year old */
-		<<if Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
+		/* immature */
+		<<elseif Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
 			<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
 				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
@@ -757,7 +769,7 @@
 
 
 /* Update the page count */
-<<timed 100ms>><<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+<<timed 10ms>><<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 /*<<replace "#fluffy-count">><br><<SidebarFluffies>><br><</replace>>*/
 <</timed>>
 
@@ -766,6 +778,7 @@
 </div>
 
 <script>
+/*
 window.onscroll = function() {myFunction()};
 
 var navbar = document.getElementById("navbar");
@@ -778,6 +791,7 @@ function myFunction() {
     navbar.classList.remove("sticky");
   }
 }
+*/
 </script>
 
 <br><<SidebarButton>>
