@@ -15,12 +15,6 @@
 <<set $ui = "main">>
 <<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
 
-<<baseSprit>>
-<<eyeSprite>>
-<<eyeMask>>
-<<maneSprite>>
-<<outlineSprite>>
-
 
 <div class="w3-mobile">
 
@@ -642,6 +636,7 @@
 	</div>
 </div>
 
+
 <<widget "FluffyList">>
 	<<for _fl range $ourStore.fluffies>>
 		<<set _listFluff = $globalFluffies[_fl]>>
@@ -731,11 +726,21 @@
 				<</switch>>
 			</div>
 			<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
-				<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.cColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.eColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
-				<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.mColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+				<<set $activeFluffy = _listFluff>>
+
+				<<switch _listFluff.breed>>
+				<<case "earthy" "Earthy">>
+					<<fluffyImage "earthie">>
+
+				<<case "unicorn" "Unicorn">>
+					<<fluffyImage "unicorn">>
+					
+				<<case "pegasus" "Pegasus">>
+					<<fluffyImage "pegasus">>
+
+				<<default>>
+					<<fluffyImage "alicorn">>		
+				<</switch>>
 			</div>
 			<div class="w3-col m8 l9" style="white-space: nowrap">
 				<p class="hang"><<shortDesc _listFluff>></p>

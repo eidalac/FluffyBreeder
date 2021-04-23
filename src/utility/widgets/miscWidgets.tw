@@ -280,16 +280,77 @@
 <</widget>>
 
 
+/*		 	
+			<<set _geneCheck = $ordinalString.match(/\D*[#]+/)>>
+			
+			<br>
+			<<- $ordinalString.match(/\D*[#]+/)>>
+			
+			<<set $ordinalString = "numba #">>
+			<<- $ordinalString.match(/\D*[#]+/)>>
+			
+			<<set $ordinalString = "#">>
+			<<- $ordinalString.match(/\D*[#]+/)>>
+			
+			<<set $ordinalString = "27">>
+			<<- $ordinalString.match(/\D*[#]+/)>>
+*/
 
 <<widget "OptionsWidget">>
 	<div class="w3-modal-content">
 		<header class="w3-container w3-teal"> 
 			<span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
-			<h1>Options</h1>
+			<h1>Settings</h1>
 		</header>
 		<div class="w3-container w3-dark-grey">
-			<p>Placholder..</p>
-        	<p>WIP..</p>
+			<<if ndef $nameType>><<set $nameType = "ordinal">><</if>>
+
+			<<run console.log("Options test 0 : " + $ordinalString)>>	
+			
+			<<if ndef $ordinalString>><<set $ordinalString = "This fluffy">><</if>>
+			
+			<<run console.log("Options test 1 : " + $ordinalString)>>
+			
+			<br>
+			<div class="w3-container w3-padding">
+				<h2>Auto Naming</h2>
+				<div class="w3-container w3-padding">
+	
+				<label><<radiobutton "$nameType" "ordinal" autocheck>> Ordinal</label>
+				<<textbox "_tempString" $ordinalString>>
+				<<button "Confirm">>
+					<<set _tempString to _tempString.trim()>>
+
+					<<if _tempString is "">>
+						<<replace "#textbox-error">>Please enter a string.<</replace>>
+					<<elseif _tempString.length > 20>>
+						<<replace "#textbox-error">>Text can be no more than 20 characters long.<</replace>>
+					<<elseif _tempString.match(/[^0-9]{1,20}/) == null>>
+						<<replace "#textbox-error">>Names must have only letters and characters.<</replace>>
+					<<else>>
+						<<set $ordinalString = _tempString>>
+						<<replace "#textbox-error">>Ok, oridnal name set to "<<- $ordinalString>> #".<</replace>>
+<<run console.log("Options test 2 : " + $ordinalString)>>
+					<</if>>
+				<</button>>
+				<span id="textbox-error"></span>
+<<run console.log("Options test 3 : " + $ordinalString)>>
+				<br>
+				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ Namelist</label>
+
+	        	</div>
+	        	
+	        	<label><<checkbox "$inlineSprites" false true autocheck>>In-line Sprites.  Uncheck to use 'art\sprites3' folder</label>
+        	</div>
+
+<<run console.log("Options test 4 : " + $ordinalString)>>		
+				<p>Placholder..</p>
+	        	<p>WIP..</p>
+        	
+			<<timed 5ms>>
+				<<run $("#radiobutton-nametype-1").prop( "disabled", true )>>
+			<</timed>>
+<<run console.log("Options test 5 : " + $ordinalString)>>
         </div>
         <footer class="w3-container w3-teal">
         	<p>Modal Footer</p>

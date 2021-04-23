@@ -11,12 +11,6 @@
  *********** */
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
-<<baseSprit>>
-<<eyeSprite>>
-<<eyeMask>>
-<<maneSprite>>
-<<outlineSprite>>
-
 
 <<set $nextButton to "End Shopping", $nextLink to "Week Start">>
 
@@ -55,7 +49,10 @@
 											
 					/* Add to the global list and store list*/
 					<<set $activeFluffy.ID = $globalFluffies.length>>
-					<<set $activeFluffy.name += " " + $globalFluffies.length>>
+					/*<<set $activeFluffy.name += " " + $globalFluffies.length>>*/
+					<<if $nameType === "ordinal">>
+						<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+					<</if>>
 					<<run $globalFluffies.push($activeFluffy)>>
 					<<run $ourStore.fluffies.push($activeFluffy.ID)>>
 		
@@ -90,6 +87,7 @@
 	<<timed 10ms>>
 		<<if $actions < 1>>
 			<<run $("#shopbutton button").addClass("w3-disabled")>>
+			<<run $("#buybutton button").addClass("w3-disabled")>>
 			<br>//You are too tired for more shopping//.
 			<br>
 		<</if>>
@@ -305,11 +303,19 @@
 	
 	<div class="w3-container w3-card w3-dark-grey w3-small w3-margin-top">
 		<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
-			<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
-			<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.eColor.toLowerCase() + 'filter' + '">'>>
-			<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
-			<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
-			<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+				<<switch $activeFluffy.breed>>
+				<<case "earthy" "Earthy">>
+					<<fluffyImage "earthie">>
+
+				<<case "unicorn" "Unicorn">>
+					<<fluffyImage "unicorn">>
+					
+				<<case "pegasus" "Pegasus">>
+					<<fluffyImage "pegasus">>
+
+				<<default>>
+					<<fluffyImage "alicorn">>		
+				<</switch>>
 		</div>
 		<div class="w3-col m8 l9" style="white-space: nowrap">
 			<p class="hang"><<shortDesc $activeFluffy>></p>

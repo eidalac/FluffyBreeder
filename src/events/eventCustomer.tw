@@ -17,12 +17,6 @@ button {
  }
 </style>
 
-<<baseSprit>>
-<<eyeSprite>>
-<<eyeMask>>
-<<maneSprite>>
-<<outlineSprite>>
- 
 <<run console.log("Customer test 2:  on event page")>>
 
 /* Each customer is 'generated' per fluffy on display.  Don't do anything with this, but in the future want to make the customer lean towards wanting traits thsi fluffy has */
@@ -941,11 +935,23 @@ button {
 				<</button>>
 			</div>
 			<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
-				<<= '<img src="' + $baseSprite  + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.cColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $eyeMask + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.eColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $eyeSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
-				<<= '<img src="' + $maneSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px" class="' + _listFluff.mColor.toLowerCase() + 'filter' + '">'>>
-				<<= '<img src="' + $outlineSprite + '" style="position: absolute; left: 0; top: 0; width: 160px; height: 160px">'>>
+			
+				<<set $activeFluffy = _listFluff>>
+
+				<<switch _listFluff.breed>>
+				<<case "earthy" "Earthy">>
+					<<fluffyImage "earthie">>
+
+				<<case "unicorn" "Unicorn">>
+					<<fluffyImage "unicorn">>
+					
+				<<case "pegasus" "Pegasus">>
+					<<fluffyImage "pegasus">>
+
+				<<default>>
+					<<fluffyImage "alicorn">>		
+				<</switch>>
+
 			</div>
 			<div class="w3-col m8 l9" style="white-space: nowrap">
 				<p class="hang"><<shortDesc _listFluff>></p>
