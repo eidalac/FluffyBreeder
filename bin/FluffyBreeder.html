@@ -9261,6 +9261,9 @@ Open for business for the week
 &lt;br&gt;
 &lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
 &lt;br&gt;
+
+&lt;&lt;link &quot;Saves&quot;&gt;&gt;&lt;&lt;script&gt;&gt;UI.saves()&lt;&lt;/script&gt;&gt;&lt;&lt;/link&gt;&gt;
+
 &lt;/div&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -11329,7 +11332,10 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;div class=&quot;w3-mobile&quot;&gt;
 
 	&lt;div class=&quot;w3-top w3-col l11 s11&quot;&gt;
-		&lt;div id=&quot;navbar&quot; class=&quot;w3-bar w3-dark-grey&quot;&gt;
+	/*	&lt;div id=&quot;navbar&quot; class=&quot;w3-bar w3-dark-grey&quot;&gt;*/
+&lt;div class=&quot;w3-sidebar w3-bar-block w3-collapse w3-card&quot; style=&quot;width:200px;&quot; id=&quot;mySidebar&quot;&gt;
+ &lt;button class=&quot;w3-bar-item w3-button w3-hide-large&quot;
+  onclick=&quot;w3_close()&quot;&gt;Close &amp;times;&lt;/button&gt;
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
@@ -11917,10 +11923,12 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 						&lt;/div&gt;
 					&lt;/div&gt;
 				&lt;/div&gt;
-			&lt;/div&gt;    
+			&lt;/div&gt;
+			@@#sortbutton;&lt;&lt;button &quot;save&quot;&gt;&gt;&lt;&lt;script&gt;&gt;UI.saves()&lt;&lt;/script&gt;&gt;&lt;&lt;/button&gt;&gt;@@    
 		&lt;/div&gt;
 	&lt;/div&gt;
-
+ &lt;button class=&quot;w3-button w3-teal w3-xlarge&quot; onclick=&quot;w3_open()&quot;&gt;&amp;#9776;&lt;/button&gt;
+  &lt;div class=&quot;w3-container&quot;&gt;
 	/*&lt;div class=&quot;w3-container w3-mobile&quot;&gt;*/
 	&lt;div class=&quot;w3-container w3-col l12 s12&quot;&gt;
 		&lt;&lt;timed 5ms&gt;&gt;
@@ -12068,7 +12076,18 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 /* Update the page count */
 &lt;&lt;timed 10ms&gt;&gt;&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 /*&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;br&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;br&gt;&lt;&lt;/replace&gt;&gt;*/
-&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
+&lt;&lt;/timed&gt;&gt;
+
+
+&lt;script&gt;
+function w3_open() {
+  document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
+}
+
+function w3_close() {
+  document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
+}
+&lt;/script&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -13096,7 +13115,19 @@ Inbreeding:
 		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 3&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
+ 	/* ***
+ 	 *  1. newborn 
+ 	 *	only coat visible
+ 	 *		&lt;&lt;if Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 0&gt;&gt;  
+ 	 *	2. chirpy babbeh (coat + eyes) week 1
+	 *		&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 1&gt;&gt;
+	 *	3. talky babbeh (coat, eyes, mane)
+	 *		&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) &gt; 1 &amp;&amp; $activeFluffy.weaned === false&gt;&gt;
+ 	 *** */
+	
+	
+
+&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
 &lt;br&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt; Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt; Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt; Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt; Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt; Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;
 &lt;br&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt; Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt; Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt; Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt; Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt; Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;
 &lt;br&gt;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall

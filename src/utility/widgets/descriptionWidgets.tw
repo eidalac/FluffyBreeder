@@ -238,7 +238,19 @@
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<</if>>
 
-<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 3>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
+ 	/* ***
+ 	 *  1. newborn 
+ 	 *	only coat visible
+ 	 *		<<if Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 0>>  
+ 	 *	2. chirpy babbeh (coat + eyes) week 1
+	 *		<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 1>>
+	 *	3. talky babbeh (coat, eyes, mane)
+	 *		<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) > 1 && $activeFluffy.weaned === false>>
+ 	 *** */
+	
+	
+
+<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
 <br>Strength <<displayStat _fluffy.strength>> Energy <<displayStat _fluffy.energy>> Charm <<displayStat _fluffy.charm>> Thinking <<displayStat _fluffy.thinking>> Learning <<displayStat _fluffy.learning>> Fertility <<displayStat _fluffy.fertility>>
 <br>Trust <<displayAttribute _fluffy.trust>> Training <<displayAttribute _fluffy.training>> Temperament <<displayAttribute _fluffy.temperament>> Happiness <<displayAttribute _fluffy.happy>> Stress <<displayAttribute _fluffy.stress>> Trauma <<displayAttribute _fluffy.trauma>>
 <br>_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
