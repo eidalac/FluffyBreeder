@@ -12,12 +12,13 @@
  *
  *********** */
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
-<<set $ver = "1.14.164-beta">>
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
 
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<style>
+<<set $ver = "1.16.195-beta">>
 
-</style>
 
 /* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves here nicer named. */
 @@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
@@ -30,70 +31,115 @@
 <<set $nextButton = "END WEEK", $nextLink = "End Week", $showEncyclopedia = 1, $encyclopedia = "Running your Store">>
 
 
-<div class="w3-mobile">
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
 
-	<div class="w3-top w3-col l11 s11">
-		<div id="navbar" class="w3-bar w3-dark-grey">
-			<div class="w3-dropdown-hover">
-			  	@@#sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
-			</div>
+	<<sidebarTop>>
 
-			<div class="w3-dropdown-hover">
-				@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
-			</div>
-
-			<div class="w3-dropdown-hover">
-				@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
-					<<set $listType = "All", $encyclopedia = "Fluffy List">>
-				<</button>>@@
-			</div>
-			
-			<div class="w3-dropdown-hover">
-				<button class="w3-button w3-hover-cyan w3-dark-grey">Get Fluffies <i class="fa fa-caret-down"></i></button>     
-				<div class="w3-dropdown-content w3-bar-block w3-card-2 w3-animate-opacity">
-				  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
-				  		<<set $shop = "mart">>
-				  	<</button>>@@
-				  	@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
-				  		<<set $shop = "mill">>
-				  	<</button>>@@
-				  	@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
-				  		<<set $shop = "breeder">>
-				  	<</button>>@@
-				  	@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
-				  		<<set $shop = "feral">>
-				  	<</button>>@@
-				</div>
-			</div>
-
-			<div class="w3-dropdown-hover w3-right">
-				<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i></button>
-			</div>
-
-			<div id="id01" class="w3-modal">
-				<<OptionsWidget>>
-			</div>
+	<div class="w3-teal" style="font-size:1vw;">
+		<div class="w3-dropdown-hover">
+			@@#sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
 		</div>
-	</div>  
-
-	<<timed 5ms>>
-	<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
-	<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
-	<</timed>>
-
-Open for business for the week
 	
-<br>
-<br><<PlayerStatus>>
-<br>
-<br><<SidebarCash>>
-<br><<SidebarStore>>
-<br>
-<br><span id="fluffy-count"><<SidebarFluffies>></span>
-<br>
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
+		</div>
 
-<<link "Saves">><<script>>UI.saves()<</script>><</link>>
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
+				<<set $listType = "All", $encyclopedia = "Fluffy List">>
+			<</button>>@@
+		</div>
 
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button "Check All">>
+				<<for _bf range $ourStore.fluffies>>
+					<<set $globalFluffies[_bf].isChecked = true>>
+				<</for>>
+				<<replace "#fluffy-list">><<FluffyList>><</replace>>
+			<</button>>@@ 
+		</div>
+
+		<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" onclick="showAccFunc()">Get Fluffies <i class="fa fa-caret-down"></i></button>
+		<div id="showAcc" class="w3-hide w3-grey w3-card">
+	  	
+			  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
+			  		<<set $shop = "mart">>
+			  	<</button>>@@
+			  	@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
+			  		<<set $shop = "mill">>
+			  	<</button>>@@
+			  	@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
+			  		<<set $shop = "breeder">>
+			  	<</button>>@@
+			  	@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
+			  		<<set $shop = "feral">>
+			  	<</button>>@@
+		</div>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card w3-theme">
+	<button id="openNav" class="w3-bar-item w3-button w3-xxxlarge w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item"><<- $ourStore.name>></h1>
+</header>
+
+<<timed 5ms>>
+<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main">
+
+	Open for business for the week
+		
+	<br>
+	<br><<PlayerStatus>>
+	<br>
+	<br><<SidebarCash>>
+	<br><<SidebarStore>>
+	<br>
+	<br><span id="fluffy-count"><<SidebarFluffies>></span>
+	<br>
 </div>
 
 
+
+<script>
+function openSidebar() {
+	document.getElementById("mySidebar").style.width = "20%";
+	document.getElementById("main").style.marginLeft = "25%";
+	document.getElementById("mySidebar").style.display = "block";
+	document.getElementById("openNav").style.display = 'none';
+	document.getElementById("navHead").style.marginLeft = "30%";
+}
+
+function closeSidebar() {
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("main").style.marginLeft = "0%";
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("openNav").style.display = "inline-block";
+	document.getElementById("navHead").style.marginLeft = "0%";
+}
+
+function showAccFunc() {
+  var x = document.getElementById("showAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+     x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+}
+
+function sortAccFunc() {
+  var x = document.getElementById("sortAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+     x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+}
+</script>

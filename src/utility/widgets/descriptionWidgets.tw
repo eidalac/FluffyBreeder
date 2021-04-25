@@ -30,6 +30,528 @@
 	<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@
 <</widget>>
 
+<style>
+button {
+  background: coral;
+ }
+</style>
+
+<<widget "OfferFluffy">>
+
+	<<set _fl = $args[0]>>
+
+	<<run console.log("Customer needs test Any fluffy test 3.0: fl= " + $args[0])>>
+	<<run console.log("Customer needs test Any fluffy test 3.1: fl= " + _fl)>>
+
+	<<set _needsMatch = 0>>
+
+	<<for _i = 0; _i < _customerBasicNeeds.length; _i++>>
+		<<run console.log("Customer Test: _customerBasicNeeds[_i] = " + _customerBasicNeeds[_i])>>
+		<<switch _customerBasicNeeds[_i]>>
+			<<case "Personality">>
+				<<if $globalFluffies[_fl].traits[0] == _customerDetailedNeeds[_i]>>
+					<<run console.log("Customer Test: Personality match")>>
+					<<set _needsMatch += 2>>
+				<</if>>
+			<<case "Gender">>
+				<<if $globalFluffies[_fl].gender == _customerDetailedNeeds[_i].toLowerCase()>>
+					<<run console.log("Customer Test: Gender match")>>
+					<<set _needsMatch += 2>>
+				<</if>>
+			<<case "Breed">>
+				<<if $globalFluffies[_fl].breed == _customerDetailedNeeds[_i].toLowerCase()>>
+					<<run console.log("Customer Test: Breed match")>>
+					<<set _needsMatch += 2>>
+				<<elseif _customerDetailedNeeds[_i] == "Earthy">>
+					<<run console.log("Customer Test: Breed half match E")>>
+					<<set _needsMatch += 1>>
+				<<elseif _customerDetailedNeeds[_i] == "Unicorn" && $globalFluffies[_fl].breed == "pegasus">>
+					<<run console.log("Customer Test: Breed half match U")>>
+					<<set _needsMatch += 1>>
+				<<elseif _customerDetailedNeeds[_i] == "Pegasus" && $globalFluffies[_fl].breed == "unicorn">>
+					<<run console.log("Customer Test: Breed half match P")>>
+					<<set _needsMatch += 1>>
+				<<else>>
+					<<run console.log("Customer Test: Breed no match")>>						
+					<<set _needsMatch += 0>>
+				<</if>>
+			<<case "Coat">>
+				<<run console.log("Customer Test: Coat match {" + $globalFluffies[_fl].colorGroup[0] + " v " + _customerDetailedNeeds[_i] + "} = " + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0]))>>
+				
+				<<if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0])>>
+					<<run console.log("Customer Test: Coat match")>>
+					<<set _needsMatch += 2>>
+				<<else>>
+					/* ***
+					 *	Complimentary pairs:
+					 *		Blue - Orange
+					 *		Red - Green
+					 *		Yellow - Purple
+					 *** */
+					 <<if $globalFluffies[_fl].colorGroup[0] == "Blue" && _customerDetailedNeeds[_i].includes("Orange")>>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[0] == "Orange" && _customerDetailedNeeds[_i].includes("Blue")>>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[0] == "Red" && _customerDetailedNeeds[_i].includes("Green")>>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[0] == "Green" && _customerDetailedNeeds[_i].includes("Red")>>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[0] == "Yellow" && _customerDetailedNeeds[_i].includes("Purple")>>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[0] == "Purple" && _customerDetailedNeeds[_i] == "Yellow">>
+					 	<<run console.log("Customer Test: Coat complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <</if>>
+				<</if>>
+			<<case "Mane">>
+				<<run console.log("Customer Test: Mane match {" + $globalFluffies[_fl].colorGroup[1] + " v " + _customerDetailedNeeds[_i] + "} = " + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[1]))>>
+				
+				<<if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0])>>
+					<<run console.log("Customer Test: Mane match")>>
+					<<set _needsMatch += 2>>
+				<<else>>
+					/* ***
+					 *	Complimentary pairs:
+					 *		Blue - Orange
+					 *		Red - Green
+					 *		Yellow - Purple
+					 *** */
+					 <<if $globalFluffies[_fl].colorGroup[1] == "Blue" && _customerDetailedNeeds[_i].includes("Orange")>>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[1] == "Orange" && _customerDetailedNeeds[_i].includes("Blue")>>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[1] == "Red" && _customerDetailedNeeds[_i].includes("Green")>>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[1] == "Green" && _customerDetailedNeeds[_i].includes("Red")>>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[1] == "Yellow" && _customerDetailedNeeds[_i].includes("Purple")>>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <<elseif $globalFluffies[_fl].colorGroup[1] == "Purple" && _customerDetailedNeeds[_i] == "Yellow">>
+					 	<<run console.log("Customer Test: Mane complemnt match")>>
+					 	<<set _needsMatch += 1>>
+					 <</if>>
+				<</if>>
+			<<case "Eyes">>
+				<<run console.log("Customer Test: Eyes match {" + $globalFluffies[_fl].colorGroup[2] + " v " + _customerDetailedNeeds[_i] + "} = " + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[2]))>>
+				
+				<<if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[2])>>
+					<<run console.log("Customer Test: Eyes match")>>
+					<<set _needsMatch += 1>>
+				<</if>>
+
+			<<case "Stat">>
+				<<if _customerDetailedNeeds.includes("Strength")>>
+					<<if $globalFluffies[_fl].strength > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].strength > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Strength check*/
+				
+				<<if _customerDetailedNeeds.includes("Energy")>>
+					<<if $globalFluffies[_fl].energy > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].energy > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Energy check*/
+
+				<<if _customerDetailedNeeds.includes("Charm")>>
+					<<if $globalFluffies[_fl].charm > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].charm > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Charm check*/
+				
+				<<if _customerDetailedNeeds.includes("Thinking")>>
+					<<if $globalFluffies[_fl].thinking > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].thinking > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Thinking check*/
+				
+				<<if _customerDetailedNeeds.includes("Learning")>>
+					<<if $globalFluffies[_fl].learning > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].learning > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Learning check*/
+
+				<<if _customerDetailedNeeds.includes("Fertility")>>
+					<<if $globalFluffies[_fl].Fertility > 5>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].Fertility > 3>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close inclued Fertility check*/
+
+			<<case "Temperament">>
+				<<if _customerDetailedNeeds.includes("Low Temperament")>>
+					<<if $globalFluffies[_fl].temperament < 10>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].temperament < 70>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include low temperament check */
+				
+				<<if _customerDetailedNeeds.includes("Normal Temperament")>>
+					<<if $globalFluffies[_fl].temperament >= 70 && $globalFluffies[_fl].temperament < 100>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].temperament >= 100 && $globalFluffies[_fl].temperament < 130>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include normal temperament check */
+				
+				<<if _customerDetailedNeeds.includes("High Temperament")>>
+					<<if $globalFluffies[_fl].temperament >= 190>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].temperament >= 130>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include high temperament check */
+
+			<<case "Age">>
+				<<if _customerDetailedNeeds.includes("Baby")>>
+					<<if $globalFluffies[_fl].weaned == false>>
+						<<set _needsMatch += 2>>
+					 <<elseif $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks < $globalFluffies[_fl].maturity>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include Baby */
+				
+				<<if _customerDetailedNeeds.includes("Foal")>>
+					<<if $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks < $globalFluffies[_fl].maturity>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].weaned == true>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include Foal */
+		
+				<<if _customerDetailedNeeds.includes("Adult")>>
+					<<if $globalFluffies[_fl].age > 0>>
+						<<set _needsMatch += 2>>
+					<<elseif $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks >= $globalFluffies[_fl].maturity>>
+						<<set _needsMatch += 1>>
+					<</if>>
+				<</if>> /* close include Foal */
+				
+		<</switch>>
+
+	<</for>>
+
+	<<set _msgString = "">>
+	<<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
+	<<set _msgString += "<br>@@.orange;Possible points = " + Number(_customerDetailedNeeds.length * 2) + ".@@">>
+	<<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) + ".@@">>
+		
+	<<set _price = Number($globalFluffies[_fl].training)>>
+	<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
+							
+	<<switch $globalFluffies[_fl].breed>>
+		<<case "unicorn">>
+			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+		<<case "pegasus">>
+			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+		<<case "alicorn">>
+			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+		<<default>>
+			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+	<</switch>>
+	
+	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
+	
+	<<set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)>>
+	<<set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)>>
+
+	<<set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)>>
+	<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
+	
+	<<if _price == 0>>
+		<<run console.log("Customer Test: _price was 0.")>>
+		<<set _price = Number($earthPrice.mart)>>
+	<</if>>
+	
+	<<set _ageMulti = 1>>
+
+	<<if $globalFluffies[_fl].age == 0 && $globalFluffies[_fl].ageWeeks < 45>>
+		<<set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)>>
+	<</if>>
+
+	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+
+	<<if $globalFluffies[_fl].traits.includes("Feral") == true>>
+		<<set _price = Number(_price / 4).toFixed(2)>>
+	<</if>>
+	
+	
+	/* Debug flag since I can't track down this issue yet. */
+	<<if _price <= 0>>
+		<br>
+		<br>@@.red; ERROR: Price _price <= 0.  Value dump: StatBonus = <<- $globalFluffies[_fl].statBonus>>, ageMulti = <<- _ageMulti>>, colorBonus = <<- $globalFluffies[_fl].colorBonus>>, Initial price = <<- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))>>.
+		<br>
+	<</if>>
+	
+	<br>@@.orange;Base price = <<- _price>>.@@
+
+	<<run console.log("Customer needs test Any fluffy test 4: fl= " + _fl)>>	
+	
+	/* They want any fluffy */
+	<<if _customerDetailedNeeds.length == 0>>
+		<<set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))>> 
+	<<else>>
+		<<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
+	<</if>>
+
+	<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
+
+	<<run console.log("Customer test: _priceBonus = " + _priceBonus)>>
+	
+	<<set _msgString += "<br>@@.orange;Price Bonus = "+ _priceBonus + ".@@">>
+
+	<<run console.log("Customer needs $cash = " + $cash)>>
+	
+	<<set _price = Number(_price * _priceBonus).toFixed(2)>>
+	<<set $cash = Number(Number($cash) + Number(_price)).toFixed(2)>>
+
+	<<run console.log("Customer needs $cash = " + $cash)>>
+	
+	/* Check if they will accept the offer */
+	<<if _customerDetailedNeeds.length > 0 && Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) <= 33>>
+			<<if _customerTolerance > 0>>
+				<<set _customerTolerance-->>
+				<<set _msgString += "<br>@@.orange;They are not at all pleased with " + $globalFluffies[_fl].name + ".@@">>
+				<<replace "#result-msg">>_msgString<</replace>>
+			<<else>>
+				<<set _msgString += "<br>@@.orange;This customer is fed up.@@">>
+				<<replace "#result-msg">>_msgString<</replace>>
+				<<replace "#fluffy-list">><</replace>>
+				<<replace "#navbar">><</replace>>
+			<</if>>
+	<<else>> 
+
+		<<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$globalFluffies[_fl].name + ".@@<br>">>
+		
+		<<if $globalFluffies[_fl].ID != _fl>>
+			<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_fl].ID + ". Should be " + _fl)>>
+			/* <<run $ourStore.fluffies.delete(_fl)>>*/
+			<<set $globalFluffies[_fl].ID = _fl>>
+		<</if>> 
+		
+		<<set $globalFluffies[_fl].sold = true>>
+		<<set $globalFluffies[_fl].onDisplay = false>>
+		<<set $globalFluffies[_fl].pregnant = false>>
+			
+		<<if $globalFluffies[_fl].nursing > 0>>
+			<<for _child range $globalFluffies[_fl].children>>
+				<<if $globalFluffies[_child].foodType == "Nursing">>
+					<<set $globalFluffies[_child].foodType = "Nothing">>
+					<<set $globalFluffies[_child].foodQuality = -1>>
+					<</if>> /* Close nursing check */
+			<</for>> /* Close child check*/
+		<</if>> /* Close Nursing check */
+
+		<<set $globalFluffies[_fl].nursing = 0>>
+		
+		<<if $globalFluffies[_fl].foodType == "Nursing">>
+			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
+		<</if>> /* Close nursing check */
+
+		<<if $globalFluffies[_fl].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
+			<<set $globalFluffies[_fl].specialFriend = -1>>
+		<</if>> /* Close special friend check */
+
+		<<if Number($globalFluffies[_fl].age) == 0 && Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
+			<<set $ourStore.foals-->>
+		<<elseif $globalFluffies[_fl].gender == "male">>
+			<<set $ourStore.stallions-->>
+		<<else>>
+			<<set $ourStore.mares-->>
+		<</if>> /* Close age check */
+
+		<<set $reputation += _priceBonus>>
+
+		/* Random chance to 'upsell'*/
+		<<set _chance = Number(($training + $reputation) / 4).toFixed(2)>>
+
+		<<run console.log("Upgraded check _chance = " + _chance)>>
+		
+		<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
+			<br>You add some deluxe toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(15,20)))>>
+		<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > random(0, 90)>>
+			<br>You add some fancy toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(10,15)))>>
+		<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > random(0, 94)>>
+			<br>You add some basic toys to the sale.
+			<br> 				
+			<<set _price = Number(Number(_price) + Number(random(5,10)))>>
+		<</if>>
+
+
+		<<set _price = Number(_price).toFixed(2)>>
+
+		<<run console.log("Customer needs test Any fluffy test 5: fl= " + _fl)>>	
+		<<replace "#result-msg">>
+			_msgString
+			<br>Sold <<- $globalFluffies[_fl].name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New reputation <<- $reputation>>.
+		<</replace>>
+		<<replace "#navbar">><</replace>>
+		<<timed 5ms>><<replace "#fluffy-list">><</replace>><</timed>>
+
+		<<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						
+		<<run $ourStore.fluffies.delete(_fl)>>
+		<<run console.log("Customer test post removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>
+		<<run console.log("Customer test post removal:" + $ourStore.fluffies.length)>>
+	<</if>> /* Close needs check */
+<</widget>>
+
+
+
+<<widget "FluffyList">>
+	<<for _fl range $ourStore.fluffies>>
+		<<set _listFluff = $globalFluffies[_fl]>>
+		
+		/* Double check we are removing sold fluffies: */
+		<<if $globalFluffies[_fl].sold == true>>
+			<<run $ourStore.fluffies.delete(_fl)>>
+			<<continue>>
+		<</if>>
+		
+		/* Double check we are removing dead fluffies: */
+		<<if $globalFluffies[_fl].dead == true>>
+			<<run $ourStore.fluffies.delete(_fl)>>
+			<<continue>>
+		<</if>>
+		
+		/* Unweaned babbies */
+		<<if $globalFluffies[_fl].weaned === false>>
+			<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<</if>>
+		
+			/* immature */
+			<<elseif Number(_listFluff.age) == 0 &&  Number(_listFluff.ageWeeks) <= _listFluff.maturity>>
+				<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<</if>>
+			<<elseif _listFluff.gender == "male">>
+				<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<</if>>
+			<<else>>
+				<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<</if>>
+			<</if>>
+		
+			<<if _listFluff.onDisplay == true && $listType != "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<<elseif _listFluff.onDisplay == false && $listType == "Display">>
+				<<set $globalFluffies[_fl].isChecked = false>>
+				<<continue>>
+			<<else>>
+	
+			/* Clamp values: */
+			<<set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)>>
+			<<set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)>>
+			<<set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)>>
+			<<set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)>>
+			<<set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)>>
+			<<set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)>>
+		
+			/* Clamp these to 0-200 */
+			<<set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)>>
+			<<set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)>>
+			<<set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)>>
+			<<set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)>>
+			<<set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)>>
+			<<set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)>>
+	
+			<<capture _fl, _listFluff>>
+			
+				<label>
+				
+					<div style="position: relative; left: -22px;">
+						<<if $args[0] != "customer">><<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>><</if>>
+					</div>
+				
+			
+					<div class="w3-row w3-dark-grey">
+						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px" style="font-size:1vw;">
+							<<if $args[0] != "customer">>[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]<<else>><<- $globalFluffies[_fl].name>><</if>>
+						</div>
+						<div class="w3-rest w3-container" style="font-size:1vw;">
+						<<if $args[0] != "customer">>
+							[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]] |
+							<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]<</if>>
+							| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = "Fluffy Feeding"]] _listFluff.foodType
+							<<switch _listFluff.foodQuality>>
+								<<case 0>> (trash)
+								<<case 1>> (cheap)
+								<<case 2>> (basic)
+								<<case 3>> (good)
+								<<case 4>> (quality)
+								<<case -1>> 
+							<</switch>>
+						<<else>>
+							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString>>
+								<<OfferFluffy $globalFluffies[_fl].ID>>
+							<</button>>
+						<</if>>
+						</div>
+					</div>
+					<div class="w3-row w3-dark-grey">
+						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px; height:160px">
+							<<set $activeFluffy = $globalFluffies[_fl]>>
+			
+							<<switch $globalFluffies[_fl].breed>>
+							<<case "earthy" "Earthy">>
+								<<fluffyImage "earthie">>
+			
+							<<case "unicorn" "Unicorn">>
+								<<fluffyImage "unicorn">>
+								
+							<<case "pegasus" "Pegasus">>
+								<<fluffyImage "pegasus">>
+			
+							<<default>>
+								<<fluffyImage "alicorn">>		
+							<</switch>>
+						</div>
+						<div class="w3-rest w3-container" style="white-space: nowrap; font-size:1vw;; height:160px">
+							<p class="hang"><<shortDesc $globalFluffies[_fl]>></p>
+						</div>
+					</div>
+				</label>
+			<</capture>>
+		<</if>>
+	<</for>>
+<</widget>>
+
+
 
 /* ***
  *	Called as <<inlineColor $color>>
