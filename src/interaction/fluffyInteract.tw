@@ -11,19 +11,47 @@
  *	Todo: expand with general interations and more details.
  *
  *********** */
-<div class="w3-row w3-container w3-mobile">
+ <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <<set $ui = "main">>
-<br>
-<br>
 <<set $nextButton to "Back to the fluffy list.", $nextLink to "Fluffy List">>
 
-<span id="fluffy-name">
-	<<PlayerStatus>><hr>
-	<<FluffyDesc>>
-	<br>Sale Price: <<displayPrice $activeFluffy>>
-</span>
+
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
+
+	<<sidebarTop>>
+
+	<div class="w3-teal" style="font-size:1vw;">
+		<div class="w3-dropdown-hover">
+			@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+			
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card w3-theme">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item" style="font-size:2vw;"><<- $activeFluffy.name>></h1>
+</header>
+
+<<timed 5ms>>
+<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main" style="font-size:1vw;">
+
+	<span id="fluffy-name">
+		<<intractDetails>>
+	</span>
 <hr>
+
+			
+
 
 /* ***
  *	Debug option to enter a genetic editing mode.
@@ -38,7 +66,7 @@
 	<<button "Rename">>
 		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-		<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
+		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 <</button>>
 /* Form for error message to display*/
 <span id="form-error"></span>
@@ -67,7 +95,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		
 	<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>
 	<<replace "#breed-message">><br><<print _specialName>> and $activeFluffy.name are no longer special friends.<br>@@.cyan;HUHUHU WORST SADIES.@@<</replace>>
-	<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
+	<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<</button>>
 <</if>>
 <</capture>>
@@ -103,7 +131,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#play-msg">><br>@@.cyan;<<- $title>> am bestest at pwayin! Pway AWW da games wit <<print $activeFluffy.name>> heheheh!.@@<</replace>>
-		<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
+		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
 	<</if>>
@@ -156,7 +184,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
-		<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
+		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#train-msg">><br>You are too tired for training right now.<</replace>>
 	<</if>>
@@ -182,7 +210,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<set $activeFluffy.trust-->>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#abuse-msg">><br>@@.cyan;Huhuhu why hurt good fluffy?.@@<</replace>>
-		<<replace "#fluffy-name">><<PlayerStatus>><hr><<FluffyDesc>><br>Sale Price: <<displayPrice $activeFluffy>><</replace>>
+		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#abuse-msg">><br>You are too tired for this right now.<</replace>>
 	<</if>>
@@ -235,7 +263,27 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 <span id="remove-msg"></span>
 </div>
 
-/* Sidebar link for mobile users */
-<<SidebarButton>>
-
 </div>
+
+
+
+
+
+<script>
+function openSidebar() {
+	document.getElementById("mySidebar").style.width = "20%";
+	document.getElementById("main").style.marginLeft = "25%";
+	document.getElementById("mySidebar").style.display = "block";
+	document.getElementById("openNav").style.display = 'none';
+	document.getElementById("navHead").style.marginLeft = "30%";
+}
+
+function closeSidebar() {
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("main").style.marginLeft = "0%";
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("openNav").style.display = "inline-block";
+	document.getElementById("navHead").style.marginLeft = "0%";
+}
+</script>
+
