@@ -8054,7 +8054,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 /*
-&lt;&lt;set $ver = &quot;1.18.217-beta&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.20.217-beta&quot;&gt;&gt;
 */
 
 
@@ -8627,7 +8627,7 @@ function showAccFunc() {
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.18.217-beta&quot;, $releaseID = 161&gt;&gt;
+&lt;&lt;set $ver = &quot;1.18.217-beta&quot;, $releaseID = 162&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -9662,9 +9662,13 @@ function closeSidebar() {
 
 	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;set $listType = &quot;All&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
-			
+		
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			&lt;&lt;sortButtons &quot;breeding&quot;&gt;&gt;
+		&lt;/div&gt;
+
 		&lt;&lt;systemButtons&gt;&gt;
 	&lt;/div&gt;
 &lt;/nav&gt;
@@ -9675,7 +9679,10 @@ function closeSidebar() {
 &lt;/header&gt;
 
 &lt;&lt;timed 5ms&gt;&gt;
-&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;#subsortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
+		
+		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
 &lt;div class=&quot;w3-container&quot; id=&quot;main&quot; style=&quot;font-size:1vw;&quot;&gt;
@@ -9711,45 +9718,9 @@ function closeSidebar() {
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;if $breedStal &lt; 0 || $breedMare &lt; 0&gt;&gt;
-	&lt;&lt;FluffyList &quot;breeding&quot;&gt;&gt;
-/*
-	&lt;br&gt;Possible mates for  $activeFluffy.name:
-	&lt;hr&gt;
-&lt;&lt;run console.log(&quot;Friend list test 0: Age &quot; + ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)))&gt;&gt;
-	&lt;&lt;if $activeFluffy.gender == &quot;male&quot;&gt;&gt;
-		&lt;&lt;set $breedStal = $activeFluffy.ID&gt;&gt;
-	&lt;&lt;elseif $activeFluffy.gender == &quot;female&quot;&gt;&gt;
-		&lt;&lt;set $breedMare = $activeFluffy.ID&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;br&gt;&lt;br&gt;@@.red;Invalid Gender found $activeFluffy.ID - &quot; &lt;&lt;print $activeFluffy.gender&gt;&gt; &quot;@@&lt;br&gt;&lt;br&gt;
-	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)) &lt; $activeFluffy.maturity&gt;&gt;
-		&lt;br&gt;&lt;br&gt;@@.red;$activeFluffy.name is too young for breeding@@&lt;br&gt;&lt;br&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;capture _listFluff&gt;&gt;
-			&lt;&lt;for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++&gt;&gt;
-				&lt;&lt;set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]&gt;&gt;
-			
-	&lt;&lt;run console.log(&quot;Friend list test 1: &quot; + _listFluff.name + &quot; | &quot; + _listFluff.onDisplay + &quot; | &quot; + _listFluff.sold)&gt;&gt;
-				&lt;&lt;if _listFluff.onDisplay&gt;&gt;
-					&lt;&lt;continue&gt;&gt;
-				&lt;&lt;elseif _listFluff.sold&gt;&gt;
-					&lt;&lt;continue&gt;&gt;
-				&lt;&lt;elseif _listFluff.dead&gt;&gt;
-					&lt;&lt;continue&gt;&gt;
-				&lt;&lt;elseif (_listFluff.ageWeeks + (_listFluff.age * 52)) &lt; _listFluff.maturity&gt;&gt;
-					&lt;&lt;continue&gt;&gt;
-				&lt;&lt;elseif _listFluff.gender != $activeFluffy.gender &amp;&amp; (_listFluff.ageWeeks + (_listFluff.age * 52)) &gt;= _listFluff.maturity&gt;&gt;
-	&lt;&lt;run console.log(&quot;Friend list test 1.1: &quot; + _listFluff.ID + &quot; | &quot; + (_listFluff.ageWeeks + (_listFluff.age * 52)))&gt;&gt;
-					@@.green;_listFluff.name@@ &lt;&lt;shortDesc _listFluff&gt;&gt;
-					&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;&lt;&lt;link [[Set Special Friend|Fluffy Breeding][$activeFluffy = _listFluff]]&gt;&gt;&lt;&lt;if _listFluff.gender == &quot;male&quot;&gt;&gt;&lt;&lt;set $breedStal = _listFluff.ID&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;set $breedMare = _listFluff.ID&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/link&gt;&gt;			
-					&lt;hr&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/for&gt;&gt;
-		&lt;&lt;/capture&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-*/
+	&lt;span id=&quot;fluffy-list&quot;&gt;&lt;&lt;FluffyList &quot;breeding&quot;&gt;&gt;&lt;/span&gt;
+	
 &lt;&lt;else&gt;&gt;
 	&lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
 		/* Clear both special friends flag, ending breeding */
@@ -9792,6 +9763,77 @@ function closeSidebar() {
 	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
 	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
 	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
+}
+function showAccFunc() {
+  var x = document.getElementById(&quot;showAcc&quot;);
+  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
+    x.className += &quot; w3-show&quot;;
+    x.previousElementSibling.className += &quot; w3-grey&quot;;
+  } else { 
+    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
+     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
+  }
+}
+
+function sortAccFunc() {
+  var x = document.getElementById(&quot;sortAcc&quot;);
+  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
+    x.className += &quot; w3-show&quot;;
+    x.previousElementSibling.className += &quot; w3-grey&quot;;
+  } else { 
+    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
+     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
+  }
+}
+
+function subFoodAccFunc (type) {
+  if (type == &quot;kibble&quot;) {
+  	var x = document.getElementById(&quot;subFoodAccKibble&quot;);
+  } else if (type == &quot;greens&quot;) {
+  	var x = document.getElementById(&quot;subFoodAccGreens&quot;);
+ } else if (type == &quot;formula&quot;) {
+    var x = document.getElementById(&quot;subFoodAccFormula&quot;);
+ } else if (type == &quot;sketti&quot;) {
+    var x = document.getElementById(&quot;subFoodAccSketti&quot;);
+ } else if (type == &quot;nothing&quot;) {
+    var x = document.getElementById(&quot;subFoodAccNothing&quot;);
+ } 
+  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
+    x.className += &quot; w3-show&quot;;
+    x.previousElementSibling.className += &quot; w3-grey&quot;;
+  } else { 
+    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
+  }
+}
+
+function subSortAccFunc(type) {
+  if (type == &quot;breed&quot;) {
+  	var x = document.getElementById(&quot;subSortAccBreed&quot;);
+  } else if (type == &quot;age&quot;) {
+  	var x = document.getElementById(&quot;subSortAccAge&quot;);
+ } else if (type == &quot;gender&quot;) {
+    var x = document.getElementById(&quot;subSortAccGender&quot;);
+ } else if (type == &quot;stats&quot;) {
+    var x = document.getElementById(&quot;subSortAccStat&quot;);
+ } else if (type == &quot;attributes&quot;) {
+    var x = document.getElementById(&quot;subSortAccAtt&quot;);
+ } else if (type == &quot;bulk&quot;) {
+    var x = document.getElementById(&quot;subSortAccBulk&quot;);
+ } else if (type == &quot;kill&quot;) {
+    var x = document.getElementById(&quot;subSortAccKill&quot;);
+ } else if (type == &quot;food&quot;) {
+    var x = document.getElementById(&quot;subSortAccFood&quot;);
+  }
+  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
+    x.className += &quot; w3-show&quot;;
+    x.previousElementSibling.className += &quot; w3-grey&quot;;
+  } else { 
+    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
+  }
 }
 &lt;/script&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Feeding" tags="nobr" position="100,475" size="100,100">/* **********
  * fluffyFeeding.tw
@@ -9945,7 +9987,7 @@ function closeSidebar() {
  *	Todo: expand with general interations and more details.
  *
  *********** */
- &lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css&quot;&gt;
 &lt;link rel=&quot;stylesheet&quot; href=&quot;https://www.w3schools.com/w3css/4/w3pro.css&quot;&gt;
 &lt;link rel=&quot;stylesheet&quot; href=&quot;https://www.w3schools.com/lib/w3-theme-teal.css&quot;&gt;
 
@@ -10325,197 +10367,9 @@ function closeSidebar() {
 				    &lt;&lt;/button&gt;&gt;@@
 				&lt;/div&gt;
 			&lt;/div&gt;
-			
-	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;sortAccFunc()&quot;&gt;Sort &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-				&lt;div id=&quot;sortAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
-					@@#sortbutton;&lt;&lt;button &#39;Breed &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-						&lt;&lt;if _breedUp == false&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _breedUp = true&gt;&gt;				
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _breedUp = false&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/button&gt;&gt;@@
-
-					@@#sortbutton;&lt;&lt;button &#39;Age &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-						&lt;&lt;if _ageUp == false&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _ageUp = true&gt;&gt;				
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _ageUp = false&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/button&gt;&gt;@@
-					
-					@@#sortbutton;&lt;&lt;button &#39;Gender &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-						&lt;&lt;if _genderUp == false&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender &lt; $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender &gt; $globalFluffies[b].gender) ? -1 : 0;}) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _genderUp = true&gt;&gt;				
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender &lt; $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender &gt; $globalFluffies[a].gender) ? -1 : 0;}) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;set _genderUp = false&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/button&gt;&gt;@@
-
-					&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;stats&#39;)&quot;&gt;Stats &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-					&lt;div id=&quot;subSortAccStat&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-						@@#subsortbutton;&lt;&lt;button &#39;Strength &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _strUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _strUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _strUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-						
-						@@#subsortbutton;&lt;&lt;button &#39;Energy &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _engUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _engUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _engUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Charm &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _chaUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _chaUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _chaUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Thinking &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _thiUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _thiUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _thiUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Learning &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _leaUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _leaUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _leaUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-						
-						@@#subsortbutton;&lt;&lt;button &#39;Fertility &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _ferUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _ferUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _ferUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-					&lt;/div&gt;
 	
-					&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;attributes&#39;)&quot;&gt;Attributes &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-					&lt;div id=&quot;subSortAccAtt&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-						@@#subsortbutton;&lt;&lt;button &#39;Trust &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _trustUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _trustUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _trustUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-						
-						@@#subsortbutton;&lt;&lt;button &#39;Training &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _trainingUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _trainingUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _trainingUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Temperament &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _temperamentUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _temperamentUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _temperamentUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Happiness &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _happyUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happy - $globalFluffies[b].happy);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _happyUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happy - $globalFluffies[a].happy);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _happyUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-
-						@@#subsortbutton;&lt;&lt;button &#39;Stress &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _stressUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _stressUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _stressUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-						
-						@@#subsortbutton;&lt;&lt;button &#39;Trauma &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-							&lt;&lt;if _traumaUp == false&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) &gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _traumaUp = true&gt;&gt;				
-							&lt;&lt;else&gt;&gt;
-								&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) &gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;set _traumaUp = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-					&lt;/div&gt;
-				&lt;/div&gt;
-
+	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+	        	&lt;&lt;sortButtons&gt;&gt;
 
 				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subSortAccFunc(&#39;bulk&#39;)&quot;&gt;Bulk Actions &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
 				&lt;div id=&quot;subSortAccBulk&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
@@ -12169,7 +12023,6 @@ button {
 	&lt;&lt;/if&gt;&gt;
 		
 	&lt;&lt;for _fl range $ourStore.fluffies&gt;&gt;
-		&lt;&lt;set _listFluff = $globalFluffies[_fl]&gt;&gt;
 		
 		&lt;&lt;if $args[0] === &quot;breeding&quot; &amp;&amp; $activeFluffy.ID == _fl&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
@@ -12195,12 +12048,12 @@ button {
 			&lt;&lt;/if&gt;&gt;
 		
 			/* immature */
-			&lt;&lt;elseif Number(_listFluff.age) == 0 &amp;&amp;  Number(_listFluff.ageWeeks) &lt;= _listFluff.maturity&gt;&gt;
+			&lt;&lt;elseif Number($globalFluffies[_fl].age) == 0 &amp;&amp;  Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
 				&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 					&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 					&lt;&lt;continue&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;elseif _listFluff.gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
 				&lt;&lt;if $listType != &quot;Stallions&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 					&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 					&lt;&lt;continue&gt;&gt;
@@ -12212,10 +12065,10 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		
-			&lt;&lt;if _listFluff.onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
+			&lt;&lt;if $globalFluffies[_fl].onDisplay == true &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
-			&lt;&lt;elseif _listFluff.onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_fl].onDisplay == false &amp;&amp; $listType == &quot;Display&quot;&gt;&gt;
 				&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;else&gt;&gt;
@@ -12241,7 +12094,7 @@ button {
 				&lt;label&gt;
 				
 					&lt;div style=&quot;position: relative; left: -22px; top: 22px; z-index: -1; height:20px&quot;&gt;
-						&lt;&lt;if $args[0] != &quot;customer&quot; &amp;&amp; $args[0] != &quot;breeding&quot;&gt;&gt;&lt;&lt;checkbox &quot;_listFluff.isChecked&quot; false true `_listFluff.isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
+						&lt;&lt;if $args[0] != &quot;customer&quot; &amp;&amp; $args[0] != &quot;breeding&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_fl].isChecked&quot; false true `$globalFluffies[_fl].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
 					&lt;/div&gt;
 				
 			
@@ -12275,10 +12128,10 @@ button {
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/button&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]] |
-							&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]&lt;&lt;/if&gt;&gt;
-							| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = &quot;Fluffy Feeding&quot;]] _listFluff.foodType
-							&lt;&lt;switch _listFluff.foodQuality&gt;&gt;
+							[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]] |
+							&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]&lt;&lt;/if&gt;&gt;
+							| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Feeding&quot;]] $globalFluffies[_fl].foodType
+							&lt;&lt;switch $globalFluffies[_fl].foodQuality&gt;&gt;
 								&lt;&lt;case 0&gt;&gt; (trash)
 								&lt;&lt;case 1&gt;&gt; (cheap)
 								&lt;&lt;case 2&gt;&gt; (basic)
@@ -13846,6 +13699,202 @@ button {
 			&lt;&lt;iconSprite&gt;&gt;
 			
 			&lt;&lt;= &#39;&lt;img class=&quot;w3-circle responsive&quot; src=&quot;&#39; + _iconSprite + &#39;&quot;  alt=&quot;avatar&quot; style=&quot;width:75%&quot;&gt;&#39;&gt;&gt;
+		&lt;/div&gt;
+	&lt;/div&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+
+&lt;&lt;widget &quot;sortButtons&quot;&gt;&gt;
+
+	&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;sortAccFunc()&quot;&gt;Sort &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+	&lt;div id=&quot;sortAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
+		@@#sortbutton;&lt;&lt;button &#39;Breed &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+			&lt;&lt;if _breedUp == false&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _breedUp = true&gt;&gt;				
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _breedUp = false&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/button&gt;&gt;@@
+
+		@@#sortbutton;&lt;&lt;button &#39;Age &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+			&lt;&lt;if _ageUp == false&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _ageUp = true&gt;&gt;				
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _ageUp = false&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/button&gt;&gt;@@
+	
+	&lt;&lt;if $args[0] != &quot;breeding&quot;&gt;&gt;
+		@@#sortbutton;&lt;&lt;button &#39;Gender &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+			&lt;&lt;if _genderUp == false&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender &lt; $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender &gt; $globalFluffies[b].gender) ? -1 : 0;}) &gt;&gt; 
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _genderUp = true&gt;&gt;				
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender &lt; $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender &gt; $globalFluffies[a].gender) ? -1 : 0;}) &gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;set _genderUp = false&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/button&gt;&gt;@@
+	&lt;&lt;/if&gt;&gt;
+
+		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;stats&#39;)&quot;&gt;Stats &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+		&lt;div id=&quot;subSortAccStat&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
+			@@#subsortbutton;&lt;&lt;button &#39;Strength &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _strUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _strUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _strUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+			
+			@@#subsortbutton;&lt;&lt;button &#39;Energy &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _engUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _engUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _engUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Charm &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _chaUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _chaUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _chaUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Thinking &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _thiUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _thiUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _thiUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Learning &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _leaUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _leaUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _leaUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+			
+			@@#subsortbutton;&lt;&lt;button &#39;Fertility &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _ferUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _ferUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _ferUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+
+		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;attributes&#39;)&quot;&gt;Attributes &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+		&lt;div id=&quot;subSortAccAtt&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
+			@@#subsortbutton;&lt;&lt;button &#39;Trust &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _trustUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _trustUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _trustUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+			
+			@@#subsortbutton;&lt;&lt;button &#39;Training &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _trainingUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _trainingUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _trainingUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Temperament &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _temperamentUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _temperamentUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _temperamentUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Happiness &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _happyUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happy - $globalFluffies[b].happy);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _happyUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happy - $globalFluffies[a].happy);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _happyUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+
+			@@#subsortbutton;&lt;&lt;button &#39;Stress &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _stressUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _stressUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _stressUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+			
+			@@#subsortbutton;&lt;&lt;button &#39;Trauma &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _traumaUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _traumaUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _traumaUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
 	&lt;/div&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="pronoun widgets" tags="widget nobr" position="1225,475" size="100,100">/* **********

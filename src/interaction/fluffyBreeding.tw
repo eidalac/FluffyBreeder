@@ -25,9 +25,13 @@
 
 	<div class="w3-teal" style="font-size:1vw;">
 		<div class="w3-dropdown-hover">
-			@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+			@@#sortbutton;<<button "Back">><<set $listType = "All">><<goto $nextLink>><</button>>@@
 		</div>
-			
+		
+		<div class="w3-dropdown-hover">
+			<<sortButtons "breeding">>
+		</div>
+
 		<<systemButtons>>
 	</div>
 </nav>
@@ -38,7 +42,10 @@
 </header>
 
 <<timed 5ms>>
-<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $("#subsortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
+		
+		<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
 <</timed>>
 
 <div class="w3-container" id="main" style="font-size:1vw;">
@@ -74,45 +81,9 @@
 <</if>>
 
 <<if $breedStal < 0 || $breedMare < 0>>
-	<<FluffyList "breeding">>
-/*
-	<br>Possible mates for  $activeFluffy.name:
-	<hr>
-<<run console.log("Friend list test 0: Age " + ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)))>>
-	<<if $activeFluffy.gender == "male">>
-		<<set $breedStal = $activeFluffy.ID>>
-	<<elseif $activeFluffy.gender == "female">>
-		<<set $breedMare = $activeFluffy.ID>>
-	<<else>>
-		<br><br>@@.red;Invalid Gender found $activeFluffy.ID - " <<print $activeFluffy.gender>> "@@<br><br>
-	<</if>>
 	
-	<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)) < $activeFluffy.maturity>>
-		<br><br>@@.red;$activeFluffy.name is too young for breeding@@<br><br>
-	<<else>>
-		<<capture _listFluff>>
-			<<for _bf to 0; _bf lt $ourStore.fluffies.length; _bf++>>
-				<<set _listFluff = $globalFluffies[$ourStore.fluffies[_bf]]>>
-			
-	<<run console.log("Friend list test 1: " + _listFluff.name + " | " + _listFluff.onDisplay + " | " + _listFluff.sold)>>
-				<<if _listFluff.onDisplay>>
-					<<continue>>
-				<<elseif _listFluff.sold>>
-					<<continue>>
-				<<elseif _listFluff.dead>>
-					<<continue>>
-				<<elseif (_listFluff.ageWeeks + (_listFluff.age * 52)) < _listFluff.maturity>>
-					<<continue>>
-				<<elseif _listFluff.gender != $activeFluffy.gender && (_listFluff.ageWeeks + (_listFluff.age * 52)) >= _listFluff.maturity>>
-	<<run console.log("Friend list test 1.1: " + _listFluff.ID + " | " + (_listFluff.ageWeeks + (_listFluff.age * 52)))>>
-					@@.green;_listFluff.name@@ <<shortDesc _listFluff>>
-					<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Set Special Friend|Fluffy Breeding][$activeFluffy = _listFluff]]>><<if _listFluff.gender == "male">><<set $breedStal = _listFluff.ID>><<else>><<set $breedMare = _listFluff.ID>><</if>><</link>>			
-					<hr>
-				<</if>>
-			<</for>>
-		<</capture>>
-	<</if>>
-*/
+	<span id="fluffy-list"><<FluffyList "breeding">></span>
+	
 <<else>>
 	<<if $activeFluffy.specialFriend != -1>>
 		/* Clear both special friends flag, ending breeding */
@@ -155,5 +126,76 @@ function closeSidebar() {
 	document.getElementById("mySidebar").style.display = "none";
 	document.getElementById("openNav").style.display = "inline-block";
 	document.getElementById("navHead").style.marginLeft = "0%";
+}
+function showAccFunc() {
+  var x = document.getElementById("showAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+     x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+}
+
+function sortAccFunc() {
+  var x = document.getElementById("sortAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+     x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+}
+
+function subFoodAccFunc (type) {
+  if (type == "kibble") {
+  	var x = document.getElementById("subFoodAccKibble");
+  } else if (type == "greens") {
+  	var x = document.getElementById("subFoodAccGreens");
+ } else if (type == "formula") {
+    var x = document.getElementById("subFoodAccFormula");
+ } else if (type == "sketti") {
+    var x = document.getElementById("subFoodAccSketti");
+ } else if (type == "nothing") {
+    var x = document.getElementById("subFoodAccNothing");
+ } 
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+}
+
+function subSortAccFunc(type) {
+  if (type == "breed") {
+  	var x = document.getElementById("subSortAccBreed");
+  } else if (type == "age") {
+  	var x = document.getElementById("subSortAccAge");
+ } else if (type == "gender") {
+    var x = document.getElementById("subSortAccGender");
+ } else if (type == "stats") {
+    var x = document.getElementById("subSortAccStat");
+ } else if (type == "attributes") {
+    var x = document.getElementById("subSortAccAtt");
+ } else if (type == "bulk") {
+    var x = document.getElementById("subSortAccBulk");
+ } else if (type == "kill") {
+    var x = document.getElementById("subSortAccKill");
+ } else if (type == "food") {
+    var x = document.getElementById("subSortAccFood");
+  }
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace(" w3-grey", "");
+  }
 }
 </script>
