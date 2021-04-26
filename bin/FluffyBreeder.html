@@ -7426,7 +7426,7 @@ Genes       Height multiplier
 &lt;&lt;set $ui = &quot;disclaimer&quot;&gt;&gt;
  /* Displays version information */
 &lt;div class=&quot;w3-row w3-container w3-mobile&quot;&gt;
-&lt;h1&gt;Fluffy Breeder $ver&lt;/h1&gt;
+&lt;h1&gt;Fluffy Breeder $ver $releaseID &lt;/h1&gt;
 
 &lt;br&gt;Recommended screen width:
 &lt;br&gt;&lt;----------------------------------------------------------------------------------------------------&gt;
@@ -8134,10 +8134,10 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;link rel=&quot;stylesheet&quot; href=&quot;https://www.w3schools.com/lib/w3-theme-teal.css&quot;&gt;
 
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-
+/*
 &lt;&lt;set $ver = &quot;1.18.217-beta&quot;&gt;&gt;
 
-
+*/
 
 
 
@@ -8709,7 +8709,7 @@ function showAccFunc() {
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.18.217-beta&quot;, $releaseID = $158&gt;&gt;
+&lt;&lt;set $ver = &quot;1.18.217-beta&quot;, $releaseID = $159&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -11484,7 +11484,6 @@ Mane Color:
 &lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
 
 	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
-	/*&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatColor(_ccString ) == false&gt;&gt;*/
 	&lt;&lt;if _geneCheck === null&gt;&gt;
 		&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -11527,7 +11526,6 @@ Eye Color:
 &lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
 
 	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
-	/*&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatColor(_ccString ) == false&gt;&gt;*/
 	&lt;&lt;if _geneCheck === null&gt;&gt;
 		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -12566,16 +12564,7 @@ button {
 		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
- 	/* ***
- 	 *  1. newborn 
- 	 *	only coat visible
- 	 *		&lt;&lt;if Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 0&gt;&gt;  
- 	 *	2. chirpy babbeh (coat + eyes) week 1
-	 *		&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 1&gt;&gt;
-	 *	3. talky babbeh (coat, eyes, mane)
-	 *		&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) &gt; 1 &amp;&amp; $activeFluffy.weaned === false&gt;&gt;
- 	 *** */
-	
+
 	
 
 &lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;

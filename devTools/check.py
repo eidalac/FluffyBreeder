@@ -7,7 +7,7 @@ WARNING = '\033[93m'
 ENDC = '\033[0m'
 
 def myprint(*args):
-    print(WARNING, filename + ":", ENDC,*args)
+    print(WARNING, filename + ":", ENDC,args)
 
 def yield_line_and_islastline(f):
     global filename
