@@ -10,39 +10,44 @@
  *
  *********** */
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
 
-<div class="w3-row w3-container w3-mobile">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 
 <<set $nextButton to "Back to the Store", $nextLink to "Week Start">>
 
+
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
+
+	<<sidebarTop>>
+
+	<div class="w3-teal" style="font-size:1vw;">
+		<div class="w3-dropdown-hover">
+			@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+		
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card w3-theme">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item" style="font-size:2vw;">Store Upgrades</h1>
+</header>
+
+<<timed 5ms>>
+<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main" style="font-size:1vw;">
 
 /* Validate data added in recent update: */
 <<if ndef $ourStore.upgrades>>
 	<<set $ourStore.upgrades = []>>
 <</if>>
-
-	<div class="w3-top w3-col l11 s11">
-		<div id="navbar" class="w3-bar w3-dark-grey">
-			<div class="w3-dropdown-hover">
-			  	@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
-			</div>
-
-			<div class="w3-dropdown-hover w3-right">
-				<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i></button>
-			</div>
-
-			<div id="id01" class="w3-modal">
-				<<OptionsWidget>>
-			</div>
-		</div>
-	</div>  
-
-	<<timed 5ms>>
-	<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
-	<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
-	<</timed>>
-
-<h1>Store Upgrades</h1>
 
 <br>What improvements do you want to make to your store?
 <br>
@@ -340,3 +345,22 @@ Upgrades:
 <<timed 100ms>>
 	<<updateStoreButtons>>
 <</timed>>
+
+
+<script>
+function openSidebar() {
+	document.getElementById("mySidebar").style.width = "20%";
+	document.getElementById("main").style.marginLeft = "25%";
+	document.getElementById("mySidebar").style.display = "block";
+	document.getElementById("openNav").style.display = 'none';
+	document.getElementById("navHead").style.marginLeft = "30%";
+}
+
+function closeSidebar() {
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("main").style.marginLeft = "0%";
+	document.getElementById("mySidebar").style.display = "none";
+	document.getElementById("openNav").style.display = "inline-block";
+	document.getElementById("navHead").style.marginLeft = "0%";
+}
+</script>
