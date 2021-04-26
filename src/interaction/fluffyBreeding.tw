@@ -74,6 +74,8 @@
 <</if>>
 
 <<if $breedStal < 0 || $breedMare < 0>>
+	<<FluffyList "breeding">>
+/*
 	<br>Possible mates for  $activeFluffy.name:
 	<hr>
 <<run console.log("Friend list test 0: Age " + ($activeFluffy.ageWeeks + ($activeFluffy.age * 52)))>>
@@ -110,7 +112,17 @@
 			<</for>>
 		<</capture>>
 	<</if>>
+*/
 <<else>>
+	<<if $activeFluffy.specialFriend != -1>>
+		/* Clear both special friends flag, ending breeding */
+		<<if def $globalFluffies[$activeFluffy.specialFriend]>>
+			<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<</if>>
+	
+		<<set $globalFluffies[$activeFluffy.ID].specialFriend = -1>>
+	<</if>>
+
 	<br><<print $globalFluffies[$breedStal].name>> and <<print $globalFluffies[$breedMare].name>> are now special friends.
 	<br>
 	<br> SPECIAL HUGS NOW

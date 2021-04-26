@@ -424,9 +424,23 @@ button {
 
 
 <<widget "FluffyList">>
+	<<if $args[0] === "breeding">>
+		<<if $activeFluffy.gender === 'female'>>
+			<<set $listType = "Stallions">>
+		<<else>>
+			<<set $listType = "Mares">>
+		<</if>>
+		
+		<<set _breeder = $activeFluffy.ID>>
+	<</if>>
+		
 	<<for _fl range $ourStore.fluffies>>
 		<<set _listFluff = $globalFluffies[_fl]>>
 		
+		<<if $args[0] === "breeding" && $activeFluffy.ID == _fl>>
+			<<continue>>
+		<</if>>
+				
 		/* Double check we are removing sold fluffies: */
 		<<if $globalFluffies[_fl].sold == true>>
 			<<run $ourStore.fluffies.delete(_fl)>>
@@ -488,21 +502,45 @@ button {
 			<<set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)>>
 			<<set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)>>
 	
-			<<capture _fl, _listFluff>>
+			<<capture _fl>>
 			
 				<label>
 				
-					<div style="position: relative; left: -22px;">
-						<<if $args[0] != "customer">><<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>><</if>>
+					<div style="position: relative; left: -22px; top: 22px; z-index: -1; height:20px">
+						<<if $args[0] != "customer" && $args[0] != "breeding">><<checkbox "_listFluff.isChecked" false true `_listFluff.isChecked ? 'checked' : ''`>><</if>>
 					</div>
 				
 			
 					<div class="w3-row w3-dark-grey">
-						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px" style="font-size:1vw;">
-							<<if $args[0] != "customer">>[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]<<else>><<- $globalFluffies[_fl].name>><</if>>
+						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px; z-index: 1;" style="font-size:1vw;">
+							<<if $args[0] === "customer" || $args[0] === "breeding">>
+								<<- $globalFluffies[_fl].name>>
+							<<else>>
+								[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
+							<</if>>
 						</div>
-						<div class="w3-rest w3-container" style="font-size:1vw;">
-						<<if $args[0] != "customer">>
+						<div class="w3-rest w3-container" style="font-size:1vw; z-index: 1;">
+						<<if $args[0] === "customer">>
+							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString>>
+								<<OfferFluffy $globalFluffies[_fl].ID>>
+							<</button>>
+						<<elseif $args[0] === "breeding">>
+							<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString "Fluffy Breeding">>
+								<<set $activeFluffy = $globalFluffies[_breeder]>>
+
+								<<if $globalFluffies[_fl].gender == "male">>
+									<<set $breedStal = _fl>>
+									<<set $breedMare = _breeder>>
+								<<else>>
+									<<set $breedMare = _fl>>
+									<<set $breedStal = _breeder>>
+								<</if>>
+							<</button>>
+						<<else>>
 							[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]] |
 							<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff]]<<else>>[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]<</if>>
 							| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = _listFluff, $encyclopedia = "Fluffy Feeding"]] _listFluff.foodType
@@ -514,17 +552,11 @@ button {
 								<<case 4>> (quality)
 								<<case -1>> 
 							<</switch>>
-						<<else>>
-							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
-							
-							<<button _buttonString>>
-								<<OfferFluffy $globalFluffies[_fl].ID>>
-							<</button>>
 						<</if>>
 						</div>
 					</div>
 					<div class="w3-row w3-dark-grey">
-						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px; height:160px">
+						<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px; height:170px">
 							<<set $activeFluffy = $globalFluffies[_fl]>>
 			
 							<<switch $globalFluffies[_fl].breed>>
@@ -541,7 +573,7 @@ button {
 								<<fluffyImage "alicorn">>		
 							<</switch>>
 						</div>
-						<div class="w3-rest w3-container" style="white-space: nowrap; font-size:1vw;; height:160px">
+						<div class="w3-rest w3-container" style="font-size:1vw;">
 							<p class="hang"><<shortDesc $globalFluffies[_fl]>></p>
 						</div>
 					</div>
