@@ -30,7 +30,7 @@
 	
 	<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
-<<elseif ndef _mom>>>
+<<elseif ndef _mom>>
 	/* Shouldn't happen, but just in case*/
 	<<run console.log("Birth test 3: Skipped due to invalid mother.")>>
 	<<goto "Event Main">>
@@ -49,161 +49,159 @@
 	
 	<<run console.log("Birth test 3: " + _mom.litter)>>
 	<<capture _fo, _section, _sectionP, _line>>
-	
-	<<for _fo = 0; _fo < _mom.litter; _fo++>>
 		
-		/* Base chance for still births is based on the mare's fertility and number of prior children */
-		<<if _mom.fertility < 1>>
-			<<set _diff = 35 - _mom.children.length>>
-		<<elseif _mom.fertility < 2>>
-			<<set _diff = 55 - _mom.children.length>>
-		<<elseif _mom.fertility < 3>>
-			<<set _diff = 75 - _mom.children.length>>
-		<<else>>
-			<<set _diff = 95 - _mom.children.length>>
-		<</if>>
+		<<for _fo = 0; _fo < _mom.litter; _fo++>>
 		
-		/* Creates a new fluffy as $activeFluffy */
-		<<breedFluffies _mom _dad>>
-	
-	<<run console.log("Birth test 4: " + _diff)>>
-	
-		<<set _stillbirth = false>>
-		
-		/* Random based on fertility: */
-		<<if random(0, 100) >= _diff>>
-			<<set _stillbirth = true>>
-		<</if>>
-		
-		/* bad gene trifect 1: */
-		<<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
-			<<set _stillbirth = true>>
-		<</if>>
-
-		/* bad gene trifect 2: */
-		<<if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &&$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
-			<<set _stillbirth = true>>
-		<</if>>
-
-		/* bad gene trifect 3: */
-		<<if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) && $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
-			<<set _stillbirth = true>>
-		<</if>>
-	
-		/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
-		<<if _stillbirth>>
-			<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
-			<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
-			<<set _mom.stress += 25>>
-			<<set _mom.trauma += 1>>
-			<br>
-			<br>
-			<hr>
-			
-	<<run console.log("Birth test 5: " + _diff)>>
-	
-		<<else>>
-	
-	<<run console.log("Birth test 6: " + _diff)>>
-			/* Set any traits from bad genes: */
-			<<setGeneTraits>>
-
-
-
-
-			/* Print the foal info */	
-			<<set _line = "Foal" + (_fo+1) + " [Click to Expand/Collapse]">>
-			/*<<set _line = "Foal# " + (_fo+1)>>*/
-			<<set _section = "section" + _fo>>
-			<<set _sectionP = "#section" + _fo>>
-			<<link _line>><<toggleclass _sectionP "hidden">><</link>>
-			<div @id="_line"></div>
-			<div @id="_section" class="hidden">
-				<<FluffyDesc>>
-			</div>
-			<hr>
-	
-	
-			/* Save it */
-			<<set $activeFluffy.ageWeeks = 0>>
-			<<set $activeFluffy.ID = $globalFluffies.length>>
-			/*<<set $activeFluffy.name += " " + $globalFluffies.length>>*/
-			
-			<<if $nameType === "ordinal">>
-				<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+			/* Base chance for still births is based on the mare's fertility and number of prior children */
+			<<if _mom.fertility < 1>>
+				<<set _diff = 35 - _mom.children.length>>
+			<<elseif _mom.fertility < 2>>
+				<<set _diff = 55 - _mom.children.length>>
+			<<elseif _mom.fertility < 3>>
+				<<set _diff = 75 - _mom.children.length>>
+			<<else>>
+				<<set _diff = 95 - _mom.children.length>>
 			<</if>>
-			<<set _mom.children.push($activeFluffy.ID)>>
-			<<set _dad.children.push($activeFluffy.ID)>>
-
-			<<run $ourStore.fluffies.push($activeFluffy.ID)>>
-			<<run $globalFluffies.push($activeFluffy)>>
-				
-			<<set $ourStore.foals++>>
-				
-			<<set _mom.nursing++>>
-			<<set _mom.stress += 5>>
 			
-			<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
-				/* Push to event stack  */
-				<<run $eventList.push( { target: $activeFluffy.ID, type: "Rejection" } )>>
-			<</if>> 
-
-			
-		<</if>> /* Close stillbirth test */
-	
-	<</for>> /* Close litter itteration */
-	
-	<<run console.log("Birth test 7: " + $globalFluffies.length)>>
-	
-	/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count */
-	<<if _mom.fertility > 0>>
-		<<set _fertileChance = _mom.litter>>
-		<<set _fertileChance += _mom.children.length>>
-		<<set _fertileChance = 3 * _fertileChance>>
+			/* Creates a new fluffy as $activeFluffy */
+			<<breedFluffies _mom _dad>>
 		
-		/* Test for fertility drop */
-		<<if random(0,100) >= _fertileChance>> 
-			<<set _mom.fertility-->>
-			<<set _mom.stress += 5>>
-			<<set _mom.trauma += 1>>
-			<br>@@.cyan;Why special place hurties?@@
-		<</if>> /* Close fertilty drop test */
-	<<else>>
-		/* 0 fertility left */
-		<<set _mom.stress += 50>>
-		<<set _mom.trauma += 5>>
-		<br>@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
-	<</if>> /* Close fertilty > 0 test */
+			<<run console.log("Birth test 4: " + _diff)>>
+		
+			<<set _stillbirth = false>>
+			
+			/* Random based on fertility: */
+			<<if random(0, 100) >= _diff>>
+				<<set _stillbirth = true>>
+			<</if>>
+			
+			/* bad gene trifect 1: */
+			<<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
+				<<set _stillbirth = true>>
+			<</if>>
 	
-	/* Update the mom: */
-	<<set _mom.litter = 0>>
-	<<set _mom.dueDate = -1>>
-	<<set _mom.pregnant = false>>
-	<<set _mom.pregnantBy = -1>>
-	<<set _mom.nursingTime = $week + 5>>
-	<<set _mom.nursingMax = _mom.nursing>>
-	<<set _mom.nursingMax -= random(0,1)>>			
+			/* bad gene trifect 2: */
+			<<if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &&$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
+				<<set _stillbirth = true>>
+			<</if>>
 	
-	/* Save changes to mom and dad*/ 
-	<<if _mom.ID == $globalFluffies[_mom.ID].ID>> 
-		<<set $globalFluffies[_mom.ID] = _mom>>
-	<<else>>
-		<<run console.log("eventBirth - invalid mom ID: " + _mom.ID + ". Should be " + $globalFluffies[_mom.ID].ID)>>
-		<<set _mom.ID = $globalFluffies[_mom.ID].ID>>
-		<<set $globalFluffies[_mom.ID] = _mom>>
-	<</if>>
+			/* bad gene trifect 3: */
+			<<if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) && $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
+				<<set _stillbirth = true>>
+			<</if>>
+		
+			/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
+			<<if _stillbirth>>
+				<br>Foal#<<print _fo+1>> is a stillborn <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.	
+				<br>@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
+				<<set _mom.stress += 25>>
+				<<set _mom.trauma += 1>>
+				<br>
+				<br>
+				<hr>
+					
+				<<run console.log("Birth test 5: " + _diff)>>
+		
+			<<else>>
+		
+				<<run console.log("Birth test 6: " + _diff)>>
+				/* Set any traits from bad genes: */
+				<<setGeneTraits>>
 	
-	<<if _dad.ID == $globalFluffies[_dad.ID].ID>> 
-		<<set $globalFluffies[_dad.ID] = _dad>>
-	<<else>>
-		<<run console.log("eventBirth - invalid _dad ID: " + _dad.ID + ". Should be " + $globalFluffies[_dad.ID].ID)>>
-		<<set _dad.ID = $globalFluffies[_dad.ID].ID>>
-		<<set $globalFluffies[_dad.ID] = _dad>>
-	<</if>>
 	
-	 	
-	/*<</for>>*/ /* Close birth event loop */
-	 <</capture>>
+	
+	
+				/* Print the foal info */	
+				<<set _line = "Foal" + (_fo+1) + " [Click to Expand/Collapse]">>
+				/*<<set _line = "Foal# " + (_fo+1)>>*/
+				<<set _section = "section" + _fo>>
+				<<set _sectionP = "#section" + _fo>>
+				<<link _line>><<toggleclass _sectionP "hidden">><</link>>
+				<div @id="_line"></div>
+				<div @id="_section" class="hidden">
+					<<FluffyDesc>>
+				</div>
+				<hr>
+		
+		
+				/* Save it */
+				<<set $activeFluffy.ageWeeks = 0>>
+				<<set $activeFluffy.ID = $globalFluffies.length>>
+				/*<<set $activeFluffy.name += " " + $globalFluffies.length>>*/
+				
+				<<if $nameType === "ordinal">>
+					<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+				<</if>>
+				<<set _mom.children.push($activeFluffy.ID)>>
+				<<set _dad.children.push($activeFluffy.ID)>>
+	
+				<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+				<<run $globalFluffies.push($activeFluffy)>>
+					
+				<<set $ourStore.foals++>>
+					
+				<<set _mom.nursing++>>
+				<<set _mom.stress += 5>>
+				
+				<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
+					/* Push to event stack  */
+					<<run $eventList.push( { target: $activeFluffy.ID, type: "Rejection" } )>>
+				<</if>> 
+	
+				
+			<</if>> /* Close stillbirth test */
+	
+		<</for>> /* Close litter itteration */
+		
+		<<run console.log("Birth test 7: " + $globalFluffies.length)>>
+		
+		/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count */
+		<<if _mom.fertility > 0>>
+			<<set _fertileChance = _mom.litter>>
+			<<set _fertileChance += _mom.children.length>>
+			<<set _fertileChance = 3 * _fertileChance>>
+			
+			/* Test for fertility drop */
+			<<if random(0,100) >= _fertileChance>> 
+				<<set _mom.fertility-->>
+				<<set _mom.stress += 5>>
+				<<set _mom.trauma += 1>>
+				<br>@@.cyan;Why special place hurties?@@
+			<</if>> /* Close fertilty drop test */
+		<<else>>
+			/* 0 fertility left */
+			<<set _mom.stress += 50>>
+			<<set _mom.trauma += 5>>
+			<br>@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+		<</if>> /* Close fertilty > 0 test */
+		
+		/* Update the mom: */
+		<<set _mom.litter = 0>>
+		<<set _mom.dueDate = -1>>
+		<<set _mom.pregnant = false>>
+		<<set _mom.pregnantBy = -1>>
+		<<set _mom.nursingTime = $week + 5>>
+		<<set _mom.nursingMax = _mom.nursing>>
+		<<set _mom.nursingMax -= random(0,1)>>			
+		
+		/* Save changes to mom and dad*/ 
+		<<if _mom.ID == $globalFluffies[_mom.ID].ID>> 
+			<<set $globalFluffies[_mom.ID] = _mom>>
+		<<else>>
+			<<run console.log("eventBirth - invalid mom ID: " + _mom.ID + ". Should be " + $globalFluffies[_mom.ID].ID)>>
+			<<set _mom.ID = $globalFluffies[_mom.ID].ID>>
+			<<set $globalFluffies[_mom.ID] = _mom>>
+		<</if>>
+		
+		<<if _dad.ID == $globalFluffies[_dad.ID].ID>> 
+			<<set $globalFluffies[_dad.ID] = _dad>>
+		<<else>>
+			<<run console.log("eventBirth - invalid _dad ID: " + _dad.ID + ". Should be " + $globalFluffies[_dad.ID].ID)>>
+			<<set _dad.ID = $globalFluffies[_dad.ID].ID>>
+			<<set $globalFluffies[_dad.ID] = _dad>>
+		<</if>>
+	
+	<</capture>>
 	 
 	<<set $nextButton = "Continue">>
 	<<set $nextLink = "Event Main">>

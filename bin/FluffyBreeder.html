@@ -4288,7 +4288,7 @@ function subSortAccFunc(type) {
 	
 	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
 
-&lt;&lt;elseif ndef _mom&gt;&gt;&gt;
+&lt;&lt;elseif ndef _mom&gt;&gt;
 	/* Shouldn&#39;t happen, but just in case*/
 	&lt;&lt;run console.log(&quot;Birth test 3: Skipped due to invalid mother.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -4307,161 +4307,159 @@ function subSortAccFunc(type) {
 	
 	&lt;&lt;run console.log(&quot;Birth test 3: &quot; + _mom.litter)&gt;&gt;
 	&lt;&lt;capture _fo, _section, _sectionP, _line&gt;&gt;
-	
-	&lt;&lt;for _fo = 0; _fo &lt; _mom.litter; _fo++&gt;&gt;
 		
-		/* Base chance for still births is based on the mare&#39;s fertility and number of prior children */
-		&lt;&lt;if _mom.fertility &lt; 1&gt;&gt;
-			&lt;&lt;set _diff = 35 - _mom.children.length&gt;&gt;
-		&lt;&lt;elseif _mom.fertility &lt; 2&gt;&gt;
-			&lt;&lt;set _diff = 55 - _mom.children.length&gt;&gt;
-		&lt;&lt;elseif _mom.fertility &lt; 3&gt;&gt;
-			&lt;&lt;set _diff = 75 - _mom.children.length&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _diff = 95 - _mom.children.length&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;for _fo = 0; _fo &lt; _mom.litter; _fo++&gt;&gt;
 		
-		/* Creates a new fluffy as $activeFluffy */
-		&lt;&lt;breedFluffies _mom _dad&gt;&gt;
-	
-	&lt;&lt;run console.log(&quot;Birth test 4: &quot; + _diff)&gt;&gt;
-	
-		&lt;&lt;set _stillbirth = false&gt;&gt;
-		
-		/* Random based on fertility: */
-		&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
-			&lt;&lt;set _stillbirth = true&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		/* bad gene trifect 1: */
-		&lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
-			&lt;&lt;set _stillbirth = true&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* bad gene trifect 2: */
-		&lt;&lt;if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &amp;&amp;$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
-			&lt;&lt;set _stillbirth = true&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* bad gene trifect 3: */
-		&lt;&lt;if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
-			&lt;&lt;set _stillbirth = true&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	
-		/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
-		&lt;&lt;if _stillbirth&gt;&gt;
-			&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
-			&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
-			&lt;&lt;set _mom.stress += 25&gt;&gt;
-			&lt;&lt;set _mom.trauma += 1&gt;&gt;
-			&lt;br&gt;
-			&lt;br&gt;
-			&lt;hr&gt;
-			
-	&lt;&lt;run console.log(&quot;Birth test 5: &quot; + _diff)&gt;&gt;
-	
-		&lt;&lt;else&gt;&gt;
-	
-	&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
-			/* Set any traits from bad genes: */
-			&lt;&lt;setGeneTraits&gt;&gt;
-
-
-
-
-			/* Print the foal info */	
-			&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Collapse]&quot;&gt;&gt;
-			/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
-			&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
-			&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
-			&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
-			&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
-			&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
-				&lt;&lt;FluffyDesc&gt;&gt;
-			&lt;/div&gt;
-			&lt;hr&gt;
-	
-	
-			/* Save it */
-			&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-			/*&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;*/
-			
-			&lt;&lt;if $nameType === &quot;ordinal&quot;&gt;&gt;
-				&lt;&lt;set $activeFluffy.name = ($ordinalString + &quot; &quot; + $globalFluffies.length)&gt;&gt;
+			/* Base chance for still births is based on the mare&#39;s fertility and number of prior children */
+			&lt;&lt;if _mom.fertility &lt; 1&gt;&gt;
+				&lt;&lt;set _diff = 35 - _mom.children.length&gt;&gt;
+			&lt;&lt;elseif _mom.fertility &lt; 2&gt;&gt;
+				&lt;&lt;set _diff = 55 - _mom.children.length&gt;&gt;
+			&lt;&lt;elseif _mom.fertility &lt; 3&gt;&gt;
+				&lt;&lt;set _diff = 75 - _mom.children.length&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set _diff = 95 - _mom.children.length&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;set _mom.children.push($activeFluffy.ID)&gt;&gt;
-			&lt;&lt;set _dad.children.push($activeFluffy.ID)&gt;&gt;
-
-			&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
-			&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-				
-			&lt;&lt;set $ourStore.foals++&gt;&gt;
-				
-			&lt;&lt;set _mom.nursing++&gt;&gt;
-			&lt;&lt;set _mom.stress += 5&gt;&gt;
 			
-			&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
-				/* Push to event stack  */
-				&lt;&lt;run $eventList.push( { target: $activeFluffy.ID, type: &quot;Rejection&quot; } )&gt;&gt;
-			&lt;&lt;/if&gt;&gt; 
-
-			
-		&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
-	
-	&lt;&lt;/for&gt;&gt; /* Close litter itteration */
-	
-	&lt;&lt;run console.log(&quot;Birth test 7: &quot; + $globalFluffies.length)&gt;&gt;
-	
-	/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count */
-	&lt;&lt;if _mom.fertility &gt; 0&gt;&gt;
-		&lt;&lt;set _fertileChance = _mom.litter&gt;&gt;
-		&lt;&lt;set _fertileChance += _mom.children.length&gt;&gt;
-		&lt;&lt;set _fertileChance = 3 * _fertileChance&gt;&gt;
+			/* Creates a new fluffy as $activeFluffy */
+			&lt;&lt;breedFluffies _mom _dad&gt;&gt;
 		
-		/* Test for fertility drop */
-		&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
-			&lt;&lt;set _mom.fertility--&gt;&gt;
-			&lt;&lt;set _mom.stress += 5&gt;&gt;
-			&lt;&lt;set _mom.trauma += 1&gt;&gt;
-			&lt;br&gt;@@.cyan;Why special place hurties?@@
-		&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
-	&lt;&lt;else&gt;&gt;
-		/* 0 fertility left */
-		&lt;&lt;set _mom.stress += 50&gt;&gt;
-		&lt;&lt;set _mom.trauma += 5&gt;&gt;
-		&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
-	&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
+			&lt;&lt;run console.log(&quot;Birth test 4: &quot; + _diff)&gt;&gt;
+		
+			&lt;&lt;set _stillbirth = false&gt;&gt;
+			
+			/* Random based on fertility: */
+			&lt;&lt;if random(0, 100) &gt;= _diff&gt;&gt;
+				&lt;&lt;set _stillbirth = true&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			
+			/* bad gene trifect 1: */
+			&lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
+				&lt;&lt;set _stillbirth = true&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 	
-	/* Update the mom: */
-	&lt;&lt;set _mom.litter = 0&gt;&gt;
-	&lt;&lt;set _mom.dueDate = -1&gt;&gt;
-	&lt;&lt;set _mom.pregnant = false&gt;&gt;
-	&lt;&lt;set _mom.pregnantBy = -1&gt;&gt;
-	&lt;&lt;set _mom.nursingTime = $week + 5&gt;&gt;
-	&lt;&lt;set _mom.nursingMax = _mom.nursing&gt;&gt;
-	&lt;&lt;set _mom.nursingMax -= random(0,1)&gt;&gt;			
+			/* bad gene trifect 2: */
+			&lt;&lt;if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &amp;&amp;$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
+				&lt;&lt;set _stillbirth = true&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 	
-	/* Save changes to mom and dad*/ 
-	&lt;&lt;if _mom.ID == $globalFluffies[_mom.ID].ID&gt;&gt; 
-		&lt;&lt;set $globalFluffies[_mom.ID] = _mom&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;run console.log(&quot;eventBirth - invalid mom ID: &quot; + _mom.ID + &quot;. Should be &quot; + $globalFluffies[_mom.ID].ID)&gt;&gt;
-		&lt;&lt;set _mom.ID = $globalFluffies[_mom.ID].ID&gt;&gt;
-		&lt;&lt;set $globalFluffies[_mom.ID] = _mom&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+			/* bad gene trifect 3: */
+			&lt;&lt;if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) &amp;&amp; $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
+				&lt;&lt;set _stillbirth = true&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		
+			/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
+			&lt;&lt;if _stillbirth&gt;&gt;
+				&lt;br&gt;Foal#&lt;&lt;print _fo+1&gt;&gt; is a stillborn &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.	
+				&lt;br&gt;@@.cyan;Babeh?  Why no chiwp?  Babeh need milkies...huhuhu am worstest mumma...@@
+				&lt;&lt;set _mom.stress += 25&gt;&gt;
+				&lt;&lt;set _mom.trauma += 1&gt;&gt;
+				&lt;br&gt;
+				&lt;br&gt;
+				&lt;hr&gt;
+					
+				&lt;&lt;run console.log(&quot;Birth test 5: &quot; + _diff)&gt;&gt;
+		
+			&lt;&lt;else&gt;&gt;
+		
+				&lt;&lt;run console.log(&quot;Birth test 6: &quot; + _diff)&gt;&gt;
+				/* Set any traits from bad genes: */
+				&lt;&lt;setGeneTraits&gt;&gt;
 	
-	&lt;&lt;if _dad.ID == $globalFluffies[_dad.ID].ID&gt;&gt; 
-		&lt;&lt;set $globalFluffies[_dad.ID] = _dad&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;run console.log(&quot;eventBirth - invalid _dad ID: &quot; + _dad.ID + &quot;. Should be &quot; + $globalFluffies[_dad.ID].ID)&gt;&gt;
-		&lt;&lt;set _dad.ID = $globalFluffies[_dad.ID].ID&gt;&gt;
-		&lt;&lt;set $globalFluffies[_dad.ID] = _dad&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
 	
-	 	
-	/*&lt;&lt;/for&gt;&gt;*/ /* Close birth event loop */
-	 &lt;&lt;/capture&gt;&gt;
+	
+	
+				/* Print the foal info */	
+				&lt;&lt;set _line = &quot;Foal&quot; + (_fo+1) + &quot; [Click to Expand/Collapse]&quot;&gt;&gt;
+				/*&lt;&lt;set _line = &quot;Foal# &quot; + (_fo+1)&gt;&gt;*/
+				&lt;&lt;set _section = &quot;section&quot; + _fo&gt;&gt;
+				&lt;&lt;set _sectionP = &quot;#section&quot; + _fo&gt;&gt;
+				&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
+				&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
+				&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
+					&lt;&lt;FluffyDesc&gt;&gt;
+				&lt;/div&gt;
+				&lt;hr&gt;
+		
+		
+				/* Save it */
+				&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+				&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+				/*&lt;&lt;set $activeFluffy.name += &quot; &quot; + $globalFluffies.length&gt;&gt;*/
+				
+				&lt;&lt;if $nameType === &quot;ordinal&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.name = ($ordinalString + &quot; &quot; + $globalFluffies.length)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;set _mom.children.push($activeFluffy.ID)&gt;&gt;
+				&lt;&lt;set _dad.children.push($activeFluffy.ID)&gt;&gt;
+	
+				&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+				&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+					
+				&lt;&lt;set $ourStore.foals++&gt;&gt;
+					
+				&lt;&lt;set _mom.nursing++&gt;&gt;
+				&lt;&lt;set _mom.stress += 5&gt;&gt;
+				
+				&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+					/* Push to event stack  */
+					&lt;&lt;run $eventList.push( { target: $activeFluffy.ID, type: &quot;Rejection&quot; } )&gt;&gt;
+				&lt;&lt;/if&gt;&gt; 
+	
+				
+			&lt;&lt;/if&gt;&gt; /* Close stillbirth test */
+	
+		&lt;&lt;/for&gt;&gt; /* Close litter itteration */
+		
+		&lt;&lt;run console.log(&quot;Birth test 7: &quot; + $globalFluffies.length)&gt;&gt;
+		
+		/* We have a 2% chance to loose fertility per child we&#39;ve had, plus 2% for each child in the current litter count */
+		&lt;&lt;if _mom.fertility &gt; 0&gt;&gt;
+			&lt;&lt;set _fertileChance = _mom.litter&gt;&gt;
+			&lt;&lt;set _fertileChance += _mom.children.length&gt;&gt;
+			&lt;&lt;set _fertileChance = 3 * _fertileChance&gt;&gt;
+			
+			/* Test for fertility drop */
+			&lt;&lt;if random(0,100) &gt;= _fertileChance&gt;&gt; 
+				&lt;&lt;set _mom.fertility--&gt;&gt;
+				&lt;&lt;set _mom.stress += 5&gt;&gt;
+				&lt;&lt;set _mom.trauma += 1&gt;&gt;
+				&lt;br&gt;@@.cyan;Why special place hurties?@@
+			&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
+		&lt;&lt;else&gt;&gt;
+			/* 0 fertility left */
+			&lt;&lt;set _mom.stress += 50&gt;&gt;
+			&lt;&lt;set _mom.trauma += 5&gt;&gt;
+			&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+		&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
+		
+		/* Update the mom: */
+		&lt;&lt;set _mom.litter = 0&gt;&gt;
+		&lt;&lt;set _mom.dueDate = -1&gt;&gt;
+		&lt;&lt;set _mom.pregnant = false&gt;&gt;
+		&lt;&lt;set _mom.pregnantBy = -1&gt;&gt;
+		&lt;&lt;set _mom.nursingTime = $week + 5&gt;&gt;
+		&lt;&lt;set _mom.nursingMax = _mom.nursing&gt;&gt;
+		&lt;&lt;set _mom.nursingMax -= random(0,1)&gt;&gt;			
+		
+		/* Save changes to mom and dad*/ 
+		&lt;&lt;if _mom.ID == $globalFluffies[_mom.ID].ID&gt;&gt; 
+			&lt;&lt;set $globalFluffies[_mom.ID] = _mom&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run console.log(&quot;eventBirth - invalid mom ID: &quot; + _mom.ID + &quot;. Should be &quot; + $globalFluffies[_mom.ID].ID)&gt;&gt;
+			&lt;&lt;set _mom.ID = $globalFluffies[_mom.ID].ID&gt;&gt;
+			&lt;&lt;set $globalFluffies[_mom.ID] = _mom&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		
+		&lt;&lt;if _dad.ID == $globalFluffies[_dad.ID].ID&gt;&gt; 
+			&lt;&lt;set $globalFluffies[_dad.ID] = _dad&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run console.log(&quot;eventBirth - invalid _dad ID: &quot; + _dad.ID + &quot;. Should be &quot; + $globalFluffies[_dad.ID].ID)&gt;&gt;
+			&lt;&lt;set _dad.ID = $globalFluffies[_dad.ID].ID&gt;&gt;
+			&lt;&lt;set $globalFluffies[_dad.ID] = _dad&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;/capture&gt;&gt;
 	 
 	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
@@ -4485,7 +4483,7 @@ function subSortAccFunc(type) {
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 &lt;&lt;set $nextButton = &quot; &quot;&gt;&gt;
 
-&lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
+&lt;&lt;if ndef $activeFluffy&gt;&gt;
 	/* Shouldn&#39;t happen, but just in case*/
 	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to invalid/missing fluffy.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -5347,36 +5345,13 @@ button {
 &lt;&lt;else&gt;&gt;
 	
 	/* no events fired*/
-	/*&lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;*/
-	/*&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;*/
 	&lt;&lt;goto &quot;Week Save&quot;&gt;&gt;
 	
 &lt;&lt;/if&gt;&gt; /* Close event list */
 
 
-/*
-&lt;&lt;if $eventCustomer.length&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer test 1:  going to event page&quot;)&gt;&gt;
-	&lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;
-&lt;&lt;elseif $eventMating.length&gt;&gt;
-&lt;&lt;run console.log(&quot;Mating test 1:  going to mating event page&quot;)&gt;&gt;
-	&lt;&lt;goto &quot;Event Mating&quot;&gt;&gt;
-&lt;&lt;elseif $eventBirths.length&gt;&gt;
-&lt;&lt;run console.log(&quot;Birth test 1:  going to birth event page&quot;)&gt;&gt;
-	&lt;&lt;goto &quot;Event Birth&quot;&gt;&gt;
-&lt;&lt;elseif $eventBirthRejection.length&gt;&gt;
-&lt;&lt;run console.log(&quot;Rejection test 1:  going to birth event page&quot;)&gt;&gt;
-	&lt;&lt;goto &quot;Event Birth Rejection&quot;&gt;&gt;
-*/
 
-
-
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Week Save][$showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;]]
-
-/* 
-&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
-&lt;&lt;set $nextLink = &quot;Week Start&quot;&gt;&gt;
-*/</tw-passagedata><tw-passagedata pid="7" name="Event Mating" tags="nobr" position="850,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Week Save][$showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;]]</tw-passagedata><tw-passagedata pid="7" name="Event Mating" tags="nobr" position="850,100" size="100,100">/* **********
  * eventMating.tw
  *
  * Package: FluffyBreeder
@@ -5395,12 +5370,12 @@ button {
 &lt;&lt;set _dad = $globalFluffies[_mom.specialFriend]&gt;&gt;
 &lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
 
-&lt;&lt;if ndef _dad&gt;&gt;&gt;
+&lt;&lt;if ndef _dad&gt;&gt;
 	/* Father was removed in a prior event. */
 	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to invalid/missing father.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
-&lt;&lt;elseif ndef _mom&gt;&gt;&gt;
+&lt;&lt;elseif ndef _mom&gt;&gt;
 	/* Shouldn&#39;t happen, but just in case*/
 	&lt;&lt;run console.log(&quot;Mating test 3: Skipped due to invalid mother.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -5487,7 +5462,7 @@ button {
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 
-&lt;&lt;if ndef $activeFluffy&gt;&gt;&gt;
+&lt;&lt;if ndef $activeFluffy&gt;&gt;
 	/* Shouldn&#39;t happen, but just in case*/
 	&lt;&lt;run console.log(&quot;Rejection test 3: Skipped due to invalid/missing fluffy.&quot;)&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -5698,7 +5673,7 @@ button {
 		&lt;&lt;run console.log(&quot;Smarty Test 5: Kill it&quot;)&gt;&gt;
 		&lt;&lt;set $hugbox++&gt;&gt;
 
-		&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead == true&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead = true&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].onDisplay = false&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].pregnant = false&gt;&gt;
 
@@ -6142,7 +6117,7 @@ Fluffy Breeder //version $ver//.
 &lt;br&gt;
 &lt;br&gt;Code/Design extremely influenced by Free Cities (Copyright (C) 2017 freecitiesdev)
 &lt;br&gt;
-&lt;br&gt;Base genetic code code from https://github.com/armatronic
+&lt;br&gt;Base genetic code from https://github.com/armatronic
 &lt;br&gt;
 &lt;br&gt;This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
 &lt;br&gt;
@@ -6283,7 +6258,7 @@ This list shows all fluffies in your store that are not on display (up for sale)
 &lt;br&gt;More detailed sorting options are planned.
 &lt;br&gt;
 &lt;br&gt;There are options to select/deslect all, as well as buttons to set the sale status and feeding type for all selected fluffies.
-&lt;br&gt;Fluffys can be selected by the checkbox the the left of there description or by clicking anywhere in the description.
+&lt;br&gt;Fluffys can be selected by the checkbox to the left of there description or by clicking anywhere in the description.
 &lt;br&gt;
 &lt;br&gt;The &lt;&lt;button &quot;Bulk Sell&quot;&gt;&gt;&lt;&lt;/button&gt;&gt; button will put all selected fluffies on display (for sale), but will ignore unweaned foals, nursing and pregnant mothers.
 &lt;br&gt;There will eventually be support for selling nursing foals/pregnant mothers. 
@@ -6327,7 +6302,7 @@ Fluffies come in a number of colors, some more common or popular than others.  F
 &lt;br&gt;Colors fall into 6 tiers, with 1 being the least valuable and 6 the most.  Colors give a multiplier to the price of a fluffy, and get a bonus if the colors Match (same color group), are identical (same color exactly) or are in a complimentary color group.  Eyes have a minor increase in value, coat has the highest value impact.  
 &lt;br&gt;
 &lt;br&gt;
-&lt;&lt;click &quot;Color Chart [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section1&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt;
+&lt;&lt;link &quot;Color Chart [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section1&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
 &lt;div id=&quot;section1&quot; class=&quot;hidden&quot;&gt;
 	&lt;table&gt;
 		&lt;tr&gt;
@@ -6469,7 +6444,7 @@ This controls the adult body length, in cm.
 &lt;br&gt;
 &lt;br&gt;All genes are ‘co-dominate’, so there are 8 phenotype combinations
 &lt;br&gt;
-&lt;&lt;click &quot;Length Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_length&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt;
+&lt;&lt;link &quot;Length Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_length&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
 &lt;div id=&quot;section_length&quot; class=&quot;hidden&quot;&gt;
 Genes       Length (cm)
 [ A b c ]     39-40
@@ -6489,7 +6464,7 @@ This gene controls the ‘height multiplier’, which is multiplied by the Lengt
 &lt;br&gt;This is defined as genes 4 and 5, and has the format &quot;E/e;F/f;&quot;.
 &lt;br&gt;The “E/e” gene is ‘co-dominate’, while the “F/f” gene is ‘incomplete dominant’, so there are 6 phenotype combinations.
 &lt;br&gt;
-&lt;&lt;click &quot;Height Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_height&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt;
+&lt;&lt;link &quot;Height Gene [Click to Expand/Collapse]&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section_height&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
 &lt;div id=&quot;section_height&quot; class=&quot;hidden&quot;&gt;
 Genes       Height multiplier
 [ e f  ]     0.65-0.67
@@ -6698,9 +6673,9 @@ Genes       Height multiplier
 
 
 	/* Logic check if mother is no longer in the store: */
-	&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.contains($globalFluffies[_ef].mother) == false&gt;&gt;
+	&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.includes($globalFluffies[_ef].mother) == false&gt;&gt;
 		&lt;br&gt;&lt;&lt;- $globalFluffies[_ef].name&gt;&gt; can&#39;t find it&#39;s mother!
-		&lt;&lt;set $globalFluffies[_ef].foodType == &quot;Nothing&quot;&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].foodType = &quot;Nothing&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Growth test -2: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 	/* ***
@@ -7877,6 +7852,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	&lt;&lt;set _cosMulti = 1.25&gt;&gt;
 	&lt;&lt;case 2&gt;&gt;
 	&lt;&lt;set _cosMulti = 1.75&gt;&gt;
+	
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;set $basePrice = { earthy: 0.50, unicorn: 0.75, pegasus: 0.75, alicorn: Number(2 + (($alicornMonster + $alicornRarity) / 4)).toFixed(2) }&gt;&gt;
@@ -9067,8 +9043,7 @@ profitsTotal: 0
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;set $ourStore.mares++&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-					
-					&lt;&lt;replace &quot;#fluffy-count&quot;&gt;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+
 			  	&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
 			
@@ -9180,8 +9155,7 @@ profitsTotal: 0
 	 	&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
 		&lt;&lt;run console.log(&quot;Fluffy shopping gene defect test: [&quot; + _ri + &quot;] &quot;+ $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 	 
-	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3)
-	 	 &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
+	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
 	 	 	&lt;&lt;run console.log(&quot;Fluffy shopping gene defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
 	 	 	
 	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
@@ -9380,145 +9354,7 @@ profitsTotal: 0
 		&lt;hr&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="29" name="Buy Food" tags="nobr" position="1100,350" size="100,100">/* **********
- * Buy Food.tw
- *
- * Package: FluffyBreeder
- * Format: Twine2 (Sugarcube 2)
- *
- * Buys food stocks for the store
- *
- *	TODO: ALPHA: Limit what you can buy based on the storage level of your shop.
- *
- *********** */
-
-&lt;&lt;set $nextButton to &quot;End Shopping&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
-
-&lt;span id=&quot;cash-line&quot;&gt;You have ¤$cash to spend, but will need to save some for weekly expenses.&lt;/span&gt;
-&lt;br&gt;
-&lt;&lt;if ($ourStore.foals + $ourStore.mares + $ourStore.stallions) == 0&gt;&gt;
-&lt;&lt;elseif ($ourStore.foals + $ourStore.mares + $ourStore.stallions) == 1&gt;&gt;
-	You have one fluffy.
-&lt;&lt;elseif ($ourStore.foals + $ourStore.mares + $ourStore.stallions) &gt; 1&gt;&gt;
-	You have &lt;&lt;print ($ourStore.foals + $ourStore.mares + $ourStore.stallions)&gt;&gt; fluffies.
-&lt;&lt;/if&gt;&gt;
-
-/* ***
- *	Each food category expands on a click, displaying the different types.
- *	You can buy 1, 10 or 100 of each.
- *
- *	Again, this is a section that should be more compact with macros, but I could not find a way due to differing variable names.
- *	
- *** */
- 
- /* Kibble feed */
-&lt;br&gt;
-&lt;br&gt;
-&lt;&lt;click &quot;Kibble&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section1&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt; &lt;span id=&quot;kibble-amount&quot;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;/span&gt;
-&lt;div id=&quot;section1&quot; class=&quot;hidden&quot;&gt;
-&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trash Kibble (¤$foodPrice.kibble.trash each): &lt;span id=&quot;buy-trash-kibble&quot;&gt;&lt;&lt;print $food.kibble.trash&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.trash * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.trash * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.trash++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.trash * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.trash * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.trash += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.trash * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.trash * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.trash += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Cheap Kibble (¤$foodPrice.kibble.cheap each): &lt;span id=&quot;buy-cheap-kibble&quot;&gt;&lt;&lt;print $food.kibble.cheap&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.cheap * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.cheap * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.cheap++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.cheap * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.cheap * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.cheap += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.cheap * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.cheap * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.cheap += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic Kibble (¤$foodPrice.kibble.basic each): &lt;span id=&quot;buy-basic-kibble&quot;&gt;&lt;&lt;print $food.kibble.basic&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.basic * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.basic * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.basic++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.basic * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.basic * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.basic += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.basic * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.basic * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.basic += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Good Kibble (¤$foodPrice.kibble.good each): &lt;span id=&quot;buy-good-kibble&quot;&gt;&lt;&lt;print $food.kibble.good&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.good * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.good * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.good++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.good * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.good * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.good += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.good * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.good * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.good += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Quality Kibble (¤$foodPrice.kibble.quality each): &lt;span id=&quot;buy-quality-kibble&quot;&gt;&lt;&lt;print $food.kibble.quality&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.quality * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.quality * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.quality++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.quality * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.quality * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.quality += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.kibble.quality * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.kibble.quality * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.kibble.quality += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-kibble&quot;&gt;&gt;&lt;&lt;print $food.kibble.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#kibble-amount&quot;&gt;&gt;&lt;&lt;print ($food.kibble.trash + $food.kibble.cheap + $food.kibble.basic + $food.kibble.good + $food.kibble.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;/div&gt;
-
-/* Formula, needed to hand raise foals */
-&lt;br&gt;
-&lt;&lt;click &quot;Formula&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section2&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt; &lt;span id=&quot;formula-amount&quot;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;/span&gt;
-&lt;div id=&quot;section2&quot; class=&quot;hidden&quot;&gt;
-&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trash formula (¤$foodPrice.formula.trash each): &lt;span id=&quot;buy-trash-formula&quot;&gt;&lt;&lt;print $food.formula.trash&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.trash * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.trash * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.trash++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.trash * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.trash * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.trash += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.trash * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.trash * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.trash += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Cheap formula (¤$foodPrice.formula.cheap each): &lt;span id=&quot;buy-cheap-formula&quot;&gt;&lt;&lt;print $food.formula.cheap&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.cheap * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.cheap * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.cheap++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.cheap * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.cheap * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.cheap += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.cheap * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.cheap * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.cheap += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic formula (¤$foodPrice.formula.basic each): &lt;span id=&quot;buy-basic-formula&quot;&gt;&lt;&lt;print $food.formula.basic&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.basic * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.basic * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.basic++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.basic * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.basic * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.basic += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.basic * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.basic * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.basic += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Good formula (¤$foodPrice.formula.good each): &lt;span id=&quot;buy-good-formula&quot;&gt;&lt;&lt;print $food.formula.good&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.good * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.good * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.good++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.good * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.good * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.good += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.good * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.good * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.good += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Quality formula (¤$foodPrice.formula.quality each): &lt;span id=&quot;buy-quality-formula&quot;&gt;&lt;&lt;print $food.formula.quality&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.quality * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.quality * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.quality++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.quality * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.quality * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.quality += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.formula.quality * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.formula.quality * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.formula.quality += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-formula&quot;&gt;&gt;&lt;&lt;print $food.formula.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#formula-amount&quot;&gt;&gt;&lt;&lt;print ($food.formula.trash + $food.formula.cheap + $food.formula.basic + $food.formula.good + $food.formula.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;/div&gt;
-
-/* Greens (grass and vegitables) */
-&lt;br&gt;
-&lt;&lt;click &quot;Greens&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section3&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt; &lt;span id=&quot;greens-amount&quot;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;/span&gt;
-&lt;div id=&quot;section3&quot; class=&quot;hidden&quot;&gt;
-&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trash greens (¤$foodPrice.greens.trash each): &lt;span id=&quot;buy-trash-greens&quot;&gt;&lt;&lt;print $food.greens.trash&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.trash * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.trash * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.trash++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.trash * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.trash * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.trash += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.trash * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.trash * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.trash += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Cheap greens (¤$foodPrice.greens.cheap each): &lt;span id=&quot;buy-cheap-greens&quot;&gt;&lt;&lt;print $food.greens.cheap&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.cheap * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.cheap * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.cheap++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.cheap * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.cheap * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.cheap += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.cheap * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.cheap * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.cheap += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic greens (¤$foodPrice.greens.basic each): &lt;span id=&quot;buy-basic-greens&quot;&gt;&lt;&lt;print $food.greens.basic&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.basic * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.basic * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.basic++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.basic * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.basic * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.basic += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.basic * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.basic * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.basic += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Good greens (¤$foodPrice.greens.good each): &lt;span id=&quot;buy-good-greens&quot;&gt;&lt;&lt;print $food.greens.good&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.good * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.good * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.good++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.good * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.good * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.good += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.good * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.good * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.good += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Quality greens (¤$foodPrice.greens.quality each): &lt;span id=&quot;buy-quality-greens&quot;&gt;&lt;&lt;print $food.greens.quality&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.quality * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.quality * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.quality++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.quality * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.quality * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.quality += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.greens.quality * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.greens.quality * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.greens.quality += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-greens&quot;&gt;&gt;&lt;&lt;print $food.greens.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#greens-amount&quot;&gt;&gt;&lt;&lt;print ($food.greens.trash + $food.greens.cheap + $food.greens.basic + $food.greens.good + $food.greens.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;/div&gt;
-
-/* Spagetti */
-&lt;br&gt;
-&lt;&lt;click &quot;Sketti&quot;&gt;&gt;&lt;&lt;toggleclass &quot;#section4&quot; &quot;hidden&quot;&gt;&gt;&lt;&lt;/click&gt;&gt; &lt;span id=&quot;sketti-amount&quot;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;/span&gt;
-&lt;div id=&quot;section4&quot; class=&quot;hidden&quot;&gt;
-&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Trash sketti (¤$foodPrice.sketti.trash each): &lt;span id=&quot;buy-trash-sketti&quot;&gt;&lt;&lt;print $food.sketti.trash&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.trash * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.trash * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.trash++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.trash * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.trash * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.trash += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.trash * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.trash * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.trash += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-trash-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.trash&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Cheap sketti (¤$foodPrice.sketti.cheap each): &lt;span id=&quot;buy-cheap-sketti&quot;&gt;&lt;&lt;print $food.sketti.cheap&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.cheap * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.cheap * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.cheap++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.cheap * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.cheap * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.cheap += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.cheap * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.cheap * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.cheap += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-cheap-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.cheap&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Basic sketti (¤$foodPrice.sketti.basic each): &lt;span id=&quot;buy-basic-sketti&quot;&gt;&lt;&lt;print $food.sketti.basic&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.basic * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.basic * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.basic++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.basic * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.basic * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.basic += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.basic * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.basic * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.basic += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-basic-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.basic&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Good sketti (¤$foodPrice.sketti.good each): &lt;span id=&quot;buy-good-sketti&quot;&gt;&lt;&lt;print $food.sketti.good&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.good * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.good * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.good++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.good * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.good * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.good += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.good * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.good * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.good += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-good-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.good&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;br&gt;&amp;nbsp;&amp;nbsp;&amp;nbsp;&amp;nbsp;Quality sketti (¤$foodPrice.sketti.quality each): &lt;span id=&quot;buy-quality-sketti&quot;&gt;&lt;&lt;print $food.sketti.quality&gt;&gt;&lt;/span&gt;
-( &lt;&lt;link &quot;[+1]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.quality * 1)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.quality * 1)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.quality++&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+10]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.quality * 10)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.quality * 10)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.quality += 10&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; 
-| &lt;&lt;link &quot;[+100]&quot; &gt;&gt;&lt;&lt;if $cash &gt; ($foodPrice.sketti.quality * 100)&gt;&gt;&lt;&lt;set $cash -= ($foodPrice.sketti.quality * 100)&gt;&gt;&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;&lt;&lt;set $food.sketti.quality += 100&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;replace &quot;#buy-quality-sketti&quot;&gt;&gt;&lt;&lt;print $food.sketti.quality&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#cash-line&quot;&gt;&gt;You have ¤$cash left.&lt;&lt;/replace&gt;&gt;&lt;&lt;replace &quot;#sketti-amount&quot;&gt;&gt;&lt;&lt;print ($food.sketti.trash + $food.sketti.cheap + $food.sketti.basic + $food.sketti.good + $food.sketti.quality)&gt;&gt; weeks worth.&lt;&lt;/replace&gt;&gt;&lt;&lt;/link&gt;&gt; )
-&lt;/div&gt;
-
-&lt;br&gt;&lt;br&gt;
-/* Sidebar link for mobile users */
-&lt;&lt;SidebarButton&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="Buy Upgrades" tags="nobr" position="1225,350" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="29" name="Buy Upgrades" tags="nobr" position="1100,350" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -9881,7 +9717,7 @@ function closeSidebar() {
 	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
 	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
 }
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Breeding" tags="nobr" position="100,475" size="100,100">/* **********
+&lt;/script&gt;</tw-passagedata><tw-passagedata pid="30" name="Fluffy Breeding" tags="nobr" position="1225,350" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -10025,7 +9861,7 @@ function closeSidebar() {
 	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
 	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
 }
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="32" name="Fluffy Feeding" tags="nobr" position="225,475" size="100,100">/* **********
+&lt;/script&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Feeding" tags="nobr" position="100,475" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -10166,7 +10002,7 @@ function closeSidebar() {
 &lt;&lt;SidebarButton&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy Interact" tags="nobr" position="350,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="32" name="Fluffy Interact" tags="nobr" position="225,475" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -10405,7 +10241,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 				&lt;&lt;set $abuse++&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead == true&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead = true&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID].onDisplay = false&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID].pregnant = false&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID].nursing = 0&gt;&gt;
@@ -10451,7 +10287,7 @@ function closeSidebar() {
 	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
 	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
 }
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy List" tags="nobr" position="475,475" size="100,100">/* **********
+&lt;/script&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy List" tags="nobr" position="350,475" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -11178,7 +11014,7 @@ function subSortAccFunc(type) {
     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
   }
 }
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="35" name="Fluffy Selling" tags="nobr" position="600,475" size="100,100">/* **********
+&lt;/script&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -11261,7 +11097,7 @@ function subSortAccFunc(type) {
 &lt;&lt;SidebarButton&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="36" name="Gene Lab" tags="nobr" position="725,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="35" name="Gene Lab" tags="nobr" position="600,475" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -11968,7 +11804,7 @@ Inbreeding:
 &lt;br&gt;
 [[Exit the Lab|Gene Test]]
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="37" name="description widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="36" name="description widgets" tags="widget nobr" position="725,475" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -12000,7 +11836,7 @@ Inbreeding:
 
 &lt;style&gt;
 button {
-  background: coral;
+  background: coral; 
  }
 &lt;/style&gt;
 
@@ -12787,7 +12623,7 @@ button {
 	&lt;/div&gt;
 
 	&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="38" name="fluffy creation widgets" tags="widget nobr" position="975,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="37" name="fluffy creation widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -13097,7 +12933,7 @@ button {
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Breathless&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
-			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Asthmatic&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
@@ -13398,7 +13234,7 @@ button {
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set $ourStore.mares--&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="image widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="38" name="image widgets" tags="nobr widget" position="975,475" size="100,100">/* **********
  * imageWidgets.tw
  *
  * Package: FluffyBreeder
@@ -13665,7 +13501,7 @@ button {
 
 /*
 
- */</tw-passagedata><tw-passagedata pid="40" name="misc widgets" tags="nobr widget" position="1225,475" size="100,100">/* **********
+ */</tw-passagedata><tw-passagedata pid="39" name="misc widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -13780,7 +13616,7 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Call as &lt;&lt;SidebarCash&gt;
+ *	Call as &lt;&lt;SidebarCash&gt;&gt;
  *	Displays case for the sidebar
  *** */
 &lt;&lt;widget &quot;SidebarCash&quot;&gt;&gt;
@@ -14059,7 +13895,7 @@ button {
 			&lt;&lt;= &#39;&lt;img class=&quot;w3-circle responsive&quot; src=&quot;&#39; + _iconSprite + &#39;&quot;  alt=&quot;avatar&quot; style=&quot;width:75%&quot;&gt;&#39;&gt;&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="pronoun widgets" tags="widget nobr" position="100,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="pronoun widgets" tags="widget nobr" position="1225,475" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

@@ -28,8 +28,6 @@ $GREP "<<[ ]*if[^>=]*[^><\!=]=[^=][^>]*>>" -- 'src/*' | myprint "AccidentalAssig
 $GREP "<<[^\"<>]*\"[^\"<>]*>>" -- 'src/*' | myprint "MissingSpeachMark"
 # Check for missing ".  e.g.:   <<if $foo = "hello)
 $GREP "<<[^\"<>]*\([^\"<>]*\"[^><\"]*\"\| [<>] \)*\"\([^\"<>]*\"[^><\"]*\"\| [<>] \)*\([^\"<>]\| [<>] \)*>>" -- 'src/*' | myprint "MissingSpeachMark2"
-# Check for colors like: @@color:red   - should be @@.red
-$GREP -e "@@color:" --and --not -e  "@@color:rgb([0-9 ]\+,[0-9 ]\+,[0-9 ]\+)" -- "src/*" | myprint "UseCssColors"
 # Check for missing $ in activeSlave or PC
 $GREP "<<[ ]*[^\$><_\[]*\(activeSlave\|PC\)[.]"  -- "src/*" | myprint "MissingDollar"
 # Check for closing bracket without opening bracket.  e.g.:  <<if foo)>>      (but  <<case "foo")>>   is valid, so ignore those
@@ -46,7 +44,6 @@ $GREP "<<[^<>]*[^,\"\[{"$'\r]\r'"\?$" -- 'src/*' | myprint "MissingClosingAngleB
 # Check for too many >>>.  e.g.: <</if>>>
 $GREP "<<[^<>]*[<>]\?[^<>]*>>>" -- "src/*.tw" | myprint "TooManyAngleBrackets"
 # Check for wrong capitalization on 'activeslave' and other common typos
-$GREP -e "\$act" --and --not -e "\$\(activeFluffy)" -- "src/*" | myprint "WrongCapitilization"
 $GREP  "\(csae\|[a-z] She \|attepmts\|youreslf\|advnaces\)" -- 'src/*' | myprint "SpellCheck"
 # Check for strange spaces e.g.  $slaves[$i]. lips
 $GREP "\$ourStore.fluffies\[\$i\]\. " -- 'src/*' | myprint "MissingPropertyAfterSlaves"
@@ -73,7 +70,7 @@ $GREP -e "<<[a-zA-Z]* = *" -- src/*.tw | myprint "BadCommand"
 # Check for duplicate words, e.g. with with
 $GREP -e  " \(\b[a-zA-Z][a-zA-Z]\+\) \1\b " --and --not -e " her her " --and --not -e " you you " --and --not -e " that that " --and --not -e " in in " --and --not -e " is is " -- 'src/*' | myprint "Duplicate words"
 # Check for obsolete SugarCube macros
-$GREP -E "<<display|<<click|\.contains" -- src/*.tw | myprint "ObsoleteMacro"
+$GREP -E "/display>>|<<click|\.contains" -- src/*.tw | myprint "ObsoleteMacro"
 # Check for double articles
 $GREP -E "\Wa an\W" -- src/*.tw | myprint "DoubleArticle"
 # Check for incorrect articles
