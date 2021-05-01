@@ -4423,10 +4423,12 @@ console.log("cleared defects parts = " + this.genes[index])
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
 &lt;&lt;else&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Rejection test 3: in event. &quot; + $activeFluffy.colorGroup[0])&gt;&gt;
 	/* Check if this is a brown foal rejection: */
-	&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
 	
+	
+	&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
+&lt;&lt;run console.log(&quot;Rejection test 3.1: in event.&quot;)&gt;&gt;	
 		/* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
 		&lt;&lt;if $globalFluffies[$activeFluffy.mother].colorGroup[0] == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
 			/* Skip this info for now */
@@ -4442,7 +4444,7 @@ console.log("cleared defects parts = " + this.genes[index])
 			&lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 25&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.mother].trauma += 5&gt;&gt;
 			&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-			
+&lt;&lt;run console.log(&quot;Rejection test 4: in event.&quot;)&gt;&gt;
 		/* The main event: */
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting &lt;&lt;- $activeFluffy.name&gt;&gt;.
@@ -8627,7 +8629,7 @@ function showAccFunc() {
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.20.217-beta&quot;, $releaseID = 164&gt;&gt;
+&lt;&lt;set $ver = &quot;1.20.217-beta&quot;, $releaseID = 165&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -11237,6 +11239,10 @@ Coat Color:
 
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].cColor = $globalFluffies[$activeFluffy.ID].genes.getCoatColorString()&gt;&gt;
 
+		/* Update the color groups and value bonus */
+		&lt;&lt;colorValue&gt;&gt;
+		&lt;&lt;colorGroup&gt;&gt;
+
 		/* And update the pbreed */
 		&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;Gene set.  Coat = &lt;&lt;print $globalFluffies[$activeFluffy.ID].cColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#ccolor&quot;&gt;&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatColorString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11277,6 +11283,10 @@ Mane Color:
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
 
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].mColor = $globalFluffies[$activeFluffy.ID].genes.getManeColorString()&gt;&gt;
+
+		/* Update the color groups and value bonus */
+		&lt;&lt;colorValue&gt;&gt;
+		&lt;&lt;colorGroup&gt;&gt;
 
 		/* And update the pbreed */
 		&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;Gene set.  Mane Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].mColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -11319,6 +11329,10 @@ Eye Color:
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
 
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorString()&gt;&gt;
+
+		/* Update the color groups and value bonus */
+		&lt;&lt;colorValue&gt;&gt;
+		&lt;&lt;colorGroup&gt;&gt;
 
 		/* And update the pbreed */
 		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;Gene set.  Eye Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].eColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -13053,6 +13067,38 @@ button {
 &lt;&lt;widget &quot;fluffyImage&quot;&gt;&gt;
 
 
+&lt;&lt;if false&gt;&gt;
+		&lt;&lt;adultSprite&gt;&gt;
+
+		&lt;&lt;set _styleString = &quot;position: absolute;   display: block;   margin-top: 0px; margin-left: 0px;   margin-right: 0px; width: 160px; height: 160px&quot;&gt;&gt;
+		/*
+		&lt;&lt;set _testFilter = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(0deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+		*/
+		
+		&lt;&lt;set _testFilter = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(360deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+		
+		/*
+		&lt;&lt;set _testFilter2 = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(120deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+		&lt;&lt;set _testFilter3 = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(240deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+	*/
+		&lt;&lt;set _testFilter2 = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(&quot; + random(0, 360) + &quot;deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+		&lt;&lt;set _testFilter3 = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(&quot; + random(0, 360) + &quot;deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
+		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _testFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+		
+
+		
+		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _testFilter2 + &#39;&quot;&gt;&#39;&gt;&gt;
+		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _testFilter3 + &#39;&quot;&gt;&#39;&gt;&gt;
+		
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+		
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHorn + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesAlicorn + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+&lt;&lt;else&gt;&gt;
  	/* ***
  	 *  Some weight based scalling.
  	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.  
@@ -13303,6 +13349,8 @@ button {
 			&lt;&lt;= &#39;&lt;img src=&quot;./art/sprites3/7_color_overlay.png&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+	
+&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /*

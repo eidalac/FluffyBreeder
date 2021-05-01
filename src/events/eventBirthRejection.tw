@@ -38,10 +38,12 @@
 	<<goto "Event Main">>
 
 <<else>>
-
+<<run console.log("Rejection test 3: in event. " + $activeFluffy.colorGroup[0])>>
 	/* Check if this is a brown foal rejection: */
-	<<if $activeFluffy.colorGroup[0] == "Brown">>
 	
+	
+	<<if $activeFluffy.colorGroup[0] == "Brown">>
+<<run console.log("Rejection test 3.1: in event.")>>	
 		/* If the mom is brown or has the "good Mama" trait she will not reject the foal: */
 		<<if $globalFluffies[$activeFluffy.mother].colorGroup[0] == "Brown" || $globalFluffies[$activeFluffy.mother].traits.includes("Good Mama")>>
 			/* Skip this info for now */
@@ -57,7 +59,7 @@
 			<<set $globalFluffies[$activeFluffy.mother].stress += 25>>
 			<<set $globalFluffies[$activeFluffy.mother].trauma += 5>>
 			<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-			
+<<run console.log("Rejection test 4: in event.")>>
 		/* The main event: */
 		<<else>>
 			<br>It seems <<- $globalFluffies[$activeFluffy.mother].name>> is rejecting <<- $activeFluffy.name>>.
