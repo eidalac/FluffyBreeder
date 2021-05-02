@@ -4073,6 +4073,7 @@ console.log("cleared defects parts = " + this.genes[index])
  *	Used to limit the colors you can get from different sources.
  *** */
 &lt;&lt;widget &quot;limitColor&quot;&gt;&gt;
+	&lt;&lt;set _wGene = [ &quot;W/w;&quot;, &quot;W/W;&quot;, &quot;w/W;&quot; ]&gt;&gt;
 	&lt;&lt;if !$args.length&gt;&gt;
 		&lt;&lt;run console.log(&quot;Limit Color called with no arguments.&quot;)&gt;&gt;
 	&lt;&lt;elseif $args.length &gt; 2&gt;&gt;
@@ -4121,11 +4122,16 @@ console.log("cleared defects parts = " + this.genes[index])
 &lt;&lt;run console.log(&quot;Color Change test 0: &quot; + _randomMane.Name + &quot; &quot; + _randomMane.Tier)&gt;&gt;
 */
 
-	&lt;&lt;run $activeFluffy.genes.setManeColor(_randomMane.Gene)&gt;&gt;
-	&lt;&lt;run $activeFluffy.genes.setCoatColor(_randomCoat.Gene)&gt;&gt;
-	&lt;&lt;run $activeFluffy.genes.setEyeColor(_nColors.random().Gene)&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setManeColor(_randomMane.Gene + _wGene.random())&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setCoatColor(_randomCoat.Gene + _wGene.random())&gt;&gt;
+	&lt;&lt;run $activeFluffy.genes.setEyeColor(_nColors.random().Gene + _wGene.random())&gt;&gt;
 
+&lt;&lt;run console.log(&quot;Color Change test geneString before: &quot; + $activeFluffy.geneString)&gt;&gt;
 	&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+
+&lt;&lt;run console.log(&quot;Color Change test geneString after: &quot; + $activeFluffy.geneString)&gt;&gt;
+
 	&lt;&lt;set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()&gt;&gt;
 	&lt;&lt;set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()&gt;&gt;
 	&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()&gt;&gt;
@@ -4678,9 +4684,11 @@ console.log("cleared defects parts = " + this.genes[index])
 					&lt;&lt;set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			
-	&lt;&lt;run console.log(&quot;Rejection test 3: Training difficulty: &quot; + _difficulty)&gt;&gt;
+				&lt;&lt;set _ran = random(0, 199)&gt;&gt;
+				
+				&lt;&lt;run console.log(&quot;Rejection test 3: Training difficulty: &quot; + _difficulty + &quot; vs &quot; + _ran)&gt;&gt;
 		
-				&lt;&lt;if _difficulty &gt;= random(0, 199)&gt;&gt;
+				&lt;&lt;if Number(_difficulty) &gt;= Number(_ran)&gt;&gt;
 					&lt;&lt;set $globalFluffies[$activeFluffy.mother].traits.push(&quot;Good Mama&quot;)&gt;&gt;
 					&lt;&lt;set _reactionString = &quot;@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@&quot;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
@@ -8629,7 +8637,7 @@ function showAccFunc() {
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.20.217-beta&quot;, $releaseID = 165&gt;&gt;
+&lt;&lt;set $ver = &quot;1.20.217-beta&quot;, $releaseID = 166&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -9041,7 +9049,7 @@ profitsTotal: 0
 /* ***
  *	need to add a repulation check for breeders.
  *** */
-&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 50&gt;&gt;
+&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 0&gt;&gt;
 	&lt;br&gt;
 &lt;&lt;else&gt;&gt;
 	/* ***
@@ -9079,6 +9087,8 @@ profitsTotal: 0
 	 
 	 	&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
 	 	 	&lt;&lt;run console.log(&quot;Fluffy shopping gene defect found: &quot; + $activeFluffy.geneString.substring(_ri, _ri+3))&gt;&gt;
+
+&lt;&lt;run console.log(&quot;Fluffy shopping full gene &quot; + $activeFluffy.geneString)&gt;&gt;
 	 	 	
 	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
 	 	 	&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= Number(2 + random(0,1))&gt;&gt;
@@ -9095,7 +9105,9 @@ profitsTotal: 0
 	 	 	&lt;&lt;else&gt;&gt;
 	 	 		&lt;&lt;set _defectCount++&gt;&gt;
 	 	 	&lt;&lt;/if&gt;&gt;
-	 	 	
+
+
+
 	 	 	&lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
 	 	 		&lt;&lt;break&gt;&gt;
 	 	 	&lt;&lt;/if&gt;&gt;
@@ -10901,7 +10913,7 @@ function subSortAccFunc(type) {
 
 /* Since the Javascript elements do not save, first ensure our genome is set from the string */
 &lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
-
+&lt;&lt;run console.log(&quot;Gentic Test.  geneString = &#39;&quot; + $activeFluffy.geneString + &quot;&#39;&quot;)&gt;&gt;
 
 You are editing the genes of:
 &lt;br&gt;&lt;span id=&quot;desc&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;/span&gt;
@@ -11212,7 +11224,9 @@ Breed:
  *	Coat Color
  *** */
 Coat Color: 
+&lt;&lt;run console.log(&quot;Gentic Test.  coatGenes = &#39;&quot; +  $globalFluffies[$activeFluffy.ID].genes.getCoatColor() + &quot;&#39;&quot;)&gt;&gt;
 &lt;&lt;set _ccString  = $globalFluffies[$activeFluffy.ID].genes.getCoatColor().toString() + &quot;;&quot;&gt;&gt;
+
 &lt;span id=&quot;ccolor&quot;&gt;
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatColorString()&gt;&gt;
 &lt;/span&gt;
@@ -11330,9 +11344,7 @@ Eye Color:
 
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorString()&gt;&gt;
 
-		/* Update the color groups and value bonus */
-		&lt;&lt;colorValue&gt;&gt;
-		&lt;&lt;colorGroup&gt;&gt;
+
 
 		/* And update the pbreed */
 		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;Gene set.  Eye Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].eColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;

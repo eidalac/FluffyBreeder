@@ -140,7 +140,7 @@
 /* ***
  *	need to add a repulation check for breeders.
  *** */
-<<if $shop == "breeder" && $reputation < 50>>
+<<if $shop == "breeder" && $reputation < 0>>
 	<br>
 <<else>>
 	/* ***
@@ -178,6 +178,8 @@
 	 
 	 	<<if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) && $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
 	 	 	<<run console.log("Fluffy shopping gene defect found: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
+
+<<run console.log("Fluffy shopping full gene " + $activeFluffy.geneString)>>
 	 	 	
 	 	 	/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
 	 	 	<<if $shop == "mart" && _defectCount >= Number(2 + random(0,1))>>
@@ -194,7 +196,9 @@
 	 	 	<<else>>
 	 	 		<<set _defectCount++>>
 	 	 	<</if>>
-	 	 	
+
+
+
 	 	 	<<if $defenctIndex.length < 1>>
 	 	 		<<break>>
 	 	 	<</if>>

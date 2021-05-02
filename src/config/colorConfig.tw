@@ -122,6 +122,7 @@
  *	Used to limit the colors you can get from different sources.
  *** */
 <<widget "limitColor">>
+	<<set _wGene = [ "W/w;", "W/W;", "w/W;" ]>>
 	<<if !$args.length>>
 		<<run console.log("Limit Color called with no arguments.")>>
 	<<elseif $args.length > 2>>
@@ -170,11 +171,16 @@
 <<run console.log("Color Change test 0: " + _randomMane.Name + " " + _randomMane.Tier)>>
 */
 
-	<<run $activeFluffy.genes.setManeColor(_randomMane.Gene)>>
-	<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene)>>
-	<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene)>>
+	<<run $activeFluffy.genes.setManeColor(_randomMane.Gene + _wGene.random())>>
+	<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene + _wGene.random())>>
+	<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene + _wGene.random())>>
 
+<<run console.log("Color Change test geneString before: " + $activeFluffy.geneString)>>
 	<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+
+
+<<run console.log("Color Change test geneString after: " + $activeFluffy.geneString)>>
+
 	<<set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()>>
 	<<set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()>>
 	<<set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()>>

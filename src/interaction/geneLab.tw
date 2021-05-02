@@ -16,7 +16,7 @@
 
 /* Since the Javascript elements do not save, first ensure our genome is set from the string */
 <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
-
+<<run console.log("Gentic Test.  geneString = '" + $activeFluffy.geneString + "'")>>
 
 You are editing the genes of:
 <br><span id="desc"><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>></span>
@@ -327,7 +327,9 @@ Breed:
  *	Coat Color
  *** */
 Coat Color: 
+<<run console.log("Gentic Test.  coatGenes = '" +  $globalFluffies[$activeFluffy.ID].genes.getCoatColor() + "'")>>
 <<set _ccString  = $globalFluffies[$activeFluffy.ID].genes.getCoatColor().toString() + ";">>
+
 <span id="ccolor">
 	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatColorString()>>
 </span>
@@ -445,9 +447,7 @@ Eye Color:
 
 		<<set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorString()>>
 
-		/* Update the color groups and value bonus */
-		<<colorValue>>
-		<<colorGroup>>
+
 
 		/* And update the pbreed */
 		<<replace "#ec-form-error">>Gene set.  Eye Color = <<print $globalFluffies[$activeFluffy.ID].eColor>><br> <</replace>>
