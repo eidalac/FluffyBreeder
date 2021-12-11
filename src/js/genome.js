@@ -2001,7 +2001,7 @@ Genome.prototype.setLearning = function(new_gene) {
 
 /**
  * Retrieves the inbreeding test gene.
- * This is defined as genes 42, 43 (#;#).
+ * This is defined as genes 42 (#;#).
  *
  * @return Int
  */
@@ -2035,6 +2035,413 @@ Genome.prototype.setInbreeding = function(new_gene) {
 	}
 };
 
+
+/**
+ * Retrieves the gene determining coat length.
+ * This is defined as genes 43 and 44 (C/c;L/l).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c l  ]     0		1 + random(0,2)
+ * [ C L  ]     1		3 + random(0,2)
+ * [ C lL ]     2		5 + random(0,2)
+ * [ C l  ]     3		7 + random(0,2)
+ * [ c lL ]     4		9 + random(0,2)
+ * [ c L  ]     5		11 + random(0,2)
+ *
+ * @return Int
+ */
+ Genome.prototype.getCoatLength = function() {
+	switch (this.doublePhenotype(43, "C/L")) {
+	case 0:
+		return 1.00;
+	case 1:
+		return 3.00;
+	case 2:
+		return 5.00;
+	case 3:
+		return 7.00;
+	case 4:
+		return 9.00;
+	case 5:
+		return 11.00;
+	default:
+		return -1;
+	}
+}
+
+/**
+ * Sets the coat length.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatLength = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+// console.log("test check 1 = " +  new_gene)
+	switch (test_gene.doublePhenotype(0, "C/L")) {
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[43] = new_gene.substring(0, 3);
+		this.genes[44] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining coat length.
+ * This is defined as genes 43 and 44 (E/e;F/f).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatLengthGene = function() {
+	return Genome.fromString(this.elementAt(43).toString() + ";" + this.elementAt(44).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat length.
+ *
+ * This is defined as genes 43 and 44 (C/c;L/l).
+ * 
+ * C is dominate over c, L/l are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatLengthDesc = function() {
+	switch (this.getCoatLength()) {
+	case 11.00:
+		return "Longest (11 - 13 cm)";
+	case 9.00:
+		return "Longer (9 - 11 cm)";
+	case 7.00:
+		return "Long (7 - 9 cm)";
+	case 5.00:
+		return "Average (5 - 7 cm)";
+	case 2.00:
+		return "Shorter (3 - 5 cm)";
+	case 1.00:
+		return "Shortest (1 - 3 cm)";
+	default:
+		return "UNDEFINED COAT LENGTH";
+	}
+};
+
+/**
+ * Retrieves the gene determining coat density.
+ * This is defined as genes 45 and 46 (C/c;D/d).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c d  ]     0		40 + random(0,30)
+ * [ C D  ]     1		70 + random(0,30)
+ * [ C dD ]     2		90 + random(0,30)
+ * [ C d  ]     3		120 + random(0,30)
+ * [ c dD ]     4		140 + random(0,30)
+ * [ c D  ]     5		170 + random(0,30)
+ *
+ * @return Int
+ */
+Genome.prototype.getCoatDensity = function() {
+
+	console.log("coat density check 1")
+	
+	switch (this.doublePhenotype(45, "C/D")) {
+	case 0:
+		return 40;
+	case 1:
+		return 70;
+	case 2:
+		return 90;
+	case 3:
+		return 120;
+	case 4:
+		return 140;
+	case 5:
+		return 170;
+	default:
+		return -1;
+	}
+}
+
+
+/**
+ * Sets the coat density gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatDensity = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "C/D")) {
+	case -1:
+		return false;
+	default:
+		this.genes[45] = new_gene.substring(0, 3);
+		this.genes[46] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining adult coat density
+ *
+ * This is defined as genes 45 and 46 (C/c;D/d).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatDensityGene = function() {
+	return Genome.fromString(this.elementAt(45).toString() + ";" + this.elementAt(46).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat density gene.
+ *
+ * C is dominate over c, D/d are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatDensityDesc = function() {
+	switch (this.getCoatDensity()) {
+	case 40:
+		return "Thinest";
+	case 70:
+		return "Thin";
+	case 90:
+		return "Normal";
+	case 120:
+		return "Thick";
+	case 140:
+		return "Thicker";
+	case 170:
+		return "Thickest";
+	default:
+		return "UNDEFINED COAT DENSITY";
+	}
+};
+
+/**
+ * Retrieves the gene determining coat curl.
+ * This is defined as genes 47 and 48 (C/c;C/c).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c c  ]     0		0
+ * [ C C  ]     1		1
+ * [ C cC ]     2		2
+ * [ C c  ]     3		3
+ * [ c cC ]     4		4
+ * [ c C  ]     5		5
+ *
+ * @return Int
+ */
+ Genome.prototype.getCoatCurl = function() {
+	switch (this.doublePhenotype(47, "C/C")) {
+	case 0:
+		return 0;
+	case 1:
+		return 1;
+	case 2:
+		return 2;
+	case 3:
+		return 3;
+	case 4:
+		return 4;
+	case 5:
+		return 5;
+	default:
+		return -1;
+	}
+}
+
+
+/**
+ * Sets the coat curl gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatCurl = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "C/C")) {
+	case -1:
+		return false;
+	default:
+		this.genes[47] = new_gene.substring(0, 3);
+		this.genes[48] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining coat curl
+ *
+ * This is defined as genes 47 and 48 (C/c;C/c).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatCurlGene = function() {
+	return Genome.fromString(this.elementAt(47).toString() + ";" + this.elementAt(48).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat curl gene.
+ *
+ * C is dominate over c, C/c are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatCurlDesc = function() {
+	switch (this.getCoatCurl()) {
+	case 0:
+		return "Bristly";
+	case 1:
+		return "Straight";
+	case 2:
+		return "Wavey";
+	case 3:
+		return "Very Wavey";
+	case 4:
+		return "Curly";
+	case 5:
+		return "Tightly Curled";
+	default:
+		return "UNDEFINED COAT CURL";
+	}
+};
+
+/**
+ * Retrieves the gene determining subspecies.
+ * This is defined as gene 49 and is a 2 digit hex value (00-FF)
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes    Subspecies
+ * [ 00-12 ]    Standard fluffy
+ * [ 13-25 ]    Microfluffies
+ * [ 26-38 ]    Angorafluffies
+ * [ 39-4B ]    Fluffalos
+ * [ 4C-5E ]    Seafluffies
+ * [ 5F-71 ]    Loafies
+ * [ 72-84 ]    Plantfluffies
+ * [ 85-255 ]    Undefined/expansion - reset to 00 if encountered.
+ *
+ * @return Int
+ */
+ Genome.prototype.getSubSpecies = function() {
+	const parts = this.elementAt(49).toString().split('/');
+	const subSpecies = parseInt(parts[0] + parts[1], 16);
+
+	switch (true)
+	{
+		case (subSpecies <= 18):
+			return 0; // standard
+		case (subSpecies <= 37):
+			return 1; // micro
+		case (subSpecies <= 56):
+			return 2; // angro
+		case (subSpecies <= 64):
+			return 3; //fluffalo
+		case (subSpecies <= 73):
+			return 4; //sea
+		case (subSpecies <= 82):
+			return 5; //loafies
+		case (subSpecies <= 91):
+			return 6; //plant
+		default:
+			this.genes[50] = "0/0";
+			return 0; // standard
+	}
+ }
+
+
+
+/**
+ * Sets the subspecies gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setSubSpecies = function(new_gene) {
+	var new_gene = new_gene.replace(";", "");
+	var parts = new_gene.split('/');
+//console.log("gene checked = " + parts + " " + parts.length)
+	if (parts.length != 2)
+	{
+		this.genes[49] = "0/0";
+		return true;
+	}
+	
+	if (isNaN(parseInt(parts[0] + parts[1], 16)))
+	{
+		// if it's invald just set it to the default value.
+		this.genes[49] = "0/0";
+		return true;
+	}
+
+	if (Number.isInteger(Number(parts[0])) && Number.isInteger(Number(parts[1]))) {
+		//console.log("true gene = " + parts)
+		this.genes[49] = parts[0] + "/" + parts[1];
+		return true;
+	} else {
+		//console.log("false gene = " + parts)
+		// if it's invald just set it to the default value.
+		this.genes[49] = "0/0";
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining subcpeices
+ *
+ * This is defined as genes 49 (hex value).
+ *
+ * @return Genome
+ */
+Genome.prototype.getSubSpeciesGene = function() {
+	return Genome.fromString(this.elementAt(49).toString());
+};
+
+/**
+ * Retrieves returns a string name for the subspeices.
+ *
+ * @return String
+ */
+Genome.prototype.getSubSpeciesDesc = function() {
+	switch (this.getSubSpecies()) {
+	case 0:
+		return "Fluffy Pony";
+	case 1:
+		return "Micro Fluffy";
+	case 2:
+		return "Angora Fluffy";
+	case 3:
+		return "Fluffalo";
+	case 4:
+		return "Sea Fluffy";
+	case 5:
+		return "Loafy";
+	case 6:
+		return "Plant Fluffy";
+	default:
+		return "UNDEFINED SUB SPECIES";
+	}
+};
 
 /**
  * Clears a defect gene - sets one or both allees to uper case, so long a they are not both lower.

@@ -501,7 +501,7 @@ Energy:
 	<<print $globalFluffies[$activeFluffy.ID].genes.getEnergy()>>
 </span>
 
-<div id="st-form">
+<div id="en-form">
 <<textbox '_enString ' _enString >>
 <<button "Enter">>
 	<<set _enString to _enString.trim()>>
@@ -534,7 +534,7 @@ Charm:
 	<<print $globalFluffies[$activeFluffy.ID].genes.getCharm()>>
 </span>
 
-<div id="st-form">
+<div id="ch-form">
 <<textbox '_chString ' _chString >>
 <<button "Enter">>
 	<<set _chString to _chString.trim()>>
@@ -567,7 +567,7 @@ Thinking:
 	<<print $globalFluffies[$activeFluffy.ID].genes.getThinking()>>
 </span>
 
-<div id="st-form">
+<div id="th-form">
 <<textbox '_thString ' _thString >>
 <<button "Enter">>
 	<<set _thString to _thString.trim()>>
@@ -600,7 +600,7 @@ Learning:
 	<<print $globalFluffies[$activeFluffy.ID].genes.getLearning()>>
 </span>
 
-<div id="st-form">
+<div id="le-form">
 <<textbox '_leString ' _leString >>
 <<button "Enter">>
 	<<set _leString to _leString.trim()>>
@@ -633,7 +633,7 @@ Inbreeding:
 	<<print $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene()>>
 </span>
 
-<div id="st-form">
+<div id="in-form">
 <<textbox '_inString ' _inString >>
 <<button "Enter">>
 	<<set _inString to _inString.trim()>>
@@ -655,6 +655,145 @@ Inbreeding:
 <</button>>
 /* Form for error message to display*/
 <span id="in-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Length Gene
+ *** */
+Coat Length: 
+<<set _clString  = $globalFluffies[$activeFluffy.ID].genes.getCoatLengthGene().toString() + ";">>
+<span id="coatlengthgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+</span>
+
+<div id="cl-form">
+<<textbox '_clString ' _clString >>
+<<button "Enter">>
+	<<set _clString to _clString.trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $globalFluffies[$activeFluffy.ID].genes.setCoatLength(_clString) == false>>
+		<<replace "#cl-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+
+		<<set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+		<<set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+
+		/* And update the pbreed */
+		<<replace "#cl-form-error">>Gene set. Coat Length = <<print $globalFluffies[$activeFluffy.ID].coatLength>> (<<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>> + <<print $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+		<br> <</replace>>
+		<<replace "#coatlengthgene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cl-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Density Gene
+ *** */
+Coat Density: 
+<<set _cdString  = $globalFluffies[$activeFluffy.ID].genes.getCoatDensityGene().toString() + ";">>
+<span id="coatdensitygene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()>>
+</span>
+
+<div id="cd-form">
+<<textbox '_cdString ' _cdString >>
+<<button "Enter">>
+	<<set _cdString to _cdString.trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity(_cdString) == false>>
+		<<replace "#cd-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+		<<set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd>>
+
+		/* And update the pbreed */
+		<<replace "#cd-form-error">>Gene set. Coat Density = <<print $globalFluffies[$activeFluffy.ID].coatLength>><br> <</replace>>
+		<<replace "#coatdensitygene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cd-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Curl Gene
+ *** */
+Coat Curl: 
+<<set _cuString  = $globalFluffies[$activeFluffy.ID].genes.getCoatCurlGene().toString() + ";">>
+<span id="coatcurlgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+</span>
+
+<div id="cu-form">
+<<textbox '_cuString ' _cuString >>
+<<button "Enter">>
+	<<set _cuString to _cuString.trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl(_cuString) == false>>
+		<<replace "#cu-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+		<<set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+
+		/* And update the pbreed */
+		<<replace "#cu-form-error">>Gene set. Coat Curl = <<print $globalFluffies[$activeFluffy.ID].coatCurl>><br> <</replace>>
+		<<replace "#coatcurlgene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cu-form-error"></span>
+</div>
+
+/* ***
+ *	Subspecies Gene
+ *** */
+Subspecies: 
+<<set _ssString  = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesGene().toString() + ";">>
+<span id="subspeciesgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+</span>
+
+<div id="ss-form">
+<<textbox '_ssString ' _ssString >>
+<<button "Enter">>
+	<<set _ssString to _ssString.trim()>>
+	
+	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	<<if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies(_ssString) == false>>
+		<<replace "#ss-form-error">>@@.orange;Invalid gene!@@<</replace>>
+	<<else>>
+		/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+		<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+		<<set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()>>
+		<<set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+
+		/* And update the pbreed */
+		<<replace "#ss-form-error">>Gene set. SubSpecies = <<print $globalFluffies[$activeFluffy.ID].coatCurl>><br> <</replace>>
+		<<replace "#subspeciesgene">><<print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>><</replace>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="ss-form-error"></span>
 </div>
 
 <br> Defect Genes:  If both are recessive (lower case), we have a defect.  

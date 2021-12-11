@@ -19,9 +19,9 @@
  *** */
 <<widget "BaseFluffy">>
 	<<if ($args[0].toUpperCase() == "MALE")>>
-		<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0">>
+		<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 	<<else>>
-		<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1">>
+		<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 	<</if>>
 
 	<<set $activeFluffy = {
@@ -67,6 +67,13 @@
 		charm: 3,
 		thinking: 3,
 		learning: 3,
+		coatLengthAdd: 0,
+		coatLength: 2,
+		coatDensity: 100,
+		coatDensityAdd: 10,
+		coatCurl: 2,
+		subSpecies: 0,
+		subSpeciesString: "Standard Fluffy",
 		health: 10,
 		children: [],
 		specialFriend: -1,
@@ -101,6 +108,8 @@
 		<<set _f = random(0, 1)>>
 		<<set _h = random(0, 2) / 100>>
 		<<set _m = random(0, 2)>>
+		<<set _cl = random(0, 2)>>
+		<<set _cd = random(0,30)>>
 
 		<<set _L = Number($args[0].getLength() + _l).toFixed(2)>>
 		<<set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)>>
@@ -148,6 +157,18 @@
 			charm: $args[0].getCharm(),
 			thinking: $args[0].getThinking(),
 			learning: $args[0].getLearning(),
+			
+			
+			coatLengthAdd: _cl,
+			coatLength: $args[0].getCoatLength() + _cl,
+
+			coatDensityAdd: _cd,
+
+			coatDensity: $args[0].getCoatDensity() + _cd,
+			coatCurl: $args[0].getCoatCurl(),
+			subSpecies: $args[0].getSubSpecies(),
+			subSpeciesString: $args[0].getSubSpeciesDesc(),
+
 			health: 10,
 			children: [],
 			specialFriend: -1,
@@ -167,6 +188,10 @@
 			trauma: 0,
 			stress: 0
 		} >>
+
+<<run console.log("Species test 0: " + $activeFluffy.geneString.substring(100))>>
+<<run console.log("Species test 1: " + $activeFluffy.subSpecies)>>
+<<run console.log("Species test 1: " + $activeFluffy.subSpeciesString)>>
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 		

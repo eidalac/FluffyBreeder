@@ -113,7 +113,7 @@ var LZString={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz01234
 */
 #story {
 	z-index: 10;
-	margin: 2.5em;
+	margin: 0.5em;
 }
 @media screen and (max-width: 1136px) {
 	#story {
@@ -698,6 +698,12 @@ button:disabled{
   box-shadow: none;
 }
 
+.w3-center {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
 .w3-button {
 	border-radius: 0px;
 	box-shadow: none;
@@ -912,6 +918,21 @@ button:disabled{
 .hang {
 	text-indent: -2em;
 	margin-left: 2em;
+}
+
+/*! Sidebar */
+#mySidebar {
+  display: none;
+}
+#mySidebar.active {
+  width: 20%;
+  display: block;
+}
+#main.sidebar-active {
+  margin-left: 25%;
+}
+#navHead.sidebar-active {
+  margin-left: 30%;
 }
 /* twine-user-stylesheet #8: "normalize.css" */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -3819,7 +3840,7 @@ Genome.prototype.setLearning = function(new_gene) {
 
 /**
  * Retrieves the inbreeding test gene.
- * This is defined as genes 42, 43 (#;#).
+ * This is defined as genes 42 (#;#).
  *
  * @return Int
  */
@@ -3853,6 +3874,413 @@ Genome.prototype.setInbreeding = function(new_gene) {
 	}
 };
 
+
+/**
+ * Retrieves the gene determining coat length.
+ * This is defined as genes 43 and 44 (C/c;L/l).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c l  ]     0		1 + random(0,2)
+ * [ C L  ]     1		3 + random(0,2)
+ * [ C lL ]     2		5 + random(0,2)
+ * [ C l  ]     3		7 + random(0,2)
+ * [ c lL ]     4		9 + random(0,2)
+ * [ c L  ]     5		11 + random(0,2)
+ *
+ * @return Int
+ */
+ Genome.prototype.getCoatLength = function() {
+	switch (this.doublePhenotype(43, "C/L")) {
+	case 0:
+		return 1.00;
+	case 1:
+		return 3.00;
+	case 2:
+		return 5.00;
+	case 3:
+		return 7.00;
+	case 4:
+		return 9.00;
+	case 5:
+		return 11.00;
+	default:
+		return -1;
+	}
+}
+
+/**
+ * Sets the coat length.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatLength = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+// console.log("test check 1 = " +  new_gene)
+	switch (test_gene.doublePhenotype(0, "C/L")) {
+	case -1:
+		 // gene string does not match, abort.
+//console.log("test check 2 = false")
+		return false;
+	default:
+		// we matched a valid gene, continue.
+//console.log("test check 2 = true")
+		this.genes[43] = new_gene.substring(0, 3);
+		this.genes[44] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining coat length.
+ * This is defined as genes 43 and 44 (E/e;F/f).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatLengthGene = function() {
+	return Genome.fromString(this.elementAt(43).toString() + ";" + this.elementAt(44).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat length.
+ *
+ * This is defined as genes 43 and 44 (C/c;L/l).
+ * 
+ * C is dominate over c, L/l are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatLengthDesc = function() {
+	switch (this.getCoatLength()) {
+	case 11.00:
+		return "Longest (11 - 13 cm)";
+	case 9.00:
+		return "Longer (9 - 11 cm)";
+	case 7.00:
+		return "Long (7 - 9 cm)";
+	case 5.00:
+		return "Average (5 - 7 cm)";
+	case 2.00:
+		return "Shorter (3 - 5 cm)";
+	case 1.00:
+		return "Shortest (1 - 3 cm)";
+	default:
+		return "UNDEFINED COAT LENGTH";
+	}
+};
+
+/**
+ * Retrieves the gene determining coat density.
+ * This is defined as genes 45 and 46 (C/c;D/d).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c d  ]     0		40 + random(0,30)
+ * [ C D  ]     1		70 + random(0,30)
+ * [ C dD ]     2		90 + random(0,30)
+ * [ C d  ]     3		120 + random(0,30)
+ * [ c dD ]     4		140 + random(0,30)
+ * [ c D  ]     5		170 + random(0,30)
+ *
+ * @return Int
+ */
+Genome.prototype.getCoatDensity = function() {
+
+	console.log("coat density check 1")
+	
+	switch (this.doublePhenotype(45, "C/D")) {
+	case 0:
+		return 40;
+	case 1:
+		return 70;
+	case 2:
+		return 90;
+	case 3:
+		return 120;
+	case 4:
+		return 140;
+	case 5:
+		return 170;
+	default:
+		return -1;
+	}
+}
+
+
+/**
+ * Sets the coat density gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatDensity = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "C/D")) {
+	case -1:
+		return false;
+	default:
+		this.genes[45] = new_gene.substring(0, 3);
+		this.genes[46] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining adult coat density
+ *
+ * This is defined as genes 45 and 46 (C/c;D/d).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatDensityGene = function() {
+	return Genome.fromString(this.elementAt(45).toString() + ";" + this.elementAt(46).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat density gene.
+ *
+ * C is dominate over c, D/d are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatDensityDesc = function() {
+	switch (this.getCoatDensity()) {
+	case 40:
+		return "Thinest";
+	case 70:
+		return "Thin";
+	case 90:
+		return "Normal";
+	case 120:
+		return "Thick";
+	case 140:
+		return "Thicker";
+	case 170:
+		return "Thickest";
+	default:
+		return "UNDEFINED COAT DENSITY";
+	}
+};
+
+/**
+ * Retrieves the gene determining coat curl.
+ * This is defined as genes 47 and 48 (C/c;C/c).
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes		Index	base value
+ * [ c c  ]     0		0
+ * [ C C  ]     1		1
+ * [ C cC ]     2		2
+ * [ C c  ]     3		3
+ * [ c cC ]     4		4
+ * [ c C  ]     5		5
+ *
+ * @return Int
+ */
+ Genome.prototype.getCoatCurl = function() {
+	switch (this.doublePhenotype(47, "C/C")) {
+	case 0:
+		return 0;
+	case 1:
+		return 1;
+	case 2:
+		return 2;
+	case 3:
+		return 3;
+	case 4:
+		return 4;
+	case 5:
+		return 5;
+	default:
+		return -1;
+	}
+}
+
+
+/**
+ * Sets the coat curl gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setCoatCurl = function(new_gene) {
+	var test_gene = Genome.fromString(new_gene);
+	switch (test_gene.doublePhenotype(0, "C/C")) {
+	case -1:
+		return false;
+	default:
+		this.genes[47] = new_gene.substring(0, 3);
+		this.genes[48] = new_gene.substring(4, 7);
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining coat curl
+ *
+ * This is defined as genes 47 and 48 (C/c;C/c).
+ *
+ * @return Genome
+ */
+Genome.prototype.getCoatCurlGene = function() {
+	return Genome.fromString(this.elementAt(47).toString() + ";" + this.elementAt(48).toString());
+};
+
+/**
+ * Retrieves returns a string name for the coat curl gene.
+ *
+ * C is dominate over c, C/c are non-dominate to each other.
+ *
+ * @return String
+ */
+Genome.prototype.getCoatCurlDesc = function() {
+	switch (this.getCoatCurl()) {
+	case 0:
+		return "Bristly";
+	case 1:
+		return "Straight";
+	case 2:
+		return "Wavey";
+	case 3:
+		return "Very Wavey";
+	case 4:
+		return "Curly";
+	case 5:
+		return "Tightly Curled";
+	default:
+		return "UNDEFINED COAT CURL";
+	}
+};
+
+/**
+ * Retrieves the gene determining subspecies.
+ * This is defined as gene 49 and is a 2 digit hex value (00-FF)
+ * 
+ * There are 6 phenotype combinations
+ * for Fluffy genes, they are indexed as:
+ * 
+ * Genes    Subspecies
+ * [ 00-12 ]    Standard fluffy
+ * [ 13-25 ]    Microfluffies
+ * [ 26-38 ]    Angorafluffies
+ * [ 39-4B ]    Fluffalos
+ * [ 4C-5E ]    Seafluffies
+ * [ 5F-71 ]    Loafies
+ * [ 72-84 ]    Plantfluffies
+ * [ 85-255 ]    Undefined/expansion - reset to 00 if encountered.
+ *
+ * @return Int
+ */
+ Genome.prototype.getSubSpecies = function() {
+	const parts = this.elementAt(49).toString().split('/');
+	const subSpecies = parseInt(parts[0] + parts[1], 16);
+
+	switch (true)
+	{
+		case (subSpecies <= 18):
+			return 0; // standard
+		case (subSpecies <= 37):
+			return 1; // micro
+		case (subSpecies <= 56):
+			return 2; // angro
+		case (subSpecies <= 64):
+			return 3; //fluffalo
+		case (subSpecies <= 73):
+			return 4; //sea
+		case (subSpecies <= 82):
+			return 5; //loafies
+		case (subSpecies <= 91):
+			return 6; //plant
+		default:
+			this.genes[50] = "0/0";
+			return 0; // standard
+	}
+ }
+
+
+
+/**
+ * Sets the subspecies gene.  Used for the gene lab.
+ *
+ * @param string new_gene string
+ * 
+ * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
+ */
+Genome.prototype.setSubSpecies = function(new_gene) {
+	var new_gene = new_gene.replace(";", "");
+	var parts = new_gene.split('/');
+//console.log("gene checked = " + parts + " " + parts.length)
+	if (parts.length != 2)
+	{
+		this.genes[49] = "0/0";
+		return true;
+	}
+	
+	if (isNaN(parseInt(parts[0] + parts[1], 16)))
+	{
+		// if it's invald just set it to the default value.
+		this.genes[49] = "0/0";
+		return true;
+	}
+
+	if (Number.isInteger(Number(parts[0])) && Number.isInteger(Number(parts[1]))) {
+		//console.log("true gene = " + parts)
+		this.genes[49] = parts[0] + "/" + parts[1];
+		return true;
+	} else {
+		//console.log("false gene = " + parts)
+		// if it's invald just set it to the default value.
+		this.genes[49] = "0/0";
+		return true;
+	}
+};
+
+/**
+ * Retrieves the gene determining subcpeices
+ *
+ * This is defined as genes 49 (hex value).
+ *
+ * @return Genome
+ */
+Genome.prototype.getSubSpeciesGene = function() {
+	return Genome.fromString(this.elementAt(49).toString());
+};
+
+/**
+ * Retrieves returns a string name for the subspeices.
+ *
+ * @return String
+ */
+Genome.prototype.getSubSpeciesDesc = function() {
+	switch (this.getSubSpecies()) {
+	case 0:
+		return "Fluffy Pony";
+	case 1:
+		return "Micro Fluffy";
+	case 2:
+		return "Angora Fluffy";
+	case 3:
+		return "Fluffalo";
+	case 4:
+		return "Sea Fluffy";
+	case 5:
+		return "Loafy";
+	case 6:
+		return "Plant Fluffy";
+	default:
+		return "UNDEFINED SUB SPECIES";
+	}
+};
 
 /**
  * Clears a defect gene - sets one or both allees to uper case, so long a they are not both lower.
@@ -3943,7 +4371,396 @@ console.log("clear defects parts = " + parts[0] + " " + parts[1] + " " + ran)
 console.log("cleared defects parts = " + this.genes[index])
 
 };
-</script><tw-passagedata pid="1" name="Start" tags="nobr" position="100,100" size="100,100">/* **********
+/* twine-user-script #5: "naming.js" */
+window.NameList = [
+	"Adorable",
+	"Alliebear",
+	"Amazing",
+	"Angel",
+	"Babe",
+	"Babes",
+	"Baboo",
+	"Baby",
+	"Baby Angel",
+	"Baby Bear",
+	"Baby Boo",
+	"Baby Cakes",
+	"Baby Doll",
+	"Baby Face",
+	"Baby Girl",
+	"Baby Kins",
+	"Baby Love",
+	"Bambi",
+	"Beany",
+	"Bear",
+	"Beautiful",
+	"Bee's Knees",
+	"Better Half",
+	"Big",
+	"Biggie",
+	"Bitsy",
+	"Blossom",
+	"Bon-bon",
+	"Boo",
+	"Boo Bear",
+	"Boo Boo",
+	"Boogabear",
+	"Browny",
+	"Bubbies",
+	"Bubby",
+	"Buddy",
+	"Bumpa",
+	"Bumpkin",
+	"Bunny",
+	"Bunbuns",
+	"Buster",
+	"Buttercup",
+	"Butterfly",
+	"Button",
+	"Cakes",
+	"Candy",
+	"Captain",
+	"Casanova",
+	"Champ",
+	"Charming",
+	"Cheeky",
+	"Cheese Ball",
+	"Cherry",
+	"Cherub",
+	"Chick",
+	"Chicken",
+	"Chipmunk",
+	"Chunky",
+	"Cinnamon",
+	"Cookie",
+	"Cuddlebug",
+	"Cuddle Bunny",
+	"Cuddle Cakes",
+	"Cuddle Muffin",
+	"Cuddles",
+	"Cuddly",
+	"Cuddly-Wuddly",
+	"Cupcake",
+	"Cuteness",
+	"Cutie",
+	"Cutie Patootie",
+	"Cutie Pie",
+	"Cutie Pootie",
+	"Daisy",
+	"Darling",
+	"Dashing",
+	"Dear",
+	"Dearest",
+	"Dearie",
+	"Dewdrop",
+	"Diamond",
+	"Dimples",
+	"Doll",
+	"Doll Face",
+	"Doobie",
+	"Doodle Bug",
+	"Dork",
+	"Dove",
+	"Duckling",
+	"Ducky",
+	"Dummy",
+	"Dumpling",
+	"Egghead",
+	"Everything",
+	"Eyecandy",
+	"Flame",
+	"Flower",
+	"Flower Child",
+	"Fluffer-Nutter",
+	"Frou-Frou",
+	"Fruit Cake",
+	"Fruit Loop",
+    "Fruity",
+	"Funny Hunny",
+	"Gangsta Baby",
+	"Georgia Peach",
+	"Gorgeous",
+	"Giggles",
+	"Gigi",
+	"Golden",
+	"Goldie",
+	"Goobers",
+	"Goofy",
+	"Gorgeous",
+	"Gum Drop",
+	"Handsome",
+	"Haven",
+	"Heart Throb",
+	"Heisenberg",
+	"Hero",
+	"Honey",
+	"Honey Bun",
+	"Honey Bunny",
+	"Honey Cakes",
+	"Honey Pants",
+	"Hotness",
+	"Hot Stuff",
+	"Hottie",
+	"Huggalump",
+	"Huggy Bear",
+	"Hun",
+	"Hun Bun",
+	"Hunk",
+	"Hunky",
+	"Hunny",
+	"Hunny Pot",
+	"Jelly Bean",
+	"Joy",
+	"Jujube",
+	"Juliet",
+	"Kiddo",
+	"Killer",
+	"King",
+	"Kissy Face",
+	"Kit Kat",
+	"Kitten",
+	"Kitty",
+	"Kiya",
+	"Knight",
+	"Knockout",
+	"Lala",
+	"Lamb",
+	"Lambchop",
+	"Lambkin",
+	"Little",
+	"Little Dove",
+	"Looker",
+	"Love",
+	"Love Boodle",
+	"Love Bug",
+	"Lovely",
+	"Love Muffin",
+	"Lover",
+	"Lovey Dovey",
+	"Lovie",
+	"Lubber",
+	"Lumlums",
+	"Magic",
+	"Main Squeeze",
+	"Marshmallow",
+	"McDreamy",
+	"McSteamy",
+	"Monkey",
+	"Mooky",
+	"Muffin",
+	"Muffinhead",
+	"Muffy",
+	"Muggles",
+	"Muncie",
+	"Munchkin",
+	"Muppet",
+	"Num Nums",
+	"Pancake",
+	"Pandabear",
+	"Papi",
+	"Papito",
+	"Paradise",
+	"PB&J",
+	"Peach",
+	"Peaches",
+	"Peanut",
+	"Perfect",
+	"Pet",
+	"Petal",
+	"Pickle Head",
+	"Pickle Pie",
+	"Pineapple Chunk",
+	"Pinky",
+    "Pincushion",
+	"Pinup",
+	"Pooh",
+	"Pooh Bear",
+	"Pooka",
+	"Pookie",
+	"Pooky Pooky",
+	"Poopie",
+	"Poopsie",
+	"Pop Tart",
+	"Pork Chop",
+	"Precious",
+	"Pretty Princess",
+	"Princess",
+	"Pudding",
+	"Punk",
+	"Pumpkin",
+	"Puppy",
+	"Pussy Cat",
+	"Queen",
+	"Queenie",
+	"Romeo",
+	"Roo",
+	"Rose",
+	"Rosie",
+	"Rubber Ducky",
+	"Rum-rum",
+	"Saeedi",
+	"Sailor",
+	"Schmoopy",
+	"Sexy",
+	"Shmoopie",
+	"Shmoops",
+	"Shmoopsie Poo",
+	"Shoogie Woogie",
+	"Short Cake",
+	"Shorty",
+	"Silly Goose",
+	"Simba",
+	"Sleeping Beauty",
+	"Slick",
+	"Smiles",
+	"Smiley",
+	"Smoochie",
+	"Snicker Doodle",
+	"Snoogypuss",
+	"Snookums",
+	"Snuggems",
+	"Snuggle Bunny",
+	"Snuggles",
+	"Snuggley Bear",
+	"Snuka Bear",
+	"Soda Pop",
+	"Soldier",
+	"Soul Mate",
+	"Spark",
+	"Sparkles",
+	"Sparky",
+	"Sport",
+	"Spunky",
+	"Star",
+	"Stinky",
+	"Stud",
+	"Studley",
+	"Sugams",
+	"Sugar",
+	"Sugar Britches",
+	"Sugar Lips",
+	"Sugar Mama",
+	"Sugar Muffin",
+	"Sugar Pie",
+	"Sugar Plum",
+	"Sugar Puff",
+	"Sugar Puss",
+	"Sugar Smacks",
+	"Sun Beam",
+	"Sunny",
+	"Sunshine",
+	"Superman",
+	"Superstar",
+	"Sweet Cheeks",
+	"Sweetheart",
+	"Sweetie",
+	"Sweetiepie Facecake",
+	"Sweetkins",
+	"Sweetness",
+	"Sweet Potato",
+	"Sweets",
+	"Sweetsie",
+	"Sweetstuff",
+	"Sweetthang",
+	"Sweetum",
+	"Sweety",
+	"Tator-Tot",
+	"Teady Bear",
+	"Teardrop",
+	"Tiger",
+	"Tiger Toes",
+	"Tinkerbell",
+	"Toots",
+	"Tootsie",
+	"Treasure",
+	"Tum-Tums",
+	"Twinkle",
+	"Twinkle Toes",
+	"Uncle Upright",
+	"Winky Dink",
+	"Wonderful",
+	"Yummers",
+    "Apple",
+    "Apricot",
+    "Avocado",
+    "Banana",
+    "Bell pepper",
+    "Bilberry",
+    "Blackberry",
+    "Blackcurrant",
+    "Blood orange",
+    "Blueberry",
+    "Boysenberry",
+    "Breadfruit",
+    "Canary melon",
+    "Cantaloupe",
+    "Cherimoya",
+    "Cherry",
+    "Chili pepper",
+    "Clementine",
+    "Cloudberry",
+    "Coconut",
+    "Cranberry",
+    "Cucumber",
+    "Currant",
+    "Damson",
+    "Date",
+    "Dragonfruit",
+    "Durian",
+    "Eggplant",
+    "Elderberry",
+    "Feijoa",
+    "Fig",
+    "Goji berry",
+    "Gooseberry",
+    "Grape",
+    "Grapefruit",
+    "Guava",
+    "Honeydew",
+    "Huckleberry",
+    "Jackfruit",
+    "Jambul",
+    "Jujube",
+    "Kiwi fruit",
+    "Kumquat",
+    "Lemon",
+    "Lime",
+    "Loquat",
+    "Lychee",
+    "Mandarine",
+    "Mango",
+    "Mulberry",
+    "Nectarine",
+    "Nut",
+    "Olive",
+    "Orange",
+    "Papaya",
+    "Passionfruit",
+    "Peach",
+    "Pear",
+    "Persimmon",
+    "Physalis",
+    "Pineapple",
+    "Plum",
+    "Pomegranate",
+    "Pomelo",
+    "Purple mangosteen",
+    "Quince",
+    "Raisin",
+    "Rambutan",
+    "Raspberry",
+    "Redcurrant",
+    "Rock melon",
+    "Salal berry",
+    "Satsuma",
+    "Star fruit",
+    "Strawberry",
+    "Tamarillo",
+    "Tangerine",
+    "Tomato",
+    "Ugli",
+    "Watermelon"
+]</script><tw-passagedata pid="1" name="Start" tags="nobr" position="100,100" size="100,100">/* **********
  * Start.tw
  *
  * Package: FluffyBreeder
@@ -4554,7 +5371,7 @@ console.log("cleared defects parts = " + this.genes[index])
 						
 					&lt;&lt;/if&gt;&gt;
 	
-				&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
+				&lt;&lt;case &quot;Dull&quot;&gt;&gt;
 					/* &gt;= 190 - smarty */
 					&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
 						@@.cyan;Nu cawe &#39;bout poopie babbeh! Nu wub!@@
@@ -4791,7 +5608,7 @@ button {
 
 /* List of possible needs we will check.  Some are duplciated to be more common*/
 &lt;&lt;set _possibleNeeds = [ &quot;Personality&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Stat&quot;, &quot;Temperament&quot;, &quot;Age&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Gender&quot;, ]&gt;&gt;
-&lt;&lt;set $fluffyPersonalities = [ &quot;Fussy&quot;, &quot;Shy&quot;, &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Peppy&quot;, &quot;Diligent&quot;, &quot;Bossy&quot;, &quot;Curious&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Lackadaisical&quot;, &quot;Sweet&quot;, &quot;Haughty&quot;, &quot;Playful&quot;, &quot;Rowdy&quot;] &gt;&gt; 
+&lt;&lt;set $fluffyPersonalities = [ &quot;Fussy&quot;, &quot;Shy&quot;, &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Peppy&quot;, &quot;Diligent&quot;, &quot;Bossy&quot;, &quot;Curious&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Dull&quot;, &quot;Sweet&quot;, &quot;Haughty&quot;, &quot;Playful&quot;, &quot;Rowdy&quot;] &gt;&gt; 
 
 /* We know how many needs it has, now pick some to fill it. */
 &lt;&lt;set _customerBasicNeeds = []&gt;&gt;
@@ -5424,13 +6241,13 @@ button {
 			/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
 			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
 				Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Diligent acts a smarty
-				&lt;br&gt;@@.cyan;Smawty wan nyu homesies! Gib nyu dummeh mummah an&#39; daddeh!@@
+				&lt;&lt;colorizeText $activeFluffy.cColor &quot;Smawty wan nyu homesies! Gib nyu dummeh mummah an&#39; daddeh!&quot;&gt;&gt;
 			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious acts a smarty.@@
 			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Playful acts a smarty.@@
-			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
-				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lackadaisical acts a smarty.@@
+			&lt;&lt;case &quot;Dull&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Dull acts a smarty.@@
 			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Timid acts asmarty.@@
 			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
@@ -5462,27 +6279,27 @@ button {
 		&lt;&lt;switch $globalFluffies[$activeFluffy.ID].traits[0]&gt;&gt;
 			/* These would be the worst personalities*/
 			&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-				@@.cyan;&lt;&lt;- $activeFluffy.name&gt;&gt; am smarty now! Will make bestest herd from dummy &lt;&lt;- $ourStore.name&gt;&gt; fluffys!@@
+				&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &#39;am smarty now! Will make bestest herd fwom dummy&#39;&gt;&gt;&lt;&lt;fluffSpeech $ourStore.name $activeFluffy.cColor &gt;&gt; &lt;&lt;colorizeText $activeFluffy.cColor &#39;fluffies!&#39;&gt;&gt;
 			&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-				@@.cyan;Is best smarty now, dummys do what best smarty say!@@
+				&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt; &lt;&lt;colorizeText $activeFluffy.cColor &#39;is best smawty now, dummys do what best smawty say!&#39;&gt;&gt;
 			&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-				@@.cyan;This is smarty land now!  Dummys do what Smarty say or get worstiest sorry hooves!@@
+				&lt;&lt;colorizeText $activeFluffy.cColor &#39;Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!&#39;&gt;&gt;
 			
 			/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
 			&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-				@@.cyan;Wet Smarty go outside! Smarty &lt;&lt;- $activeFluffy.name&gt;&gt; wan have hewd, dummeh feral fluffys do what Smarty wan!@@
+				&lt;&lt;colorizeText $activeFluffy.cColor &quot;Wet smawty ous&#39;side!&quot;&gt;&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;wan have hewd, dummeh fewal fwuffies do what smawty wan\&#39;!&quot;&gt;&gt;
 			&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
 			&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-				@@.cyan;Dummeh poopie &lt;&lt;- $title&gt;&gt;! Swawty am bestest! Gib bestest toysies NAO!@@
-			&lt;&lt;case &quot;Lackadaisical&quot;&gt;&gt;
-				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lackadaisical turns smarty.@@
+				&lt;&lt;colorizeText $activeFluffy.cColor &quot;Dummeh poopie&quot;&gt;&gt;&lt;&lt;- $title&gt;&gt;!&lt;&lt;colorizeText $activeFluffy.cColor &quot;Smawty am bestest! Gib bestest toysies NAO!&quot;&gt;&gt;
+			&lt;&lt;case &quot;Dull&quot;&gt;&gt;
+				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Dull turns smarty.@@
 			&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Timid turns smarty.@@
 			&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 				@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Pensive turns smarty.@@
 			&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-				@@.cyan;Dis am DUMMEH! Fwuffy wan&#39; &#39;peshaw wub! FWUFFY am SMAWTY!@@
+				&lt;&lt;colorizeText $activeFluffy.cColor &quot;Dis am DUMMEH! Fwuffy wan\&#39; speshaw\&#39; wub! FWUFFY am SMAWTY!&quot;&gt;&gt;
 	
 			/* Foal traits, so these would be &#39;best babies&#39;*/
 			
@@ -6030,7 +6847,79 @@ button {
  * TODO:  Currently empty, need to fill this as a beta requiremnt. 
  *
  *********** */
- &lt;div class=&quot;w3-row w3-container w3-mobile&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://www.w3schools.com/w3css/4/w3pro.css&quot;&gt;
+&lt;link rel=&quot;stylesheet&quot; href=&quot;https://www.w3schools.com/lib/w3-theme-teal.css&quot;&gt;
+
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
+
+&lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
+&lt;&lt;set $nextButton to &quot;Back to the shop.&quot;, $nextLink to $returnTo&gt;&gt;
+
+&lt;style&gt;
+.responsive {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+}
+&lt;/style&gt;
+
+ &lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
+
+	&lt;&lt;sidebarTop&gt;&gt;
+
+	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+		  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+	
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			@@#selectbutton;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			@@#selectbutton;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
+				&lt;&lt;set $listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+
+		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; id=&quot;show-acc-btn&quot;&gt;Get Fluffies &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+		&lt;div id=&quot;showAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
+	  	
+		  	@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
+		  		&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
+		  	&lt;&lt;/button&gt;&gt;@@
+		  	@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Buy Fluffies]]&gt;&gt;
+		  		&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
+		  	&lt;&lt;/button&gt;&gt;@@
+		  	@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Buy Fluffies]]&gt;&gt;
+		  		&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
+		  	&lt;&lt;/button&gt;&gt;@@
+		  	@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
+		  		&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
+		  	&lt;&lt;/button&gt;&gt;@@
+		&lt;/div&gt;
+
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			@@#selectbutton;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			&lt;&lt;set $encyclopedia = &quot;Fluffy Statistics&quot;&gt;&gt;
+		&lt;/div&gt;
+		
+		&lt;&lt;systemButtons&gt;&gt;
+	&lt;/div&gt;
+&lt;/nav&gt;
+
+&lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
+	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
+ 	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;&lt;&lt;- $ourStore.name&gt;&gt;&lt;/h1&gt;
+&lt;/header&gt;
+
+&lt;&lt;timed 5ms&gt;&gt;
+&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
+&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+&lt;&lt;/timed&gt;&gt;
+
+&lt;div id=&quot;main&quot; class=&quot;w3-row w3-container w3-mobile&quot;&gt;
  
 &lt;&lt;switch $encyclopedia&gt;&gt;
 /* ***
@@ -6216,8 +7105,8 @@ A newborn fluffy has one of 5 personalities that each become one of two adult pe
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Shy@@ - can become @@.lightcoral;Curious@@ or @@.lightcoral;Timid@@
 &lt;br&gt;These traits increase Learning and reduced temperament.  Curious fluffies have more Energy, while Timid have reduced Strength.&lt;/p&gt;  
 
-&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Lazy@@ - can become @@.lightcoral;Pensive@@ or @@.lightcoral;Lackadaisical@@
-&lt;br&gt;These fluffies are better at Thinking and have lower temperament.  Pensive fluffies have better Learning, while Lackadaisical have less Energy.&lt;/p&gt; 
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Lazy@@ - can become @@.lightcoral;Pensive@@ or @@.lightcoral;Dull@@
+&lt;br&gt;These fluffies are better at Thinking and have lower temperament.  Pensive fluffies have better Learning, while Dull have less Energy.&lt;/p&gt; 
 
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Cute@@ - can become @@.lightcoral;Sweet@@ or @@.lightcoral;Haughty@@
 &lt;br&gt;These fluffies have more Charm.  Sweet fluffies are better at Learning.  Haughty are worse at Learning and have higher temperament.&lt;/p&gt;
@@ -6272,7 +7161,7 @@ These represent the physical and mental abilities of the fluffy, based on geneti
 
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Charm@@ - General disposition and demeanor of a fluffy.  Counts twice for caculating price.  Cute, Sweet, Haughty and Playfull fluffies have a bonus to Charm.&lt;/p&gt;
 
-&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Thinking@@ - Reasoning ability.  Lazy, Pensive and Lackadaisical fluffies have better Thinking.&lt;/p&gt;
+&lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Thinking@@ - Reasoning ability.  Lazy, Pensive and Dull fluffies have better Thinking.&lt;/p&gt;
 
 &lt;p class=&quot;hang&quot;&gt;@@.lightcoral;Learning@@ - Ability to learn new things.  Shy, Curious, Timid and Pensive fluffies have better Learning.&lt;/p&gt;
 
@@ -6413,7 +7302,29 @@ Genes       Height multiplier
 &lt;&lt;/switch&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
+&lt;/div&gt;
+
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+	});
+
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -6841,7 +7752,7 @@ Genes       Height multiplier
 					&lt;&lt;if random(0,16) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 75&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
 					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 50&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
@@ -6862,7 +7773,7 @@ Genes       Height multiplier
 					&lt;&lt;if random(0,24) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 60&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
 					&lt;&lt;if random(0,48) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
@@ -6883,7 +7794,7 @@ Genes       Height multiplier
 					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
 					&lt;&lt;if random(0,64) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 15&gt;&gt;
 						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
@@ -7116,7 +8027,7 @@ Genes       Height multiplier
 						&lt;&lt;set $globalFluffies[_ef].traits[0] = &quot;Pensive&quot;&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
 					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].traits[0] = &quot;Dull&quot;&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].energy--&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
@@ -7177,7 +8088,7 @@ Genes       Height multiplier
 		
 		&lt;&lt;if $globalFluffies[_ef].pregnant&gt;&gt;
 			&lt;&lt;if $globalFluffies[_ef].dueDate == 0&gt;&gt;
-&lt;&lt;run console.log(&quot;Birth test 0:  &quot; + $globalFluffies[_ef].name + &quot; added to birth even queue.&quot;)&gt;&gt;
+				&lt;&lt;run console.log(&quot;Birth test 0:  &quot; + $globalFluffies[_ef].name + &quot; added to birth even queue.&quot;)&gt;&gt;
 				/* Push to event stack  */
 				&lt;&lt;run $eventBirths.push($globalFluffies[_ef].ID)&gt;&gt;
 				
@@ -7231,7 +8142,7 @@ Genes       Height multiplier
 			&lt;&lt;set _thisStress = Number(_thisStress) + 3&gt;&gt;
 		&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
 			&lt;&lt;set _thisStress = Number(_thisStress) + 2&gt;&gt;
-		&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Lackadaisical&quot;&gt;&gt;
+		&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
 			&lt;&lt;set _thisStress = Number(_thisStress) + 1&gt;&gt;
 		&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
 			&lt;&lt;set _thisStress = Number(_thisStress) + 0&gt;&gt;
@@ -8081,7 +8992,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set $nextButton = &quot;END WEEK&quot;, $nextLink = &quot;End Week&quot;, $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
 
 
-&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot; style=&quot;display:none;&quot;&gt;
+&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
@@ -8100,7 +9011,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
 
-		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;showAccFunc()&quot;&gt;Get Fluffies &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; id=&quot;show-acc-btn&quot;&gt;Get Fluffies &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
 		&lt;div id=&quot;showAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
 	  	
 		  	@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
@@ -8116,13 +9027,18 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		  		&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
 		  	&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
+
+		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			@@#selectbutton;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			&lt;&lt;set $encyclopedia = &quot;Fluffy Statistics&quot;&gt;&gt;
+		&lt;/div&gt;
 		
 		&lt;&lt;systemButtons&gt;&gt;
 	&lt;/div&gt;
 &lt;/nav&gt;
 
 &lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
-	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot; onclick=&quot;openSidebar()&quot;&gt;&amp;#9776;&lt;/button&gt;
+	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
  	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;&lt;&lt;- $ourStore.name&gt;&gt;&lt;/h1&gt;
 &lt;/header&gt;
 
@@ -8154,35 +9070,39 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;/div&gt;
 
 
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+		$(&#39;#show-acc-btn&#39;).on(&quot;click&quot;, showAccFunc);
+	});
 
-&lt;script&gt;
-function openSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.width = &quot;20%&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;25%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &#39;none&#39;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;30%&quot;;
-}
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
 
-function closeSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;0%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
-}
-
-function showAccFunc() {
-  var x = document.getElementById(&quot;showAcc&quot;);
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
+	function showAccFunc() {
+		var x = document.getElementById(&quot;showAcc&quot;);
+		if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
+			x.className += &quot; w3-show&quot;;
+			x.previousElementSibling.className += &quot; w3-grey&quot;;
+		} else { 
+			x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
+			x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
+		}
+	};
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -8645,7 +9565,7 @@ function showAccFunc() {
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.20.218-beta&quot;, $releaseID = 168&gt;&gt;
+&lt;&lt;set $ver = &quot;1.20.218-beta&quot;, $releaseID = $COMMIT&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -8658,11 +9578,9 @@ function showAccFunc() {
  *	Sets the starting week, month, day and year.
  *********** */
 &lt;&lt;set $week = 1&gt;&gt;
-&lt;&lt;set $month = &quot;January&quot;&gt;&gt;
+&lt;&lt;set $month = random(1, 12)&gt;&gt;
 &lt;&lt;set $day = random(9, 21)&gt;&gt;
 &lt;&lt;set $year = random(2030, 2056)&gt;&gt;
-
-&lt;&lt;set $gameDate to Date($year, random(1, 12), $day)&gt;&gt;
 
 /* **********
  *	Default encylopedia entry.
@@ -8744,7 +9662,7 @@ function showAccFunc() {
 &lt;&lt;set $breedStal = -1&gt;&gt;
 
 /* All personality types */
-&lt;&lt;set $fluffyPersonalities = [ &quot;Fussy&quot;, &quot;Shy&quot;, &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Peppy&quot;, &quot;Diligent&quot;, &quot;Bossy&quot;, &quot;Curious&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Lackadaisical&quot;, &quot;Sweet&quot;, &quot;Haughty&quot;, &quot;Playful&quot;, &quot;Rowdy&quot;] &gt;&gt;
+&lt;&lt;set $fluffyPersonalities = [ &quot;Fussy&quot;, &quot;Shy&quot;, &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Peppy&quot;, &quot;Diligent&quot;, &quot;Bossy&quot;, &quot;Curious&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Dull&quot;, &quot;Sweet&quot;, &quot;Haughty&quot;, &quot;Playful&quot;, &quot;Rowdy&quot;] &gt;&gt;
 
  /* ***
   *
@@ -8765,21 +9683,22 @@ function showAccFunc() {
 /* [ Name, Tier, Group ]*/
 &lt;&lt;run console.log(&quot;Colors check 0&quot;)&gt;&gt;
 &lt;&lt;set $Colors = [
- 	{	Name: &quot;White&quot;, Tier: 6, Group: &quot;S&quot;, Gene: &quot;b/b;y/y;r/r;o/o;&quot; },
- 	{	Name: &quot;Black&quot;, Tier: 6, Group: &quot;S&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
+ 	{	Name: &quot;White&quot;, Tier: 6, Group: &quot;White&quot;, Gene: &quot;b/b;y/y;r/r;o/o;&quot; },
+ 	{	Name: &quot;Black&quot;, Tier: 6, Group: &quot;Brown&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
  	
  	{	Name: &quot;Gold&quot;, Tier: 5, Group: &quot;Yellow&quot;, Gene: &quot;b/B;y/y;r/R;o/O;&quot; },
- 	{	Name: &quot;Lavender&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;Y/Y;r/r;o/o;&quot; },
+ 	{	Name: &quot;Lavender&quot;, Tier: 5, Group: &quot;White&quot;, Gene: &quot;b/B;Y/Y;r/r;o/o;&quot; },
  	{	Name: &quot;CornflowerBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;r/r;o/O;&quot; },
  	{	Name: &quot;MidnightBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;R/R;O/O;&quot; },
  	{	Name: &quot;Orchid&quot;, Tier: 5, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;R/R;o/o;&quot; },
  	{	Name: &quot;SeaGreen&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/b;Y/Y;r/r;o/O;&quot; },
  	{	Name: &quot;BlueViolet&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;r/r;O/O;);&quot; },
  	{	Name: &quot;RoyalBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;B/B;y/Y;r/r;o/O;&quot; },
+
  	{	Name: &quot;Violet&quot;, Tier: 5, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/Y;r/R;o/O;&quot; },
  	{	Name: &quot;SkyBlue&quot;, Tier: 5, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;R/R;O/O;&quot; },
  	
- 	{	Name: &quot;PeachPuff&quot;, Tier: 5, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/y;r/R;O/O;&quot; },
+ 	{	Name: &quot;PeachPuff&quot;, Tier: 5, Group: &quot;White&quot;, Gene: &quot;b/b;y/y;r/R;O/O;&quot; },
  	{	Name: &quot;Crimson&quot;, Tier: 5, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;r/R;o/o;&quot; },
  	{	Name: &quot;Plum&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;r/r;o/O;&quot; },
  	{	Name: &quot;Indigo&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;y/Y;r/r;O/O;&quot; },
@@ -8788,21 +9707,21 @@ function showAccFunc() {
  	{	Name: &quot;Blue&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;R/R;o/O;&quot; },
  	{	Name: &quot;SteelBlue&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/y;R/R;o/O;&quot; },
  	{	Name: &quot;Navy&quot;, Tier: 4, Group: &quot;Blue&quot;, Gene: &quot;B/B;Y/Y;r/R;O/O;&quot; },
- 	{	Name: &quot;Cornsilk&quot;, Tier: 4, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;o/o;&quot; },
+ 	{	Name: &quot;Cornsilk&quot;, Tier: 4, Group: &quot;White&quot;, Gene: &quot;b/b;Y/Y;R/R;o/o;&quot; },
  	{	Name: &quot;Fuchsia&quot;, Tier: 4, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;R/R;O/O;&quot; },
  
   	{	Name: &quot;MediumVioletRed&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;O/O;&quot; },
  	{	Name: &quot;Red&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;b/B;Y/Y;r/R;o/o;&quot; },
-	{	Name: &quot;BlanchedAlmond&quot;, Tier: 3, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;O/O;&quot; },
+	{	Name: &quot;BlanchedAlmond&quot;, Tier: 3, Group: &quot;White&quot;, Gene: &quot;b/b;Y/Y;R/R;O/O;&quot; },
 	{	Name: &quot;ForestGreen&quot;, Tier: 3, Group: &quot;Green&quot;, Gene: &quot;b/b;y/Y;r/r;O/O;&quot; },
 	{	Name: &quot;SpringGreen&quot;, Tier: 3, Group: &quot;Green&quot;, Gene: &quot;b/B;y/Y;r/R;O/O;&quot; },
 	{	Name: &quot;RebeccaPurple&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;b/B;Y/Y;r/R;O/O;&quot; },
 	{	Name: &quot;PaleGoldenRod&quot;, Tier: 3, Group: &quot;Yellow&quot;, Gene: &quot;b/b;Y/Y;r/r;o/o;&quot; },
 	{	Name: &quot;SlateBlue&quot;, Tier: 3, Group: &quot;Blue&quot;, Gene: &quot;b/B;y/Y;r/r;o/O;&quot; },
 	{	Name: &quot;Maroon&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;o/O;&quot; },
-	{	Name: &quot;Pink&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;o/o;&quot; },
+	{	Name: &quot;Pink&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;B/B;y/y;R/R;o/o;&quot; },
 	{	Name: &quot;MediumPurple&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;B/B;y/y;r/r;O/O;&quot; },
-	{	Name: &quot;DeepPink&quot;, Tier: 3, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
+	{	Name: &quot;DeepPink&quot;, Tier: 3, Group: &quot;Purple&quot;, Gene: &quot;B/B;Y/Y;R/R;o/o;&quot; },
 	
 	{	Name: &quot;HotPink&quot;, Tier: 2, Group: &quot;Red&quot;, Gene: &quot;B/B;y/y;R/R;O/O;&quot; },
 	{	Name: &quot;Green&quot;, Tier: 2, Group: &quot;Green&quot;, Gene: &quot;b/b;Y/Y;r/r;O/O;&quot; },
@@ -8828,11 +9747,11 @@ function showAccFunc() {
 	{	Name: &quot;RosyBrown&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;Y/Y;R/R;o/O;&quot; },
 	{	Name: &quot;Chartreuse&quot;, Tier: 1, Group: &quot;Green&quot;, Gene: &quot;b/b;y/y;r/r;o/O;&quot; },
 	{	Name: &quot;Orange&quot;, Tier: 1, Group: &quot;Orange&quot;, Gene: &quot;B/B;y/Y;R/R;o/o;&quot; },
-	{	Name: &quot;Khaki&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/Y;r/r;o/o;&quot; },
+	{	Name: &quot;Khaki&quot;, Tier: 1, Group: &quot;Yellow&quot;, Gene: &quot;b/b;y/Y;r/r;o/o;&quot; },
 	{	Name: &quot;OliveDrab&quot;, Tier: 1, Group: &quot;Green&quot;, Gene: &quot;b/b;y/Y;r/r;O/O;&quot; },
-	{	Name: &quot;Moccasin&quot;, Tier: 1, Group: &quot;Brown&quot;, Gene: &quot;b/b;y/Y;r/R;o/O;&quot; },
+	{	Name: &quot;Moccasin&quot;, Tier: 1, Group: &quot;White&quot;, Gene: &quot;b/b;y/Y;r/R;o/O;&quot; },
 	{	Name: &quot;DarkSalmon&quot;, Tier: 1, Group: &quot;Red&quot;, Gene: &quot;B/B;Y/Y;R/R;o/O;&quot; },	 
-	{	Name: &quot;YellowGreen&quot;, Tier: 1, Group: &quot;Yellow&quot;, Gene: &quot;b/B;y/y;r/R;O/O;&quot; } 
+	{	Name: &quot;YellowGreen&quot;, Tier: 1, Group: &quot;Green&quot;, Gene: &quot;b/B;y/y;r/R;O/O;&quot; } 
  ]&gt;&gt;
 &lt;&lt;run console.log(&quot;Colors check 1: &quot; + $Colors.length)&gt;&gt;
 
@@ -9127,6 +10046,7 @@ profitsTotal: 0
 	&lt;&lt;run console.log(&quot;Fluffy mart defect count: &quot; + _defectCount)&gt;&gt;
 	
 	&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
+		&lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+random(1, 999)&gt;&gt;
 		&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
 		
@@ -9153,6 +10073,14 @@ profitsTotal: 0
 
 	&lt;&lt;else&gt;&gt;
 		/* not a mill, generate adult traits */
+		&lt;&lt;switch random(0, 1)&gt;&gt;
+			&lt;&lt;case 0&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = window.NameList[random(1, 380)]&gt;&gt;
+			&lt;&lt;case 1&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+			&lt;&lt;default&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
 			&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
@@ -9178,7 +10106,7 @@ profitsTotal: 0
 					&lt;&lt;set $activeFluffy.traits[0] = &quot;Pensive&quot;&gt;&gt;
 					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $activeFluffy.traits[0] = &quot;Lackadaisical&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.traits[0] = &quot;Dull&quot;&gt;&gt;
 					&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case &quot;Cute&quot;&gt;&gt;
@@ -9231,7 +10159,7 @@ profitsTotal: 0
 	
 	&lt;div class=&quot;w3-container w3-card w3-dark-grey w3-small w3-margin-top&quot;&gt;
 		&lt;div class=&quot;w3-col m4 l3&quot; style=&quot;position: relative; top: 0px; width: 160px; height: 160px&quot;&gt;
-				&lt;&lt;switch $activeFluffy.breed&gt;&gt;
+			&lt;&lt;switch $activeFluffy.breed&gt;&gt;
 				&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
 					&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
 
@@ -9250,11 +10178,50 @@ profitsTotal: 0
 		&lt;/div&gt;
 	&lt;/div&gt;
 
+	&lt;div class=&quot;w3-container&quot;&gt;
+		&lt;&lt;timed 5ms&gt;&gt;
+			&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddy ow mummy fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Curious&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Timid&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
+					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;case &quot;Dull&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fwuffy&gt; nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib fwuffy nyu home?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddy ow mummy?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+		&lt;&lt;/timed&gt;&gt;
+		&lt;span id=&quot;greet-msg&quot;&gt;&lt;/span&gt;
+	&lt;/div&gt;
+
 	&lt;&lt;set _price = 0&gt;&gt;
 		
 	&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
 		&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
 		&lt;&lt;run console.log(&quot;Feral test 0: &quot; + $activeFluffy.traits)&gt;&gt;
+		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost @@.green;¤_price@@. It&#39;s free real estate.
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
 		
@@ -9317,7 +10284,7 @@ profitsTotal: 0
 &lt;&lt;set $nextButton to &quot;Back to the Store&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
 
-&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot; style=&quot;display:none;&quot;&gt;
+&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
@@ -9331,7 +10298,7 @@ profitsTotal: 0
 &lt;/nav&gt;
 
 &lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
-	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot; onclick=&quot;openSidebar()&quot;&gt;&amp;#9776;&lt;/button&gt;
+	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
  	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;Store Upgrades&lt;/h1&gt;
 &lt;/header&gt;
 
@@ -9644,24 +10611,27 @@ Upgrades:
 	&lt;&lt;updateStoreButtons&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+	});
 
-&lt;script&gt;
-function openSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.width = &quot;20%&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;25%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &#39;none&#39;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;30%&quot;;
-}
-
-function closeSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;0%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
-}
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="30" name="Fluffy Breeding" tags="nobr" position="1225,350" size="100,100">/* **********
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="Fluffy Breeding" tags="nobr" position="1225,350" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -9680,7 +10650,7 @@ function closeSidebar() {
 &lt;&lt;set $nextButton to &quot;Back to the fluffy list.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
 
 
-&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot; style=&quot;display:none;&quot;&gt;
+&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
@@ -9698,7 +10668,7 @@ function closeSidebar() {
 &lt;/nav&gt;
 
 &lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
-	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot; onclick=&quot;openSidebar()&quot;&gt;&amp;#9776;&lt;/button&gt;
+	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
  	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;&lt;&lt;- $activeFluffy.name&gt;&gt;&lt;/h1&gt;
 &lt;/header&gt;
 
@@ -9771,23 +10741,29 @@ function closeSidebar() {
 
 &lt;/div&gt;
 
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+	});
+
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
+&lt;&lt;/script&gt;&gt;
 
 &lt;script&gt;
-function openSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.width = &quot;20%&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;25%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &#39;none&#39;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;30%&quot;;
-}
-
-function closeSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;0%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
-}
 function showAccFunc() {
   var x = document.getElementById(&quot;showAcc&quot;);
   if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
@@ -10021,7 +10997,7 @@ function subSortAccFunc(type) {
 &lt;&lt;set $nextButton to &quot;Back to the fluffy list.&quot;, $nextLink to &quot;Fluffy List&quot;&gt;&gt;
 
 
-&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot; style=&quot;display:none;&quot;&gt;
+&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
@@ -10035,7 +11011,7 @@ function subSortAccFunc(type) {
 &lt;/nav&gt;
 
 &lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
-	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot; onclick=&quot;openSidebar()&quot;&gt;&amp;#9776;&lt;/button&gt;
+	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
  	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;&lt;&lt;- $activeFluffy.name&gt;&gt;&lt;/h1&gt;
 &lt;/header&gt;
 
@@ -10066,11 +11042,15 @@ function subSortAccFunc(type) {
 	&lt;&lt;button &quot;Rename&quot;&gt;&gt;
 		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
+		&lt;&lt;replace &quot;#navHead&quot;&gt;&gt;&lt;&lt;- $activeFluffy.name&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-/* Form for error message to display*/
-&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
+		&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &#39;fluffy wuv\&#39; nyu namesie!!&#39; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+	/* Form for error message to display*/
+	&lt;span id=&quot;form-error&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
+&lt;span id=&quot;rename-msg&quot;&gt;&lt;/span&gt;
+
 &lt;div id=&quot;breed-form&quot;&gt;
 
 &lt;&lt;run console.log(&quot;Details test 0: $activeFluffy.specialFriend  = &quot; + $activeFluffy.specialFriend + &quot; | $activeFluffy.name = &quot; + $activeFluffy.name + &quot; | &quot;)&gt;&gt;
@@ -10094,7 +11074,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		
 	&lt;&lt;replace &quot;#breed-form&quot;&gt;&gt;[[None|Fluffy Breeding][$nextButton = &quot;Back to fluffy&quot;, $nextLink = passage(), $breedMare = -1, $breedStal = -1]]&lt;&lt;/replace&gt;&gt;
-	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _specialName&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;replace &quot;#breed-message&quot;&gt;&gt;&lt;br&gt;&lt;&lt;print _specialName&gt;&gt; and $activeFluffy.name are no longer special friends.&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor &#39;HUHUHU... WORSTES SADDIES!&#39;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;/button&gt;&gt;
 &lt;&lt;/if&gt;&gt;
@@ -10130,7 +11110,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;- $title&gt;&gt; am bestest at pwayin! Pway AWW da games wit &lt;&lt;print $activeFluffy.name&gt;&gt; heheheh!.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;- $title&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;am bestest at pwayin\&#39;! Pway AWW da games wit\&#39;&quot;&gt;&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;, heheheh!&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to play right now.&lt;&lt;/replace&gt;&gt;
@@ -10183,7 +11163,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;&lt;&lt;print $activeFluffy.name&gt;&gt; feew happeh and stwong! Wanna pway aww day wong!.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;feew happeh and stwong! Wanna pway aww day wong!&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
@@ -10209,7 +11189,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;set $activeFluffy.happy--&gt;&gt;
 		&lt;&lt;set $activeFluffy.trust--&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;@@.cyan;Huhuhu why hurt good fluffy?.@@&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;Huhuhu... why huwt gud fwuffy?&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for this right now.&lt;&lt;/replace&gt;&gt;
@@ -10265,27 +11245,27 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 &lt;/div&gt;
 
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+	});
 
-
-
-
-&lt;script&gt;
-function openSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.width = &quot;20%&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;25%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &#39;none&#39;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;30%&quot;;
-}
-
-function closeSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;0%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
-}
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy List" tags="nobr" position="350,475" size="100,100">/* **********
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy List" tags="nobr" position="350,475" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -10314,7 +11294,7 @@ function closeSidebar() {
 &lt;/style&gt;
 
 
-&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot; style=&quot;display:none;&quot;&gt;
+&lt;nav class=&quot;w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal&quot; id=&quot;mySidebar&quot;&gt;
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
@@ -10343,7 +11323,7 @@ function closeSidebar() {
 	  
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 		
-				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;showAccFunc()&quot;&gt;Show &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; id=&quot;show-acc-btn&quot; onclick=&quot;showAccFunc()&quot;&gt;Show &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
 				&lt;div id=&quot;showAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
 			  	
 				  	@@#sortbutton;&lt;&lt;button &quot;All&quot;&gt;&gt;&lt;&lt;set $listType = &quot;All&quot;&gt;&gt;
@@ -10700,7 +11680,7 @@ function closeSidebar() {
 	&lt;/nav&gt;
 
 &lt;header class=&quot;w3-bar w3-card w3-theme&quot;&gt;
-  &lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot; onclick=&quot;openSidebar()&quot;&gt;&amp;#9776;&lt;/button&gt;
+  &lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
   &lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot; style=&quot;font-size:2vw;&quot;&gt;Store Fluffies&lt;/h1&gt;
 &lt;/header&gt;
 
@@ -10735,24 +11715,29 @@ function closeSidebar() {
 
 &lt;&lt;/timed&gt;&gt;
 
+&lt;&lt;script&gt;&gt;
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
+		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+	});
+
+	function openSidebar() {
+		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
+		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
+	};
+	function closeSidebar() {
+		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
+		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
+		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
+	};
+&lt;&lt;/script&gt;&gt;
 
 &lt;script&gt;
-function openSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.width = &quot;20%&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;25%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;block&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &#39;none&#39;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;30%&quot;;
-}
-
-function closeSidebar() {
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;main&quot;).style.marginLeft = &quot;0%&quot;;
-	document.getElementById(&quot;mySidebar&quot;).style.display = &quot;none&quot;;
-	document.getElementById(&quot;openNav&quot;).style.display = &quot;inline-block&quot;;
-	document.getElementById(&quot;navHead&quot;).style.marginLeft = &quot;0%&quot;;
-}
-
 function showAccFunc() {
   var x = document.getElementById(&quot;showAcc&quot;);
   if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
@@ -11408,7 +12393,7 @@ Energy:
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getEnergy()&gt;&gt;
 &lt;/span&gt;
 
-&lt;div id=&quot;st-form&quot;&gt;
+&lt;div id=&quot;en-form&quot;&gt;
 &lt;&lt;textbox &#39;_enString &#39; _enString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _enString to _enString.trim()&gt;&gt;
@@ -11441,7 +12426,7 @@ Charm:
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCharm()&gt;&gt;
 &lt;/span&gt;
 
-&lt;div id=&quot;st-form&quot;&gt;
+&lt;div id=&quot;ch-form&quot;&gt;
 &lt;&lt;textbox &#39;_chString &#39; _chString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _chString to _chString.trim()&gt;&gt;
@@ -11474,7 +12459,7 @@ Thinking:
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getThinking()&gt;&gt;
 &lt;/span&gt;
 
-&lt;div id=&quot;st-form&quot;&gt;
+&lt;div id=&quot;th-form&quot;&gt;
 &lt;&lt;textbox &#39;_thString &#39; _thString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _thString to _thString.trim()&gt;&gt;
@@ -11507,7 +12492,7 @@ Learning:
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getLearning()&gt;&gt;
 &lt;/span&gt;
 
-&lt;div id=&quot;st-form&quot;&gt;
+&lt;div id=&quot;le-form&quot;&gt;
 &lt;&lt;textbox &#39;_leString &#39; _leString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _leString to _leString.trim()&gt;&gt;
@@ -11540,7 +12525,7 @@ Inbreeding:
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene()&gt;&gt;
 &lt;/span&gt;
 
-&lt;div id=&quot;st-form&quot;&gt;
+&lt;div id=&quot;in-form&quot;&gt;
 &lt;&lt;textbox &#39;_inString &#39; _inString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _inString to _inString.trim()&gt;&gt;
@@ -11562,6 +12547,145 @@ Inbreeding:
 &lt;&lt;/button&gt;&gt;
 /* Form for error message to display*/
 &lt;span id=&quot;in-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Coat Length Gene
+ *** */
+Coat Length: 
+&lt;&lt;set _clString  = $globalFluffies[$activeFluffy.ID].genes.getCoatLengthGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;coatlengthgene&quot;&gt;
+	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;cl-form&quot;&gt;
+&lt;&lt;textbox &#39;_clString &#39; _clString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _clString to _clString.trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatLength(_clString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#cl-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+
+
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#cl-form-error&quot;&gt;&gt;Gene set. Coat Length = &lt;&lt;print $globalFluffies[$activeFluffy.ID].coatLength&gt;&gt; (&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()&gt;&gt; + &lt;&lt;print $globalFluffies[$activeFluffy.ID].coatLengthAdd&gt;&gt;
+		&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#coatlengthgene&quot;&gt;&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;cl-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Coat Density Gene
+ *** */
+Coat Density: 
+&lt;&lt;set _cdString  = $globalFluffies[$activeFluffy.ID].genes.getCoatDensityGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;coatdensitygene&quot;&gt;
+	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;cd-form&quot;&gt;
+&lt;&lt;textbox &#39;_cdString &#39; _cdString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _cdString to _cdString.trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity(_cdString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#cd-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#cd-form-error&quot;&gt;&gt;Gene set. Coat Density = &lt;&lt;print $globalFluffies[$activeFluffy.ID].coatLength&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#coatdensitygene&quot;&gt;&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;cd-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+
+/* ***
+ *	Coat Curl Gene
+ *** */
+Coat Curl: 
+&lt;&lt;set _cuString  = $globalFluffies[$activeFluffy.ID].genes.getCoatCurlGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;coatcurlgene&quot;&gt;
+	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;cu-form&quot;&gt;
+&lt;&lt;textbox &#39;_cuString &#39; _cuString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _cuString to _cuString.trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl(_cuString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#cu-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#cu-form-error&quot;&gt;&gt;Gene set. Coat Curl = &lt;&lt;print $globalFluffies[$activeFluffy.ID].coatCurl&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#coatcurlgene&quot;&gt;&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;cu-form-error&quot;&gt;&lt;/span&gt;
+&lt;/div&gt;
+
+/* ***
+ *	Subspecies Gene
+ *** */
+Subspecies: 
+&lt;&lt;set _ssString  = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesGene().toString() + &quot;;&quot;&gt;&gt;
+&lt;span id=&quot;subspeciesgene&quot;&gt;
+	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()&gt;&gt;
+&lt;/span&gt;
+
+&lt;div id=&quot;ss-form&quot;&gt;
+&lt;&lt;textbox &#39;_ssString &#39; _ssString &gt;&gt;
+&lt;&lt;button &quot;Enter&quot;&gt;&gt;
+	&lt;&lt;set _ssString to _ssString.trim()&gt;&gt;
+	
+	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies(_ssString) == false&gt;&gt;
+		&lt;&lt;replace &quot;#ss-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()&gt;&gt;
+		&lt;&lt;set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()&gt;&gt;
+
+		/* And update the pbreed */
+		&lt;&lt;replace &quot;#ss-form-error&quot;&gt;&gt;Gene set. SubSpecies = &lt;&lt;print $globalFluffies[$activeFluffy.ID].coatCurl&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#subspeciesgene&quot;&gt;&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/button&gt;&gt;
+/* Form for error message to display*/
+&lt;span id=&quot;ss-form-error&quot;&gt;&lt;/span&gt;
 &lt;/div&gt;
 
 &lt;br&gt; Defect Genes:  If both are recessive (lower case), we have a defect.  
@@ -12215,6 +13339,27 @@ button {
 &lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;- &quot;@@border:4px solid &quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 
 /* ***
+ *	Called as &lt;&lt;colorizeText $color $message&gt;&gt;
+ *	Returns the message in provided color.
+ *** */
+&lt;&lt;widget &quot;colorizeText&quot;&gt;&gt;
+	&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;
+		&lt;&lt;- `@@color:${$args[0]};${$args[1]}`&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- `@@border:4px solid ${$args[0]};${$args[1]}`&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Called as &lt;&lt;fluffSpeech $message $color&gt;&gt;
+ *	Translates message into fluffy speech. 
+ * 	Replaces &#39;&lt;fluffy&gt;&#39; with actual name.
+ *** */
+&lt;&lt;widget &quot;fluffSpeech&quot;&gt;&gt;
+	&lt;&lt;- `@@color:${$args[1]};${$args[0].replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}`&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
  *	Called as &lt;&lt;displayStat $stat&gt;&gt;
  *	Returns a display of this stat value based on the player xp level.
  *	Normal ranges for a stat are 0-6
@@ -12299,7 +13444,7 @@ button {
 	&lt;&lt;set _avg = Number(Number(_avg) / 7).toFixed(2)&gt;&gt;
 	&lt;&lt;set _avg++&gt;&gt;
 
-	&lt;&lt;if $activeFluffy.traits.includes(&quot;Bossy&quot;) || $activeFluffy.traits.includes(&quot;Timid&quot;) ||  $activeFluffy.traits.includes(&quot;Lackadaisical&quot;) ||  $activeFluffy.traits.includes(&quot;Haughty&quot;) ||  $activeFluffy.traits.includes(&quot;Rowdy&quot;)&gt;&gt;
+	&lt;&lt;if $activeFluffy.traits.includes(&quot;Bossy&quot;) || $activeFluffy.traits.includes(&quot;Timid&quot;) ||  $activeFluffy.traits.includes(&quot;Dull&quot;) ||  $activeFluffy.traits.includes(&quot;Haughty&quot;) ||  $activeFluffy.traits.includes(&quot;Rowdy&quot;)&gt;&gt;
 		&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 8).toFixed(2)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set $activeFluffy.statBonus = Number(_avg / 6).toFixed(2)&gt;&gt;
@@ -12345,10 +13490,11 @@ button {
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	$activeFluffy.name is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.breed.
+	&lt;&lt;colorizeText $activeFluffy.cColor $activeFluffy.name&gt;&gt; is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 3&gt;&gt;, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt;&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 1&gt;&gt; and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;. 
 	&lt;br&gt;&lt;&lt;They&gt;&gt; is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; weighs $activeFluffy.weight &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxWeight)&quot; : &quot;&quot;&gt;&gt; KG.  &lt;&lt;They&gt;&gt; is $activeFluffy.length cm long &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxLength)&quot; : &quot;&quot;&gt;&gt; and is $activeFluffy.height cm tall &lt;&lt;- ($training &gt;= 120 || $debugMode) ? &quot;(max $activeFluffy.maxHeight)&quot; : &quot;&quot;&gt;&gt;.  
+	&lt;br&gt;&lt;&lt;They&gt;&gt; fluff is $activeFluffy.coatLength cm long, has a density of $activeFluffy.coatDensity and has a curl of $activeFluffy.coatCurl.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; can live up to $activeFluffy.maxAge years and has a fertility score of &lt;&lt;displayStat $activeFluffy.fertility&gt;&gt;.
 	&lt;br&gt;Strength: [&lt;&lt;displayStat $activeFluffy.strength&gt;&gt;], Energy [&lt;&lt;displayStat $activeFluffy.energy&gt;&gt;], Charm [&lt;&lt;displayStat $activeFluffy.charm&gt;&gt;], Thinking [&lt;&lt;displayStat $activeFluffy.thinking&gt;&gt;], Learning [&lt;&lt;displayStat $activeFluffy.learning&gt;&gt;].
 	
@@ -12418,7 +13564,7 @@ button {
 
 	
 
-&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed. | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
+&lt;&lt;print _fluffy.traits[0]&gt;&gt; _fluffy.gender _fluffy.breed | Name: &lt;&lt;print _fluffy.name&gt;&gt; | &lt;&lt;inlineColor _fluffy.cColor&gt;&gt; coat &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt; &lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;| &lt;&lt;inlineColor _fluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;
 &lt;br&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt; Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt; Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt; Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt; Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt; Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;
 &lt;br&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt; Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt; Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt; Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt; Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt; Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;
 &lt;br&gt;_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
@@ -12484,9 +13630,9 @@ button {
  *** */
 &lt;&lt;widget &quot;BaseFluffy&quot;&gt;&gt;
 	&lt;&lt;if ($args[0].toUpperCase() == &quot;MALE&quot;)&gt;&gt;
-		&lt;&lt;set _geneSTR = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0&quot;&gt;&gt;
+		&lt;&lt;set _geneSTR = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0&quot;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _geneSTR = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1&quot;&gt;&gt;
+		&lt;&lt;set _geneSTR = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;set $activeFluffy = {
@@ -12532,6 +13678,13 @@ button {
 		charm: 3,
 		thinking: 3,
 		learning: 3,
+		coatLengthAdd: 0,
+		coatLength: 2,
+		coatDensity: 100,
+		coatDensityAdd: 10,
+		coatCurl: 2,
+		subSpecies: 0,
+		subSpeciesString: &quot;Standard Fluffy&quot;,
 		health: 10,
 		children: [],
 		specialFriend: -1,
@@ -12566,13 +13719,15 @@ button {
 		&lt;&lt;set _f = random(0, 1)&gt;&gt;
 		&lt;&lt;set _h = random(0, 2) / 100&gt;&gt;
 		&lt;&lt;set _m = random(0, 2)&gt;&gt;
+		&lt;&lt;set _cl = random(0, 2)&gt;&gt;
+		&lt;&lt;set _cd = random(0,30)&gt;&gt;
 
 		&lt;&lt;set _L = Number($args[0].getLength() + _l).toFixed(2)&gt;&gt;
 		&lt;&lt;set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)&gt;&gt;
 		&lt;&lt;set _W = Number($args[0].getWeight() * _L).toFixed(2)&gt;&gt;
 
 		&lt;&lt;set $activeFluffy = {
-			name: &quot;This fluffy&quot;,
+			name: &quot;Fluffy&quot;,
 			geneString: $args[0].toString(),
 			genes: $args[0],
 			weekAcquired: 0,
@@ -12613,6 +13768,18 @@ button {
 			charm: $args[0].getCharm(),
 			thinking: $args[0].getThinking(),
 			learning: $args[0].getLearning(),
+			
+			
+			coatLengthAdd: _cl,
+			coatLength: $args[0].getCoatLength() + _cl,
+
+			coatDensityAdd: _cd,
+
+			coatDensity: $args[0].getCoatDensity() + _cd,
+			coatCurl: $args[0].getCoatCurl(),
+			subSpecies: $args[0].getSubSpecies(),
+			subSpeciesString: $args[0].getSubSpeciesDesc(),
+
 			health: 10,
 			children: [],
 			specialFriend: -1,
@@ -12632,6 +13799,10 @@ button {
 			trauma: 0,
 			stress: 0
 		} &gt;&gt;
+
+&lt;&lt;run console.log(&quot;Species test 0: &quot; + $activeFluffy.geneString.substring(100))&gt;&gt;
+&lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpecies)&gt;&gt;
+&lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpeciesString)&gt;&gt;
 
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
 		
@@ -13762,14 +14933,14 @@ button {
 	&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
 	
 	&lt;div class=&quot;w3-container w3-theme-d2&quot;&gt;
-		&lt;span onclick=&quot;closeSidebar()&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
+		&lt;span id=&quot;close-sidebar-btn&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
 		&lt;br&gt;
 		&lt;div class=&quot;w3-padding w3-center&quot;&gt;
-			&lt;p style=&quot;font-size:1vw;&quot;&gt;Fluffy Breeder&lt;/p&gt;
+			&lt;span style=&quot;font-size:1vw;&quot;&gt;Fluffy Breeder&lt;/span&gt;
 			
 			&lt;&lt;iconSprite&gt;&gt;
 			
-			&lt;&lt;= &#39;&lt;img class=&quot;w3-circle responsive&quot; src=&quot;&#39; + _iconSprite + &#39;&quot;  alt=&quot;avatar&quot; style=&quot;width:75%&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img class=&quot;w3-circle responsive&quot; src=&quot;&#39; + _iconSprite + &#39;&quot;  alt=&quot;avatar&quot; style=&quot;width:100px&quot;&gt;&#39;&gt;&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
 &lt;&lt;/widget&gt;&gt;
