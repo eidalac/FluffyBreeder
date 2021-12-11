@@ -11,7 +11,79 @@
  * TODO:  Currently empty, need to fill this as a beta requiremnt. 
  *
  *********** */
- <div class="w3-row w3-container w3-mobile">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<<set $ui = "main">>
+<<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
+
+<style>
+.responsive {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+}
+</style>
+
+ <nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar">
+
+	<<sidebarTop>>
+
+	<div class="w3-teal" style="font-size:1vw;">
+		<div class="w3-dropdown-hover">
+		  	@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+	
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
+		</div>
+
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
+				<<set $listType = "All", $encyclopedia = "Fluffy List">>
+			<</button>>@@
+		</div>
+
+		<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" id="show-acc-btn">Get Fluffies <i class="fa fa-caret-down"></i></button>
+		<div id="showAcc" class="w3-hide w3-grey w3-card">
+	  	
+		  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
+		  		<<set $shop = "mart">>
+		  	<</button>>@@
+		  	@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
+		  		<<set $shop = "mill">>
+		  	<</button>>@@
+		  	@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
+		  		<<set $shop = "breeder">>
+		  	<</button>>@@
+		  	@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
+		  		<<set $shop = "feral">>
+		  	<</button>>@@
+		</div>
+
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Encyclopedia|Encyclopedia]]>><</button>>@@
+			<<set $encyclopedia = "Fluffy Statistics">>
+		</div>
+		
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card w3-theme">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item" style="font-size:2vw;"><<- $ourStore.name>></h1>
+</header>
+
+<<timed 5ms>>
+<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div id="main" class="w3-row w3-container w3-mobile">
  
 <<switch $encyclopedia>>
 /* ***
@@ -197,8 +269,8 @@ A newborn fluffy has one of 5 personalities that each become one of two adult pe
 <p class="hang">@@.lightcoral;Shy@@ - can become @@.lightcoral;Curious@@ or @@.lightcoral;Timid@@
 <br>These traits increase Learning and reduced temperament.  Curious fluffies have more Energy, while Timid have reduced Strength.</p>  
 
-<p class="hang">@@.lightcoral;Lazy@@ - can become @@.lightcoral;Pensive@@ or @@.lightcoral;Lackadaisical@@
-<br>These fluffies are better at Thinking and have lower temperament.  Pensive fluffies have better Learning, while Lackadaisical have less Energy.</p> 
+<p class="hang">@@.lightcoral;Lazy@@ - can become @@.lightcoral;Pensive@@ or @@.lightcoral;Dull@@
+<br>These fluffies are better at Thinking and have lower temperament.  Pensive fluffies have better Learning, while Dull have less Energy.</p> 
 
 <p class="hang">@@.lightcoral;Cute@@ - can become @@.lightcoral;Sweet@@ or @@.lightcoral;Haughty@@
 <br>These fluffies have more Charm.  Sweet fluffies are better at Learning.  Haughty are worse at Learning and have higher temperament.</p>
@@ -253,7 +325,7 @@ These represent the physical and mental abilities of the fluffy, based on geneti
 
 <p class="hang">@@.lightcoral;Charm@@ - General disposition and demeanor of a fluffy.  Counts twice for caculating price.  Cute, Sweet, Haughty and Playfull fluffies have a bonus to Charm.</p>
 
-<p class="hang">@@.lightcoral;Thinking@@ - Reasoning ability.  Lazy, Pensive and Lackadaisical fluffies have better Thinking.</p>
+<p class="hang">@@.lightcoral;Thinking@@ - Reasoning ability.  Lazy, Pensive and Dull fluffies have better Thinking.</p>
 
 <p class="hang">@@.lightcoral;Learning@@ - Ability to learn new things.  Shy, Curious, Timid and Pensive fluffies have better Learning.</p>
 
@@ -395,3 +467,25 @@ Genes       Height multiplier
 
 
 </div>
+
+<<script>>
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia('(min-width: 767px)');
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$('#openNav').on("click", openSidebar);
+		$('#close-sidebar-btn').on("click", closeSidebar);
+	});
+
+	function openSidebar() {
+		$('#mySidebar').addClass('active');
+		$('#main').addClass('sidebar-active');
+		$('#navHead').addClass('sidebar-active');
+	};
+	function closeSidebar() {
+		$('#mySidebar').removeClass('active');
+		$('#main').removeClass('sidebar-active');
+		$('#navHead').removeClass('sidebar-active');
+	};
+<</script>>
