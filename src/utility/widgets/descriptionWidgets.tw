@@ -591,6 +591,27 @@ button {
 <<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@border:4px solid "+$args[0]+";"+$args[0]>><</if>><</widget>>
 
 /* ***
+ *	Called as <<colorizeText $color $message>>
+ *	Returns the message in provided color.
+ *** */
+<<widget "colorizeText">>
+	<<if $args[0] != "Black">>
+		<<- `@@color:${$args[0]};${$args[1]}`>>
+	<<else>>
+		<<- `@@border:4px solid ${$args[0]};${$args[1]}`>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<fluffSpeech $message $color>>
+ *	Translates message into fluffy speech. 
+ * 	Replaces '<fluffy>' with actual name.
+ *** */
+<<widget "fluffSpeech">>
+	<<- `@@color:${$args[1]};${$args[0].replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}`>>
+<</widget>>
+
+/* ***
  *	Called as <<displayStat $stat>>
  *	Returns a display of this stat value based on the player xp level.
  *	Normal ranges for a stat are 0-6
@@ -675,7 +696,7 @@ button {
 	<<set _avg = Number(Number(_avg) / 7).toFixed(2)>>
 	<<set _avg++>>
 
-	<<if $activeFluffy.traits.includes("Bossy") || $activeFluffy.traits.includes("Timid") ||  $activeFluffy.traits.includes("Lackadaisical") ||  $activeFluffy.traits.includes("Haughty") ||  $activeFluffy.traits.includes("Rowdy")>>
+	<<if $activeFluffy.traits.includes("Bossy") || $activeFluffy.traits.includes("Timid") ||  $activeFluffy.traits.includes("Dull") ||  $activeFluffy.traits.includes("Haughty") ||  $activeFluffy.traits.includes("Rowdy")>>
 		<<set $activeFluffy.statBonus = Number(_avg / 8).toFixed(2)>>
 	<<else>>
 		<<set $activeFluffy.statBonus = Number(_avg / 6).toFixed(2)>>
@@ -721,7 +742,7 @@ button {
 		<</if>>
 	<</if>>
 	
-	$activeFluffy.name is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
+	<<colorizeText $activeFluffy.cColor $activeFluffy.name>> is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.breed.
 	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor>> eyes<</if>>. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxWeight)" : "">> KG.  <<They>> is $activeFluffy.length cm long <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxLength)" : "">> and is $activeFluffy.height cm tall <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxHeight)" : "">>.  
@@ -794,7 +815,7 @@ button {
 
 	
 
-<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed. | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
+<<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed | Name: <<print _fluffy.name>> | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
 <br>Strength <<displayStat _fluffy.strength>> Energy <<displayStat _fluffy.energy>> Charm <<displayStat _fluffy.charm>> Thinking <<displayStat _fluffy.thinking>> Learning <<displayStat _fluffy.learning>> Fertility <<displayStat _fluffy.fertility>>
 <br>Trust <<displayAttribute _fluffy.trust>> Training <<displayAttribute _fluffy.training>> Temperament <<displayAttribute _fluffy.temperament>> Happiness <<displayAttribute _fluffy.happy>> Stress <<displayAttribute _fluffy.stress>> Trauma <<displayAttribute _fluffy.trauma>>
 <br>_fluffy.age years and _fluffy.ageWeeks weeks old / _fluffy.maxAge years | _fluffy.weight KG. _fluffy.length cm long _fluffy.height cm tall
