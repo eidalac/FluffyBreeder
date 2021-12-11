@@ -208,6 +208,7 @@
 	<<run console.log("Fluffy mart defect count: " + _defectCount)>>
 	
 	<<if $shop == "mill">>
+		<<set $activeFluffy.name = "Fluffy No. "+random(1, 999)>>
 		<<set $activeFluffy.age = 0>>
 		<<set $activeFluffy.ageWeeks = random(6, 16)>>
 		
@@ -234,6 +235,14 @@
 
 	<<else>>
 		/* not a mill, generate adult traits */
+		<<switch random(0, 1)>>
+			<<case 0>>
+				<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
+			<<case 1>>
+				<<set $activeFluffy.name = "Fluffy">>
+			<<default>>
+				<<set $activeFluffy.name = "Fluffy">>
+		<</switch>>
 		<<switch $activeFluffy.traits[0]>>
 			<<case "Fussy">>
 				<<if random(0, 1) == 0>>
@@ -259,7 +268,7 @@
 					<<set $activeFluffy.traits[0] = "Pensive">>
 					<<set $activeFluffy.learning++>>
 				<<else>>
-					<<set $activeFluffy.traits[0] = "Lackadaisical">>
+					<<set $activeFluffy.traits[0] = "Dull">>
 					<<set $activeFluffy.energy-->>
 				<</if>>
 			<<case "Cute">>
@@ -312,7 +321,7 @@
 	
 	<div class="w3-container w3-card w3-dark-grey w3-small w3-margin-top">
 		<div class="w3-col m4 l3" style="position: relative; top: 0px; width: 160px; height: 160px">
-				<<switch $activeFluffy.breed>>
+			<<switch $activeFluffy.breed>>
 				<<case "earthy" "Earthy">>
 					<<fluffyImage "earthie">>
 
@@ -331,11 +340,50 @@
 		</div>
 	</div>
 
+	<div class="w3-container">
+		<<timed 5ms>>
+			<<switch $activeFluffy.traits[0]>>
+				<<case "Diligent">>
+					<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddy ow mummy fow <fluffy>?" $activeFluffy.cColor >><</replace>>
+				<<case "Bossy">>
+					<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie nao." $activeFluffy.cColor>><</replace>>
+				<<case "Curious">>
+					<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy>?" $activeFluffy.cColor >><</replace>>
+				<<case "Timid">>
+					<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties..." $activeFluffy.cColor>><</replace>>
+				<<case "Pensive">>
+					<<if $shop == "feral">>
+						<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?" $activeFluffy.cColor>><</replace>>
+					<<else>>
+						<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy>?" $activeFluffy.cColor >><</replace>>
+					<</if>>
+				<<case "Dull">>
+					<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> awone, nu wan\' any twouble..." $activeFluffy.cColor >><</replace>>
+				<<case "Sweet">>
+					<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> need nyu homesie fow wawmsies!" $activeFluffy.cColor>><</replace>>
+				<<case "Haughty">>
+					<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fwuffy> nyu homesie?" $activeFluffy.cColor>><</replace>>
+				<<case "Playful">>
+					<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy>?" $activeFluffy.cColor>><</replace>>
+				<<case "Rowdy">>
+					<<if $shop == "feral">>
+						<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib fwuffy nyu home?" $activeFluffy.cColor>><</replace>>
+					<<else>>
+						<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie." $activeFluffy.cColor>><</replace>>
+					<</if>>
+				<<default>>
+					<<replace "#greet-msg">><<fluffSpeech "hewwo... nyu daddy ow mummy?" $activeFluffy.cColor>><</replace>>
+			<</switch>>
+		<</timed>>
+		<span id="greet-msg"></span>
+	</div>
+
 	<<set _price = 0>>
 		
 	<<if $shop == "feral">>
 		<<run $activeFluffy.traits.push("Feral")>>
 		<<run console.log("Feral test 0: " + $activeFluffy.traits)>>
+		<br><<They>> would cost @@.green;¤_price@@. It's free real estate.
 	<<else>>
 		<br><<They>> would cost 
 		

@@ -34,7 +34,7 @@
 <<set $nextButton = "END WEEK", $nextLink = "End Week", $showEncyclopedia = 1, $encyclopedia = "Running your Store">>
 
 
-<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar">
 
 	<<sidebarTop>>
 
@@ -53,7 +53,7 @@
 			<</button>>@@
 		</div>
 
-		<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" onclick="showAccFunc()">Get Fluffies <i class="fa fa-caret-down"></i></button>
+		<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" id="show-acc-btn">Get Fluffies <i class="fa fa-caret-down"></i></button>
 		<div id="showAcc" class="w3-hide w3-grey w3-card">
 	  	
 		  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
@@ -69,13 +69,18 @@
 		  		<<set $shop = "feral">>
 		  	<</button>>@@
 		</div>
+
+		<div class="w3-dropdown-hover">
+			@@#selectbutton;<<button [[Encyclopedia|Encyclopedia]]>><</button>>@@
+			<<set $encyclopedia = "Fluffy Statistics">>
+		</div>
 		
 		<<systemButtons>>
 	</div>
 </nav>
 
 <header class="w3-bar w3-card w3-theme">
-	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
  	<h1 id="navHead" class="w3-bar-item" style="font-size:2vw;"><<- $ourStore.name>></h1>
 </header>
 
@@ -107,32 +112,36 @@
 </div>
 
 
+<<script>>
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia('(min-width: 767px)');
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$('#openNav').on("click", openSidebar);
+		$('#close-sidebar-btn').on("click", closeSidebar);
+		$('#show-acc-btn').on("click", showAccFunc);
+	});
 
-<script>
-function openSidebar() {
-	document.getElementById("mySidebar").style.width = "20%";
-	document.getElementById("main").style.marginLeft = "25%";
-	document.getElementById("mySidebar").style.display = "block";
-	document.getElementById("openNav").style.display = 'none';
-	document.getElementById("navHead").style.marginLeft = "30%";
-}
+	function openSidebar() {
+		$('#mySidebar').addClass('active');
+		$('#main').addClass('sidebar-active');
+		$('#navHead').addClass('sidebar-active');
+	};
+	function closeSidebar() {
+		$('#mySidebar').removeClass('active');
+		$('#main').removeClass('sidebar-active');
+		$('#navHead').removeClass('sidebar-active');
+	};
 
-function closeSidebar() {
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("main").style.marginLeft = "0%";
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("openNav").style.display = "inline-block";
-	document.getElementById("navHead").style.marginLeft = "0%";
-}
-
-function showAccFunc() {
-  var x = document.getElementById("showAcc");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-grey";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-     x.previousElementSibling.className.replace(" w3-grey", "");
-  }
-}
-</script>
+	function showAccFunc() {
+		var x = document.getElementById("showAcc");
+		if (x.className.indexOf("w3-show") == -1) {
+			x.className += " w3-show";
+			x.previousElementSibling.className += " w3-grey";
+		} else { 
+			x.className = x.className.replace(" w3-show", "");
+			x.previousElementSibling.className.replace(" w3-grey", "");
+		}
+	};
+<</script>>

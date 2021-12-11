@@ -29,7 +29,7 @@
 </style>
 
 
-<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar">
 
 	<<sidebarTop>>
 
@@ -58,7 +58,7 @@
 	  
 			<div class="w3-dropdown-hover">
 		
-				<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" onclick="showAccFunc()">Show <i class="fa fa-caret-down"></i></button>
+				<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" id="show-acc-btn" onclick="showAccFunc()">Show <i class="fa fa-caret-down"></i></button>
 				<div id="showAcc" class="w3-hide w3-grey w3-card">
 			  	
 				  	@@#sortbutton;<<button "All">><<set $listType = "All">>
@@ -415,7 +415,7 @@
 	</nav>
 
 <header class="w3-bar w3-card w3-theme">
-  <button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+  <button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
   <h1 id="navHead" class="w3-bar-item" style="font-size:2vw;">Store Fluffies</h1>
 </header>
 
@@ -450,24 +450,29 @@
 
 <</timed>>
 
+<<script>>
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia('(min-width: 767px)');
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$('#openNav').on("click", openSidebar);
+		$('#close-sidebar-btn').on("click", closeSidebar);
+	});
+
+	function openSidebar() {
+		$('#mySidebar').addClass('active');
+		$('#main').addClass('sidebar-active');
+		$('#navHead').addClass('sidebar-active');
+	};
+	function closeSidebar() {
+		$('#mySidebar').removeClass('active');
+		$('#main').removeClass('sidebar-active');
+		$('#navHead').removeClass('sidebar-active');
+	};
+<</script>>
 
 <script>
-function openSidebar() {
-	document.getElementById("mySidebar").style.width = "20%";
-	document.getElementById("main").style.marginLeft = "25%";
-	document.getElementById("mySidebar").style.display = "block";
-	document.getElementById("openNav").style.display = 'none';
-	document.getElementById("navHead").style.marginLeft = "30%";
-}
-
-function closeSidebar() {
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("main").style.marginLeft = "0%";
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("openNav").style.display = "inline-block";
-	document.getElementById("navHead").style.marginLeft = "0%";
-}
-
 function showAccFunc() {
   var x = document.getElementById("showAcc");
   if (x.className.indexOf("w3-show") == -1) {

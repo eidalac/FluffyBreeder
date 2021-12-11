@@ -21,7 +21,7 @@
 <<set $nextButton to "Back to the fluffy list.", $nextLink to "Fluffy List">>
 
 
-<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar" style="display:none;">
+<nav class="w3-sidebar w3-bar-block w3-card w3-animate-left w3-teal" id="mySidebar">
 
 	<<sidebarTop>>
 
@@ -35,7 +35,7 @@
 </nav>
 
 <header class="w3-bar w3-card w3-theme">
-	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme" onclick="openSidebar()">&#9776;</button>
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
  	<h1 id="navHead" class="w3-bar-item" style="font-size:2vw;"><<- $activeFluffy.name>></h1>
 </header>
 
@@ -66,11 +66,15 @@
 	<<button "Rename">>
 		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<replace "#navHead">><<- $activeFluffy.name>><</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
-<</button>>
-/* Form for error message to display*/
-<span id="form-error"></span>
+		<<replace "#rename-msg">><br><<fluffSpeech 'fluffy wuv\' nyu namesie!!' $activeFluffy.cColor>><</replace>>
+	<</button>>
+	/* Form for error message to display*/
+	<span id="form-error"></span>
 </div>
+<span id="rename-msg"></span>
+
 <div id="breed-form">
 
 <<run console.log("Details test 0: $activeFluffy.specialFriend  = " + $activeFluffy.specialFriend + " | $activeFluffy.name = " + $activeFluffy.name + " | ")>>
@@ -94,7 +98,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 	<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		
 	<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>
-	<<replace "#breed-message">><br><<print _specialName>> and $activeFluffy.name are no longer special friends.<br>@@.cyan;HUHUHU WORST SADIES.@@<</replace>>
+	<<replace "#breed-message">><br><<print _specialName>> and $activeFluffy.name are no longer special friends.<br><<colorizeText $activeFluffy.cColor 'HUHUHU... WORSTES SADDIES!'>><</replace>>
 	<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<</button>>
 <</if>>
@@ -130,7 +134,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<</if>>
 		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-		<<replace "#play-msg">><br>@@.cyan;<<- $title>> am bestest at pwayin! Pway AWW da games wit <<print $activeFluffy.name>> heheheh!.@@<</replace>>
+		<<replace "#play-msg">><br><<- $title>><<colorizeText $activeFluffy.cColor "am bestest at pwayin\'! Pway AWW da games wit\'">><<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor ", heheheh!">><</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
@@ -183,7 +187,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<</if>>
 		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-		<<replace "#train-msg">><br>@@.cyan;<<print $activeFluffy.name>> feew happeh and stwong! Wanna pway aww day wong!.@@<</replace>>
+		<<replace "#train-msg">><br><<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor "feew happeh and stwong! Wanna pway aww day wong!">><</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#train-msg">><br>You are too tired for training right now.<</replace>>
@@ -209,7 +213,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<<set $activeFluffy.happy-->>
 		<<set $activeFluffy.trust-->>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-		<<replace "#abuse-msg">><br>@@.cyan;Huhuhu why hurt good fluffy?.@@<</replace>>
+		<<replace "#abuse-msg">><br><<colorizeText $activeFluffy.cColor "Huhuhu... why huwt gud fwuffy?">><</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#abuse-msg">><br>You are too tired for this right now.<</replace>>
@@ -265,25 +269,25 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 
 </div>
 
+<<script>>
+	/* Functions */
+	$(document).ready(function () {
+		/* Check if mobile */
+		var mq = window.matchMedia('(min-width: 767px)');
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$('#openNav').on("click", openSidebar);
+		$('#close-sidebar-btn').on("click", closeSidebar);
+	});
 
-
-
-
-<script>
-function openSidebar() {
-	document.getElementById("mySidebar").style.width = "20%";
-	document.getElementById("main").style.marginLeft = "25%";
-	document.getElementById("mySidebar").style.display = "block";
-	document.getElementById("openNav").style.display = 'none';
-	document.getElementById("navHead").style.marginLeft = "30%";
-}
-
-function closeSidebar() {
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("main").style.marginLeft = "0%";
-	document.getElementById("mySidebar").style.display = "none";
-	document.getElementById("openNav").style.display = "inline-block";
-	document.getElementById("navHead").style.marginLeft = "0%";
-}
-</script>
+	function openSidebar() {
+		$('#mySidebar').addClass('active');
+		$('#main').addClass('sidebar-active');
+		$('#navHead').addClass('sidebar-active');
+	};
+	function closeSidebar() {
+		$('#mySidebar').removeClass('active');
+		$('#main').removeClass('sidebar-active');
+		$('#navHead').removeClass('sidebar-active');
+	};
+<</script>>
 
