@@ -440,7 +440,7 @@ Genome.prototype.setGender = function(new_gender) {
 
 /**
  * Returns the Phenotype details for a gene triplet
- * Called when no genes are co-dominate, currenly only used for the Length gene
+ * Called when no genes are co-dominate, currently only used for the Length gene
  *
  * @param int index the index location of the first of the gene pair
  * @param string gene_string the letters of this gene, in the format "A/B/C"
@@ -580,8 +580,8 @@ Genome.prototype.getLength = function() {
 	}
 }
 
-/**
- * Retrieves the gene determining adult size (Lenght).
+/**length
+ * Retrieves the gene determining adult size (length).
  *
  * This is defined as genes 1, 2 and 3 (A/a;B/b;C/c).
  *
