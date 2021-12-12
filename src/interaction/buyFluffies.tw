@@ -116,7 +116,9 @@
 <hr>
 
 <<if $shop == "mart">>
-	<br>Welcome to fluffy mart, do you see anything you like?
+	<br>"Welcome to fluffy mart, do you see anything you like?"
+<<elseif $shop == "shelter">>
+	<br>An old lady brings you to an enclosure filled with fluffies.
 <<elseif $shop == "mill">>
 	<br>The mill operator hands you a carboard box.
 <<elseif $shop == "breeder" && $reputation >= 50>>
@@ -261,8 +263,11 @@
 
 				<<run console.log("Fluffy shopping full gene " + $activeFluffy.geneString)>>
 				
-				/* Max of 3 gene defects at fluffy mart, 5 in a mill, one from a breeder */
+				/* Max of 3 gene defects at fluffy mart, 4 in a shelter, 5 in a mill, one from a breeder */
 				<<if $shop == "mart" && _defectCount >= Number(2 + random(0,1))>>
+					<<run $activeFluffy.genes.clearDefect(_ri)>>
+					<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
+				<<elseif $shop == "shelter" && _defectCount >= Number(3 + random(0,1))>>
 					<<run $activeFluffy.genes.clearDefect(_ri)>>
 					<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 				<<elseif $shop == "mill" && _defectCount >= Number(4 + random(0,1))>>
@@ -288,7 +293,7 @@
 		<<run console.log("Fluffy shopping - sanity check #0 - length = " + _randomFluffies.length + ".")>>
 
 		<<if $shop == "mill">>
-			<<set $activeFluffy.name = "Fluffy No. "+random(1, 999)>>
+			<<set $activeFluffy.name = "Fluffy No. "+Number(random(1, 999))>>
 			<<set $activeFluffy.age = 0>>
 			<<set $activeFluffy.ageWeeks = random(6, 16)>>
 
@@ -319,15 +324,23 @@
 			<<set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
 			<<set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
 		<<else>>
-			/* not a mill, generate adult traits */
-			<<switch random(0, 1)>>
-				<<case 0>>
-					<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
-				<<case 1>>
-					<<set $activeFluffy.name = "Fluffy">>
-				<<default>>
-					<<set $activeFluffy.name = "Fluffy">>
-			<</switch>>
+			<<if $shop == "shelter">>
+				/* shelter sells pre-owned, older, named fluffies */
+				<<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
+				<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
+				<<limitColor 1 2 3 4>>
+			<<else>>
+				/* fluffies have a 50% chance to be named */
+				<<switch random(0, 1)>>
+					<<case 0>>
+						<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
+					<<case 1>>
+						<<set $activeFluffy.name = "Fluffy">>
+					<<default>>
+						<<set $activeFluffy.name = "Fluffy">>
+				<</switch>>
+			<</if>>
+			/* generate adult traits */
 			<<switch $activeFluffy.traits[0]>>
 				<<case "Fussy">>
 					<<if random(0, 1) == 0>>
@@ -468,7 +481,7 @@
 							<<if $shop == "feral">>
 								<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies." $activeFluffy.cColor>><</replace>>
 							<<else>>
-								<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie." $activeFluffy.cColor>><</replace>>
+								<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy." $activeFluffy.cColor>><</replace>>
 							<</if>>
 						<<default>>
 							<<replace "#greet-msg">><<fluffSpeech "hewwo... nyu daddeh ow mummah?" $activeFluffy.cColor>><</replace>>
@@ -510,7 +523,11 @@
 					<<set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)>>
 			<</switch>>
 			
-			<<set _ageMulti = 1>>
+			<<if $shop == "shelter">>
+				<<set _ageMulti = 0.5>>
+			<<else>>
+				<<set _ageMulti = 1>>
+			<</if>>
 			
 			<<run console.log("Price test 5: " + _price)>>
 			<<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
