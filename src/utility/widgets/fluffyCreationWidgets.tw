@@ -585,12 +585,13 @@
 
 
 
+
 /* ***
- *	Call as <<removeFluffy Fluffy>>
+ *	Call as <<deadFluffy Fluffy>>
  *
- *	Removes a fluffy from the store
+ *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
-<<widget "removeFluffy">>
+<<widget "deadFluffy">>
 	<<set _ID = $args[0].ID>>
 
 	<<set $globalFluffies[_ID].dead = true>>
@@ -625,6 +626,17 @@
 		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
 		<<set $globalFluffies[_ID].specialFriend = -1>>
 	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<removeFluffy Fluffy>>
+ *
+ *	Removes a fluffy from the store
+ *** */
+<<widget "removeFluffy">>
+	<<set _ID = $args[0].ID>>
+
+	<<deadFluffy $args[0]>>
 	
 	<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
 

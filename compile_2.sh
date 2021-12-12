@@ -97,7 +97,7 @@ function compile() {
 	fi
 
 	devTools/concatFiles.sh config/ '*.js' bin/fluffyBreeder.js
-	devTools/concatFiles.sh css/ '*.css' bin/fluffyBreeder.css
+	devTools/concatFiles.sh src/css/ '*.css' bin/fluffyBreeder.css
 	$TWEEGO_EXE -o "$file" --module=bin/fluffyBreeder.js --module=bin/fluffyBreeder.css src/ || build_failed="true"
 	rm -f bin/fluffyBreeder.js
 	rm -f bin/fluffyBreeder.css
