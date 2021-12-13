@@ -9056,11 +9056,11 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	&lt;br&gt;
 	&lt;br&gt;
 	&lt;&lt;print String.format(&quot;{0} {1} {2}, {3}&quot;,
-		GameDays[$gameDate.getDay()],
-		GameMonths[$gameDate.getMonth()],
-		$gameDate.getDate(),
-		$gameDate.getFullYear()
-	)&gt;&gt;\
+		$gameDays[new Date($gameDate).getDay()],
+		$gameMonths[new Date($gameDate).getMonth()],
+		new Date($gameDate).getDate(),
+		new Date($gameDate).getFullYear()
+	)&gt;&gt;
 	&lt;br&gt;
 	&lt;br&gt;&lt;&lt;PlayerStatus&gt;&gt;
 	&lt;br&gt;
@@ -9584,6 +9584,11 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set $day = random(9, 21)&gt;&gt;
 &lt;&lt;set $year = random(2030, 2056)&gt;&gt;
 
+&lt;&lt;set $gameDate to new Date($year, $month, $day).toString()&gt;&gt;
+
+&lt;&lt;set $gameDays = [&quot;Monday&quot;, &quot;Tuesday&quot;, &quot;Wensday&quot;, &quot;Thursday&quot;, &quot;Friday&quot;, &quot;Saturday&quot;, &quot;Sunday&quot;]&gt;&gt;
+&lt;&lt;set $gameMonths = [&quot;January&quot;, &quot;Febuary&quot;, &quot;March&quot;, &quot;April&quot;, &quot;May&quot;, &quot;June&quot;, &quot;July&quot;, &quot;August&quot;, &quot;September&quot;, &quot;October&quot;, &quot;November&quot;, &quot;December&quot;] &gt;&gt;
+
 /* **********
  *	Default encyclopedia entry.
  *********** */
@@ -9866,6 +9871,7 @@ profitsTotal: 0
 &lt;&lt;set _Grandmom = clone($activeFluffy)&gt;&gt;
 
 &lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
+&lt;&lt;set _randomFluffies = []&gt;&gt;
 
 &lt;div class=&quot;w3-row w3-container w3-mobile&quot;&gt;
 	&lt;div class=&quot;w3-top w3-col l11 s11&quot;&gt;
@@ -9925,7 +9931,7 @@ profitsTotal: 0
 	&lt;&lt;/timed&gt;&gt;
 	
 	&lt;&lt;timed 10ms&gt;&gt;
-		&lt;&lt;if $actions &lt; 1&gt;&gt;
+		&lt;&lt;if $actions &lt; Number(1 + randomFluffies.length)&gt;&gt;
 			&lt;&lt;run $(&quot;#shopbutton button&quot;).addClass(&quot;w3-disabled&quot;)&gt;&gt;
 			&lt;&lt;run $(&quot;#buybutton button&quot;).addClass(&quot;w3-disabled&quot;)&gt;&gt;
 			&lt;&lt;run $(&quot;#shopbutton button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -9942,15 +9948,13 @@ profitsTotal: 0
 			&lt;br&gt;//You lack the necessary funds to buy this fluffy//.
 			&lt;br&gt;
 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _count &gt; $ourStore.shelter&gt;&gt;
+		&lt;&lt;if _count &gt;= $ourStore.shelter&gt;&gt;
 			&lt;&lt;run $(&quot;#buybutton button&quot;).addClass(&quot;w3-disabled&quot;)&gt;&gt;
 			&lt;&lt;run $(&quot;#buybutton button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
 			&lt;br&gt;//You don&#39;t have enough room to take this fluffy//.			 
 			&lt;br&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/timed&gt;&gt;
-
-
 
 	&lt;br&gt;&lt;&lt;PlayerStatus&gt;&gt;
 	&lt;hr&gt;
@@ -9978,8 +9982,6 @@ profitsTotal: 0
 	&lt;&lt;elseif _count&gt; 1&gt;&gt;
 		You have _count fluffies.
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;set _randomFluffies = []&gt;&gt;
 
 	/* ***
 	*	Generate fluffies, may be a full family of 10+, may be just one
@@ -10009,7 +10011,7 @@ profitsTotal: 0
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 				/* mated pair */
-				&lt;&lt;case 1 2 3 4&gt;&gt;
+				&lt;&lt;case 1 2 3&gt;&gt;
 					&lt;&lt;run console.log(&quot;Fluffy shopping - generating : mated pair&quot;)&gt;&gt;
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
@@ -10064,7 +10066,7 @@ profitsTotal: 0
 					&lt;&lt;/if&gt;&gt;
 				
 				/* family group*/
-				&lt;&lt;case 5 6 7 8 9 10&gt;&gt;
+				&lt;&lt;case 5 6 7 8&gt;&gt;
 					&lt;&lt;run console.log(&quot;Fluffy shopping - generating : family group&quot;)&gt;&gt;
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
@@ -10468,48 +10470,49 @@ profitsTotal: 0
 		&lt;&lt;if _c == 0&gt;&gt;
 			&lt;div class=&quot;w3-container&quot;&gt;
 				&lt;&lt;timed 5ms&gt;&gt;
-					&lt;&lt;if _randomFluffies[0].age &gt; 0 || _randomFluffies[0].ageWeeks &gt; 2&gt;&gt;
-						&lt;&lt;switch _randomFluffies[0].traits[0]&gt;&gt;
+					&lt;&lt;set $activeFluffy = _randomFluffies[0]&gt;&gt;
+					&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 2&gt;&gt;
+						&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
 							&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Dull&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; _randomFluffies[0].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies.&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;default&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; _randomFluffies[0].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/timed&gt;&gt;
