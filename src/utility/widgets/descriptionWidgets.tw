@@ -27,7 +27,7 @@
 		<<default>>
 	<</switch>>
 
-	<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@
+	/*<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@*/
 <</widget>>
 
 <style>
@@ -782,18 +782,51 @@ button {
 
 	<<if ndef $activeFluffy.subSpeciesString>>
 		/* set subspecies info to default */
+		<<if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies("0/0;") == false>>
+			<<run console.log("FluffyDesc - missing subSpeciesString and failed to reset gene to default.")>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()>>
+			<<set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+		<</if>>
 	<</if>>
 
 	<<if ndef $activeFluffy.coatLength>>
 		/* set coat info to default */
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatLength("C/c;L/l;") == false>>
+			<<run console.log("FluffyDesc - missing coatLength and failed to reset gene to default.")>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].coatLengthAdd = random(0, 2)>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+		<</if>>
 	<</if>>
 
 	<<if ndef $activeFluffy.coatDensity>>
 		/* set coat info to default */
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity("C/c;D/d;") == false>>
+			<<run console.log("FluffyDesc - missing setCoatDensity and failed to reset gene to default.")>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatDensityAdd = random(0,30)>>
+			<<set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd>>
+		<</if>>
 	<</if>>
 
 	<<if ndef $activeFluffy.coatCurl>>
 		/* set coat info to default */
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl("C/c;C/c;") == false>>
+			<<run console.log("FluffyDesc - missing setCoatDensity and failed to reset gene to default.")>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+		<</if>>
 	<</if>>
 	
 	<<colorizeText $activeFluffy.cColor $activeFluffy.name>> is a <<print $activeFluffy.traits[0]>> $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.

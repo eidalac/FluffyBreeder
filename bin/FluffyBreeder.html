@@ -10064,7 +10064,12 @@ profitsTotal: 0
 			&lt;/div&gt;
 
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			  	@@#buybutton;&lt;&lt;button &quot;Take this Fluffy&quot;&gt;&gt;
+				&lt;&lt;if  _randomFluffies.length == 1&gt;&gt;
+					&lt;&lt;set _buyText = &quot;Take this Fluffy&quot;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _buyText = &quot;Take Fluffies&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			  	@@#buybutton;&lt;&lt;button _buyText&gt;&gt;
 
 					&lt;&lt;set _c = 0&gt;&gt;
 					&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
@@ -10756,36 +10761,86 @@ profitsTotal: 0
 							&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
 								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt; an\ babbehs&#39;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\ babbehs.&#39;&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties... hab\&#39; babbehs...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?  babbehs am hungwy&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;else&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;else&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Dull&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; an\&#39; babbehs awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; an\&#39; babbehs need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; an\&#39; bestest babbehs nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies fow babbehs?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;else&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy, hab gud&#39; babbehs.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;else&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;default&gt;&gt;
 								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/timed&gt;&gt;
 				&lt;span id=&quot;greet-msg&quot;&gt;&lt;/span&gt;
@@ -11666,6 +11721,8 @@ function subSortAccFunc(type) {
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wan die...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/timed&gt;&gt;
 		&lt;&lt;if $activeFluffy.trauma &lt; 167&gt;&gt;
@@ -11690,12 +11747,14 @@ function subSortAccFunc(type) {
 			&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy += 20&gt;&gt;
 			&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &#39;&lt;fluffy&gt; wuv\&#39; nyu namesie!!&#39; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;bu\&#39;... wike\&#39; old namesie...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;append &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech&quot;otay, fwuffy am called &lt;fluffy&gt; nao&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/append&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;replace &quot;#navHead&quot;&gt;&gt;&lt;&lt;- $activeFluffy.name&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &#39;bu\&#39; fwuffy wike\&#39; old namesie... otay, fluffy am called &lt;fluffy&gt; nao&#39; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#abuse-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -13436,7 +13495,7 @@ Subspecies:
 		&lt;&lt;default&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 
-	&lt;span id=&quot;managePA&quot;&gt;&lt;strong&gt;&lt;&lt;link &quot;Change plans&quot;&gt;&gt;&lt;&lt;goto &quot;Personal Attention Select&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[A]@@
+	/*&lt;span id=&quot;managePA&quot;&gt;&lt;strong&gt;&lt;&lt;link &quot;Change plans&quot;&gt;&gt;&lt;&lt;goto &quot;Personal Attention Select&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[A]@@*/
 &lt;&lt;/widget&gt;&gt;
 
 &lt;style&gt;
@@ -14188,6 +14247,55 @@ button {
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if ndef $activeFluffy.subSpeciesString&gt;&gt;
+		/* set subspecies info to default */
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies(&quot;0/0;&quot;) == false&gt;&gt;
+			&lt;&lt;run console.log(&quot;FluffyDesc - missing subSpeciesString and failed to reset gene to default.&quot;)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if ndef $activeFluffy.coatLength&gt;&gt;
+		/* set coat info to default */
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatLength(&quot;C/c;L/l;&quot;) == false&gt;&gt;
+			&lt;&lt;run console.log(&quot;FluffyDesc - missing coatLength and failed to reset gene to default.&quot;)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()&gt;&gt;
+
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatLengthAdd = random(0, 2)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if ndef $activeFluffy.coatDensity&gt;&gt;
+		/* set coat info to default */
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity(&quot;C/c;D/d;&quot;) == false&gt;&gt;
+			&lt;&lt;run console.log(&quot;FluffyDesc - missing setCoatDensity and failed to reset gene to default.&quot;)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatDensityAdd = random(0,30)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if ndef $activeFluffy.coatCurl&gt;&gt;
+		/* set coat info to default */
+		&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl(&quot;C/c;C/c;&quot;) == false&gt;&gt;
+			&lt;&lt;run console.log(&quot;FluffyDesc - missing setCoatDensity and failed to reset gene to default.&quot;)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
+			&lt;&lt;set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	
 	&lt;&lt;colorizeText $activeFluffy.cColor $activeFluffy.name&gt;&gt; is a &lt;&lt;print $activeFluffy.traits[0]&gt;&gt; $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
 	&lt;br&gt;&lt;&lt;They&gt;&gt; has a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; coat&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 3&gt;&gt;, &lt;&lt;inlineColor $activeFluffy.mColor&gt;&gt; mane&lt;&lt;/if&gt;&gt;&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 1&gt;&gt; and &lt;&lt;inlineColor $activeFluffy.eColor&gt;&gt; eyes&lt;&lt;/if&gt;&gt;. 
@@ -14204,7 +14312,7 @@ button {
 	&lt;&lt;/for&gt;&gt;
 	&lt;br&gt;&lt;&lt;Their&gt;&gt; mother is &lt;&lt;if $activeFluffy.mother == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.mother].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;. 
 	 &lt;&lt;Their&gt;&gt; father is &lt;&lt;if $activeFluffy.father == -1&gt;&gt;@@.orange;Unknown@@&lt;&lt;else&gt;&gt;@@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.father].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;. 
-	 &lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;&lt;&lt;Their&gt;&gt; &quot;Special Friend&quot; is @@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;.
+	 &lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;&lt;&lt;Their&gt;&gt; &quot;Special Friend&quot; is @@.cyan;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt;@@&lt;&lt;/if&gt;&gt;
 	
 	&lt;&lt;set _children = &quot;&quot;&gt;&gt;
 	&lt;&lt;for _i = 0; _i &lt; $activeFluffy.children.length; _i++&gt;&gt;
@@ -14335,7 +14443,8 @@ button {
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;set $activeFluffy = {
-		name: &quot;This fluffy&quot;,
+		name: &quot;Fluffy&quot;,
+		hasName: false,
 		geneString: _geneSTR,
 		genes: Genome.fromString(_geneSTR),
 		weekAcquired: 0,
@@ -14501,7 +14610,7 @@ button {
 
 &lt;&lt;run console.log(&quot;Species test 0: &quot; + $activeFluffy.geneString.substring(100))&gt;&gt;
 &lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpecies)&gt;&gt;
-&lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpeciesString)&gt;&gt;
+&lt;&lt;run console.log(&quot;Species test 2: &quot; + $activeFluffy.subSpeciesString)&gt;&gt;
 
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
 		
