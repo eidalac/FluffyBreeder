@@ -1,6 +1,24 @@
 window.NameList = {
 	"gender": {
 		"Neutral": [
+			"Monday",
+			"Tuesday",
+			"Wensday",
+			"Thursday",
+			"Friday",
+			"Saturday",
+			"Sunday",
+			"January",
+			"Febuary",
+			"March",
+			"April",
+			"May",
+			"July",
+			"August",
+			"September",
+			"October",
+			"November",
+			"December",
 			"Baby",
 			"Bambi",
 			"Beany",
@@ -307,6 +325,7 @@ window.NameList = {
 		],
 		"Female": [
 			"Tinkerbell",
+			"June",
 			"Joy",
 			"Looker",
 			"Love",
