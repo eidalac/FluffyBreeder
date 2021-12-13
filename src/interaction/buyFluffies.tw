@@ -438,13 +438,19 @@
 				<<if $shop == "shelter">>
 					/* shelter sells pre-owned, older, named fluffies */
 					<<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
-					<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
+					<<fetchName>>
+					<<set $activeFluffy.hasName = true>>
 					<<limitColor 1 2 3 4>>
+				<<elseif $shop == "breeder">>
+					/* breeder fluffies always have a name */
+					<<fetchName>>
+					<<set $activeFluffy.hasName = true>>
 				<<else>>
 					/* fluffies have a 50% chance to be named */
 					<<switch random(0, 1)>>
 						<<case 0>>
-							<<set $activeFluffy.name = window.NameList[random(1, 380)]>>
+							<<fetchName>>
+							<<set $activeFluffy.hasName = true>>
 						<<case 1>>
 							<<set $activeFluffy.name = "Fluffy">>
 						<<default>>

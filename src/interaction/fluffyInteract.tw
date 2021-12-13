@@ -182,11 +182,16 @@
 <div id="name-form">
 	<br>Name: <<textbox "$activeFluffy.name" $activeFluffy.name "Fluffy Interact">>
 	<<button "Rename">>
+		<<if $activeFluffy.hasName == false>>
+			<<set $activeFluffy.hasName = true>>
+			<<set $activeFluffy.happy += 20>>
+			<<replace "#rename-msg">><br><<fluffSpeech '<fluffy> wuv\' nyu namesie!!' $activeFluffy.cColor>><</replace>>
+		<</if>>
 		<<set $activeFluffy.name to $activeFluffy.name.trim()>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<replace "#navHead">><<- $activeFluffy.name>><</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
-		<<replace "#rename-msg">><br><<fluffSpeech 'fluffy wuv\' nyu namesie!!' $activeFluffy.cColor>><</replace>>
+		<<replace "#rename-msg">><br><<fluffSpeech 'bu\' fwuffy wike\' old namesie... otay, fluffy am called <fluffy> nao' $activeFluffy.cColor>><</replace>>
 		<<replace "#train-msg">><</replace>>
 		<<replace "#abuse-msg">><</replace>>
 		<<replace "#play-msg">><</replace>>

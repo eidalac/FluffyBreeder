@@ -612,6 +612,44 @@ button {
 <</widget>>
 
 /* ***
+ *	fetchName
+ *	Call as <<fetchName>>
+ *
+ *	finds appropriate name for ($activeFluffy)
+ *** */
+
+<<widget "fetchName">>
+	<<colorGroup>>
+	<<set _colorList = window.NameList["colors"]>>
+	<<set _genderList = window.NameList["gender"]>>
+	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
+	<<set _posGendered = random(0, _genderList[_gender].length-1)>>
+	<<set _posNeutral = random(0, _genderList["Neutral"].length-1)>>
+
+	<<set _coat = $activeFluffy.colorGroup[0]>>
+	<<set _mane = $activeFluffy.colorGroup[1]>>
+	<<set _posCoat = random(0, _colorList[_coat].length-1)>>
+
+	<<switch random(0, 4)>>
+		<<case 0 1 2>>
+		/* Get name relating to color*/
+			<<set $activeFluffy.name = _colorList[_coat][_posCoat]>>
+		<<case 4>>
+		/* Get name relating to gender, 50% gendered, 50% neutral */
+			<<switch random(0, 1)>>
+				<<case 0>>
+					<<set $activeFluffy.name = _genderList[_gender][_posGendered]>>
+				<<case 1>>
+					<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+				<<default>>
+					<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+			<</switch>>
+		<<default>>
+			<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+	<</switch>>
+<</widget>>
+
+/* ***
  *	Called as <<displayStat $stat>>
  *	Returns a display of this stat value based on the player xp level.
  *	Normal ranges for a stat are 0-6
