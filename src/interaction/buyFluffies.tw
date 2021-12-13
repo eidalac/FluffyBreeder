@@ -45,27 +45,90 @@
 			</div>
 
 			<div class="w3-dropdown-hover">
-			  	@@#buybutton;<<button [[Take this Fluffy|Buy Fluffies]]>>
-					<<set $cash -= _price>>
-					<<set $actions-->>
-											
-					/* Add to the global list and store list*/
-					<<set $activeFluffy.ID = $globalFluffies.length>>
-					/*<<set $activeFluffy.name += " " + $globalFluffies.length>>*/
-					
-					/* only rename unnamed fluffies */
-					<<if $nameType === "ordinal" && $activeFluffy.name == "Fluffy">>
-						<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
-					<</if>>
-					<<run $globalFluffies.push($activeFluffy)>>
-					<<run $ourStore.fluffies.push($activeFluffy.ID)>>
-		
-					<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
-						<<set $ourStore.foals++>>
-					<<elseif $activeFluffy.gender == "male">>
-						<<set $ourStore.stallions++>>
+			  	@@#buybutton;<<button "Take this Fluffy">>
+
+					<<set _c = 0>>
+					<<for $activeFluffy range _randomFluffies>>
+						<<if $activeFluffy.isChecked>>
+							<<run _c++>>
+						<</if>>
+					<</for>>
+
+				  	<<if Number(_randomFluffies.length) <= 1 && $actions < 1>>
+					  	<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this fluffy.")>><<run Dialog.open()>>
+					<<elseif Number(_randomFluffies.length) > 1 && _c < 1>>
+						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("No fluffies are selected. " +_c)>><<run Dialog.open()>>
+					<<elseif Number(_randomFluffies.length) > 1 && _c > $actions>>
+						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this may fluffies." + _c)>><<run Dialog.open()>>
 					<<else>>
-						<<set $ourStore.mares++>>
+						<<set $cash -= _price>>
+
+						/* More than 1 fluffy present and selected */
+						<<if _c > 0>>
+							<<set $actions -= _c>>
+
+							<<for $activeFluffy range _randomFluffies>>
+								<<if $activeFluffy.isChecked>>
+									<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+				
+									/* only rename unnamed fluffies */
+									<<if $nameType === "ordinal" && $activeFluffy.hasName == false>>
+										<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+									<</if>>
+						
+									<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
+										<<set $ourStore.foals++>>
+									<<elseif $activeFluffy.gender == "male">>
+										<<set $ourStore.stallions++>>
+									<<else>>
+										<<set $ourStore.mares++>>
+									<</if>>
+								<</if>>
+							<</for>>
+
+						/* More than 1 fluffy present, only 1 selected */
+						<<elseif Number(_randomFluffies.length) > 1 && _c == 1>>
+							<<set $actions-->>
+							
+							<<for $activeFluffy range _randomFluffies>>
+								<<if $activeFluffy.isChecked>>
+									<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+									/* only rename unnamed fluffies */
+									<<if $nameType === "ordinal" && $activeFluffy.hasName == false>>
+										<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+									<</if>>
+						
+									<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
+										<<set $ourStore.foals++>>
+									<<elseif $activeFluffy.gender == "male">>
+										<<set $ourStore.stallions++>>
+									<<else>>
+										<<set $ourStore.mares++>>
+									<</if>>
+								<</if>>
+							<</for>>
+
+						/* Only 1 fluffy present, selected or not */
+						<<else>>
+							<<set $actions-->>
+							<<set $activeFluffy = _randomFluffies[0]>>
+							<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+
+							/* only rename unnamed fluffies */
+							<<if $nameType === "ordinal" && $activeFluffy.hasName == false>>
+								<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+							<</if>>
+				
+							<<if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) < $activeFluffy.maturity)>>
+								<<set $ourStore.foals++>>
+							<<elseif $activeFluffy.gender == "male">>
+								<<set $ourStore.stallions++>>
+							<<else>>
+								<<set $ourStore.mares++>>
+							<</if>>
+						<</if>>
+
+						<<goto [[Buy Fluffies]]>>
 					<</if>>
 
 			  	<</button>>@@
@@ -88,17 +151,44 @@
 	<</timed>>
 	
 	<<timed 10ms>>
-		<<if $actions < Number(1 + randomFluffies.length)>>
+/*
+		<<if $actions < Number(_randomFluffies.length)>>
 			<<run $("#shopbutton button").addClass("w3-disabled")>>
 			<<run $("#buybutton button").addClass("w3-disabled")>>
 			<<run $("#shopbutton button").prop("disabled", true)>>
 			<<run $("#buybutton button").prop("disabled", true)>>
 			
-			
 			<br>//You are too tired for more shopping//.
 			<br>
+		<<elseif Number(_randomFluffies.length) > 1>>
+			<<set _c = 0>>
+			<<for $activeFluffy range _randomFluffies>>
+				<<if _randomFluffies.isChecked>>
+					<<run _c++>>
+				<</if>>
+			<</for>>
+
+			<<if _c < 1>>
+				<<run $("#shopbutton button").addClass("w3-disabled")>>
+				<<run $("#buybutton button").addClass("w3-disabled")>>
+				<<run $("#shopbutton button").prop("disabled", true)>>
+				<<run $("#buybutton button").prop("disabled", true)>>
+				
+				<br>//no fluffies selected//.
+				<br>
+			<<elseif $actions < _c>>
+				<<run $("#shopbutton button").addClass("w3-disabled")>>
+				<<run $("#buybutton button").addClass("w3-disabled")>>
+				<<run $("#shopbutton button").prop("disabled", true)>>
+				<<run $("#buybutton button").prop("disabled", true)>>
+			
+			<br>//too many fluffies selected//.
+			<br>
+			<</if>>
+		<<else>>
+		<br><br><br> <<print Number(_randomFluffies.length)>>
 		<</if>>
-		
+		*/
 		<<if Number(_price) >  Number($cash) && Number(_price) != 0>>
 			<<run $("#buybutton button").addClass("w3-disabled")>>
 			<<run $("#buybutton button").prop("disabled", true)>>
