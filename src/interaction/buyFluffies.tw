@@ -88,6 +88,9 @@
 									<<else>>
 										<<set $ourStore.mares++>>
 									<</if>>
+
+									/* clear the checkmark */
+									<<set $activeFluffy.isChecked = false>>
 								<</if>>
 							<</for>>
 
@@ -110,6 +113,9 @@
 									<<else>>
 										<<set $ourStore.mares++>>
 									<</if>>
+
+									/* clear the checkmark */
+									<<set $activeFluffy.isChecked = false>>
 								<</if>>
 							<</for>>
 
@@ -131,6 +137,8 @@
 							<<else>>
 								<<set $ourStore.mares++>>
 							<</if>>
+
+							<<set $activeFluffy.isChecked = false>>
 						<</if>>
 
 						<<goto [[Buy Fluffies]]>>
@@ -385,6 +393,12 @@
 						<</if>>
 					
 					<</for>>
+
+					/* Set max nursing so milk is generated */
+					<<if $globalFluffies[$mom.ID].nursing > 0>>
+						<<set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing>>
+						<<set $globalFluffies[$mom.ID].nursingMax -= random(0,1)>>
+					<</if>>
 
 					/* Cull parrents at 25% */
 					<<if random(0,3) == 3>>
