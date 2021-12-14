@@ -1702,13 +1702,21 @@ Genome.prototype.setCoatColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+
+		/* Reset to default values: */
+		this.genes[17] = "B/b";
+		this.genes[18] = "Y/y";
+		this.genes[19] = "R/r";
+		this.genes[20] = "O/o";
+		this.genes[21] = "W/w";
 		return false;
 	default:
-		this.genes[17] = new_gene.substring(0, 3);
-		this.genes[18] = new_gene.substring(4, 7);
-		this.genes[19] = new_gene.substring(8, 11);
-		this.genes[20] = new_gene.substring(12, 15);
-		this.genes[21] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[17] = parts[0];
+		this.genes[18] = parts[1];
+		this.genes[19] = parts[2];
+		this.genes[20] = parts[3];
+		this.genes[21] = parts[4];
 		return true;
 	}
 };
@@ -1717,13 +1725,20 @@ Genome.prototype.setManeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[22] = "B/b";
+		this.genes[23] = "Y/y";
+		this.genes[24] = "R/r";
+		this.genes[25] = "O/o";
+		this.genes[26] = "W/w";
 		return false;
 	default:
-		this.genes[22] = new_gene.substring(0, 3);
-		this.genes[23] = new_gene.substring(4, 7);
-		this.genes[24] = new_gene.substring(8, 11);
-		this.genes[25] = new_gene.substring(12, 15);
-		this.genes[26] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[22] = parts[0];
+		this.genes[23] = parts[1];
+		this.genes[24] = parts[2];
+		this.genes[25] = parts[3];
+		this.genes[26] = parts[4];
 		return true;
 	}
 };
@@ -1732,13 +1747,20 @@ Genome.prototype.setEyeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[27] = "B/b";
+		this.genes[28] = "Y/y";
+		this.genes[29] = "R/r";
+		this.genes[30] = "O/o";
+		this.genes[31] = "W/w";
 		return false;
 	default:
-		this.genes[27] = new_gene.substring(0, 3);
-		this.genes[28] = new_gene.substring(4, 7);
-		this.genes[29] = new_gene.substring(8, 11);
-		this.genes[30] = new_gene.substring(12, 15);
-		this.genes[31] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[27] = parts[0];
+		this.genes[28] = parts[1];
+		this.genes[29] = parts[2];
+		this.genes[30] = parts[3];
+		this.genes[31] = parts[4];
 		return true;
 	}
 };
