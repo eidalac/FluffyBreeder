@@ -2419,7 +2419,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 91):
 			return 6; //plant
 		default:
-			this.genes[50] = "0/0";
+			this.genes[49] = "0/0";
 			return 0; // standard
 	}
  }
