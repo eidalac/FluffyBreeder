@@ -4275,7 +4275,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 Genome.prototype.setSubSpecies = function(new_gene) {
 	var new_gene = new_gene.replace(";", "");
 	var parts = new_gene.split('/');
-//console.log("gene checked = " + parts + " " + parts.length)
+	console.log("Sub Species gene checked = " + parts + " " + parts.length)
 	if (parts.length != 2)
 	{
 		this.genes[49] = "0/0";
@@ -4284,6 +4284,7 @@ Genome.prototype.setSubSpecies = function(new_gene) {
 	
 	if (isNaN(parseInt(parts[0] + parts[1], 16)))
 	{
+		console.log("Sub Species gene NaN = " + parts + " " + parts.length)
 		// if it's invald just set it to the default value.
 		this.genes[49] = "0/0";
 		return true;
@@ -10655,6 +10656,14 @@ profitsTotal: 0
 			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 			&lt;&lt;newFromGene $testChild 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+
+			&lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
+			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+			&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+			&lt;&lt;set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()&gt;&gt;
+			&lt;&lt;set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()&gt;&gt;
+
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;run console.log(&quot;Fluffy shopping - generating : single non feral&quot;)&gt;&gt;
 			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
