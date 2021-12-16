@@ -97,13 +97,13 @@
 <</widget>>
 
 /* ***
- *	Call as <<newFromGene $gene>>
+ *	Call as <<newFromGene $gene $subspecies>>
  *
- *	Creates a new fluffy from an existing genome.
+ *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 <<widget "newFromGene">>
-	<<if $args.length == true>>
-
+	<<if def $args.length>>
+		<<set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()>>
 		<<set _l = random(0, 1)>>
 		<<set _f = random(0, 1)>>
 		<<set _h = random(0, 2) / 100>>
@@ -167,8 +167,8 @@
 
 			coatDensity: $args[0].getCoatDensity() + _cd,
 			coatCurl: $args[0].getCoatCurl(),
-			subSpecies: $args[0].getSubSpecies(),
-			subSpeciesString: $args[0].getSubSpeciesDesc(),
+			subSpecies: _subspecies,
+			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
 
 			health: 10,
 			children: [],
@@ -293,7 +293,7 @@
  /* Inbreeding */
 <<set _inbreed = $activeFluffy.geneString.substring(168).split('/')>>
 <<if Number(_inbreed[0]) == Number(_inbreed[1])>>
-	<<run $activeFluffy.traits.push("Inbred ")>>
+	<<run $activeFluffy.traits.push("Inbred")>>
 	<<set $activeFluffy.strength -= _defectLevel>>
 	<<set $activeFluffy.energy -= _defectLevel>>
 	<<set $activeFluffy.charm -= _defectLevel>>
@@ -306,7 +306,7 @@
 <<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Limp")>>
+			<<run $activeFluffy.traits.push("Slow")>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
 			<<run $activeFluffy.traits.push("Limp")>>
@@ -318,7 +318,7 @@
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Lame")>>
+			<<run $activeFluffy.traits.push("Crippled")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -333,7 +333,7 @@
 			<<set $activeFluffy.energy-->>
 			<<set $activeFluffy.strength-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Breathless")>>
+			<<run $activeFluffy.traits.push("Bronchitis")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 1>>
@@ -343,7 +343,7 @@
 			<<set $activeFluffy.strength -= 3>>
 			<<set $activeFluffy.charm -= 2>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Asthmatic")>>
+			<<run $activeFluffy.traits.push("Lung Cancer")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 4>>
 			<<set $activeFluffy.charm -= 3>>
@@ -360,7 +360,7 @@
 
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Overweight")>>
+			<<run $activeFluffy.traits.push("Chubby")>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
 			<<run $activeFluffy.traits.push("Overweight")>>
@@ -372,7 +372,7 @@
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Fat")>>
+			<<run $activeFluffy.traits.push("Obese")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -382,15 +382,13 @@
 
 /* Heart defect */
 <<if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()>>
-	<<run $activeFluffy.traits.push("feeble" + _defectLevel)>>
-
 	<<set _multiplier = Number(Number(10 + _defectLevel) / 8).toFixed(2)>>
 	<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
 
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Feeble")>>
+			<<run $activeFluffy.traits.push("Weak")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 1>>
 		<<case 2>>
@@ -403,7 +401,7 @@
 			<<set $activeFluffy.strength -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Sickly")>>
+			<<run $activeFluffy.traits.push("Anemic")>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -412,13 +410,13 @@
 
 /* Fertility defect */
 <<if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()>>
-	<<run $activeFluffy.traits.push("Infertile")>>
+	/* <<run $activeFluffy.traits.push("Infertile")>> */
 	<<set $activeFluffy.fertility -= _defectLevel>>
 <</if>>
 
 /* Growth Defect */
 <<if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()>>
-	<<run $activeFluffy.traits.push("Runt " + _defectLevel)>>
+	<<run $activeFluffy.traits.push("Runt")>>
 	<<set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)>>
 <<run console.log("Gene Defect = Runt. _multiplier = " + _multiplier)>>
 <<run console.log("Gene Defect = Runt. maxLength = " + $activeFluffy.maxLength + ". maxHeight = " + $activeFluffy.maxHeight + ". maxWeight = " + $activeFluffy.maxWeight)>>
@@ -443,17 +441,17 @@
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Delicate")>>
+			<<run $activeFluffy.traits.push("Nauseous")>>
 			<<set $activeFluffy.thinking -= 2>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Faint")>>
+			<<run $activeFluffy.traits.push("Ulcers")>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Faint")>>
+			<<run $activeFluffy.traits.push("Appendicitis")>>
 			<<set $activeFluffy.thinking -= 4>>
 			<<set $activeFluffy.learning -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -471,7 +469,7 @@
 <<if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Simple")>>
+			<<run $activeFluffy.traits.push("Silly")>>
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
@@ -480,7 +478,7 @@
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Imbecile")>>
+			<<run $activeFluffy.traits.push("Moron")>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
@@ -499,11 +497,11 @@
 			<<run $activeFluffy.traits.push("Nearsighted")>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Nearsighted")>>
+			<<run $activeFluffy.traits.push("Colourblind")>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.energy -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Near Blind")>>
+			<<run $activeFluffy.traits.push("Near-Blind")>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
@@ -546,13 +544,13 @@
 
 	<<if ndef _mom.genes>>
 		<br><br>@@.red; breedFluffies: mother has no genes, loading default genes@@<br><br>
-		<<set _mom.geneString = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1">>
+		<<set _mom.geneString = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 		<<set _mom.genes = Genome.fromString(_mom.geneString)>>
 	<</if>>
 
 	<<if ndef _dad.genes>>
 		<br><br>@@.red; breedFluffies: father has no genes, loading default genes@@<br><br>
-		<<set _dad.geneString = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0">>
+		<<set _dad.geneString = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 		<<set _dad.genes = Genome.fromString(_dad.geneString)>>
 	<</if>>
 

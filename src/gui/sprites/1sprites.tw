@@ -2,6 +2,26 @@
 
 <<widget "newbornSprite">>
 
+<<set _subspecies = $args[0] ? $args[0].subSpecies : 0>>
+<<switch _subspecies>>
+    <<case 0>>
+        <<set _speciesName = ''>>
+    <<case 1>>
+        <<set _speciesName = '_micro'>>
+    <<case 2>>
+        <<set _speciesName = '_angora'>>
+    <<case 3>>
+        <<set _speciesName = '_fluffalo'>>
+    <<case 4>>
+        <<set _speciesName = '_sea'>>
+    <<case 4>>
+        <<set _speciesName = '_loaffy'>>
+    <<case 5>>
+        <<set _speciesName = '_plant'>>
+    <<default>>
+        <<set _speciesName = ''>>
+<</switch>>
+
 <<if ndef $inlineSprites>><<set $inlineSprites = true>><</if>>
 
 <<if $inlineSprites == true>>
@@ -22,11 +42,10 @@
 
 <<set _oneColorCoat = "./art/sprites3/1_color_coat.png">>
 <<set _oneHornColor = "./art/sprites3/1_color_horn.png">>
-<<set _oneLinesAlicorn = "./art/sprites3/1_lines_alicorn.png">>
-<<set _oneLinesEarthie = "./art/sprites3/1_lines_earthie.png">>
-<<set _oneLinesPegasus = "./art/sprites3/1_lines_pegasus.png">>
-<<set _oneLinesUnicorn = "./art/sprites3/1_lines_unicorn.png">>
-
+<<set _oneLinesAlicorn = `./art/sprites3/1_lines_alicorn${_speciesName}.png`>>
+<<set _oneLinesEarthie = `./art/sprites3/1_lines_earthie${_speciesName}.png`>>
+<<set _oneLinesPegasus = `./art/sprites3/1_lines_pegasus${_speciesName}.png`>>
+<<set _oneLinesUnicorn = `./art/sprites3/1_lines_unicorn${_speciesName}.png`>>
 
 <</if>>
 

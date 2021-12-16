@@ -90,11 +90,11 @@
 
  	/* ***
  	 *  1. newborn 
- 	 *	only coat visible  
+ 	 *	only coat visible
  	 *** */
 	<<if Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 0>>
 	
-		<<newbornSprite>>
+		<<newbornSprite $activeFluffy>>
 		
 		<<= '<img src="' + _oneColorCoat + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
 		
@@ -115,7 +115,7 @@
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
 	<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 1>>
 	
-		<<chirpySprite>>
+		<<chirpySprite $activeFluffy>>
 	
 		<<= '<img src="' + _twoColorCoat + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
 		<<= '<img src="' + _twoColorEyes + '" style="' + _styleString + '" class="' + $activeFluffy.eColor.toLowerCase() + 'filter' + '">'>>
@@ -138,8 +138,8 @@
 	/* 3. talky babbeh (coat, eyes, mane) */
 	<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) > 1 && $activeFluffy.weaned === false>>
 
-		<<talkySprite>>
-<<run console.log("sprite - talky")>>
+		<<talkySprite $activeFluffy>>
+
 		<<= '<img src="' + _threeColorCoat + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
 		<<= '<img src="' + _threeColorEyes + '" style="' + _styleString + '" class="' + $activeFluffy.eColor.toLowerCase() + 'filter' + '">'>>
 		<<= '<img src="' + _threeColorMane + '" style="' + _styleString + '" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
@@ -163,8 +163,8 @@
 	/* 4. foal (has hair on head) */
 	<<elseif Number($activeFluffy.age) == 0 && $activeFluffy.weaned === true && Number($activeFluffy.ageWeeks) < Number($activeFluffy.maturity/2)>>
 	
-		<<foalSprite>>
-<<run console.log("sprite - foal")>>
+		<<foalSprite $activeFluffy>>
+
 		<<if $args[0] === "pegasus" || $args[0] === "alicorn">>
 			<<= '<img src="' + _fourColorCoatWing + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
 		<<else>>
@@ -193,8 +193,8 @@
 	/* 5. colt/filly (bigger than foal) week 20-26 */
 	<<elseif Number($activeFluffy.age) == 0 && Number($activeFluffy.ageWeeks) <= $activeFluffy.maturity>>
 		
-		<<youthSprite>>
-<<run console.log("sprite - youth")>>
+		<<youthSprite $activeFluffy>>
+
 		<<if $args[0] === "pegasus" || $args[0] === "alicorn">>
 			<<= '<img src="' + _fiveColorCoatWing + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
 		<<else>>
@@ -223,8 +223,8 @@
 	/* 6. adult (teats on female) week 36-47*/
 	<<elseif (Number($activeFluffy.age) > 0 || Number($activeFluffy.ageWeeks) > $activeFluffy.maturity) && (Number($activeFluffy.age) < Number($activeFluffy.maxAge * 0.75))>>
 		
-		<<adultSprite>>
-<<run console.log("sprite - adult")>>
+		<<adultSprite $activeFluffy>>
+		
 		/*<<= '<img src="./art/sprites3/6_color_coat.png" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>*/
 		<<if $args[0] === "pegasus" || $args[0] === "alicorn">>
 			<<= '<img src="' + _sixColorCoatWing + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>
@@ -233,8 +233,13 @@
 		<</if>>
 
 		<<= '<img src="' + _sixColorEyes + '" style="' + _styleString + '" class="' + $activeFluffy.eColor.toLowerCase() + 'filter' + '">'>>
-		<<= '<img src="' + _sixColorMane + '" style="' + _styleString + '" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
-		
+
+		<<if $activeFluffy.subSpecies == 0 || $args[0] === "earthie" || $args[0] === "unicorn">>
+			<<= '<img src="' + _sixColorMane + '" style="' + _styleString + '" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
+		<<elseif $activeFluffy.subSpecies == 2 && $args[0] === "pegasus" || $args[0] === "alicorn">>
+			<<= '<img src="' + _sixColorManeWing + '" style="' + _styleString + '" class="' + $activeFluffy.mColor.toLowerCase() + 'filter' + '">'>>
+		<</if>>
+
 		<<= '<img src="' + _sixColorEyewhites + '" style="' + _styleString + '" class="whitefilter">'>>
 		
 		<<if $args[0] === "unicorn" || $args[0] === "alicorn">>
@@ -258,7 +263,7 @@
 	/* 7. grey (droopy eyes and greying fur) week 208-364 (4-7 years)*/
 	<<else>>
 	
-		<<greySprite>>
+		<<greySprite $activeFluffy>>
 
 		<<if $args[0] === "pegasus" || $args[0] === "alicorn">>
 			<<= '<img src="' + _sevenColorCoatWing + '" style="' + _styleString + '" class="' + $activeFluffy.cColor.toLowerCase() + 'filter' + '">'>>

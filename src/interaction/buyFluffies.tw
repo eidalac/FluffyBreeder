@@ -41,6 +41,10 @@
 			<div class="w3-dropdown-hover">
 			  	@@#shopbutton;<<button [[Keep Looking|Buy Fluffies]] >>
 			  		<<set $actions-->>
+
+					<<for $activeFluffy range _randomFluffies>>
+						<<set $activeFluffy.isChecked = false>>
+					<</for>>
 			  	<</button>>@@
 			</div>
 
@@ -88,6 +92,9 @@
 									<<else>>
 										<<set $ourStore.mares++>>
 									<</if>>
+
+									/* clear the checkmark */
+									<<set $activeFluffy.isChecked = false>>
 								<</if>>
 							<</for>>
 
@@ -110,6 +117,9 @@
 									<<else>>
 										<<set $ourStore.mares++>>
 									<</if>>
+
+									/* clear the checkmark */
+									<<set $activeFluffy.isChecked = false>>
 								<</if>>
 							<</for>>
 
@@ -131,6 +141,8 @@
 							<<else>>
 								<<set $ourStore.mares++>>
 							<</if>>
+
+							<<set $activeFluffy.isChecked = false>>
 						<</if>>
 
 						<<goto [[Buy Fluffies]]>>
@@ -223,6 +235,8 @@
 		<br>You're reputation is to low, the breeder doesn't want to sell to you.
 	<<elseif $shop == "feral">>
 		<br>You check down a nearby alley...
+	<<elseif $shop == "angora">>
+		<br>You enter the Angora Shop.
 	<<else>>
 		<br>@@.red;Invalid fluffy shop type called [ $shop ].@@
 	<</if>>
@@ -386,6 +400,12 @@
 					
 					<</for>>
 
+					/* Set max nursing so milk is generated */
+					<<if $globalFluffies[$mom.ID].nursing > 0>>
+						<<set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing>>
+						<<set $globalFluffies[$mom.ID].nursingMax -= random(0,1)>>
+					<</if>>
+
 					/* Cull parrents at 25% */
 					<<if random(0,3) == 3>>
 						<<run console.log("Fluffy shopping generated family, culling mother.")>>
@@ -412,11 +432,16 @@
 					<<run $globalFluffies.push($activeFluffy)>>
 					<<run _randomFluffies.push($activeFluffy)>>
 			<</switch>>
+		<<elseif $shop == "angora">>
+			/* Force generate angora */
+			<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+			<<newFromGene $testChild 2>>
 		<<else>>
 			<<run console.log("Fluffy shopping - generating : single non feral")>>
 			<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 			<<newFromGene $testChild>>
 		<</if>>
+
 
 		/* Don't generate alicorns at a shop or mill*/
 		<<if $shop == "mill" || $shop == "mart">>
@@ -446,9 +471,8 @@
 			<<run $globalFluffies.push($activeFluffy)>>
 			<<run _randomFluffies.push($activeFluffy)>>
 		<</if>>
-
+		
 		<<run console.log("Fluffy shopping - generating : " + _randomFluffies.length + " fluffies")>>
-
 		/* We may have generated one or a family, so run the checks on all of them in turn. */
 		<<for _rf = 0; _rf < _randomFluffies.length; _rf++>>
 			<<set $activeFluffy = _randomFluffies[_rf]>>
