@@ -588,7 +588,7 @@ button {
  *	Called as <<inlineColor $color>>
  *	Returns the string colored as an HTML color.
  *** */
-<<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@border:4px solid "+$args[0]+";"+$args[0]>><</if>><</widget>>
+<<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@background:"+$args[0]+"; color:white;"+$args[0]>><</if>><</widget>>
 
 /* ***
  *	Called as <<colorizeText $color $message>>
@@ -599,7 +599,7 @@ button {
 	<<if $args[0] != "Black">>
 		<<- `@@color:${$args[0]};${$args[1]}`>>
 	<<else>>
-		<<- `@@border:4px solid ${$args[0]};${_msg}`>>
+		<<- `@@background:${$args[0]}; color:white;${_msg}`>>
 	<</if>>
 <</widget>>
 
@@ -610,7 +610,15 @@ button {
  *** */
 <<widget "fluffSpeech">>
 	<<set _msg = $args[0] ? $args[0] : "">>
-	<<- `@@color:${$args[1]};`+'"'+`${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}`+'"'>>
+	<<if $args[0] != "Black">>
+		<<- `@@color:${$args[1]};`+'"'+`
+			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}
+		`+'"'>>
+	<<else>>
+		<<- `@@background:${$args[1]}; color:white;`+'"'+`
+			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}
+		`+'"'>>
+	<</if>>
 <</widget>>
 
 /* ***

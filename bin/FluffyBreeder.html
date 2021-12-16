@@ -14280,7 +14280,7 @@ button {
  *	Called as &lt;&lt;inlineColor $color&gt;&gt;
  *	Returns the string colored as an HTML color.
  *** */
-&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;- &quot;@@border:4px solid &quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
+&lt;&lt;widget &quot;inlineColor&quot;&gt;&gt;&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;&lt;&lt;- &quot;@@color:&quot;+$args[0]+&quot;;&quot;+$args[0]&gt;&gt;&lt;&lt;else&gt;&gt;&lt;&lt;- &quot;@@background:&quot;+$args[0]+&quot;; color:white;&quot;+$args[0]&gt;&gt;&lt;&lt;/if&gt;&gt;&lt;&lt;/widget&gt;&gt;
 
 /* ***
  *	Called as &lt;&lt;colorizeText $color $message&gt;&gt;
@@ -14291,7 +14291,7 @@ button {
 	&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;
 		&lt;&lt;- `@@color:${$args[0]};${$args[1]}`&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- `@@border:4px solid ${$args[0]};${_msg}`&gt;&gt;
+		&lt;&lt;- `@@background:${$args[0]}; color:white;${_msg}`&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -14302,7 +14302,15 @@ button {
  *** */
 &lt;&lt;widget &quot;fluffSpeech&quot;&gt;&gt;
 	&lt;&lt;set _msg = $args[0] ? $args[0] : &quot;&quot;&gt;&gt;
-	&lt;&lt;- `@@color:${$args[1]};`+&#39;&quot;&#39;+`${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;
+		&lt;&lt;- `@@color:${$args[1]};`+&#39;&quot;&#39;+`
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- `@@background:${$args[1]}; color:white;`+&#39;&quot;&#39;+`
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -15532,7 +15540,7 @@ button {
 
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.eColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.subSpecies == 0 || $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot;&gt;&gt;
+		&lt;&lt;if $activeFluffy.subSpecies == 0 || $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;elseif $activeFluffy.subSpecies == 2 &amp;&amp; $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
