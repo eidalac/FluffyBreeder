@@ -1900,7 +1900,7 @@ Allele.prototype.toString = function() {
  *
  * @param array[Allele] list The list of alleles that go into this string.
  */
-function AlleleString(list) {
+ window.AlleleString = function (list) {
     this.alleles = list;
     this.length = this.alleles.length;
 };
@@ -2092,10 +2092,11 @@ Genome.fromGenes = function(genes) {
  * @return Genome
  */
 Genome.fromAlleleStrings = function(string1, string2) {
+
     var genes = [];
     var gene_string_length = Math.min(string1.length, string2.length);
     for (var i = 0; i < gene_string_length; i++) {
-        genes[i] = Gene.fromAlleles(string1.elementAt(i), string2.elementAt(i));
+		genes[i] = Gene.fromAlleles(string1.elementAt(i), string2.elementAt(i));
     }
     return Genome.fromGenes(genes);
 };
@@ -2139,43 +2140,76 @@ window.Genome.fromString  = function (str) {
  */
 Genome.prototype.breedWithGenome = function(other_genome) {
 	var child_genes = "";
+	var prototypeF = Genome.fromString("X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
+	var prototypeM = Genome.fromString("X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
+
+	//var gene_string_length = Math.min(string1.length, string2.length);
+
+	if (prototypeF.length != this.length)
+	{
+		console.log("Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
+		this.genes = prototypeF.genes;
+	}
+	else if (prototypeM.length != other_genome.length)
+	{
+		console.log("Genome breedWithGenome: father gene length incorrect, reset to default gene.");
+		other_genome = prototypeM;
+	}
+
+	console.log("Genome breedWithGenome: mom = " + this + ".");
+	console.log("Genome breedWithGenome: dad = " + other_genome + ".");
 
 	for (var i = 0; i < this.length; i++) {
-		var k = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
-		var l = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
 		
-		if (i > 0) 
+		if (i > 0) {
 			child_genes += ";";
+		}
 
-		if (k == 0) {
-			// 0
-			if (l == 0) {
-				//00
-				child_genes += this.elementAt(i).allele2;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele2;
-			} else {
-				//01
-				child_genes += this.elementAt(i).allele2;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele1;
-			}
-		} else {
-			// 1
-			if (l == 0) {
-				// 10
-				child_genes += this.elementAt(i).allele1;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele2;
-			} else {
-				// 11
-				child_genes += this.elementAt(i).allele1;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele1;
+		/* 49 is the subspecies gene, and is treated as a hex value, so we don't want to do typical breeding with it */
+		if (i == 49)
+		{
+			/* TODO: Need to add some more special handling, but for now just copy the mom's gene for this one */
+			child_genes += this.elementAt(i).allele1;
+			child_genes += "/";
+			child_genes += this.elementAt(i).allele2;
+		}
+		else
+		{
+			switch (Math.floor(Math.random() * 4))
+			{
+				case 0:
+					child_genes += this.elementAt(i).allele2;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+
+					//console.log("Genome breedWithGenome: 0 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				case 1:
+					child_genes += this.elementAt(i).allele2;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele1;
+
+					//console.log("Genome breedWithGenome: 1 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				case 2:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+
+					//console.log("Genome breedWithGenome: 2 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				default:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele1;
+
+					//console.log("Genome breedWithGenome: 3 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
 			}
 		}
 	}
-     
+
+	console.log("Genome breedWithGenome: child  = " + child_genes + ".");
     return Genome.fromString(child_genes); 
 }
 
@@ -3541,13 +3575,21 @@ Genome.prototype.setCoatColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+
+		/* Reset to default values: */
+		this.genes[17] = "B/b";
+		this.genes[18] = "Y/y";
+		this.genes[19] = "R/r";
+		this.genes[20] = "O/o";
+		this.genes[21] = "W/w";
 		return false;
 	default:
-		this.genes[17] = new_gene.substring(0, 3);
-		this.genes[18] = new_gene.substring(4, 7);
-		this.genes[19] = new_gene.substring(8, 11);
-		this.genes[20] = new_gene.substring(12, 15);
-		this.genes[21] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[17] = parts[0];
+		this.genes[18] = parts[1];
+		this.genes[19] = parts[2];
+		this.genes[20] = parts[3];
+		this.genes[21] = parts[4];
 		return true;
 	}
 };
@@ -3556,13 +3598,20 @@ Genome.prototype.setManeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[22] = "B/b";
+		this.genes[23] = "Y/y";
+		this.genes[24] = "R/r";
+		this.genes[25] = "O/o";
+		this.genes[26] = "W/w";
 		return false;
 	default:
-		this.genes[22] = new_gene.substring(0, 3);
-		this.genes[23] = new_gene.substring(4, 7);
-		this.genes[24] = new_gene.substring(8, 11);
-		this.genes[25] = new_gene.substring(12, 15);
-		this.genes[26] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[22] = parts[0];
+		this.genes[23] = parts[1];
+		this.genes[24] = parts[2];
+		this.genes[25] = parts[3];
+		this.genes[26] = parts[4];
 		return true;
 	}
 };
@@ -3571,13 +3620,20 @@ Genome.prototype.setEyeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[27] = "B/b";
+		this.genes[28] = "Y/y";
+		this.genes[29] = "R/r";
+		this.genes[30] = "O/o";
+		this.genes[31] = "W/w";
 		return false;
 	default:
-		this.genes[27] = new_gene.substring(0, 3);
-		this.genes[28] = new_gene.substring(4, 7);
-		this.genes[29] = new_gene.substring(8, 11);
-		this.genes[30] = new_gene.substring(12, 15);
-		this.genes[31] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[27] = parts[0];
+		this.genes[28] = parts[1];
+		this.genes[29] = parts[2];
+		this.genes[30] = parts[3];
+		this.genes[31] = parts[4];
 		return true;
 	}
 };
@@ -4192,7 +4248,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 37):
 			return 1; // micro
 		case (subSpecies <= 56):
-			return 2; // angro
+			return 2; // angora
 		case (subSpecies <= 64):
 			return 3; //fluffalo
 		case (subSpecies <= 73):
@@ -4257,12 +4313,13 @@ Genome.prototype.getSubSpeciesGene = function() {
 };
 
 /**
- * Retrieves returns a string name for the subspeices.
+ * Retrieves returns a string name for the subspecies.
  *
  * @return String
  */
-Genome.prototype.getSubSpeciesDesc = function() {
-	switch (this.getSubSpecies()) {
+Genome.prototype.getSubSpeciesDesc = function(subspecies) {
+	var _sub = subspecies ? subspecies : this.getSubSpecies()
+	switch (_sub) {
 	case 0:
 		return "Fluffy Pony";
 	case 1:
@@ -4274,7 +4331,7 @@ Genome.prototype.getSubSpeciesDesc = function() {
 	case 4:
 		return "Sea Fluffy";
 	case 5:
-		return "Loafy";
+		return "Loaffy";
 	case 6:
 		return "Plant Fluffy";
 	default:
@@ -5378,7 +5435,7 @@ window.NameList = {
 		&lt;&lt;set _mom.pregnantBy = -1&gt;&gt;
 		&lt;&lt;set _mom.nursingTime = $week + 5&gt;&gt;
 		&lt;&lt;set _mom.nursingMax = _mom.nursing&gt;&gt;
-		&lt;&lt;set _mom.nursingMax -= random(0,1)&gt;&gt;			
+		&lt;&lt;set _mom.nursingMax -= random(0,1)&gt;&gt;
 		
 		/* Save changes to mom and dad*/ 
 		&lt;&lt;if _mom.ID == $globalFluffies[_mom.ID].ID&gt;&gt; 
@@ -9202,6 +9259,9 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		  	@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
 		  		&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
 		  	&lt;&lt;/button&gt;&gt;@@
+			@@#sortbutton;&lt;&lt;button [[Angora Shop|Buy Fluffies]]&gt;&gt;
+		  		&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
+		  	&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
 
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -9280,6 +9340,26 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	};
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
 
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
+
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 &lt;&lt;if $inlineSprites == true&gt;&gt;
@@ -9300,15 +9380,34 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;set _oneColorCoat = &quot;./art/sprites3/1_color_coat.png&quot;&gt;&gt;
 &lt;&lt;set _oneHornColor = &quot;./art/sprites3/1_color_horn.png&quot;&gt;&gt;
-&lt;&lt;set _oneLinesAlicorn = &quot;./art/sprites3/1_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _oneLinesEarthie = &quot;./art/sprites3/1_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _oneLinesPegasus = &quot;./art/sprites3/1_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _oneLinesUnicorn = &quot;./art/sprites3/1_lines_unicorn.png&quot;&gt;&gt;
-
+&lt;&lt;set _oneLinesAlicorn = `./art/sprites3/1_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _oneLinesEarthie = `./art/sprites3/1_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _oneLinesPegasus = `./art/sprites3/1_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _oneLinesUnicorn = `./art/sprites3/1_lines_unicorn${_speciesName}.png`&gt;&gt;
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="chirpy sprite" tags="nobr widget" position="1100,225" size="100,100">&lt;&lt;widget &quot;chirpySprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -9331,23 +9430,37 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;else&gt;&gt;
 
 &lt;&lt;set _twoColorCoat = &quot;./art/sprites3/2_color_coat.png&quot;&gt;&gt;
-
 &lt;&lt;set _twoColorEyes = &quot;./art/sprites3/2_color_eyes.png&quot;&gt;&gt;
-
 &lt;&lt;set _twoHornColor = &quot;./art/sprites3/2_color_horn.png&quot;&gt;&gt;
-
-&lt;&lt;set _twoLinesAlicorn = &quot;./art/sprites3/2_lines_alicorn.png&quot;&gt;&gt;
-
-&lt;&lt;set _twoLinesEarthie = &quot;./art/sprites3/2_lines_earthie.png&quot;&gt;&gt;
-
-&lt;&lt;set _twoLinesPegasus = &quot;./art/sprites3/2_lines_pegasus.png&quot;&gt;&gt;
-
-&lt;&lt;set _twoLinesUnicorn = &quot;./art/sprites3/2_lines_unicorn.png&quot;&gt;&gt;
+&lt;&lt;set _twoLinesAlicorn = `./art/sprites3/2_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _twoLinesEarthie = `./art/sprites3/2_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _twoLinesPegasus = `./art/sprites3/2_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _twoLinesUnicorn = `./art/sprites3/2_lines_unicorn${_speciesName}.png`&gt;&gt;
 
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="talky sprite" tags="nobr widget" position="1225,225" size="100,100">&lt;&lt;widget &quot;talkySprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -9378,14 +9491,34 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set _threeColorEyewhites = &quot;./art/sprites3/3_color_eyewhites.png&quot;&gt;&gt;
 &lt;&lt;set _threeHornColor = &quot;./art/sprites3/3_color_horn.png&quot;&gt;&gt;
 &lt;&lt;set _threeColorMane = &quot;./art/sprites3/3_color_mane.png&quot;&gt;&gt;
-&lt;&lt;set _threeLinesAlicorn = &quot;./art/sprites3/3_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _threeLinesEarthie = &quot;./art/sprites3/3_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _threeLinesPegasus = &quot;./art/sprites3/3_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _threeLinesUnicorn = &quot;./art/sprites3/3_lines_unicorn.png&quot;&gt;&gt;
+&lt;&lt;set _threeLinesAlicorn = `./art/sprites3/3_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _threeLinesEarthie = `./art/sprites3/3_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _threeLinesPegasus = `./art/sprites3/3_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _threeLinesUnicorn = `./art/sprites3/3_lines_unicorn${_speciesName}.png`&gt;&gt;
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="foal sprite" tags="nobr widget" position="100,350" size="100,100">&lt;&lt;widget &quot;foalSprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -9419,14 +9552,34 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set _fourColorEyewhites = &quot;./art/sprites3/4_color_eyewhites.png&quot;&gt;&gt;
 &lt;&lt;set _fourHornColor = &quot;./art/sprites3/4_color_horn.png&quot;&gt;&gt;
 &lt;&lt;set _fourColorMane = &quot;./art/sprites3/4_color_mane.png&quot;&gt;&gt;
-&lt;&lt;set _fourLinesAlicorn = &quot;./art/sprites3/4_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _fourLinesEarthie = &quot;./art/sprites3/4_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _fourLinesPegasus = &quot;./art/sprites3/4_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _fourLinesUnicorn = &quot;./art/sprites3/4_lines_unicorn.png&quot;&gt;&gt;
+&lt;&lt;set _fourLinesAlicorn = `./art/sprites3/4_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fourLinesEarthie = `./art/sprites3/4_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fourLinesPegasus = `./art/sprites3/4_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fourLinesUnicorn = `./art/sprites3/4_lines_unicorn${_speciesName}.png`&gt;&gt;
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="youth sprite" tags="nobr widget" position="225,350" size="100,100">&lt;&lt;widget &quot;youthSprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -9460,14 +9613,36 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set _fiveColorEyewhites = &quot;./art/sprites3/5_color_eyewhites.png&quot;&gt;&gt;
 &lt;&lt;set _fiveHornColor = &quot;./art/sprites3/5_color_horn.png&quot;&gt;&gt;
 &lt;&lt;set _fiveColorMane = &quot;./art/sprites3/5_color_mane.png&quot;&gt;&gt;
-&lt;&lt;set _fiveLinesAlicorn = &quot;./art/sprites3/5_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _fiveLinesEarthie = &quot;./art/sprites3/5_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _fiveLinesPegasus = &quot;./art/sprites3/5_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _fiveLinesUnicorn = &quot;./art/sprites3/5_lines_unicorn.png&quot;&gt;&gt;
+&lt;&lt;set _fiveLinesAlicorn = `./art/sprites3/5_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fiveLinesEarthie = `./art/sprites3/5_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fiveLinesPegasus = `./art/sprites3/5_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _fiveLinesUnicorn = `./art/sprites3/5_lines_unicorn${_speciesName}.png`&gt;&gt;
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="adult sprite" tags="nobr widget" position="350,350" size="100,100">&lt;&lt;widget &quot;adultSprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
+&lt;&lt;run console.log(&quot;Loading sprite for&quot;, _speciesName)&gt;&gt;
+
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 &lt;&lt;if $inlineSprites == true&gt;&gt;
@@ -9496,23 +9671,46 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set _sixColorEyeWhites = &quot; data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAABkAAAAZACAMAAAAW0n6VAAACDmlDQ1BpY2MAACjPrZLPa9RAFMe/2yItKFZ0Dwoe5lClLU2yu0WQ1YPdIEXY03YtKl6SyTQZml/MzHZb8Ch4LXgQvfjz6FmvPXj1pCiC6B8hepESX5qFXUQPgi8k88kj7/u+mXnAdB7zRE+dAJLUqN5ah924eYvNfMUsTmEOZ7HkcZ0vpXIHf40fH1Ar13dWqYV/i6OB0ByozRK/4LkyxC/pPjk0OfHUPuXrPPIC4vfEy4oMAtNlbd2vuF5yWPFCyarfc4kvEx8PJ9ifYB6phLhLPF95OIzTmjbBEnEsrI2WFTYbtuR8wu8ZaPSwhg4sCMR0CaINtOgZookGbEhwcPznMGLHlKub5btKhpFhrUbzwjK7SlbZuslSwRaGwtfSiDaLjMnbjpPKVAQiVEJoX8TZ0OZZ4lxiIvFk3GblT+qy8Mqfvlu0WT+Sml1zXZarbFNSG3qNJRepFgEbpIFQzGOuEp6R24K5WZJkqWarxijpD4zMUms98pRYjeWWYCt2g11P80wZKu5WKmyhNKrJKR+p8ErEzlTojFppx9+1tOeQgBOL0It5FohFu9yLclZ/n0G9udI6TNWOdYAjX4ri2zlg5j5wsFcUP58WxcEzOvfPwH46rs+eABe/U35vnJt/DMzdBV69Gef8B8DrezQmn/hAbY+Opla2ruYJo9F8/hHo3wG6b4GHj4DzIWnd/gUq270fFjO1DAAAAAlwSFlzAAAPYQAAD2EBqD+naQAAAtZQTFRFAAAA////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////////E/HvlQAAAPF0Uk5TAAABAgMEBQYHCAkKCwwNDg8QERITFBUWFxgZGhscHR4fICEiIyQlJicoKSorLC0uLzAxMjM0NTY3ODk6Ozw9Pj9AQUJDREVGR0hJSktMTU5PUFFSU1RVVldYWVpbXF1eX2BhYmNkZWZnaGlqa2xtb3BxcnN0dXd4eXp7fH1+f4CBgoOEhYaHiImKi4yNjo+QkZKTlJaXmJqbnJ2en6ChoqOkpqmrrK2usLG0tba5uru8vb7AwcLDxMXGx8jJyszNzs/Q0dLT1NXW19jZ2tvc3d7f4OHi4+Tl5ufo6err7O3u7/Dx8vP09fb3+Pn6+/z9/soEUpUAABOUSURBVBgZ7cEJm50FeQDQ981kI5EtJGwmJCBQWRUXqNSqLApugLtIF1EBtdiCIopgFdBWi62irdUWLFC3ulJrsWrRolVAFJA1yJqNkElm7vf+g2ZmMskkmSQzoZf7PU/OOQEAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA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xrguAGijP2lqrJW/F7336aY2WL1vZgYAbfOupjbysei9Nw/UGF/PzACgbd7b1EYW7xU99/xlNUbz7swAoG0+VJt4W/TcfnfWWIPHBQCt89HaxC92jm07+I2v2iu6Ztfv1EZWHR0AtM1ltakPxDad8NvBwVtfnJnRFX2famojK54XALTMpbWp/tNiG+bfXWvdd0BmdMdbB2tjj5++UwDQKhc1talHj42t2v3LNexDmdEdx6+qTXS+d0gA0CZnNbWZB14YW7H7FZ0a9m/TMrrjeUtqM4++MjMDgLY4abA299gZU2NLpp+/qkZc3ZfRHUc+XJtbeUpmANAWh/TXOPovmBlbcPCdNaJ5Y2Z0x4H31TiWPy8DgLaY93CNZ82lO8W4+t47WCNu2CUzumPhr2s8dz8jJqpvagDQVbN/WeMa/NK+mRmbmnvmfTWs+dlhmRndMfe/aly3HxET0rfnMa964dwpmQFAt0z5So2vueXkmRljZOb05/7z0hrx82dG98y6rqlx3X90TMT8j962fNkPXzY1A4CueX9TW7D6W6ftPSUz1snZh5x382CN6Jyd0UUXdmp8v3tWbNvTLlhSay15RQYAXXN8p7Zo4La/PHRqrjVl5t5Hn3Pt7atr1NKjoptOeqK24LcHxTY96+Ya9qu9AoCuOeDx2opmyTf/+iN/eekV19740JqmNrhhXnTTwjtqS247KLZh+vmra1jn1QFA1zztltq6ZkhtbOV7pkU3zbi6tuiu58TW7fu9pka8LwDons/WpPVfszC667VraouWnr1bbMW+F62sEc05AUD3/OFATdJDVxzUF921329qyzo/PaEvM8aR2XfEF1fUOk88JwDontk/rElp7j11t+i2qZ9taitWfXxOxjhy6rHfGahR188KALroRWtqwprVN198YF9038v7a2uaG38/xjH7lJ90atTgazMA6KZ/rYlpVt31tT87YlY8FRbcWVv3+BdeuldfjJE5+8jL7m9qvZvnZADQTYf017iW/+raS77/cP+agYGBNf0rFv/os28+dNe+eGrM+kpty5q7vnjakQt2nhIRudbcE6/8zZraoHN+ZgDQTX3frnF0Xh5r7XrYy974lrec8aZTjzti7xkZT51zO7Vtncfv/eEVJy/cbe6iF7znGw93aqzFB2cGAF31x01trvlkX0bvHPlITUwz8NAv/+f2xwZqY81VMzMDgK46tL/GceW0jN6Z9e16Up54bWYGAF21+z21uf4z+zJ66ANNPRk3zs/MAKCrplxVmxn42oLM6KFXra4nYc150zIzAOiuY1bWxjoPfGJRZkYPHfloPQm3HBQAdN/0Dw/WqGb1w7/57iVHzYwe2/t/a/sNXjYjAOi+nPUXiwerqmkG7rnyuIVzZvVFz02/qqntdu8LAoCnQGbfojdc9IlPffLiNx04I1riLWtqew1euXMAsKPa/+7aXr9+bgCww5r++aa2z8CHZwYAO64TVtb2uf1ZAcAObM4ParsMXjE7ANiRvWOwtsedRwcAO7Sn/6K2w+AVswOAHdvZAzV59/9BALCD2/OmmrTOdbsHADu6d3Zqspa9LgDY4S26syap+c78AGBHl32XNzU5K98+LQDY0WUe/ruanB/vHwDs8DKn/m1TkzHwoekBwA4vMw+7rybj/mMDADJzyiWdmrjmy3MDAIYs+HlN3PI/mhoAMOx1K2uimm8vCgAYMfvvOzVBD75hWgDAOgv+s6kJWf3puQEA6x15U01E86PDAwDGOOKGprZt2VnTMzMAYFQuunpNbUvnqwsCAMbK3OV9y2ob7jq5LwBgU695oLZqxcW7ZgDAZl58a1NbtuqqRZkBAJs74j86tSWP/8vhmRkAsKnMnH9Np8bVLP7YM6ZkZgDAeOZ8ZqDGMXDjGXsEAGzZLh95ojaz7NpjZmYGAGzZjLMeqY11br9g4ZTMDADYiinH39TUGGv+/eSnBQBs2/6fW1Gjmgc/9+ypAQATsdNLv7W801Q1Aw989fV7BQBM1O7HX/71719/zYXH7zM1AGDCMqfvMm/erjMCAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAP7f/R+sbF6nA5CEXwAAAABJRU5ErkJggg==&quot;&gt;&gt;
 &lt;&lt;else&gt;&gt;
 
-&lt;&lt;set _sixColorCoat = &quot;./art/sprites3/6_color_coat.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorCoatWing = &quot;./art/sprites3/6_color_coatWING.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorEyes = &quot;./art/sprites3/6_color_eyes.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorEyewhites = &quot;./art/sprites3/6+7_color_eyewhites.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorHorn  = &quot;./art/sprites3/6+7_color_horn.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorMane = &quot;./art/sprites3/6+7_color_mane.png&quot;&gt;&gt;
-&lt;&lt;set _sixLinesAlicorn = &quot;./art/sprites3/6_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _sixLinesEarthie = &quot;./art/sprites3/6_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _sixLinesPegasus = &quot;./art/sprites3/6_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _sixLinesUnicorn = &quot;./art/sprites3/6_lines_unicorn.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorOverlay = &quot;./art/sprites3/6_color_overlay.png&quot;&gt;&gt;
-&lt;&lt;set _sixColorOverlayWing = &quot;./art/sprites3/6_color_overlayWING.png&quot;&gt;&gt;
-&lt;&lt;set _sixLinesTeats =&quot; ./art/sprites3/6+7_lines_teats.png&quot;&gt;&gt;
+&lt;&lt;set _sixColorCoat = `./art/sprites3/6_color_coat${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorCoatWing = `./art/sprites3/6_color_coatWING${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorEyes = `./art/sprites3/6_color_eyes${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorEyewhites = `./art/sprites3/6+7_color_eyewhites${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorHorn  = `./art/sprites3/6+7_color_horn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorMane = `./art/sprites3/6+7_color_mane${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorManeWing = `./art/sprites3/6+7_color_maneWING${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixLinesAlicorn = `./art/sprites3/6_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixLinesEarthie = `./art/sprites3/6_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixLinesPegasus = `./art/sprites3/6_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixLinesUnicorn = `./art/sprites3/6_lines_unicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixColorOverlay = &quot;./art/sprites3/6_color_overlay${_speciesName}.png&quot;&gt;&gt;
+&lt;&lt;set _sixColorOverlayWing = `./art/sprites3/6_color_overlayWING${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sixLinesTeats = `./art/sprites3/6+7_lines_teats${_speciesName}.png`&gt;&gt;
+
+
 
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="grey sprite" tags="nobr widget" position="475,350" size="100,100">&lt;&lt;widget &quot;greySprite&quot;&gt;&gt;
+
+&lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
+&lt;&lt;switch _subspecies&gt;&gt;
+    &lt;&lt;case 0&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+    &lt;&lt;case 1&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_micro&#39;&gt;&gt;
+    &lt;&lt;case 2&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_angora&#39;&gt;&gt;
+    &lt;&lt;case 3&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_fluffalo&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_sea&#39;&gt;&gt;
+    &lt;&lt;case 4&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_loaffy&#39;&gt;&gt;
+    &lt;&lt;case 5&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;_plant&#39;&gt;&gt;
+    &lt;&lt;default&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+&lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
 
@@ -9553,10 +9751,10 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set _sevenColorEyewhites = &quot;./art/sprites3/6+7_color_eyewhites.png&quot;&gt;&gt;
 &lt;&lt;set _sevenHornColor = &quot;./art/sprites3/6+7_color_horn.png&quot;&gt;&gt;
 &lt;&lt;set _sevenColorMane = &quot;./art/sprites3/6+7_color_mane.png&quot;&gt;&gt;
-&lt;&lt;set _sevenLinesAlicorn = &quot;./art/sprites3/7_lines_alicorn.png&quot;&gt;&gt;
-&lt;&lt;set _sevenLinesEarthie = &quot;./art/sprites3/7_lines_earthie.png&quot;&gt;&gt;
-&lt;&lt;set _sevenLinesPegasus = &quot;./art/sprites3/7_lines_pegasus.png&quot;&gt;&gt;
-&lt;&lt;set _sevenLinesUnicorn = &quot;./art/sprites3/7_lines_unicorn.png&quot;&gt;&gt;
+&lt;&lt;set _sevenLinesAlicorn = `./art/sprites3/7_lines_alicorn${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sevenLinesEarthie = `./art/sprites3/7_lines_earthie${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sevenLinesPegasus = `./art/sprites3/7_lines_pegasus${_speciesName}.png`&gt;&gt;
+&lt;&lt;set _sevenLinesUnicorn = `./art/sprites3/7_lines_unicorn${_speciesName}.png`&gt;&gt;
 &lt;&lt;set _sevenColorOverlay = &quot;./art/sprites3/7_color_overlay.png&quot;&gt;&gt;
 &lt;&lt;set _sevenColorOverlayWing = &quot;./art/sprites3/7_color_overlayWING.png&quot;&gt;&gt;
 &lt;&lt;set _sevenLinesTeats = &quot;./art/sprites3/6+7_lines_teats.png&quot;&gt;&gt;
@@ -10060,6 +10258,10 @@ profitsTotal: 0
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			  	@@#shopbutton;&lt;&lt;button [[Keep Looking|Buy Fluffies]] &gt;&gt;
 			  		&lt;&lt;set $actions--&gt;&gt;
+
+					&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
+						&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
+					&lt;&lt;/for&gt;&gt;
 			  	&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
 
@@ -10107,6 +10309,9 @@ profitsTotal: 0
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;set $ourStore.mares++&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
+
+									/* clear the checkmark */
+									&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
 
@@ -10129,6 +10334,9 @@ profitsTotal: 0
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;set $ourStore.mares++&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
+
+									/* clear the checkmark */
+									&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
 
@@ -10150,6 +10358,8 @@ profitsTotal: 0
 							&lt;&lt;else&gt;&gt;
 								&lt;&lt;set $ourStore.mares++&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
+
+							&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 
 						&lt;&lt;goto [[Buy Fluffies]]&gt;&gt;
@@ -10242,6 +10452,8 @@ profitsTotal: 0
 		&lt;br&gt;You&#39;re reputation is to low, the breeder doesn&#39;t want to sell to you.
 	&lt;&lt;elseif $shop == &quot;feral&quot;&gt;&gt;
 		&lt;br&gt;You check down a nearby alley...
+	&lt;&lt;elseif $shop == &quot;angora&quot;&gt;&gt;
+		&lt;br&gt;You enter the Angora Shop.
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;@@.red;Invalid fluffy shop type called [ $shop ].@@
 	&lt;&lt;/if&gt;&gt;
@@ -10405,6 +10617,12 @@ profitsTotal: 0
 					
 					&lt;&lt;/for&gt;&gt;
 
+					/* Set max nursing so milk is generated */
+					&lt;&lt;if $globalFluffies[$mom.ID].nursing &gt; 0&gt;&gt;
+						&lt;&lt;set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing&gt;&gt;
+						&lt;&lt;set $globalFluffies[$mom.ID].nursingMax -= random(0,1)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
 					/* Cull parrents at 25% */
 					&lt;&lt;if random(0,3) == 3&gt;&gt;
 						&lt;&lt;run console.log(&quot;Fluffy shopping generated family, culling mother.&quot;)&gt;&gt;
@@ -10431,11 +10649,16 @@ profitsTotal: 0
 					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
+		&lt;&lt;elseif $shop == &quot;angora&quot;&gt;&gt;
+			/* Force generate angora */
+			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+			&lt;&lt;newFromGene $testChild 2&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;run console.log(&quot;Fluffy shopping - generating : single non feral&quot;)&gt;&gt;
 			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 			&lt;&lt;newFromGene $testChild&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+
 
 		/* Don&#39;t generate alicorns at a shop or mill*/
 		&lt;&lt;if $shop == &quot;mill&quot; || $shop == &quot;mart&quot;&gt;&gt;
@@ -10465,9 +10688,8 @@ profitsTotal: 0
 			&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
 			&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-
+		
 		&lt;&lt;run console.log(&quot;Fluffy shopping - generating : &quot; + _randomFluffies.length + &quot; fluffies&quot;)&gt;&gt;
-
 		/* We may have generated one or a family, so run the checks on all of them in turn. */
 		&lt;&lt;for _rf = 0; _rf &lt; _randomFluffies.length; _rf++&gt;&gt;
 			&lt;&lt;set $activeFluffy = _randomFluffies[_rf]&gt;&gt;
@@ -14063,10 +14285,11 @@ button {
  *	Returns the message in provided color.
  *** */
 &lt;&lt;widget &quot;colorizeText&quot;&gt;&gt;
+	&lt;&lt;set _msg = $args[1] ? $args[1] : &quot;&quot;&gt;&gt;
 	&lt;&lt;if $args[0] != &quot;Black&quot;&gt;&gt;
 		&lt;&lt;- `@@color:${$args[0]};${$args[1]}`&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- `@@border:4px solid ${$args[0]};${$args[1]}`&gt;&gt;
+		&lt;&lt;- `@@border:4px solid ${$args[0]};${_msg}`&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -14076,7 +14299,8 @@ button {
  * 	Replaces &#39;&lt;fluffy&gt;&#39; with actual name.
  *** */
 &lt;&lt;widget &quot;fluffSpeech&quot;&gt;&gt;
-	&lt;&lt;- `@@color:${$args[1]};`+&#39;&quot;&#39;+`${$args[0].replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;set _msg = $args[0] ? $args[0] : &quot;&quot;&gt;&gt;
+	&lt;&lt;- `@@color:${$args[1]};`+&#39;&quot;&#39;+`${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}`+&#39;&quot;&#39;&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -14523,13 +14747,13 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Call as &lt;&lt;newFromGene $gene&gt;&gt;
+ *	Call as &lt;&lt;newFromGene $gene $subspecies&gt;&gt;
  *
- *	Creates a new fluffy from an existing genome.
+ *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 &lt;&lt;widget &quot;newFromGene&quot;&gt;&gt;
-	&lt;&lt;if $args.length == true&gt;&gt;
-
+	&lt;&lt;if def $args.length&gt;&gt;
+		&lt;&lt;set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()&gt;&gt;
 		&lt;&lt;set _l = random(0, 1)&gt;&gt;
 		&lt;&lt;set _f = random(0, 1)&gt;&gt;
 		&lt;&lt;set _h = random(0, 2) / 100&gt;&gt;
@@ -14593,8 +14817,8 @@ button {
 
 			coatDensity: $args[0].getCoatDensity() + _cd,
 			coatCurl: $args[0].getCoatCurl(),
-			subSpecies: $args[0].getSubSpecies(),
-			subSpeciesString: $args[0].getSubSpeciesDesc(),
+			subSpecies: _subspecies,
+			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
 
 			health: 10,
 			children: [],
@@ -14719,7 +14943,7 @@ button {
  /* Inbreeding */
 &lt;&lt;set _inbreed = $activeFluffy.geneString.substring(168).split(&#39;/&#39;)&gt;&gt;
 &lt;&lt;if Number(_inbreed[0]) == Number(_inbreed[1])&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Inbred &quot;)&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Inbred&quot;)&gt;&gt;
 	&lt;&lt;set $activeFluffy.strength -= _defectLevel&gt;&gt;
 	&lt;&lt;set $activeFluffy.energy -= _defectLevel&gt;&gt;
 	&lt;&lt;set $activeFluffy.charm -= _defectLevel&gt;&gt;
@@ -14732,7 +14956,7 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Limp&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Slow&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Limp&quot;)&gt;&gt;
@@ -14744,7 +14968,7 @@ button {
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Lame&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Crippled&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -14759,7 +14983,7 @@ button {
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Breathless&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Bronchitis&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
@@ -14769,7 +14993,7 @@ button {
 			&lt;&lt;set $activeFluffy.strength -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Asthmatic&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Lung Cancer&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 3&gt;&gt;
@@ -14786,7 +15010,7 @@ button {
 
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Overweight&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Chubby&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Overweight&quot;)&gt;&gt;
@@ -14798,7 +15022,7 @@ button {
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Fat&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Obese&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -14808,15 +15032,13 @@ button {
 
 /* Heart defect */
 &lt;&lt;if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) &amp;&amp; $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;feeble&quot; + _defectLevel)&gt;&gt;
-
 	&lt;&lt;set _multiplier = Number(Number(10 + _defectLevel) / 8).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)&gt;&gt;
 
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Feeble&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Weak&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
@@ -14829,7 +15051,7 @@ button {
 			&lt;&lt;set $activeFluffy.strength -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Sickly&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Anemic&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -14838,13 +15060,13 @@ button {
 
 /* Fertility defect */
 &lt;&lt;if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Infertile&quot;)&gt;&gt;
+	/* &lt;&lt;run $activeFluffy.traits.push(&quot;Infertile&quot;)&gt;&gt; */
 	&lt;&lt;set $activeFluffy.fertility -= _defectLevel&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Growth Defect */
 &lt;&lt;if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Runt &quot; + _defectLevel)&gt;&gt;
+	&lt;&lt;run $activeFluffy.traits.push(&quot;Runt&quot;)&gt;&gt;
 	&lt;&lt;set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)&gt;&gt;
 &lt;&lt;run console.log(&quot;Gene Defect = Runt. _multiplier = &quot; + _multiplier)&gt;&gt;
 &lt;&lt;run console.log(&quot;Gene Defect = Runt. maxLength = &quot; + $activeFluffy.maxLength + &quot;. maxHeight = &quot; + $activeFluffy.maxHeight + &quot;. maxWeight = &quot; + $activeFluffy.maxWeight)&gt;&gt;
@@ -14869,17 +15091,17 @@ button {
 			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Delicate&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Nauseous&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Faint&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Ulcers&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Faint&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Appendicitis&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -14897,7 +15119,7 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Simple&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Silly&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
@@ -14906,7 +15128,7 @@ button {
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Imbecile&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Moron&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
@@ -14925,11 +15147,11 @@ button {
 			&lt;&lt;run $activeFluffy.traits.push(&quot;Nearsighted&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Nearsighted&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Colourblind&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Near Blind&quot;)&gt;&gt;
+			&lt;&lt;run $activeFluffy.traits.push(&quot;Near-Blind&quot;)&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
@@ -14972,13 +15194,13 @@ button {
 
 	&lt;&lt;if ndef _mom.genes&gt;&gt;
 		&lt;br&gt;&lt;br&gt;@@.red; breedFluffies: mother has no genes, loading default genes@@&lt;br&gt;&lt;br&gt;
-		&lt;&lt;set _mom.geneString = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1&quot;&gt;&gt;
+		&lt;&lt;set _mom.geneString = &quot;X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0&quot;&gt;&gt;
 		&lt;&lt;set _mom.genes = Genome.fromString(_mom.geneString)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;if ndef _dad.genes&gt;&gt;
 		&lt;br&gt;&lt;br&gt;@@.red; breedFluffies: father has no genes, loading default genes@@&lt;br&gt;&lt;br&gt;
-		&lt;&lt;set _dad.geneString = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0&quot;&gt;&gt;
+		&lt;&lt;set _dad.geneString = &quot;X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0&quot;&gt;&gt;
 		&lt;&lt;set _dad.genes = Genome.fromString(_dad.geneString)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
@@ -15164,11 +15386,11 @@ button {
 
  	/* ***
  	 *  1. newborn 
- 	 *	only coat visible  
+ 	 *	only coat visible
  	 *** */
 	&lt;&lt;if Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 0&gt;&gt;
 	
-		&lt;&lt;newbornSprite&gt;&gt;
+		&lt;&lt;newbornSprite $activeFluffy&gt;&gt;
 		
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _oneColorCoat + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		
@@ -15189,7 +15411,7 @@ button {
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
 	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 1&gt;&gt;
 	
-		&lt;&lt;chirpySprite&gt;&gt;
+		&lt;&lt;chirpySprite $activeFluffy&gt;&gt;
 	
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorCoat + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.eColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -15212,8 +15434,8 @@ button {
 	/* 3. talky babbeh (coat, eyes, mane) */
 	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) &gt; 1 &amp;&amp; $activeFluffy.weaned === false&gt;&gt;
 
-		&lt;&lt;talkySprite&gt;&gt;
-&lt;&lt;run console.log(&quot;sprite - talky&quot;)&gt;&gt;
+		&lt;&lt;talkySprite $activeFluffy&gt;&gt;
+
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorCoat + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.eColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -15237,8 +15459,8 @@ button {
 	/* 4. foal (has hair on head) */
 	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp; $activeFluffy.weaned === true &amp;&amp; Number($activeFluffy.ageWeeks) &lt; Number($activeFluffy.maturity/2)&gt;&gt;
 	
-		&lt;&lt;foalSprite&gt;&gt;
-&lt;&lt;run console.log(&quot;sprite - foal&quot;)&gt;&gt;
+		&lt;&lt;foalSprite $activeFluffy&gt;&gt;
+
 		&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;else&gt;&gt;
@@ -15267,8 +15489,8 @@ button {
 	/* 5. colt/filly (bigger than foal) week 20-26 */
 	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp; Number($activeFluffy.ageWeeks) &lt;= $activeFluffy.maturity&gt;&gt;
 		
-		&lt;&lt;youthSprite&gt;&gt;
-&lt;&lt;run console.log(&quot;sprite - youth&quot;)&gt;&gt;
+		&lt;&lt;youthSprite $activeFluffy&gt;&gt;
+
 		&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;else&gt;&gt;
@@ -15297,8 +15519,8 @@ button {
 	/* 6. adult (teats on female) week 36-47*/
 	&lt;&lt;elseif (Number($activeFluffy.age) &gt; 0 || Number($activeFluffy.ageWeeks) &gt; $activeFluffy.maturity) &amp;&amp; (Number($activeFluffy.age) &lt; Number($activeFluffy.maxAge * 0.75))&gt;&gt;
 		
-		&lt;&lt;adultSprite&gt;&gt;
-&lt;&lt;run console.log(&quot;sprite - adult&quot;)&gt;&gt;
+		&lt;&lt;adultSprite $activeFluffy&gt;&gt;
+		
 		/*&lt;&lt;= &#39;&lt;img src=&quot;./art/sprites3/6_color_coat.png&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;*/
 		&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -15307,8 +15529,13 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.eColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
-		
+
+		&lt;&lt;if $activeFluffy.subSpecies == 0 || $args[0] === &quot;earthie&quot;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;elseif $activeFluffy.subSpecies == 2 &amp;&amp; $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
 		
 		&lt;&lt;if $args[0] === &quot;unicorn&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
@@ -15332,7 +15559,7 @@ button {
 	/* 7. grey (droopy eyes and greying fur) week 208-364 (4-7 years)*/
 	&lt;&lt;else&gt;&gt;
 	
-		&lt;&lt;greySprite&gt;&gt;
+		&lt;&lt;greySprite $activeFluffy&gt;&gt;
 
 		&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;

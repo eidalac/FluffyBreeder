@@ -61,7 +61,7 @@ Allele.prototype.toString = function() {
  *
  * @param array[Allele] list The list of alleles that go into this string.
  */
-function AlleleString(list) {
+ window.AlleleString = function (list) {
     this.alleles = list;
     this.length = this.alleles.length;
 };
@@ -253,10 +253,11 @@ Genome.fromGenes = function(genes) {
  * @return Genome
  */
 Genome.fromAlleleStrings = function(string1, string2) {
+
     var genes = [];
     var gene_string_length = Math.min(string1.length, string2.length);
     for (var i = 0; i < gene_string_length; i++) {
-        genes[i] = Gene.fromAlleles(string1.elementAt(i), string2.elementAt(i));
+		genes[i] = Gene.fromAlleles(string1.elementAt(i), string2.elementAt(i));
     }
     return Genome.fromGenes(genes);
 };
@@ -300,43 +301,76 @@ window.Genome.fromString  = function (str) {
  */
 Genome.prototype.breedWithGenome = function(other_genome) {
 	var child_genes = "";
+	var prototypeF = Genome.fromString("X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
+	var prototypeM = Genome.fromString("X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
+
+	//var gene_string_length = Math.min(string1.length, string2.length);
+
+	if (prototypeF.length != this.length)
+	{
+		console.log("Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
+		this.genes = prototypeF.genes;
+	}
+	else if (prototypeM.length != other_genome.length)
+	{
+		console.log("Genome breedWithGenome: father gene length incorrect, reset to default gene.");
+		other_genome = prototypeM;
+	}
+
+	console.log("Genome breedWithGenome: mom = " + this + ".");
+	console.log("Genome breedWithGenome: dad = " + other_genome + ".");
 
 	for (var i = 0; i < this.length; i++) {
-		var k = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
-		var l = Math.floor(Math.random() * (1 - 0 + 1)) + 0;
 		
-		if (i > 0) 
+		if (i > 0) {
 			child_genes += ";";
+		}
 
-		if (k == 0) {
-			// 0
-			if (l == 0) {
-				//00
-				child_genes += this.elementAt(i).allele2;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele2;
-			} else {
-				//01
-				child_genes += this.elementAt(i).allele2;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele1;
-			}
-		} else {
-			// 1
-			if (l == 0) {
-				// 10
-				child_genes += this.elementAt(i).allele1;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele2;
-			} else {
-				// 11
-				child_genes += this.elementAt(i).allele1;
-				child_genes += "/";
-				child_genes += other_genome.elementAt(i).allele1;
+		/* 49 is the subspecies gene, and is treated as a hex value, so we don't want to do typical breeding with it */
+		if (i == 49)
+		{
+			/* TODO: Need to add some more special handling, but for now just copy the mom's gene for this one */
+			child_genes += this.elementAt(i).allele1;
+			child_genes += "/";
+			child_genes += this.elementAt(i).allele2;
+		}
+		else
+		{
+			switch (Math.floor(Math.random() * 4))
+			{
+				case 0:
+					child_genes += this.elementAt(i).allele2;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+
+					//console.log("Genome breedWithGenome: 0 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				case 1:
+					child_genes += this.elementAt(i).allele2;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele1;
+
+					//console.log("Genome breedWithGenome: 1 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				case 2:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+
+					//console.log("Genome breedWithGenome: 2 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
+				default:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele1;
+
+					//console.log("Genome breedWithGenome: 3 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
+					break;
 			}
 		}
 	}
-     
+
+	console.log("Genome breedWithGenome: child  = " + child_genes + ".");
     return Genome.fromString(child_genes); 
 }
 
@@ -1702,13 +1736,21 @@ Genome.prototype.setCoatColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+
+		/* Reset to default values: */
+		this.genes[17] = "B/b";
+		this.genes[18] = "Y/y";
+		this.genes[19] = "R/r";
+		this.genes[20] = "O/o";
+		this.genes[21] = "W/w";
 		return false;
 	default:
-		this.genes[17] = new_gene.substring(0, 3);
-		this.genes[18] = new_gene.substring(4, 7);
-		this.genes[19] = new_gene.substring(8, 11);
-		this.genes[20] = new_gene.substring(12, 15);
-		this.genes[21] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[17] = parts[0];
+		this.genes[18] = parts[1];
+		this.genes[19] = parts[2];
+		this.genes[20] = parts[3];
+		this.genes[21] = parts[4];
 		return true;
 	}
 };
@@ -1717,13 +1759,20 @@ Genome.prototype.setManeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[22] = "B/b";
+		this.genes[23] = "Y/y";
+		this.genes[24] = "R/r";
+		this.genes[25] = "O/o";
+		this.genes[26] = "W/w";
 		return false;
 	default:
-		this.genes[22] = new_gene.substring(0, 3);
-		this.genes[23] = new_gene.substring(4, 7);
-		this.genes[24] = new_gene.substring(8, 11);
-		this.genes[25] = new_gene.substring(12, 15);
-		this.genes[26] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[22] = parts[0];
+		this.genes[23] = parts[1];
+		this.genes[24] = parts[2];
+		this.genes[25] = parts[3];
+		this.genes[26] = parts[4];
 		return true;
 	}
 };
@@ -1732,13 +1781,20 @@ Genome.prototype.setEyeColor = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
 	switch (test_gene.getGeneColor(0)) {
 	case "INVALID COLOR":
+		/* Reset to default values: */
+		this.genes[27] = "B/b";
+		this.genes[28] = "Y/y";
+		this.genes[29] = "R/r";
+		this.genes[30] = "O/o";
+		this.genes[31] = "W/w";
 		return false;
 	default:
-		this.genes[27] = new_gene.substring(0, 3);
-		this.genes[28] = new_gene.substring(4, 7);
-		this.genes[29] = new_gene.substring(8, 11);
-		this.genes[30] = new_gene.substring(12, 15);
-		this.genes[31] = new_gene.substring(16, 19);
+		var parts = new_gene.split(';');
+		this.genes[27] = parts[0];
+		this.genes[28] = parts[1];
+		this.genes[29] = parts[2];
+		this.genes[30] = parts[3];
+		this.genes[31] = parts[4];
 		return true;
 	}
 };
@@ -2353,7 +2409,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 37):
 			return 1; // micro
 		case (subSpecies <= 56):
-			return 2; // angro
+			return 2; // angora
 		case (subSpecies <= 64):
 			return 3; //fluffalo
 		case (subSpecies <= 73):
@@ -2363,7 +2419,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 91):
 			return 6; //plant
 		default:
-			this.genes[50] = "0/0";
+			this.genes[49] = "0/0";
 			return 0; // standard
 	}
  }
@@ -2418,12 +2474,13 @@ Genome.prototype.getSubSpeciesGene = function() {
 };
 
 /**
- * Retrieves returns a string name for the subspeices.
+ * Retrieves returns a string name for the subspecies.
  *
  * @return String
  */
-Genome.prototype.getSubSpeciesDesc = function() {
-	switch (this.getSubSpecies()) {
+Genome.prototype.getSubSpeciesDesc = function(subspecies) {
+	var _sub = subspecies ? subspecies : this.getSubSpecies()
+	switch (_sub) {
 	case 0:
 		return "Fluffy Pony";
 	case 1:
@@ -2435,7 +2492,7 @@ Genome.prototype.getSubSpeciesDesc = function() {
 	case 4:
 		return "Sea Fluffy";
 	case 5:
-		return "Loafy";
+		return "Loaffy";
 	case 6:
 		return "Plant Fluffy";
 	default:

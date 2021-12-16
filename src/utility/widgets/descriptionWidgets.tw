@@ -595,10 +595,11 @@ button {
  *	Returns the message in provided color.
  *** */
 <<widget "colorizeText">>
+	<<set _msg = $args[1] ? $args[1] : "">>
 	<<if $args[0] != "Black">>
 		<<- `@@color:${$args[0]};${$args[1]}`>>
 	<<else>>
-		<<- `@@border:4px solid ${$args[0]};${$args[1]}`>>
+		<<- `@@border:4px solid ${$args[0]};${_msg}`>>
 	<</if>>
 <</widget>>
 
@@ -608,7 +609,8 @@ button {
  * 	Replaces '<fluffy>' with actual name.
  *** */
 <<widget "fluffSpeech">>
-	<<- `@@color:${$args[1]};`+'"'+`${$args[0].replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}`+'"'>>
+	<<set _msg = $args[0] ? $args[0] : "">>
+	<<- `@@color:${$args[1]};`+'"'+`${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}`+'"'>>
 <</widget>>
 
 /* ***
