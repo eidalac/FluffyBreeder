@@ -5856,6 +5856,8 @@ button {
 &lt;/style&gt;
 
 &lt;&lt;run console.log(&quot;Customer test 2:  on event page&quot;)&gt;&gt;
+&lt;&lt;run console.log(&quot;Customer test cards &quot; + $customerCards + &quot;.&quot;)&gt;&gt;
+
 
 /* Each customer is &#39;generated&#39; per fluffy on display.  Don&#39;t do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
@@ -7613,6 +7615,7 @@ Genes       Height multiplier
 &lt;&lt;set $eventBirthRejection = []&gt;&gt;
 &lt;&lt;set $eventCustomer = []&gt;&gt;
 &lt;&lt;set $eventStress = []&gt;&gt;
+&lt;&lt;set $customerCards = []&gt;&gt;
 
 
 /* ***
@@ -8053,6 +8056,62 @@ Genes       Height multiplier
 	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
 		/* Push to event stack  */
 		&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
+
+		&lt;&lt;set _vissibleCards = [ &quot;Species&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Age&quot; ]&gt;&gt;
+		&lt;&lt;set _nonvissibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot; ]&gt;&gt;
+
+		/* Generate 1-3 customer cards for each fluffy on display */
+		&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
+			/* Pick a trait for this card, favouring more vissible ones (color, breed, age) over non vissible ones */
+			&lt;&lt;switch random(0,10)&gt;&gt;
+				&lt;&lt;case 0, 1, 2&gt;&gt;
+					/* Pick a non-vissible trait */	
+					/*&lt;&lt;run $customerCards.push(_nonvissibleCards.random())&gt;&gt;*/
+					&lt;&lt;switch _nonvissibleCards.random()&gt;&gt;
+						&lt;&lt;case &quot;Personality&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].traits[0] + &quot; Personality&quot;)&gt;&gt;
+						&lt;&lt;case &quot;Stat&quot;&gt;&gt;
+							&lt;&lt;switch random(0, 12)&gt;&gt;
+								&lt;&lt;case 0 1&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Strength&quot;)&gt;&gt;
+								&lt;&lt;case 2 3&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Energy&quot;)&gt;&gt;
+								&lt;&lt;case 4 5 6 7&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Charm&quot;)&gt;&gt;
+								&lt;&lt;case 8 9&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Thinking&quot;)&gt;&gt;
+								&lt;&lt;case 10 11&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Learning&quot;)&gt;&gt;
+								&lt;&lt;case 12&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Fertility&quot;)&gt;&gt;
+								&lt;&lt;default&gt;&gt;
+									&lt;&lt;run $customerCards.push(&quot;Charm&quot;)&gt;&gt;
+							&lt;&lt;/switch&gt;&gt;
+						&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].temperament + &quot; Temperament&quot;)&gt;&gt;						
+					&lt;&lt;/switch&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					/* Pick a vissible trait */
+					/*&lt;&lt;run $customerCards.push(_vissibleCards.random())&gt;&gt;*/
+
+					&lt;&lt;switch _vissibleCards.random()&gt;&gt;
+						&lt;&lt;case &quot;Species&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].subSpeciesString)&gt;&gt;
+						&lt;&lt;case &quot;Gender&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].gender)&gt;&gt;
+						&lt;&lt;case &quot;Breed&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].breed)&gt;&gt;
+						&lt;&lt;case &quot;Coat&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].cColor + &quot; Coat&quot;)&gt;&gt;
+						&lt;&lt;case &quot;Mane&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].mColor + &quot; Mane&quot;)&gt;&gt;
+						&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].eColor + &quot; Eyes&quot;)&gt;&gt;
+						&lt;&lt;case &quot;Age&quot;&gt;&gt;
+							&lt;&lt;run $customerCards.push(Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks) + &quot; Weeks Old&quot;)&gt;&gt;
+					&lt;&lt;/switch&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Growth test -1: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 &lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + &quot; gender = &quot; + $globalFluffies[_ef].gender)&gt;&gt;
