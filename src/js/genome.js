@@ -330,9 +330,20 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 		if (i == 49)
 		{
 			/* TODO: Need to add some more special handling, but for now just copy the mom's gene for this one */
-			child_genes += this.elementAt(i).allele1;
-			child_genes += "/";
-			child_genes += this.elementAt(i).allele2;
+			switch (Math.floor(Math.random() * 2))
+			{
+				case 0:
+					child_genes += other_genome.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+					break;
+				default:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += this.elementAt(i).allele2;
+					break;
+
+			}
 		}
 		else
 		{

@@ -2169,9 +2169,20 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 		if (i == 49)
 		{
 			/* TODO: Need to add some more special handling, but for now just copy the mom's gene for this one */
-			child_genes += this.elementAt(i).allele1;
-			child_genes += "/";
-			child_genes += this.elementAt(i).allele2;
+			switch (Math.floor(Math.random() * 2))
+			{
+				case 0:
+					child_genes += other_genome.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+					break;
+				default:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += this.elementAt(i).allele2;
+					break;
+
+			}
 		}
 		else
 		{
@@ -4275,7 +4286,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 Genome.prototype.setSubSpecies = function(new_gene) {
 	var new_gene = new_gene.replace(";", "");
 	var parts = new_gene.split('/');
-	console.log("Sub Species gene checked = " + parts + " " + parts.length)
+//console.log("gene checked = " + parts + " " + parts.length)
 	if (parts.length != 2)
 	{
 		this.genes[49] = "0/0";
@@ -4284,7 +4295,6 @@ Genome.prototype.setSubSpecies = function(new_gene) {
 	
 	if (isNaN(parseInt(parts[0] + parts[1], 16)))
 	{
-		console.log("Sub Species gene NaN = " + parts + " " + parts.length)
 		// if it's invald just set it to the default value.
 		this.genes[49] = "0/0";
 		return true;
@@ -10971,6 +10981,10 @@ profitsTotal: 0
 				&lt;&lt;run console.log(&quot;Price test 8: &quot; + _price)&gt;&gt;
 				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 
+				&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
+					&lt;&lt;set _price = number(_price * 1.5)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
 				@@.green;¤_price.@@
 				&lt;hr&gt;
 			&lt;&lt;/if&gt;&gt;
@@ -13996,8 +14010,11 @@ button {
 	&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
-	
+
+	&lt;&lt;if $globalFluffies[_fl].subSpecies == 2&gt;&gt;
+		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;	
+
 	/* Debug flag since I can&#39;t track down this issue yet. */
 	&lt;&lt;if _price &lt;= 0&gt;&gt;
 		&lt;br&gt;
@@ -14431,6 +14448,9 @@ button {
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
+	&lt;&lt;if $globalFluffies[_thisFluffy.ID].subSpecies == 2&gt;&gt;
+		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;if  $debugMode&gt;&gt;
 		@@.orange;_price@@
