@@ -8063,32 +8063,32 @@ Genes       Height multiplier
 		/* Generate 1-3 customer cards for each fluffy on display */
 		&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
 			/* Pick a trait for this card, favouring more vissible ones (color, breed, age) over non vissible ones */
+			
 			&lt;&lt;switch random(0,10)&gt;&gt;
-				&lt;&lt;case 0, 1, 2&gt;&gt;
+				&lt;&lt;case 0 1 2 3&gt;&gt;
 					/* Pick a non-vissible trait */	
-					/*&lt;&lt;run $customerCards.push(_nonvissibleCards.random())&gt;&gt;*/
 					&lt;&lt;switch _nonvissibleCards.random()&gt;&gt;
 						&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].traits[0] + &quot; Personality&quot;)&gt;&gt;
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].traits[0])&gt;&gt;
 						&lt;&lt;case &quot;Stat&quot;&gt;&gt;
-							&lt;&lt;switch random(0, 12)&gt;&gt;
+							&lt;&lt;switch random(0, 16)&gt;&gt;
 								&lt;&lt;case 0 1&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Strength&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].strength &gt; 3 ? &quot;High strength&quot; : $globalFluffies[_ef].strength &lt; 2 ? &quot;low strength&quot; : &quot;mid strength&quot;)&gt;&gt;
 								&lt;&lt;case 2 3&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Energy&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].energy &gt; 3 ? &quot;High energy&quot; : $globalFluffies[_ef].energy &lt; 2 ? &quot;low energy&quot; : &quot;mid energy&quot;)&gt;&gt;
 								&lt;&lt;case 4 5 6 7&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Charm&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].charm &gt; 3 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 2 ? &quot;low charm&quot; : &quot;mid charm&quot;)&gt;&gt;
 								&lt;&lt;case 8 9&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Thinking&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].thinking &gt; 3 ? &quot;High thinking&quot; : $globalFluffies[_ef].thinking &lt; 2 ? &quot;low thinking&quot; : &quot;mid thinking&quot;)&gt;&gt;
 								&lt;&lt;case 10 11&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Learning&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].learning &gt; 3 ? &quot;High learning&quot; : $globalFluffies[_ef].learning &lt; 2 ? &quot;low learning&quot; : &quot;mid learning&quot;)&gt;&gt;
 								&lt;&lt;case 12&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Fertility&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].fertility &gt; 3 ? &quot;High fertility&quot; : $globalFluffies[_ef].fertility &lt; 2 ? &quot;low fertility&quot; : &quot;mid fertility&quot;)&gt;&gt;
 								&lt;&lt;default&gt;&gt;
-									&lt;&lt;run $customerCards.push(&quot;Charm&quot;)&gt;&gt;
+									&lt;&lt;run $customerCards.push($globalFluffies[_ef].charm &gt; 3 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 2 ? &quot;low charm&quot; : &quot;mid charm&quot;)&gt;&gt;
 							&lt;&lt;/switch&gt;&gt;
 						&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].temperament + &quot; Temperament&quot;)&gt;&gt;						
+							&lt;&lt;run $customerCards.push($globalFluffies[_ef].temperament &gt; 150 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 75 ? &quot;low temperament&quot; : &quot;mid temperament&quot;)&gt;&gt;				
 					&lt;&lt;/switch&gt;&gt;
 				&lt;&lt;default&gt;&gt;
 					/* Pick a vissible trait */
@@ -8504,24 +8504,15 @@ Genes       Height multiplier
 %/
 &lt;&lt;set $week++&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Time check 0: $gameDate  = &quot; + $gameDate + &quot;.&quot;)&gt;&gt;
-
 &lt;&lt;script&gt;&gt;
     var date = new Date(State.variables.gameDate);
     date.setDate(date.getDate() + 7);
 
 	State.variables.gameDate = date.toString();
+	State.variables.day = date.getDay();
+	State.variables.month = date.getMonth();
+	State.variables.year = date.getFullYear();
 &lt;&lt;/script&gt;&gt;
-
-
-
-&lt;&lt;run console.log(&quot;Time check 1: $gameDate  = &quot; + $gameDate + &quot;.&quot;)&gt;&gt;
-
-&lt;&lt;set $day = new Date($gameDate).getDay()&gt;&gt;
-&lt;&lt;set $month = new Date($gameDate).getMonth()&gt;&gt;
-&lt;&lt;set $year = new Date($gameDate).getFullYear()&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Time check 2: $gameDate  = &quot; + $gameDate + &quot;.&quot;)&gt;&gt;
 
 &lt;&lt;set $actions = 10&gt;&gt;
 
