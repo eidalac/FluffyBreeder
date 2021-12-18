@@ -375,6 +375,7 @@ Coat Color:
  *** */
 Mane Color: 
 <<set _mcString  = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + ";">>
+<<set _masterColor = "B/b;Y/y;R/r;O/o;W/w;">>
 <span id="mcolor">
 	<<print $globalFluffies[$activeFluffy.ID].genes.getManeColorString()>>
 </span>
@@ -383,6 +384,15 @@ Mane Color:
 <<textbox '_mcString ' _mcString >>
 <<button "Enter">>
 	<<set _mcString  to _mcString.trim()>>
+
+	<<if _mcString.charAt(_mcString.length-1) != ";">>
+		<<set _mcString  = _mcString + ";">>
+	<</if>>
+
+	<<if _mcString.length != _masterColor.length>>
+		<<run console.log("Gentic Test.  Gene = '" + _mcString + "' invalid lenght, revert to master gene!")>>
+		<<set _mcString = _masterColor>>
+	<</if>>
 	
 <<run console.log("Gentic Test.  Gene = '" + _mcString + "'")>>
 

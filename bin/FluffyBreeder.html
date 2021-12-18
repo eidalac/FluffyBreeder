@@ -11053,7 +11053,7 @@ profitsTotal: 0
 				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 
 				&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
-					&lt;&lt;set _price = number(_price * 1.5)&gt;&gt;
+					&lt;&lt;set _price = Number(_price * 1.5)&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
 				@@.green;¤_price.@@
@@ -13305,6 +13305,7 @@ Coat Color:
  *** */
 Mane Color: 
 &lt;&lt;set _mcString  = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + &quot;;&quot;&gt;&gt;
+&lt;&lt;set _masterColor = &quot;B/b;Y/y;R/r;O/o;W/w;&quot;&gt;&gt;
 &lt;span id=&quot;mcolor&quot;&gt;
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getManeColorString()&gt;&gt;
 &lt;/span&gt;
@@ -13313,6 +13314,15 @@ Mane Color:
 &lt;&lt;textbox &#39;_mcString &#39; _mcString &gt;&gt;
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _mcString  to _mcString.trim()&gt;&gt;
+
+	&lt;&lt;if _mcString.charAt(_mcString.length-1) != &quot;;&quot;&gt;&gt;
+		&lt;&lt;set _mcString  = _mcString + &quot;;&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if _mcString.length != _masterColor.length&gt;&gt;
+		&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39; invalid lenght, revert to master gene!&quot;)&gt;&gt;
+		&lt;&lt;set _mcString = _masterColor&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	
 &lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39;&quot;)&gt;&gt;
 
