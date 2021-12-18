@@ -12,39 +12,6 @@
 
 <<widget "fluffyImage">>
 
-
-<<if false>>
-		<<adultSprite>>
-
-		<<set _styleString = "position: absolute;   display: block;   margin-top: 0px; margin-left: 0px;   margin-right: 0px; width: 160px; height: 160px">>
-		/*
-		<<set _testFilter = _styleString + "; filter: invert(" + random(5, 85) + "%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(0deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-		*/
-		
-		<<set _testFilter = _styleString + "; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(360deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-		
-		/*
-		<<set _testFilter2 = _styleString + "; filter: invert(" + random(5, 85) + "%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(120deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-		<<set _testFilter3 = _styleString + "; filter: invert(" + random(5, 85) + "%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(240deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-	*/
-		<<set _testFilter2 = _styleString + "; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(" + random(0, 360) + "deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-		<<set _testFilter3 = _styleString + "; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(" + random(5, 85) + "%) saturate(" + random(160, 7500) + "%) hue-rotate(" + random(0, 360) + "deg) brightness(" + random(70, 115) + "%) contrast(" + random(75, 150) + "%);" >>
-		/*<<= '<img src="' + _sixColorCoatWing + '" style="' + _styleString + '" class="brownfilter">'>>*/
-		<<= '<img src="' + _sixColorCoatWing + '" style="' + _testFilter + '">'>>
-		
-
-		
-		/*<<= '<img src="' + _sixColorEyes + '" style="' + _styleString + '" class="brownfilter">'>>*/
-		<<= '<img src="' + _sixColorEyes + '" style="' + _testFilter2 + '">'>>
-		/*<<= '<img src="' + _sixColorMane + '" style="' + _styleString + '" class="brownfilter">'>>*/
-		<<= '<img src="' + _sixColorMane + '" style="' + _testFilter3 + '">'>>
-		
-		<<= '<img src="' + _sixColorEyewhites + '" style="' + _styleString + '" class="whitefilter">'>>
-		
-		<<= '<img src="' + _sixColorHorn + '" style="' + _styleString + '" class="whitefilter">'>>
-
-		<<= '<img src="' + _sixLinesAlicorn + '" style="' + _styleString + '"  class="blackfilter">'>>
-<<else>>
  	/* ***
  	 *  Some weight based scalling.
  	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.  
@@ -88,11 +55,14 @@
 	/* Put all the style block as a variable to save space latter */
 	<<set _styleString = "position: absolute;   display: block;   margin-top: " + (_pad*2) + "px; margin-left: "+ _pad + "px;   margin-right: "+ _pad + "px; width: " + _scale + "px; height: " + _scale + "px">>
 
+	/* Get the total age, in weeks: */
+	<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
+
  	/* ***
  	 *  1. newborn 
  	 *	only coat visible
  	 *** */
-	<<if Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 0>>
+	<<if _cat == 0>>
 	
 		<<newbornSprite $activeFluffy>>
 		
@@ -113,7 +83,7 @@
 		<</if>>
 
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
-	<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) == 1>>
+	<<elseif _cat == 1>>
 	
 		<<chirpySprite $activeFluffy>>
 	
@@ -136,7 +106,7 @@
 
 	
 	/* 3. talky babbeh (coat, eyes, mane) */
-	<<elseif Number($activeFluffy.age) == 0 &&  Number($activeFluffy.ageWeeks) > 1 && $activeFluffy.weaned === false>>
+	<<elseif $activeFluffy.weaned === false>>
 
 		<<talkySprite $activeFluffy>>
 
@@ -161,7 +131,7 @@
 		<</if>>
 
 	/* 4. foal (has hair on head) */
-	<<elseif Number($activeFluffy.age) == 0 && $activeFluffy.weaned === true && Number($activeFluffy.ageWeeks) < Number($activeFluffy.maturity/2)>>
+	<<elseif _cat < Number($activeFluffy.maturity/2)>>
 	
 		<<foalSprite $activeFluffy>>
 
@@ -191,7 +161,7 @@
 		<</if>>
 		
 	/* 5. colt/filly (bigger than foal) week 20-26 */
-	<<elseif Number($activeFluffy.age) == 0 && Number($activeFluffy.ageWeeks) <= $activeFluffy.maturity>>
+	<<elseif _cat <= $activeFluffy.maturity>>
 		
 		<<youthSprite $activeFluffy>>
 
@@ -221,7 +191,7 @@
 		<</if>>
 
 	/* 6. adult (teats on female) week 36-47*/
-	<<elseif (Number($activeFluffy.age) > 0 || Number($activeFluffy.ageWeeks) > $activeFluffy.maturity) && (Number($activeFluffy.age) < Number($activeFluffy.maxAge * 0.75))>>
+	<<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
 		
 		<<adultSprite $activeFluffy>>
 		
@@ -305,10 +275,4 @@
 			<<= '<img src="./art/sprites3/7_color_overlay.png" style="' + _styleString + '">'>>
 		<</if>>
 	<</if>>
-	
-<</if>>
 <</widget>>
-
-/*
-
- */

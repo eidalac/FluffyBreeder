@@ -5951,119 +5951,23 @@ button {
  }
 &lt;/style&gt;
 
-&lt;&lt;run console.log(&quot;Customer test 2:  on event page&quot;)&gt;&gt;
-&lt;&lt;run console.log(&quot;Customer test cards &quot; + $customerCards + &quot;.&quot;)&gt;&gt;
-
+&lt;&lt;run console.log(`Customer test cards ${$customerCards}.`)&gt;&gt;
 
 /* Each customer is &#39;generated&#39; per fluffy on display.  Don&#39;t do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 /* First, we build a customer, starting with how many wants it has, up to 6 */
-&lt;&lt;set _customerWants = random(-2, 6)&gt;&gt;
-&lt;&lt;set _customerWants = Math.clamp(_customerWants, 0, 6)&gt;&gt;
-
-/*&lt;&lt;set _customerWants = 0&gt;&gt;*/
+&lt;&lt;set _customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)&gt;&gt;
 
 /* How picky the customer is and how many fails they will put up with */
 &lt;&lt;set _customerTolerance = random(0, 3)&gt;&gt;
 
-/* List of possible needs we will check.  Some are duplciated to be more common*/
-&lt;&lt;set _possibleNeeds = [ &quot;Personality&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Stat&quot;, &quot;Temperament&quot;, &quot;Age&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Gender&quot;, ]&gt;&gt;
-&lt;&lt;set $fluffyPersonalities = [ &quot;Fussy&quot;, &quot;Shy&quot;, &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Peppy&quot;, &quot;Diligent&quot;, &quot;Bossy&quot;, &quot;Curious&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Dull&quot;, &quot;Sweet&quot;, &quot;Haughty&quot;, &quot;Playful&quot;, &quot;Rowdy&quot;] &gt;&gt; 
+&lt;&lt;set _customerDeck = []&gt;&gt;
 
-/* We know how many needs it has, now pick some to fill it. */
-&lt;&lt;set _customerBasicNeeds = []&gt;&gt;
-&lt;&lt;set _customerDetailedNeeds = []&gt;&gt;
+/* For each &quot;want&quot; pluck a random card from our deck and assign it to this customer: */
+&lt;&lt;run _customerDeck = $customerCards.pluckMany(_customerWants)&gt;&gt;
 
-&lt;&lt;for _customerWants &gt; 0&gt;&gt;
-
-	/* Remember how many we started with */
-	&lt;&lt;set _firstLength = _customerBasicNeeds.length&gt;&gt;
-	
-	/* Pick one random item from the possible list and add it if it&#39;s not already on the list*/
-	&lt;&lt;set _customerBasicNeeds.pushUnique(_possibleNeeds.random())&gt;&gt;
-	
-	/* New length */
-	&lt;&lt;set _secondLength = _customerBasicNeeds.length&gt;&gt;
-	
-	/* If this is not true, the value was already on the list, so try again */
-	&lt;&lt;if _secondLength &gt; _firstLength&gt;&gt;
-		&lt;&lt;set _customerWants--&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/for&gt;&gt;
-
-/* Now some of these needs are general, so we need to pick a more specific version*/
-&lt;&lt;for _need range _customerBasicNeeds&gt;&gt;
-	
-	&lt;&lt;switch _need&gt;&gt;
-		&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-			&lt;&lt;set _customerDetailedNeeds.push($fluffyPersonalities.random())&gt;&gt;
-		&lt;&lt;case &quot;Gender&quot;&gt;&gt;
-			&lt;&lt;if random(0,1) == 0&gt;&gt;
-				&lt;&lt;set _customerDetailedNeeds.push(&quot;Male&quot;)&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set _customerDetailedNeeds.push(&quot;Female&quot;)&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;case &quot;Breed&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 9)&gt;&gt;
-				&lt;&lt;case 0 1&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Earthy&quot;)&gt;&gt;
-				&lt;&lt;case 2 3 4&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Unicorn&quot;)&gt;&gt;
-				&lt;&lt;case 5 6 7&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Pegasus&quot;)&gt;&gt;
-				&lt;&lt;case 8 9&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Alicorn&quot;)&gt;&gt;
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Earthy&quot;)&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;case &quot;Coat&quot;&gt;&gt;
-			&lt;&lt;set _customerDetailedNeeds.push($Colors.random().Group + &quot; coat&quot;)&gt;&gt;
-		&lt;&lt;case &quot;Mane&quot;&gt;&gt;
-			&lt;&lt;set _customerDetailedNeeds.push($Colors.random().Group + &quot; mane&quot;)&gt;&gt;
-		&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
-			&lt;&lt;set _customerDetailedNeeds.push($Colors.random().Group + &quot; eyes&quot;)&gt;&gt;
-		&lt;&lt;case &quot;Stat&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 12)&gt;&gt;
-				&lt;&lt;case 0 1&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Strength&quot;)&gt;&gt;
-				&lt;&lt;case 2 3&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Energy&quot;)&gt;&gt;
-				&lt;&lt;case 4 5 6 7&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Charm&quot;)&gt;&gt;
-				&lt;&lt;case 8 9&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Thinking&quot;)&gt;&gt;
-				&lt;&lt;case 10 11&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Learning&quot;)&gt;&gt;
-				&lt;&lt;case 12&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Fertility&quot;)&gt;&gt;
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Charm&quot;)&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 7)&gt;&gt;
-				&lt;&lt;case 0 1 3&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Low Temperament&quot;)&gt;&gt;
-				&lt;&lt;case 4 5 6&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Normal Temperament&quot;)&gt;&gt;
-				&lt;&lt;case 7&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;High Temperament&quot;)&gt;&gt;
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Normal Temperament&quot;)&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;case &quot;Age&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 5)&gt;&gt;
-				&lt;&lt;case 0 1&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Baby&quot;)&gt;&gt;
-				&lt;&lt;case 2 3 4&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Foal&quot;)&gt;&gt;
-				&lt;&lt;case 5&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Adult&quot;)&gt;&gt;
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set _customerDetailedNeeds.push(&quot;Foal&quot;)&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
-&lt;&lt;/for&gt;&gt;
+&lt;&lt;run console.log(`Customer test deck ${_customerDeck} (wants = ${_customerWants}).`)&gt;&gt;
 
 &lt;div class=&quot;w3-mobile&quot;&gt;
 
@@ -6341,52 +6245,26 @@ button {
 	&lt;div class=&quot;header&quot;&gt;
 		&lt;h1&gt;Customer&lt;/h1&gt;
 		&lt;br&gt;A customer comes into &lt;&lt;- $ourStore.name&gt;&gt;. 
+		&lt;br&gt;They are looking for 
 
-		/* They will take any fluffy, so just pick a random one that is on display */
-		&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
-			&lt;&lt;set _fList = clone($ourStore.fluffies)&gt;&gt;
-			
-			&lt;&lt;for _fList.length &gt; 0&gt;&gt;
-				&lt;&lt;set _fl = _fList.pluck()&gt;&gt;
-				
-				&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 0: fl= &quot; + _fl + &quot;. displayFlag =&quot; + $globalFluffies[_fl].onDisplay)&gt;&gt;
-				
-				&lt;&lt;if $globalFluffies[_fl].onDisplay == true&gt;&gt;
-					
-					&lt;&lt;run console.log(&quot;Customer needs test Any fluffy offered.&quot;)&gt;&gt;
-					&lt;&lt;timed 10ms&gt;&gt;&lt;&lt;OfferFluffy _fl&gt;&gt;&lt;&lt;/timed&gt;&gt;
-					&lt;&lt;break&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-		&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 1.&quot;)&gt;&gt;
-				&lt;&lt;if _fList.length &lt; 1&gt;&gt;
-					/* Shouldn&#39;t happen, we have to have at least once to call this, but just in case*/
-					&lt;&lt;run console.log(&quot;Customer test - any fluffy but no displays found&quot;)&gt;&gt;
-					
-					&lt;&lt;break&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/for&gt;&gt;
-			&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 2.&quot;)&gt;&gt;
+		&lt;&lt;if _customerWants == 0&gt;&gt;
+			/* This customer will accept any fluffy */
+			@@.coral; Any Fluffy.@@
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;They are looking for 
-			&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
-				@@.coral; Any Fluffy.@@
-			&lt;&lt;else&gt;&gt;
-				@@.coral; 
-				&lt;&lt;for _need range _customerDetailedNeeds&gt;&gt;
-					&lt;&lt;if _need == _customerDetailedNeeds.last()&gt;&gt;
-						&lt;&lt;- _need&gt;&gt;.
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;- _need&gt;&gt;, 
-					&lt;&lt;/if&gt;&gt; 
-				&lt;&lt;/for&gt;&gt;
-				@@
-			&lt;&lt;/if&gt;&gt;
-		
-			&lt;&lt;run console.log(&quot;Customer needs test {&quot; + _customerDetailedNeeds.length + &quot; == &quot; + _customerBasicNeeds.length + &quot;}&quot;)&gt;&gt;
-			
-			&lt;br&gt;
-			&lt;br&gt;if you meet all &lt;&lt;- _customerDetailedNeeds.length&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerDetailedNeeds.length / 5))&gt;&gt;x price bonus.
+			/* This customer has specific needs */
+			@@.coral; 
+			&lt;&lt;for _need range _customerDeck&gt;&gt;
+				&lt;&lt;if _need == _customerDeck.last()&gt;&gt;
+					&lt;&lt;- _need&gt;&gt;.
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;- _need&gt;&gt;, 
+				&lt;&lt;/if&gt;&gt; 
+			&lt;&lt;/for&gt;&gt;
+			@@
+
+			&lt;br&gt;if you meet all &lt;&lt;- _customerWants&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number(_customerWants / 5))&gt;&gt;x price bonus.
 		&lt;&lt;/if&gt;&gt;
+
 		&lt;span id=&quot;result-msg&quot;&gt;&lt;/span&gt;
 	&lt;/div&gt;	
 
@@ -6402,7 +6280,572 @@ button {
 	&lt;&lt;timed 20ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList &quot;customer&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
 &lt;/div&gt;
 
-&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="6" name="Event Main" tags="nobr" position="725,100" size="100,100">/* **********
+&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
+
+
+
+&lt;&lt;widget &quot;OfferFluffy&quot;&gt;&gt;
+
+	&lt;&lt;set _fl = $args[0]&gt;&gt;
+
+	&lt;&lt;set _needsMatch = 0&gt;&gt;
+
+	&lt;&lt;run console.log(`Customer Test: Wants = ${_customerWants}`)&gt;&gt;
+
+	&lt;&lt;if _customerWants != 0&gt;&gt;
+		&lt;&lt;for _card range _customerDeck&gt;&gt;
+			&lt;&lt;run console.log(`Customer Test: Need ${_card}`)&gt;&gt;
+
+			/* Make sure the color groups are set: */
+			&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
+			&lt;&lt;colorGroup&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl] = $activeFluffy&gt;&gt;
+
+			/* Caculate the age values */
+			&lt;&lt;set _cat = Number(Number($globalFluffies[_fl].age * 52) + $globalFluffies[_fl].ageWeeks)&gt;&gt;
+
+			/* Personality, +2 points if it matches, 0 otherwise */
+			&lt;&lt;if _card === $globalFluffies[_fl].traits[0]&gt;&gt;
+				&lt;&lt;run console.log(`Customer Test: Personality match (${$globalFluffies[_fl].traits[0]} === ${_card}`)&gt;&gt;
+				&lt;&lt;set _needsMatch += 2&gt;&gt;
+
+			/* Gender, +2 points if it matches, 0 otherwise */
+			&lt;&lt;elseif _card === $globalFluffies[_fl].gender&gt;&gt;
+				&lt;&lt;run console.log(`Customer Test: Gender match (${$globalFluffies[_fl].gender} === ${_card}`)&gt;&gt;
+				&lt;&lt;set _needsMatch += 2&gt;&gt;
+
+			/* Breed, value depends on what is offered*/
+			&lt;&lt;elseif _card === &quot;Earthy&quot; || _card === &quot;Unicorn&quot; || _card === &quot;Pegasus&quot; || _card === &quot;Alicorn&quot;&gt;&gt;
+				/* Pefect match, 2 points */
+				&lt;&lt;if $globalFluffies[_fl].breed === _card&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Breed match (${$globalFluffies[_fl].breed} === ${_card}`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+
+				/* Half matches */				
+				&lt;&lt;elseif $globalFluffies[_fl].breed != &quot;Earthy&quot;&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Breed half match (${$globalFluffies[_fl].breed} != ${_card}`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Breed no match found (${$globalFluffies[_fl].breed} != ${_card}`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 0&gt;&gt;
+				&lt;&lt;/if&gt;&gt;			
+
+			/* Strength stat: */
+			&lt;&lt;elseif _card.includes(&quot;stength&quot;)&gt;&gt;
+				
+				&lt;&lt;if _card === &quot;High strength&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].strength &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].strength &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average strength&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].strength &lt; 5 &amp;&amp; $globalFluffies[_fl].strength &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low strength&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].strength &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].strength &lt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Energy stat: */
+			&lt;&lt;elseif _card.includes(&quot;energy&quot;)&gt;&gt;
+			
+				&lt;&lt;if _card === &quot;High energy&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].energy &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].energy &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average energy&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].energy &lt; 5 &amp;&amp; $globalFluffies[_fl].energy &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low energy&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].energy &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].energy &lt; 4&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Charm stat: */
+			&lt;&lt;elseif _card.includes(&quot;charm&quot;)&gt;&gt;
+				&lt;&lt;if _card === &quot;High charm&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].charm &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].charm &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average charm&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].charm &lt; 5 &amp;&amp; $globalFluffies[_fl].charm &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low charm&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].charm &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].charm &lt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Thinking stat: */
+			&lt;&lt;elseif _card.includes(&quot;thinking&quot;)&gt;&gt;
+
+			&lt;&lt;run console.log(`Customer Test: thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)&gt;&gt;
+
+				&lt;&lt;if _card === &quot;High thinking&quot;&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: High thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].thinking &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].thinking &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average thinking&quot;&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Average thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].thinking &lt; 5 &amp;&amp; $globalFluffies[_fl].thinking &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low thinking&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].thinking &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].thinking &lt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			
+			/* Learning stat: */
+			&lt;&lt;elseif _card.includes(&quot;learning&quot;)&gt;&gt;
+				&lt;&lt;if _card === &quot;High learning&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].learning &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].learning &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average learning&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].learning &lt; 5 &amp;&amp; $globalFluffies[_fl].learning &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low learning&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].learning &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].learning &lt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			
+			/* Fertility stat: */
+			&lt;&lt;elseif _card.includes(&quot;fertility&quot;)&gt;&gt;
+				&lt;&lt;if _card === &quot;High fertility&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].fertility &gt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].fertility &gt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average fertility&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].fertility &lt; 5 &amp;&amp; $globalFluffies[_fl].fertility &gt;= 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low fertility&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].fertility &lt; 3&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].fertility &lt; 5&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Temperament: */
+			&lt;&lt;elseif _card.includes(&quot;temperament&quot;)&gt;&gt;
+				&lt;&lt;if _card === &quot;High temperament&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].temperament &gt; 190&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].temperament &gt; 130&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Average temperament&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].temperament &lt; 130 &amp;&amp; $globalFluffies[_fl].temperament &gt;= 70&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].temperament &lt; 190 &amp;&amp; $globalFluffies[_fl].temperament &gt;= 10&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card === &quot;Low temperament&quot;&gt;&gt;
+					&lt;&lt;if $globalFluffies[_fl].temperament &lt; 10&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;elseif $globalFluffies[_fl].temperament &lt; 70&gt;&gt;
+						&lt;&lt;set _needsMatch += 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Coat: */
+			&lt;&lt;elseif _card.includes(&quot;Coat&quot;)&gt;&gt;
+				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[0])&gt;&gt;
+						&lt;&lt;run console.log(`Customer Test: Coat Color Group Match (${$globalFluffies[_fl].colorGroup[0]} === ${_card})`)&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						/* ***
+						*	Complimentary pairs:
+						*		Blue - Orange
+						*		Red - Green
+						*		Yellow - Purple
+						*** */
+						&lt;&lt;if $globalFluffies[_fl].colorGroup[0] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].colorGroup[0] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].colorGroup[0] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].colorGroup[0] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].colorGroup[0] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].colorGroup[0] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+
+							&lt;&lt;run console.log(`Customer Test: Coat Complimentary Group Match (${$globalFluffies[_fl].colorGroup[0]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;set _needsMatch += 1&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].cColor)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Coat Color Match (${$globalFluffies[_fl].cColor} in ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Mane: */
+			&lt;&lt;elseif _card.includes(&quot;Mane&quot;)&gt;&gt;
+				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[1])&gt;&gt;
+						&lt;&lt;run console.log(`Customer Test: Mane Color Group Match (${$globalFluffies[_fl].colorGroup[1]} === ${_card})`)&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						/* ***
+						*	Complimentary pairs:
+						*		Blue - Orange
+						*		Red - Green
+						*		Yellow - Purple
+						*** */
+						&lt;&lt;if $globalFluffies[_fl].colorGroup[1] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].colorGroup[1] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].colorGroup[1] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].colorGroup[1] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].colorGroup[1] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].colorGroup[1] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+
+							&lt;&lt;run console.log(`Customer Test: Mane Complimentary Group Match (${$globalFluffies[_fl].colorGroup[1]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;set _needsMatch += 1&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].mColor)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Mane Color Match (${$globalFluffies[_fl].mColor} in ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Eyes: */
+			&lt;&lt;elseif _card.includes(&quot;Eyes&quot;)&gt;&gt;
+				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[2])&gt;&gt;
+						&lt;&lt;run console.log(`Customer Test: Eye Color Group Match (${$globalFluffies[_fl].colorGroup[2]} === ${_card})`)&gt;&gt;
+						&lt;&lt;set _needsMatch += 2&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						/* ***
+						*	Complimentary pairs:
+						*		Blue - Orange
+						*		Red - Green
+						*		Yellow - Purple
+						*** */
+						&lt;&lt;if $globalFluffies[_fl].colorGroup[2] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].colorGroup[2] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].colorGroup[2] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].colorGroup[2] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].colorGroup[2] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].colorGroup[2] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+
+							&lt;&lt;run console.log(`Customer Test: Eye Complimentary Group Match (${$globalFluffies[_fl].colorGroup[2]]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;set _needsMatch += 1&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].eColor)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Eye Color Match (${$globalFluffies[_fl].eColor} in ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			
+			/* Age &quot;Newborn&quot;: */
+			&lt;&lt;elseif _card == &quot;Newborn&quot;&gt;&gt;
+				&lt;&lt;if _cat == 0&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif _cat == 1&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* Age &quot;Chirpy&quot;: */
+			&lt;&lt;elseif _card == &quot;Chirpy&quot;&gt;&gt;
+				&lt;&lt;if _cat == 1&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif _cat == 0&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;elseif $globalFluffies[_fl].weaned === false&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* Age &quot;Talky&quot;: */
+			&lt;&lt;elseif _card == &quot;Talky&quot;&gt;&gt;
+				&lt;&lt;if $globalFluffies[_fl].weaned&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif $globalFluffies[_fl].weaned === false&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;elseif _cat &lt; Number($globalFluffies[_fl].maturity/2)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* Age &quot;Foal&quot;: */
+			&lt;&lt;elseif _card == &quot;Foal&quot;&gt;&gt;
+				&lt;&lt;if _cat &lt; Number($globalFluffies[_fl].maturity/2)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif $globalFluffies[_fl].weaned&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;elseif _cat &lt;= $globalFluffies[_fl].maturity&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* Age &quot;Youth&quot;: */
+			&lt;&lt;elseif _card == &quot;Youth&quot;&gt;&gt;
+				&lt;&lt;if _cat &lt; $globalFluffies[_fl].maturity&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif _cat &lt; Number($globalFluffies[_fl].maturity/2)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;elseif _cat &lt; Number($globalFluffies[_fl].maxAge * 52 * 0.75)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* Age &quot;Adult&quot;: */
+			&lt;&lt;elseif _card == &quot;Adult&quot;&gt;&gt;
+				&lt;&lt;if _cat &lt; Number($globalFluffies[_fl].maxAge * 52 * 0.75)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;elseif _cat &lt; $globalFluffies[_fl].maturity&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;elseif _cat &gt;= Number($globalFluffies[_fl].maxAge * 52 * 0.75)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			/* Age &quot;Grey&quot;: */
+			&lt;&lt;elseif _card == &quot;Grey&quot;&gt;&gt;
+				&lt;&lt;if _cat &gt;= Number($globalFluffies[_fl].maxAge * 52 * 0.75)&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 2&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run console.log(`Customer Test: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
+					&lt;&lt;set _needsMatch += 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;elseif _card === $globalFluffies[_fl].subSpeciesString&gt;&gt;
+				&lt;&lt;run console.log(`Customer Test: subSpecies Match (${$globalFluffies[_fl].subSpeciesString} === ${_card})`)&gt;&gt;
+				&lt;&lt;set _needsMatch += 2&gt;&gt;
+			&lt;&lt;/if&gt;&gt;	
+		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;run console.log(`Customer Test: matches: (${_needsMatch} vs ${_customerWants})`)&gt;&gt;
+
+	&lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number(_customerWants * 2) + &quot;.@@&quot;&gt;&gt;
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number(_customerWants * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
+		
+	&lt;&lt;set _price = Number($globalFluffies[_fl].training)&gt;&gt;
+	&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;
+
+	&lt;&lt;run console.log(`Customer Test: Price 1: ${_price}`)&gt;&gt;
+
+	&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
+		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+	
+	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
+
+	&lt;&lt;run console.log(`Customer Test: Price 2: ${_price}`)&gt;&gt;
+	
+	&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
+	&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
+
+	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
+	&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
+	
+	&lt;&lt;if _price == 0&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer Test: _price was 0.&quot;)&gt;&gt;
+		&lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set _ageMulti = 1&gt;&gt;
+
+	&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; 45&gt;&gt;
+		&lt;&lt;set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+
+	&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
+		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;if $globalFluffies[_fl].subSpecies == 2&gt;&gt;
+		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
+	&lt;&lt;/if&gt;&gt;	
+
+	&lt;&lt;run console.log(`Customer Test: Price 3: ${_price}`)&gt;&gt;
+	
+	/* Debug flag since I can&#39;t track down this issue yet. */
+	&lt;&lt;if _price &lt;= 0&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $globalFluffies[_fl].statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
+		&lt;br&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
+
+	/* They want any fluffy */
+	&lt;&lt;if __customerWants == 0&gt;&gt;
+		&lt;&lt;set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))&gt;&gt; 
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
+
+	&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
+	
+	&lt;&lt;run console.log(`Customer Test: Price 4: ${_price}`)&gt;&gt;
+
+	/* Check if they will accept the offer */
+	&lt;&lt;if _customerWants &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number(_customerWants * 2)).toFixed(2)) &lt;= 33&gt;&gt;
+
+			&lt;&lt;run console.log(`Customer Test: Match Fail.`)&gt;&gt;
+
+			&lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
+				&lt;&lt;run console.log(`Customer Test: Tolerance pass.`)&gt;&gt;
+				&lt;&lt;set _customerTolerance--&gt;&gt;
+				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They are not at all pleased with &quot; + $globalFluffies[_fl].name + &quot;.@@&quot;&gt;&gt;
+				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;_msgString&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;run console.log(`Customer Test: Tolerance fail.`)&gt;&gt;
+				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;This customer is fed up.@@&quot;&gt;&gt;
+				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;_msgString&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+
+		&lt;&lt;run console.log(`Customer Test: Accepts Match 1.`)&gt;&gt;
+
+		&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$globalFluffies[_fl].name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_fl].ID != _fl&gt;&gt;
+			&lt;&lt;run console.log(&quot;Logic Test 1 - Invalid ID found: &quot; + $globalFluffies[_fl].ID + &quot;. Should be &quot; + _fl)&gt;&gt;
+			/* &lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;*/
+			&lt;&lt;set $globalFluffies[_fl].ID = _fl&gt;&gt;
+		&lt;&lt;/if&gt;&gt; 
+		
+		&lt;&lt;set $globalFluffies[_fl].sold = true&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].onDisplay = false&gt;&gt;
+		&lt;&lt;set $globalFluffies[_fl].pregnant = false&gt;&gt;
+			
+		&lt;&lt;if $globalFluffies[_fl].nursing &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $globalFluffies[_fl].children&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
+					&lt;&lt;/if&gt;&gt; /* Close nursing check */
+			&lt;&lt;/for&gt;&gt; /* Close child check*/
+		&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+
+		&lt;&lt;set $globalFluffies[_fl].nursing = 0&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_fl].foodType == &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].mother].nursing--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close nursing check */
+
+		&lt;&lt;if $globalFluffies[_fl].specialFriend != -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fl].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close special friend check */
+
+		&lt;&lt;if Number($globalFluffies[_fl].age) == 0 &amp;&amp; Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals--&gt;&gt;
+		&lt;&lt;elseif $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions--&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close age check */
+
+		&lt;&lt;set $reputation += _priceBonus&gt;&gt;
+
+		/* Random chance to &#39;upsell&#39;*/
+		&lt;&lt;set _chance = Number(($training + $reputation) / 4).toFixed(2)&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Upgraded check _chance = &quot; + _chance)&gt;&gt;
+		
+		&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; random(0, 80)&gt;&gt;
+			&lt;br&gt;You add some deluxe toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(15,20)))&gt;&gt;
+		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; random(0, 90)&gt;&gt;
+			&lt;br&gt;You add some fancy toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(10,15)))&gt;&gt;
+		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; random(0, 94)&gt;&gt;
+			&lt;br&gt;You add some basic toys to the sale.
+			&lt;br&gt; 				
+			&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+
+		&lt;&lt;set _price = Number(_price).toFixed(2)&gt;&gt;
+		&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
+
+		&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
+			_msgString
+			&lt;br&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
+		&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;timed 5ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
+
+		&lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
+		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer test post removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Customer test post removal:&quot; + $ourStore.fluffies.length)&gt;&gt;
+	&lt;&lt;/if&gt;&gt; /* Close needs check */
+
+	&lt;&lt;run console.log(`Customer Test: Went to NULL, out of bounds.`)&gt;&gt;
+
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="6" name="Event Main" tags="nobr" position="725,100" size="100,100">/* **********
  * eventMain.tw
  *
  * Package: FluffyBreeder
@@ -8134,69 +8577,100 @@ Genes       Height multiplier
 	 
 
 	/* ***
-	 *	Sell any display fluffies
-	 *
-	 *	Todo: This should be semi random and have non fixed prices.
+	 *	Create a deck of &#39;cards&#39; for customer wants, based on the fluffies we have on display.
 	 *** */
 	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
-		/* Push to event stack  */
-		&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
 
-		&lt;&lt;set _vissibleCards = [ &quot;Species&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Age&quot; ]&gt;&gt;
-		&lt;&lt;set _nonvissibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot; ]&gt;&gt;
+		/* Random chance based on repuation, higher rep better odds of getting a customer. */
+		&lt;&lt;if random(-1, 8) &lt;= Number($reputation/100)&gt;&gt;
+			/* Push to event stack  */
+			&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
 
-		/* Generate 1-3 customer cards for each fluffy on display */
-		&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
-			/* Pick a trait for this card, favouring more vissible ones (color, breed, age) over non vissible ones */
-			
-			&lt;&lt;switch random(0,10)&gt;&gt;
-				&lt;&lt;case 0 1 2 3&gt;&gt;
-					/* Pick a non-vissible trait */	
-					&lt;&lt;switch _nonvissibleCards.random()&gt;&gt;
-						&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].traits[0])&gt;&gt;
-						&lt;&lt;case &quot;Stat&quot;&gt;&gt;
-							&lt;&lt;switch random(0, 16)&gt;&gt;
-								&lt;&lt;case 0 1&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].strength &gt; 3 ? &quot;High strength&quot; : $globalFluffies[_ef].strength &lt; 2 ? &quot;low strength&quot; : &quot;mid strength&quot;)&gt;&gt;
-								&lt;&lt;case 2 3&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].energy &gt; 3 ? &quot;High energy&quot; : $globalFluffies[_ef].energy &lt; 2 ? &quot;low energy&quot; : &quot;mid energy&quot;)&gt;&gt;
-								&lt;&lt;case 4 5 6 7&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].charm &gt; 3 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 2 ? &quot;low charm&quot; : &quot;mid charm&quot;)&gt;&gt;
-								&lt;&lt;case 8 9&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].thinking &gt; 3 ? &quot;High thinking&quot; : $globalFluffies[_ef].thinking &lt; 2 ? &quot;low thinking&quot; : &quot;mid thinking&quot;)&gt;&gt;
-								&lt;&lt;case 10 11&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].learning &gt; 3 ? &quot;High learning&quot; : $globalFluffies[_ef].learning &lt; 2 ? &quot;low learning&quot; : &quot;mid learning&quot;)&gt;&gt;
-								&lt;&lt;case 12&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].fertility &gt; 3 ? &quot;High fertility&quot; : $globalFluffies[_ef].fertility &lt; 2 ? &quot;low fertility&quot; : &quot;mid fertility&quot;)&gt;&gt;
-								&lt;&lt;default&gt;&gt;
-									&lt;&lt;run $customerCards.push($globalFluffies[_ef].charm &gt; 3 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 2 ? &quot;low charm&quot; : &quot;mid charm&quot;)&gt;&gt;
-							&lt;&lt;/switch&gt;&gt;
-						&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].temperament &gt; 150 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 75 ? &quot;low temperament&quot; : &quot;mid temperament&quot;)&gt;&gt;				
+			&lt;&lt;set _vissibleCards = [ &quot;Species&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Age&quot; ]&gt;&gt;
+			&lt;&lt;set _nonvissibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot; ]&gt;&gt;
+
+			/* Generate 1-3 customer cards for each fluffy on display */
+			&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
+				/* Pick a trait for this card, favouring more vissible ones (color, breed, age) over non vissible ones */
+				
+				&lt;&lt;switch random(0,10)&gt;&gt;
+					&lt;&lt;case 0 1 2 3&gt;&gt;
+						/* Pick a non-vissible trait */	
+						&lt;&lt;switch _nonvissibleCards.random()&gt;&gt;
+							&lt;&lt;case &quot;Personality&quot;&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].traits[0]&gt;&gt;
+							&lt;&lt;case &quot;Stat&quot;&gt;&gt;
+								&lt;&lt;switch random(0, 16)&gt;&gt;
+									&lt;&lt;case 0 1&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].strength &gt; 5 ? &quot;High strength&quot; : $globalFluffies[_ef].strength &lt; 3 ? &quot;Low strength&quot; : &quot;Average strength&quot;&gt;&gt;
+									&lt;&lt;case 2 3&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].energy &gt; 5 ? &quot;High energy&quot; : $globalFluffies[_ef].energy &lt; 3 ? &quot;Low energy&quot; : &quot;Average energy&quot;&gt;&gt;
+									&lt;&lt;case 4 5 6 7&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].charm &gt; 5 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 3 ? &quot;Low charm&quot; : &quot;Average charm&quot;&gt;&gt;
+									&lt;&lt;case 8 9&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].thinking &gt; 5 ? &quot;High thinking&quot; : $globalFluffies[_ef].thinking &lt; 3 ? &quot;Low thinking&quot; : &quot;Average thinking&quot;&gt;&gt;
+									&lt;&lt;case 10 11&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].learning &gt; 5 ? &quot;High learning&quot; : $globalFluffies[_ef].learning &lt; 3 ? &quot;Low learning&quot; : &quot;Average learning&quot;&gt;&gt;
+									&lt;&lt;case 12&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].fertility &gt; 5 ? &quot;High fertility&quot; : $globalFluffies[_ef].fertility &lt; 3 ? &quot;Low fertility&quot; : &quot;Average fertility&quot;&gt;&gt;
+									&lt;&lt;default&gt;&gt;
+										&lt;&lt;set _push = $globalFluffies[_ef].charm &gt; 5 ? &quot;High charm&quot; : $globalFluffies[_ef].charm &lt; 3 ? &quot;Low charm&quot; : &quot;Average charm&quot;&gt;&gt;
+								&lt;&lt;/switch&gt;&gt;
+							&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].temperament &gt; 190 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 130 ? &quot;Low temperament&quot; : &quot;Average temperament&quot;&gt;&gt;
+						&lt;&lt;/switch&gt;&gt;
+					&lt;&lt;default&gt;&gt;
+						/* Pick a vissible trait */
+						&lt;&lt;colorGroup&gt;&gt;
+
+						&lt;&lt;switch _vissibleCards.random()&gt;&gt;
+							&lt;&lt;case &quot;Species&quot;&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].subSpeciesString&gt;&gt;
+							&lt;&lt;case &quot;Gender&quot;&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].gender&gt;&gt;
+							&lt;&lt;case &quot;Breed&quot;&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].breed&gt;&gt;
+							&lt;&lt;case &quot;Coat&quot;&gt;&gt;
+								&lt;&lt;if random(0,6) == 6&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].cColor} Coat`&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;set _push = `Coat Group ${$globalFluffies[_ef].colorGroup[0]}`&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;case &quot;Mane&quot;&gt;&gt;
+								&lt;&lt;if random(0,6) == 6&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].mColor} Mane`&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;set _push = `Mane Group ${$globalFluffies[_ef].colorGroup[1]}`&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
+								&lt;&lt;if random(0,6) == 6&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].eColor} Coat`&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;set _push = `Eye Group ${$globalFluffies[_ef].colorGroup[2]}`&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;case &quot;Age&quot;&gt;&gt;
+								&lt;&lt;set _cat = Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks)&gt;&gt;
+		
+								&lt;&lt;if _cat == 0&gt;&gt;
+									&lt;&lt;set _push = &quot;Newborn&quot;&gt;&gt;
+								&lt;&lt;elseif _cat == 1&gt;&gt;
+									&lt;&lt;set _push = &quot;Chirpy&quot;&gt;&gt;
+								&lt;&lt;elseif $globalFluffies[_ef].weaned === false&gt;&gt;
+									&lt;&lt;set _push = &quot;Talky&quot;&gt;&gt;
+								&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maturity/2)&gt;&gt;
+									&lt;&lt;set _push = &quot;Foal&quot;&gt;&gt;
+								&lt;&lt;elseif _cat &lt;= $globalFluffies[_ef].maturity&gt;&gt;
+									&lt;&lt;set _push = &quot;Youth&quot;&gt;&gt;
+								&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maxAge * 52 * 0.75)&gt;&gt;
+									&lt;&lt;set _push = &quot;Adult&quot;&gt;&gt;
+								&lt;&lt;else&gt;&gt;
+									&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
+						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;/switch&gt;&gt;
-				&lt;&lt;default&gt;&gt;
-					/* Pick a vissible trait */
-					/*&lt;&lt;run $customerCards.push(_vissibleCards.random())&gt;&gt;*/
-
-					&lt;&lt;switch _vissibleCards.random()&gt;&gt;
-						&lt;&lt;case &quot;Species&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].subSpeciesString)&gt;&gt;
-						&lt;&lt;case &quot;Gender&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].gender)&gt;&gt;
-						&lt;&lt;case &quot;Breed&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].breed)&gt;&gt;
-						&lt;&lt;case &quot;Coat&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].cColor + &quot; Coat&quot;)&gt;&gt;
-						&lt;&lt;case &quot;Mane&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].mColor + &quot; Mane&quot;)&gt;&gt;
-						&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push($globalFluffies[_ef].eColor + &quot; Eyes&quot;)&gt;&gt;
-						&lt;&lt;case &quot;Age&quot;&gt;&gt;
-							&lt;&lt;run $customerCards.push(Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks) + &quot; Weeks Old&quot;)&gt;&gt;
-					&lt;&lt;/switch&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
+				&lt;&lt;run $customerCards.push(_push)&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;run console.log(&quot;Growth test -1: age = &quot; + $globalFluffies[_ef].age + &quot;. ageWeeks = &quot; + $globalFluffies[_ef].ageWeeks)&gt;&gt;
 &lt;&lt;run console.log(&quot;Count test 0: Age = &quot; + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + &quot; gender = &quot; + $globalFluffies[_ef].gender)&gt;&gt;
@@ -11721,8 +12195,8 @@ Upgrades:
  *
  *********** */
 
-&lt;&lt;if activeFluffy.foodQuality &lt; 1 &amp;&amp; ($activeFluffy.foodType == &quot;Nursing&quot; || $activeFluffy.foodType == &quot;Nothing&quot;)&gt;&gt;
-	&lt;&lt;set activeFluffy.foodQuality = 2&gt;&gt;
+&lt;&lt;if $activeFluffy.foodQuality &lt; 1 &amp;&amp; ($activeFluffy.foodType == &quot;Nursing&quot; || $activeFluffy.foodType == &quot;Nothing&quot;)&gt;&gt;
+	&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 &lt;div class=&quot;w3-row w3-container w3-mobile&quot;&gt;
@@ -11750,12 +12224,12 @@ Upgrades:
 	
 	&lt;&lt;if $activeFluffy.weaned == true&gt;&gt;
 		&lt;br&gt;
-		&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality == 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
-		&lt;&lt;button [[Greens|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Greens&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality == 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
-		&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality == 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Greens|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Greens&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;
-		&lt;&lt;button [[Formula|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality == 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;button [[Formula|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	
@@ -13926,393 +14400,6 @@ button {
  }
 &lt;/style&gt;
 
-&lt;&lt;widget &quot;OfferFluffy&quot;&gt;&gt;
-
-	&lt;&lt;set _fl = $args[0]&gt;&gt;
-
-	&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 3.0: fl= &quot; + $args[0])&gt;&gt;
-	&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 3.1: fl= &quot; + _fl)&gt;&gt;
-
-	&lt;&lt;set _needsMatch = 0&gt;&gt;
-
-	&lt;&lt;for _i = 0; _i &lt; _customerBasicNeeds.length; _i++&gt;&gt;
-		&lt;&lt;run console.log(&quot;Customer Test: _customerBasicNeeds[_i] = &quot; + _customerBasicNeeds[_i])&gt;&gt;
-		&lt;&lt;switch _customerBasicNeeds[_i]&gt;&gt;
-			&lt;&lt;case &quot;Personality&quot;&gt;&gt;
-				&lt;&lt;if $globalFluffies[_fl].traits[0] == _customerDetailedNeeds[_i]&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Personality match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 2&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Gender&quot;&gt;&gt;
-				&lt;&lt;if $globalFluffies[_fl].gender == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Gender match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 2&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Breed&quot;&gt;&gt;
-				&lt;&lt;if $globalFluffies[_fl].breed == _customerDetailedNeeds[_i].toLowerCase()&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Breed match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 2&gt;&gt;
-				&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Earthy&quot;&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Breed half match E&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 1&gt;&gt;
-				&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Unicorn&quot; &amp;&amp; $globalFluffies[_fl].breed == &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Breed half match U&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 1&gt;&gt;
-				&lt;&lt;elseif _customerDetailedNeeds[_i] == &quot;Pegasus&quot; &amp;&amp; $globalFluffies[_fl].breed == &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Breed half match P&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 1&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Breed no match&quot;)&gt;&gt;						
-					&lt;&lt;set _needsMatch += 0&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Coat&quot;&gt;&gt;
-				&lt;&lt;run console.log(&quot;Customer Test: Coat match {&quot; + $globalFluffies[_fl].colorGroup[0] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0]))&gt;&gt;
-				
-				&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0])&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Coat match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 2&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					/* ***
-					 *	Complimentary pairs:
-					 *		Blue - Orange
-					 *		Red - Green
-					 *		Yellow - Purple
-					 *** */
-					 &lt;&lt;if $globalFluffies[_fl].colorGroup[0] == &quot;Blue&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Orange&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[0] == &quot;Orange&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Blue&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[0] == &quot;Red&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Green&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[0] == &quot;Green&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Red&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[0] == &quot;Yellow&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Purple&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[0] == &quot;Purple&quot; &amp;&amp; _customerDetailedNeeds[_i] == &quot;Yellow&quot;&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Coat complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Mane&quot;&gt;&gt;
-				&lt;&lt;run console.log(&quot;Customer Test: Mane match {&quot; + $globalFluffies[_fl].colorGroup[1] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[1]))&gt;&gt;
-				
-				&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[0])&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Mane match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 2&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					/* ***
-					 *	Complimentary pairs:
-					 *		Blue - Orange
-					 *		Red - Green
-					 *		Yellow - Purple
-					 *** */
-					 &lt;&lt;if $globalFluffies[_fl].colorGroup[1] == &quot;Blue&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Orange&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[1] == &quot;Orange&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Blue&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[1] == &quot;Red&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Green&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[1] == &quot;Green&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Red&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[1] == &quot;Yellow&quot; &amp;&amp; _customerDetailedNeeds[_i].includes(&quot;Purple&quot;)&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].colorGroup[1] == &quot;Purple&quot; &amp;&amp; _customerDetailedNeeds[_i] == &quot;Yellow&quot;&gt;&gt;
-					 	&lt;&lt;run console.log(&quot;Customer Test: Mane complemnt match&quot;)&gt;&gt;
-					 	&lt;&lt;set _needsMatch += 1&gt;&gt;
-					 &lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
-				&lt;&lt;run console.log(&quot;Customer Test: Eyes match {&quot; + $globalFluffies[_fl].colorGroup[2] + &quot; v &quot; + _customerDetailedNeeds[_i] + &quot;} = &quot; + _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[2]))&gt;&gt;
-				
-				&lt;&lt;if _customerDetailedNeeds[_i].includes($globalFluffies[_fl].colorGroup[2])&gt;&gt;
-					&lt;&lt;run console.log(&quot;Customer Test: Eyes match&quot;)&gt;&gt;
-					&lt;&lt;set _needsMatch += 1&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;case &quot;Stat&quot;&gt;&gt;
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Strength&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].strength &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].strength &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Strength check*/
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Energy&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].energy &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].energy &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Energy check*/
-
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Charm&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].charm &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].charm &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Charm check*/
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Thinking&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].thinking &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].thinking &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Thinking check*/
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Learning&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].learning &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].learning &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Learning check*/
-
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Fertility&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].Fertility &gt; 5&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].Fertility &gt; 3&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close inclued Fertility check*/
-
-			&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Low Temperament&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].temperament &lt; 10&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].temperament &lt; 70&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include low temperament check */
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Normal Temperament&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].temperament &gt;= 70 &amp;&amp; $globalFluffies[_fl].temperament &lt; 100&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].temperament &gt;= 100 &amp;&amp; $globalFluffies[_fl].temperament &lt; 130&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include normal temperament check */
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;High Temperament&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].temperament &gt;= 190&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].temperament &gt;= 130&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include high temperament check */
-
-			&lt;&lt;case &quot;Age&quot;&gt;&gt;
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Baby&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].weaned == false&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					 &lt;&lt;elseif $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; $globalFluffies[_fl].maturity&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include Baby */
-				
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Foal&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; $globalFluffies[_fl].maturity&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].weaned == true&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include Foal */
-		
-				&lt;&lt;if _customerDetailedNeeds.includes(&quot;Adult&quot;)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_fl].age &gt; 0&gt;&gt;
-						&lt;&lt;set _needsMatch += 2&gt;&gt;
-					&lt;&lt;elseif $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &gt;= $globalFluffies[_fl].maturity&gt;&gt;
-						&lt;&lt;set _needsMatch += 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt; /* close include Foal */
-				
-		&lt;&lt;/switch&gt;&gt;
-
-	&lt;&lt;/for&gt;&gt;
-
-	&lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
-	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number(_customerDetailedNeeds.length * 2) + &quot;.@@&quot;&gt;&gt;
-	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
-		
-	&lt;&lt;set _price = Number($globalFluffies[_fl].training)&gt;&gt;
-	&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;
-							
-	&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
-		&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price))&gt;&gt;
-		&lt;&lt;default&gt;&gt;
-			&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price))&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
-	
-	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
-	
-	&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
-
-	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
-	&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
-	
-	&lt;&lt;if _price == 0&gt;&gt;
-		&lt;&lt;run console.log(&quot;Customer Test: _price was 0.&quot;)&gt;&gt;
-		&lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	&lt;&lt;set _ageMulti = 1&gt;&gt;
-
-	&lt;&lt;if $globalFluffies[_fl].age == 0 &amp;&amp; $globalFluffies[_fl].ageWeeks &lt; 45&gt;&gt;
-		&lt;&lt;set _ageMulti = Number(($globalFluffies[_fl].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-
-	&lt;&lt;if $globalFluffies[_fl].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
-		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;if $globalFluffies[_fl].subSpecies == 2&gt;&gt;
-		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
-	&lt;&lt;/if&gt;&gt;	
-
-	/* Debug flag since I can&#39;t track down this issue yet. */
-	&lt;&lt;if _price &lt;= 0&gt;&gt;
-		&lt;br&gt;
-		&lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $globalFluffies[_fl].statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $globalFluffies[_fl].colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($globalFluffies[_fl].training) + Number(Number($globalFluffies[_fl].trust/10))&gt;&gt;.
-		&lt;br&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
-
-	&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 4: fl= &quot; + _fl)&gt;&gt;	
-	
-	/* They want any fluffy */
-	&lt;&lt;if _customerDetailedNeeds.length == 0&gt;&gt;
-		&lt;&lt;set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))&gt;&gt; 
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
-
-	&lt;&lt;run console.log(&quot;Customer test: _priceBonus = &quot; + _priceBonus)&gt;&gt;
-	
-	&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
-
-	&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
-	
-	&lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
-	&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
-	
-	/* Check if they will accept the offer */
-	&lt;&lt;if _customerDetailedNeeds.length &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number(_customerDetailedNeeds.length * 2)).toFixed(2)) &lt;= 33&gt;&gt;
-			&lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
-				&lt;&lt;set _customerTolerance--&gt;&gt;
-				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They are not at all pleased with &quot; + $globalFluffies[_fl].name + &quot;.@@&quot;&gt;&gt;
-				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;_msgString&lt;&lt;/replace&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;This customer is fed up.@@&quot;&gt;&gt;
-				&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;_msgString&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-	&lt;&lt;else&gt;&gt; 
-
-		&lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$globalFluffies[_fl].name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
-		
-		&lt;&lt;if $globalFluffies[_fl].ID != _fl&gt;&gt;
-			&lt;&lt;run console.log(&quot;Logic Test 1 - Invalid ID found: &quot; + $globalFluffies[_fl].ID + &quot;. Should be &quot; + _fl)&gt;&gt;
-			/* &lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;*/
-			&lt;&lt;set $globalFluffies[_fl].ID = _fl&gt;&gt;
-		&lt;&lt;/if&gt;&gt; 
-		
-		&lt;&lt;set $globalFluffies[_fl].sold = true&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fl].onDisplay = false&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fl].pregnant = false&gt;&gt;
-			
-		&lt;&lt;if $globalFluffies[_fl].nursing &gt; 0&gt;&gt;
-			&lt;&lt;for _child range $globalFluffies[_fl].children&gt;&gt;
-				&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
-					&lt;&lt;/if&gt;&gt; /* Close nursing check */
-			&lt;&lt;/for&gt;&gt; /* Close child check*/
-		&lt;&lt;/if&gt;&gt; /* Close Nursing check */
-
-		&lt;&lt;set $globalFluffies[_fl].nursing = 0&gt;&gt;
-		
-		&lt;&lt;if $globalFluffies[_fl].foodType == &quot;Nursing&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].mother].nursing--&gt;&gt;
-		&lt;&lt;/if&gt;&gt; /* Close nursing check */
-
-		&lt;&lt;if $globalFluffies[_fl].specialFriend != -1&gt;&gt;
-			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1&gt;&gt;
-			&lt;&lt;set $globalFluffies[_fl].specialFriend = -1&gt;&gt;
-		&lt;&lt;/if&gt;&gt; /* Close special friend check */
-
-		&lt;&lt;if Number($globalFluffies[_fl].age) == 0 &amp;&amp; Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
-			&lt;&lt;set $ourStore.foals--&gt;&gt;
-		&lt;&lt;elseif $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
-			&lt;&lt;set $ourStore.stallions--&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $ourStore.mares--&gt;&gt;
-		&lt;&lt;/if&gt;&gt; /* Close age check */
-
-		&lt;&lt;set $reputation += _priceBonus&gt;&gt;
-
-		/* Random chance to &#39;upsell&#39;*/
-		&lt;&lt;set _chance = Number(($training + $reputation) / 4).toFixed(2)&gt;&gt;
-
-		&lt;&lt;run console.log(&quot;Upgraded check _chance = &quot; + _chance)&gt;&gt;
-		
-		&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; random(0, 80)&gt;&gt;
-			&lt;br&gt;You add some deluxe toys to the sale.
-			&lt;br&gt; 				
-			&lt;&lt;set _price = Number(Number(_price) + Number(random(15,20)))&gt;&gt;
-		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; random(0, 90)&gt;&gt;
-			&lt;br&gt;You add some fancy toys to the sale.
-			&lt;br&gt; 				
-			&lt;&lt;set _price = Number(Number(_price) + Number(random(10,15)))&gt;&gt;
-		&lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; random(0, 94)&gt;&gt;
-			&lt;br&gt;You add some basic toys to the sale.
-			&lt;br&gt; 				
-			&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-
-		&lt;&lt;set _price = Number(_price).toFixed(2)&gt;&gt;
-
-		&lt;&lt;run console.log(&quot;Customer needs test Any fluffy test 5: fl= &quot; + _fl)&gt;&gt;	
-		&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
-			_msgString
-			&lt;br&gt;Sold &lt;&lt;- $globalFluffies[_fl].name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
-		&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;replace &quot;#navbar&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;timed 5ms&gt;&gt;&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;&lt;&lt;/timed&gt;&gt;
-
-		&lt;&lt;run console.log(&quot;Customer test pre removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;						
-		&lt;&lt;run $ourStore.fluffies.delete(_fl)&gt;&gt;
-		&lt;&lt;run console.log(&quot;Customer test post removal of {&quot; + _fl + &quot;} = &quot; + $ourStore.fluffies.length)&gt;&gt;
-		&lt;&lt;run console.log(&quot;Customer test post removal:&quot; + $ourStore.fluffies.length)&gt;&gt;
-	&lt;&lt;/if&gt;&gt; /* Close needs check */
-&lt;&lt;/widget&gt;&gt;
 
 
 
@@ -15529,39 +15616,6 @@ button {
 
 &lt;&lt;widget &quot;fluffyImage&quot;&gt;&gt;
 
-
-&lt;&lt;if false&gt;&gt;
-		&lt;&lt;adultSprite&gt;&gt;
-
-		&lt;&lt;set _styleString = &quot;position: absolute;   display: block;   margin-top: 0px; margin-left: 0px;   margin-right: 0px; width: 160px; height: 160px&quot;&gt;&gt;
-		/*
-		&lt;&lt;set _testFilter = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(0deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-		*/
-		
-		&lt;&lt;set _testFilter = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(360deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-		
-		/*
-		&lt;&lt;set _testFilter2 = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(120deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-		&lt;&lt;set _testFilter3 = _styleString + &quot;; filter: invert(&quot; + random(5, 85) + &quot;%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(240deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-	*/
-		&lt;&lt;set _testFilter2 = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(&quot; + random(0, 360) + &quot;deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-		&lt;&lt;set _testFilter3 = _styleString + &quot;; filter: brightness(0) saturate(100%) invert(80%) sepia(26%) saturate(497%) hue-rotate(350deg) brightness(91%) contrast(89%) invert(0%) sepia(&quot; + random(5, 85) + &quot;%) saturate(&quot; + random(160, 7500) + &quot;%) hue-rotate(&quot; + random(0, 360) + &quot;deg) brightness(&quot; + random(70, 115) + &quot;%) contrast(&quot; + random(75, 150) + &quot;%);&quot; &gt;&gt;
-		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _testFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-		
-
-		
-		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _testFilter2 + &#39;&quot;&gt;&#39;&gt;&gt;
-		/*&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;brownfilter&quot;&gt;&#39;&gt;&gt;*/
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _testFilter3 + &#39;&quot;&gt;&#39;&gt;&gt;
-		
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-		
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHorn + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesAlicorn + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-&lt;&lt;else&gt;&gt;
  	/* ***
  	 *  Some weight based scalling.
  	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.  
@@ -15605,11 +15659,14 @@ button {
 	/* Put all the style block as a variable to save space latter */
 	&lt;&lt;set _styleString = &quot;position: absolute;   display: block;   margin-top: &quot; + (_pad*2) + &quot;px; margin-left: &quot;+ _pad + &quot;px;   margin-right: &quot;+ _pad + &quot;px; width: &quot; + _scale + &quot;px; height: &quot; + _scale + &quot;px&quot;&gt;&gt;
 
+	/* Get the total age, in weeks: */
+	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
+
  	/* ***
  	 *  1. newborn 
  	 *	only coat visible
  	 *** */
-	&lt;&lt;if Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 0&gt;&gt;
+	&lt;&lt;if _cat == 0&gt;&gt;
 	
 		&lt;&lt;newbornSprite $activeFluffy&gt;&gt;
 		
@@ -15630,7 +15687,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
-	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) == 1&gt;&gt;
+	&lt;&lt;elseif _cat == 1&gt;&gt;
 	
 		&lt;&lt;chirpySprite $activeFluffy&gt;&gt;
 	
@@ -15653,7 +15710,7 @@ button {
 
 	
 	/* 3. talky babbeh (coat, eyes, mane) */
-	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp;  Number($activeFluffy.ageWeeks) &gt; 1 &amp;&amp; $activeFluffy.weaned === false&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
 
 		&lt;&lt;talkySprite $activeFluffy&gt;&gt;
 
@@ -15678,7 +15735,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 4. foal (has hair on head) */
-	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp; $activeFluffy.weaned === true &amp;&amp; Number($activeFluffy.ageWeeks) &lt; Number($activeFluffy.maturity/2)&gt;&gt;
+	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
 	
 		&lt;&lt;foalSprite $activeFluffy&gt;&gt;
 
@@ -15708,7 +15765,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 		
 	/* 5. colt/filly (bigger than foal) week 20-26 */
-	&lt;&lt;elseif Number($activeFluffy.age) == 0 &amp;&amp; Number($activeFluffy.ageWeeks) &lt;= $activeFluffy.maturity&gt;&gt;
+	&lt;&lt;elseif _cat &lt;= $activeFluffy.maturity&gt;&gt;
 		
 		&lt;&lt;youthSprite $activeFluffy&gt;&gt;
 
@@ -15738,7 +15795,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 6. adult (teats on female) week 36-47*/
-	&lt;&lt;elseif (Number($activeFluffy.age) &gt; 0 || Number($activeFluffy.ageWeeks) &gt; $activeFluffy.maturity) &amp;&amp; (Number($activeFluffy.age) &lt; Number($activeFluffy.maxAge * 0.75))&gt;&gt;
+	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
 		
 		&lt;&lt;adultSprite $activeFluffy&gt;&gt;
 		
@@ -15822,13 +15879,7 @@ button {
 			&lt;&lt;= &#39;&lt;img src=&quot;./art/sprites3/7_color_overlay.png&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
-&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-
-/*
-
- */</tw-passagedata><tw-passagedata pid="39" name="misc widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="misc widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder

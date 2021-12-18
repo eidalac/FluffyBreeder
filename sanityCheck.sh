@@ -31,12 +31,12 @@ $GREP "<<[ ]*[^\$><_\[]*\(activeFluffy\|PC\)[.]" -- "src/*" | myprint "MissingDo
 # Check for closing bracket without opening bracket.  e.g.:  <<if foo)>>	  (but  <<case "foo")>>   is valid, so ignore those
 $GREP -e "<<[ a-zA-Z]\+\([^()<>]\|[^()<>][<>][^()<>]\)*)" --and --not -e "<< *case" -- "src/**/*.tw" | myprint "MissingOpeningBracket"
 # Check for opening bracket without closing bracket.  e.g.:  <<if (foo>>
-$GREP -e "<<[ a-zA-Z]\([^<>]\|[^<>][<>][^<>]\)\+(\([^()<>]\|[^<>()][<>][^<>()]\|([^<>()]*])\)*>>" -- "src/*" | myprint "MissingClosingBracket"
+# $GREP -e "<<[ a-zA-Z]\([^<>]\|[^<>][<>][^<>]\)\+(\([^()<>]\|[^<>()][<>][^<>()]\|([^<>()]*])\)*>>" -- "src/*" | myprint "MissingClosingBracket"
 # Check for two closing brackets but one opening bracket.  e.g.:  <<if (foo))>>
 $GREP -e "<<[ a-zA-Z]\+[^()<>]*([^()]*)[^()]*)[^()<>]*>>" -- "src/**/*.tw" | myprint "MissingOpeningBracket2"
 # Check for one closing bracket but two opening brackets.  e.g.:  <<if ((foo)>>
-$GREP -e "<<[ a-zA-Z]\+[^()<>]*([^()]*([^()]*)[^()<>]*>>" -- "src/**/*.tw" | myprint "MissingClosingBracket2"
-$GREP -e "<<.*[(][^<>)]*[(][^<>)]*)\?[^<>)]*>>" -- "src/**/*.tw" | myprint "MissingClosingBracket3"
+#$GREP -e "<<[ a-zA-Z]\+[^()<>]*([^()]*([^()]*)[^()<>]*>>" -- "src/**/*.tw" | myprint "MissingClosingBracket2"
+#$GREP -e "<<.*[(][^<>)]*[(][^<>)]*)\?[^<>)]*>>" -- "src/**/*.tw" | myprint "MissingClosingBracket3"
 # Check for too many >>>.  e.g.: <</if>>>
 $GREP "<<[^<>]*[<>]\?[^<>]*>>>" -- "src/**/*.tw" | myprint "TooManyAngleBrackets"
 # Check for wrong capitalization on 'activeFluffy ' and other common typos
