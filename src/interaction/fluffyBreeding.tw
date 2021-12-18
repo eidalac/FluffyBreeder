@@ -43,7 +43,7 @@
 
 <<timed 5ms>>
 		<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
-		<<run $("#subsortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
+		<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
 		
 		<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
 <</timed>>
@@ -111,97 +111,15 @@
 </div>
 
 <<script>>
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia('(min-width: 767px)');
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$('#openNav').on("click", openSidebar);
-		$('#close-sidebar-btn').on("click", closeSidebar);
+		$('#openNav').on("click", window.openSidebar);
+		$('#close-dropdown-btn').on("click", window.closeSidebar);
+
+		/* Sort/Show */
+		$('.dropdown-btn').on("click", window.toggleButton);
 	});
-
-	function openSidebar() {
-		$('#mySidebar').addClass('active');
-		$('#main').addClass('sidebar-active');
-		$('#navHead').addClass('sidebar-active');
-	};
-	function closeSidebar() {
-		$('#mySidebar').removeClass('active');
-		$('#main').removeClass('sidebar-active');
-		$('#navHead').removeClass('sidebar-active');
-	};
 <</script>>
-
-<script>
-function showAccFunc() {
-  var x = document.getElementById("showAcc");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-grey";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-     x.previousElementSibling.className.replace(" w3-grey", "");
-  }
-}
-
-function sortAccFunc() {
-  var x = document.getElementById("sortAcc");
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-grey";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-     x.previousElementSibling.className.replace(" w3-grey", "");
-  }
-}
-
-function subFoodAccFunc (type) {
-  if (type == "kibble") {
-  	var x = document.getElementById("subFoodAccKibble");
-  } else if (type == "greens") {
-  	var x = document.getElementById("subFoodAccGreens");
- } else if (type == "formula") {
-    var x = document.getElementById("subFoodAccFormula");
- } else if (type == "sketti") {
-    var x = document.getElementById("subFoodAccSketti");
- } else if (type == "nothing") {
-    var x = document.getElementById("subFoodAccNothing");
- } 
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-grey";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(" w3-grey", "");
-  }
-}
-
-function subSortAccFunc(type) {
-  if (type == "breed") {
-  	var x = document.getElementById("subSortAccBreed");
-  } else if (type == "age") {
-  	var x = document.getElementById("subSortAccAge");
- } else if (type == "gender") {
-    var x = document.getElementById("subSortAccGender");
- } else if (type == "stats") {
-    var x = document.getElementById("subSortAccStat");
- } else if (type == "attributes") {
-    var x = document.getElementById("subSortAccAtt");
- } else if (type == "bulk") {
-    var x = document.getElementById("subSortAccBulk");
- } else if (type == "kill") {
-    var x = document.getElementById("subSortAccKill");
- } else if (type == "food") {
-    var x = document.getElementById("subSortAccFood");
-  }
-  if (x.className.indexOf("w3-show") == -1) {
-    x.className += " w3-show";
-    x.previousElementSibling.className += " w3-grey";
-  } else { 
-    x.className = x.className.replace(" w3-show", "");
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(" w3-grey", "");
-  }
-}
-</script>

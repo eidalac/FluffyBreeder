@@ -53,27 +53,29 @@
 			<</button>>@@
 		</div>
 
-		<button class="w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey" id="show-acc-btn">Get Fluffies <i class="fa fa-caret-down"></i></button>
-		<div id="showAcc" class="w3-hide w3-grey w3-card">
-	  	
-		  	@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
-		  		<<set $shop = "mart">>
-		  	<</button>>@@
-			@@#sortbutton;<<button [[Fluffy Shelter|Buy Fluffies]]>>
-		  		<<set $shop = "shelter">>
-		  	<</button>>@@
-		  	@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
-		  		<<set $shop = "mill">>
-		  	<</button>>@@
-		  	@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
-		  		<<set $shop = "breeder">>
-		  	<</button>>@@
-		  	@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
-		  		<<set $shop = "feral">>
-		  	<</button>>@@
-			@@#sortbutton;<<button [[Angora Shop|Buy Fluffies]]>>
-		  		<<set $shop = "angora">>
-		  	<</button>>@@
+		<div class="dropdown-container w3-left-align w3-hover-cyan w3-dark-grey">
+			<button class="dropdown-btn w3-button"><span>Get Fluffies</span><i class="fa fa-caret-down"></i></button>
+			<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+			
+				@@#sortbutton;<<button [[Fluffy Mart|Buy Fluffies]]>>
+					<<set $shop = "mart">>
+				<</button>>@@
+				@@#sortbutton;<<button [[Fluffy Shelter|Buy Fluffies]]>>
+					<<set $shop = "shelter">>
+				<</button>>@@
+				@@#sortbutton;<<button [[Fluffy Mill|Buy Fluffies]]>>
+					<<set $shop = "mill">>
+				<</button>>@@
+				@@#sortbutton;<<button [[Fluffy Breeder|Buy Fluffies]]>>
+					<<set $shop = "breeder">>
+				<</button>>@@
+				@@#sortbutton;<<button [[Hunt Ferals|Buy Fluffies]]>>
+					<<set $shop = "feral">>
+				<</button>>@@
+				@@#sortbutton;<<button [[Angora Shop|Buy Fluffies]]>>
+					<<set $shop = "angora">>
+				<</button>>@@
+			</div>
 		</div>
 
 		<div class="w3-dropdown-hover">
@@ -119,35 +121,15 @@
 
 
 <<script>>
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia('(min-width: 767px)');
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$('#openNav').on("click", openSidebar);
-		$('#close-sidebar-btn').on("click", closeSidebar);
-		$('#show-acc-btn').on("click", showAccFunc);
+		$('#openNav').on("click", window.openSidebar);
+		$('#close-dropdown-btn').on("click", window.closeSidebar);
+
+		/* Sort/Show */
+		$('.dropdown-btn').on("click", window.toggleButton);
 	});
-
-	function openSidebar() {
-		$('#mySidebar').addClass('active');
-		$('#main').addClass('sidebar-active');
-		$('#navHead').addClass('sidebar-active');
-	};
-	function closeSidebar() {
-		$('#mySidebar').removeClass('active');
-		$('#main').removeClass('sidebar-active');
-		$('#navHead').removeClass('sidebar-active');
-	};
-
-	function showAccFunc() {
-		var x = document.getElementById("showAcc");
-		if (x.className.indexOf("w3-show") == -1) {
-			x.className += " w3-show";
-			x.previousElementSibling.className += " w3-grey";
-		} else { 
-			x.className = x.className.replace(" w3-show", "");
-			x.previousElementSibling.className.replace(" w3-grey", "");
-		}
-	};
 <</script>>

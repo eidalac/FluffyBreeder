@@ -680,7 +680,6 @@ button {
   text-decoration: none;
   outline: none;
   border: none;
-  box-shadow: 0 5px rgb(192, 192, 192);
 }
 
 button:hover {background-color: teal}
@@ -921,18 +920,59 @@ button:disabled{
 }
 
 /*! Sidebar */
+
 #mySidebar {
   display: none;
 }
+
 #mySidebar.active {
   width: 20%;
   display: block;
 }
+
 #main.sidebar-active {
   margin-left: 25%;
 }
+
 #navHead.sidebar-active {
   margin-left: 30%;
+}
+
+.dropdown-container {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.dropdown-inner-container.w3-show {
+  display: flex !important;
+  flex-direction: column;
+}
+
+.dropdown-inner-container .dropdown-btn,
+.dropdown-inner-container span button {
+  background-color: #9e9e9e !important;
+  margin-left: 1.5em !important;
+}
+
+.dropdown-inner-container i {
+  margin-left: 8px !important;
+}
+
+.dropdown-inner-container .dropdown-inner-container .dropdown-btn > span,
+.dropdown-inner-container .dropdown-inner-container span button {
+  padding-left: 2em !important;
+}
+
+.dropdown-btn {
+  width: 100%;
+  border-radius: 0px !important;
+  display: flex !important;
+  justify-content: flex-start;
+  align-items: center;
+}
+
+.dropdown-btn > i {
+  padding-left: 0.5em;
 }
 /* twine-user-stylesheet #8: "normalize.css" */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -1619,7 +1659,7 @@ hr{border:0;border-top:1px solid #eee;margin:20px 0}
 .w3-sidebar{height:100%;width:200px;background-color:#fff;position:fixed!important;z-index:1;overflow:auto}
 .w3-bar-block .w3-dropdown-hover,.w3-bar-block .w3-dropdown-click{width:100%}
 .w3-bar-block .w3-dropdown-hover .w3-dropdown-content,.w3-bar-block .w3-dropdown-click .w3-dropdown-content{min-width:100%}
-.w3-bar-block .w3-dropdown-hover .w3-button,.w3-bar-block .w3-dropdown-click .w3-button{width:100%;text-align:left;padding:8px 16px}
+.w3-bar-block .w3-dropdown-hover .w3-button,.w3-bar-block .w3-dropdown-click .w3-button{width:100%;text-align:left;}
 .w3-main,#main{transition:margin-left .4s}
 .w3-modal{z-index:3;display:none;padding-top:100px;position:fixed;left:0;top:0;width:100%;height:100%;overflow:auto;background-color:rgb(0,0,0);background-color:rgba(0,0,0,0.4)}
 .w3-modal-content{margin:auto;background-color:#fff;position:relative;padding:0;outline:0;width:600px}
@@ -4275,7 +4315,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 Genome.prototype.setSubSpecies = function(new_gene) {
 	var new_gene = new_gene.replace(";", "");
 	var parts = new_gene.split('/');
-	console.log("Sub Species gene checked = " + parts + " " + parts.length)
+//console.log("gene checked = " + parts + " " + parts.length)
 	if (parts.length != 2)
 	{
 		this.genes[49] = "0/0";
@@ -4284,7 +4324,6 @@ Genome.prototype.setSubSpecies = function(new_gene) {
 	
 	if (isNaN(parseInt(parts[0] + parts[1], 16)))
 	{
-		console.log("Sub Species gene NaN = " + parts + " " + parts.length)
 		// if it's invald just set it to the default value.
 		this.genes[49] = "0/0";
 		return true;
@@ -4429,7 +4468,63 @@ console.log("clear defects parts = " + parts[0] + " " + parts[1] + " " + ran)
 console.log("cleared defects parts = " + this.genes[index])
 
 };
-/* twine-user-script #5: "naming.js" */
+/* twine-user-script #5: "main.js" */
+// Insert global js here
+
+$( document ).ready(function() {
+	$('#cash').on("click", function () {
+		console.log('test');
+	})
+});
+
+/* ----- Sidebar ----- */
+
+window.openSidebar = function () {
+  $('#mySidebar').addClass('active');
+  $('#main').addClass('sidebar-active');
+  $('#navHead').addClass('sidebar-active');
+};
+window.closeSidebar = function () {
+  $('#mySidebar').removeClass('active');
+  $('#main').removeClass('sidebar-active');
+  $('#navHead').removeClass('sidebar-active');
+};
+
+window.showAccFunc = function () {
+  var x = document.getElementById("showAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+      x.className += " w3-show";
+      x.previousElementSibling.className += " w3-grey";
+  } else { 
+      x.className = x.className.replace(" w3-show", "");
+      x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+};
+
+window.sortAccFunc = function () {
+  var x = document.getElementById("sortAcc");
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className += " w3-grey";
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+      x.previousElementSibling.className.replace(" w3-grey", "");
+  }
+};
+
+window.toggleButton = function () {
+  const $dropdown = $(this).siblings('div');
+  if($dropdown.hasClass('w3-show')) {
+    $dropdown.removeClass('w3-show w3-grey');
+    $dropdown.addClass('w3-hide');
+  } else if($dropdown.hasClass('w3-hide')) {
+    $dropdown.addClass('w3-show w3-grey');
+    $dropdown.removeClass('w3-hide');
+  } else {
+    $dropdown.removeClass('w3-hide');
+  }
+}
+/* twine-user-script #6: "naming.js" */
 window.NameList = {
 	"gender": {
 		"Neutral": [
@@ -7532,25 +7627,14 @@ Genes       Height multiplier
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
 	});
-
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
  * endWeek.tw
  *
@@ -9242,27 +9326,29 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
 
-		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; id=&quot;show-acc-btn&quot;&gt;Get Fluffies &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-		&lt;div id=&quot;showAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
-	  	
-		  	@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
-			@@#sortbutton;&lt;&lt;button [[Fluffy Shelter|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
-		  	@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
-		  	@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
-		  	@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
-			@@#sortbutton;&lt;&lt;button [[Angora Shop|Buy Fluffies]]&gt;&gt;
-		  		&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
-		  	&lt;&lt;/button&gt;&gt;@@
+		&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-dark-grey&quot;&gt;
+			&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Get Fluffies&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+			&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
+			
+				@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+				@@#sortbutton;&lt;&lt;button [[Fluffy Shelter|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+				@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+				@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+				@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+				@@#sortbutton;&lt;&lt;button [[Angora Shop|Buy Fluffies]]&gt;&gt;
+					&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
+				&lt;&lt;/button&gt;&gt;@@
+			&lt;/div&gt;
 		&lt;/div&gt;
 
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -9308,37 +9394,17 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
-		$(&#39;#show-acc-btn&#39;).on(&quot;click&quot;, showAccFunc);
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
+
+		/* Sort/Show */
+		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
-
-	function showAccFunc() {
-		var x = document.getElementById(&quot;showAcc&quot;);
-		if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-			x.className += &quot; w3-show&quot;;
-			x.previousElementSibling.className += &quot; w3-grey&quot;;
-		} else { 
-			x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-			x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-		}
-	};
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
@@ -11428,25 +11494,14 @@ Upgrades:
 &lt;&lt;/timed&gt;&gt;
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
 	});
-
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="Fluffy Breeding" tags="nobr" position="1225,350" size="100,100">/* **********
  * fluffyBreeding.tw
  *
@@ -11490,7 +11545,7 @@ Upgrades:
 
 &lt;&lt;timed 5ms&gt;&gt;
 		&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-		&lt;&lt;run $(&quot;#subsortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
 		
 		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
@@ -11558,100 +11613,18 @@ Upgrades:
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
+
+		/* Sort/Show */
+		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
-&lt;&lt;/script&gt;&gt;
-
-&lt;script&gt;
-function showAccFunc() {
-  var x = document.getElementById(&quot;showAcc&quot;);
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function sortAccFunc() {
-  var x = document.getElementById(&quot;sortAcc&quot;);
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function subFoodAccFunc (type) {
-  if (type == &quot;kibble&quot;) {
-  	var x = document.getElementById(&quot;subFoodAccKibble&quot;);
-  } else if (type == &quot;greens&quot;) {
-  	var x = document.getElementById(&quot;subFoodAccGreens&quot;);
- } else if (type == &quot;formula&quot;) {
-    var x = document.getElementById(&quot;subFoodAccFormula&quot;);
- } else if (type == &quot;sketti&quot;) {
-    var x = document.getElementById(&quot;subFoodAccSketti&quot;);
- } else if (type == &quot;nothing&quot;) {
-    var x = document.getElementById(&quot;subFoodAccNothing&quot;);
- } 
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function subSortAccFunc(type) {
-  if (type == &quot;breed&quot;) {
-  	var x = document.getElementById(&quot;subSortAccBreed&quot;);
-  } else if (type == &quot;age&quot;) {
-  	var x = document.getElementById(&quot;subSortAccAge&quot;);
- } else if (type == &quot;gender&quot;) {
-    var x = document.getElementById(&quot;subSortAccGender&quot;);
- } else if (type == &quot;stats&quot;) {
-    var x = document.getElementById(&quot;subSortAccStat&quot;);
- } else if (type == &quot;attributes&quot;) {
-    var x = document.getElementById(&quot;subSortAccAtt&quot;);
- } else if (type == &quot;bulk&quot;) {
-    var x = document.getElementById(&quot;subSortAccBulk&quot;);
- } else if (type == &quot;kill&quot;) {
-    var x = document.getElementById(&quot;subSortAccKill&quot;);
- } else if (type == &quot;food&quot;) {
-    var x = document.getElementById(&quot;subSortAccFood&quot;);
-  }
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Feeding" tags="nobr" position="100,475" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Feeding" tags="nobr" position="100,475" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -12199,25 +12172,17 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
-	});
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
 
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
+		/* Sort/Show */
+		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
+	});
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy List" tags="nobr" position="350,475" size="100,100">/* **********
  * fluffyList.tw
  *
@@ -12276,353 +12241,370 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	  
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 		
-				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; id=&quot;show-acc-btn&quot; onclick=&quot;showAccFunc()&quot;&gt;Show &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-				&lt;div id=&quot;showAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
-			  	
-				  	@@#sortbutton;&lt;&lt;button &quot;All&quot;&gt;&gt;&lt;&lt;set $listType = &quot;All&quot;&gt;&gt;
-				  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-				  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				  	&lt;&lt;/button&gt;&gt;@@
-				    @@#sortbutton;&lt;&lt;button &quot;Only Babies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babies&quot;&gt;&gt;
-				  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-				  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				  	&lt;&lt;/button&gt;&gt;@@
-				    @@#sortbutton;&lt;&lt;button &quot;Only Foals&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Foals&quot;&gt;&gt;
-				  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-				  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				  	&lt;&lt;/button&gt;&gt;@@
-				    @@#sortbutton;&lt;&lt;button &quot;Only Stallions&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Stallions&quot;&gt;&gt;
-				  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-				  		&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				  	&lt;&lt;/button&gt;&gt;@@
-				    @@#sortbutton;&lt;&lt;button &quot;Only Mares&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Mares&quot;&gt;&gt;
-				  		&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-				    	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;
-				    	&lt;&lt;/replace&gt;&gt;
-				    &lt;&lt;/button&gt;&gt;@@
-				    @@#sortbutton;&lt;&lt;button &quot;Only Display&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Display&quot;&gt;&gt;
-				    	&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
-						&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-				    	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				    &lt;&lt;/button&gt;&gt;@@
+				&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
+					&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Show&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+					&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
+					
+						@@#sortbutton;&lt;&lt;button &quot;All&quot;&gt;&gt;&lt;&lt;set $listType = &quot;All&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+						@@#sortbutton;&lt;&lt;button &quot;Only Babies&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Babies&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+						@@#sortbutton;&lt;&lt;button &quot;Only Foals&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Foals&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+						@@#sortbutton;&lt;&lt;button &quot;Only Stallions&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Stallions&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+						@@#sortbutton;&lt;&lt;button &quot;Only Mares&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Mares&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;
+							&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+						@@#sortbutton;&lt;&lt;button &quot;Only Display&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Display&quot;&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
+							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
+					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
 	
-	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 	        	&lt;&lt;sortButtons&gt;&gt;
+			&lt;/div&gt;
 
-				&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subSortAccFunc(&#39;bulk&#39;)&quot;&gt;Bulk Actions &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-				&lt;div id=&quot;subSortAccBulk&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-					@@#sellbutton;&lt;&lt;button &quot;Bulk Sell&quot;&gt;&gt;
-					&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-						&lt;&lt;if $globalFluffies[_bf].isChecked == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
-			
-							&lt;&lt;if $globalFluffies[_bf].pregnant == false &amp;&amp; $globalFluffies[_bf].nursing &lt; 1 &amp;&amp; $globalFluffies[_bf].weaned == true&gt;&gt;
-
-								&lt;&lt;if $globalFluffies[_bf].specialFriend != -1&gt;&gt;
-									&lt;&lt;set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1&gt;&gt;
-									&lt;&lt;set $globalFluffies[_bf].specialFriend = -1&gt;&gt;
-								&lt;&lt;/if&gt;&gt;
-			
-								&lt;&lt;set $globalFluffies[_bf].onDisplay = true&gt;&gt;
-								&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/for&gt;&gt;
-					
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;/button&gt;&gt;@@
-					
-					@@#unsellbutton;&lt;&lt;button &quot;Remove from Sale&quot;&gt;&gt;
+	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+				&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
+					&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Bulk Actions&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+					&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+						@@#sellbutton;&lt;&lt;button &quot;Bulk Sell&quot;&gt;&gt;
 						&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-							&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-								&lt;&lt;set $globalFluffies[_bf].onDisplay = false&gt;&gt;	
-								&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;				
+							&lt;&lt;if $globalFluffies[_bf].isChecked == true &amp;&amp; $ourStore.onDisplay &lt; $ourStore.display&gt;&gt;
+				
+								&lt;&lt;if $globalFluffies[_bf].pregnant == false &amp;&amp; $globalFluffies[_bf].nursing &lt; 1 &amp;&amp; $globalFluffies[_bf].weaned == true&gt;&gt;
+
+									&lt;&lt;if $globalFluffies[_bf].specialFriend != -1&gt;&gt;
+										&lt;&lt;set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1&gt;&gt;
+										&lt;&lt;set $globalFluffies[_bf].specialFriend = -1&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
+				
+									&lt;&lt;set $globalFluffies[_bf].onDisplay = true&gt;&gt;
+									&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
+								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 						&lt;&lt;/for&gt;&gt;
+						
 						&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;/button&gt;&gt;@@
-					
-
-					&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subSortAccFunc(&#39;kill&#39;)&quot;&gt;Remove/Kill &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-					&lt;div id=&quot;subSortAccKill&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-				      	@@#sortbutton;&lt;&lt;button &quot;Euthanize&quot;&gt;&gt;
-							&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-								&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-									&lt;&lt;set $hugbox++&gt;&gt;
-									&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
-								&lt;&lt;/if&gt;&gt;
-							&lt;&lt;/for&gt;&gt;
+						&lt;&lt;/button&gt;&gt;@@
 						
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-				      	@@#sortbutton;&lt;&lt;button &quot;Release&quot;&gt;&gt;
+						@@#unsellbutton;&lt;&lt;button &quot;Remove from Sale&quot;&gt;&gt;
 							&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 								&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-								&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
+									&lt;&lt;set $globalFluffies[_bf].onDisplay = false&gt;&gt;	
+									&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;				
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
 							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
-				      	@@#sortbutton;&lt;&lt;button &quot;Murder&quot;&gt;&gt;
-							&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-								&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-									&lt;&lt;set $abuse++&gt;&gt;
-									&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
-								&lt;&lt;/if&gt;&gt;
-							&lt;&lt;/for&gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
-						&lt;&lt;/button&gt;&gt;@@
-					&lt;/div&gt;
+						
 
-
-					&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subSortAccFunc(&#39;food&#39;)&quot;&gt;Bulk Feeding &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-					&lt;div id=&quot;subSortAccFood&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-
-						&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subFoodAccFunc(&#39;kibble&#39;)&quot;&gt;Kibble &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-						&lt;div id=&quot;subFoodAccKibble&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-						     @@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
+						&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+							&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Remove/Kill&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+							&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot; data-type=&quot;kill&quot;&gt;
+								@@#sortbutton;&lt;&lt;button &quot;Euthanize&quot;&gt;&gt;
 									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+											&lt;&lt;set $hugbox++&gt;&gt;
+											&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
+										&lt;&lt;/if&gt;&gt;
+									&lt;&lt;/for&gt;&gt;
+								
+									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/button&gt;&gt;@@
+								@@#sortbutton;&lt;&lt;button &quot;Release&quot;&gt;&gt;
+									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+										&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
+										&lt;&lt;/if&gt;&gt;
+									&lt;&lt;/for&gt;&gt;
+									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/button&gt;&gt;@@
+								@@#sortbutton;&lt;&lt;button &quot;Murder&quot;&gt;&gt;
+									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+											&lt;&lt;set $abuse++&gt;&gt;
+											&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
+										&lt;&lt;/if&gt;&gt;
+									&lt;&lt;/for&gt;&gt;
+									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
+								&lt;&lt;/button&gt;&gt;@@
+							&lt;/div&gt;
+						&lt;/div&gt;
+
+
+						&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+							&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Bulk Feeding&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+							&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+								&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+								&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Kibble&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+									&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+										@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+									&lt;/div&gt;
+								&lt;/div&gt;
+								
+								&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+									&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Greens&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+									&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+										@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
+												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/for&gt;&gt; 
+												&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+									&lt;/div&gt;
+								&lt;/div&gt;
+
+
+								&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+									&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Sketti&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+									&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+										@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+											&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
+											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
+											&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
+											&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+										&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+										&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
+													&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt; 
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+									&lt;/div&gt;
+								&lt;/div&gt;
+
+
+								&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+									&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Formula&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+									&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+										@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
+														&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt;
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
+														&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt;
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
+														&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt;
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
+														&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt;
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+										@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
+														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
+														&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
+														&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
+													&lt;&lt;/if&gt;&gt;
+												&lt;&lt;/if&gt;&gt;
+											&lt;&lt;/for&gt;&gt;
+											&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;/button&gt;&gt;@@
+
+									&lt;/div&gt;
+								&lt;/div&gt;
+								
+								@@#sortbutton;&lt;&lt;button &quot;Nothing&quot;&gt;&gt;
+									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
+										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
+											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Nothing&quot;&gt;&gt;
 											&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
+									&lt;&lt;/for&gt;&gt;
 									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
-									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
-									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
-									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
-									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
-									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
-									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
-									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
-									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;/button&gt;&gt;@@
+
+							&lt;/div&gt;
 						&lt;/div&gt;
-						
-						&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subFoodAccFunc(&#39;greens&#39;)&quot;&gt;Greens &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-						&lt;div id=&quot;subFoodAccGreens&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-							@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
-									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/for&gt;&gt; 
-									&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-								&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							  @@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-						&lt;/div&gt;
-
-
-						&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subFoodAccFunc(&#39;sketti&#39;)&quot;&gt;Sketti &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-						&lt;div id=&quot;subFoodAccSketti&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-							 @@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-								&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt; 
-								&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
-								&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
-								&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt; 
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-						&lt;/div&gt;
-
-
-					&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;subFoodAccFunc(&#39;formula&#39;)&quot;&gt;Formula &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-						&lt;div id=&quot;subFoodAccFormula&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-							@@#sortbutton;&lt;&lt;button &quot;Trash&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
-											&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
-											&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
-											&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
-											&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-							@@#sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
-											&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Formula&quot;&gt;&gt;
-											&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
-											&lt;&lt;set $globalFluffies[$globalFluffies[_bf].mother].nursing--&gt;&gt;
-										&lt;&lt;/if&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-							&lt;&lt;/button&gt;&gt;@@
-
-						&lt;/div&gt;
-						
-						    @@#sortbutton;&lt;&lt;button &quot;Nothing&quot;&gt;&gt;
-								&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
-									&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Nothing&quot;&gt;&gt;
-										&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
-									&lt;&lt;/if&gt;&gt;
-								&lt;&lt;/for&gt;&gt;
-								&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-						  	&lt;&lt;/button&gt;&gt;@@
-
 					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
@@ -12642,7 +12624,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 	&lt;div class=&quot;w3-container w3-col l12 s12&quot;&gt;
 		&lt;&lt;timed 5ms&gt;&gt;
 		&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-		&lt;&lt;run $(&quot;#subsortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
 		
 		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 		&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
@@ -12669,100 +12651,18 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;/timed&gt;&gt;
 
 &lt;&lt;script&gt;&gt;
-	/* Functions */
 	$(document).ready(function () {
-		/* Check if mobile */
+		/* Sidebar */
+		/*  Check if mobile */
 		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, openSidebar);
-		$(&#39;#close-sidebar-btn&#39;).on(&quot;click&quot;, closeSidebar);
+		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
+		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
+
+		/* Sort/Show */
+		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-
-	function openSidebar() {
-		$(&#39;#mySidebar&#39;).addClass(&#39;active&#39;);
-		$(&#39;#main&#39;).addClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).addClass(&#39;sidebar-active&#39;);
-	};
-	function closeSidebar() {
-		$(&#39;#mySidebar&#39;).removeClass(&#39;active&#39;);
-		$(&#39;#main&#39;).removeClass(&#39;sidebar-active&#39;);
-		$(&#39;#navHead&#39;).removeClass(&#39;sidebar-active&#39;);
-	};
-&lt;&lt;/script&gt;&gt;
-
-&lt;script&gt;
-function showAccFunc() {
-  var x = document.getElementById(&quot;showAcc&quot;);
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function sortAccFunc() {
-  var x = document.getElementById(&quot;sortAcc&quot;);
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-     x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function subFoodAccFunc (type) {
-  if (type == &quot;kibble&quot;) {
-  	var x = document.getElementById(&quot;subFoodAccKibble&quot;);
-  } else if (type == &quot;greens&quot;) {
-  	var x = document.getElementById(&quot;subFoodAccGreens&quot;);
- } else if (type == &quot;formula&quot;) {
-    var x = document.getElementById(&quot;subFoodAccFormula&quot;);
- } else if (type == &quot;sketti&quot;) {
-    var x = document.getElementById(&quot;subFoodAccSketti&quot;);
- } else if (type == &quot;nothing&quot;) {
-    var x = document.getElementById(&quot;subFoodAccNothing&quot;);
- } 
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-
-function subSortAccFunc(type) {
-  if (type == &quot;breed&quot;) {
-  	var x = document.getElementById(&quot;subSortAccBreed&quot;);
-  } else if (type == &quot;age&quot;) {
-  	var x = document.getElementById(&quot;subSortAccAge&quot;);
- } else if (type == &quot;gender&quot;) {
-    var x = document.getElementById(&quot;subSortAccGender&quot;);
- } else if (type == &quot;stats&quot;) {
-    var x = document.getElementById(&quot;subSortAccStat&quot;);
- } else if (type == &quot;attributes&quot;) {
-    var x = document.getElementById(&quot;subSortAccAtt&quot;);
- } else if (type == &quot;bulk&quot;) {
-    var x = document.getElementById(&quot;subSortAccBulk&quot;);
- } else if (type == &quot;kill&quot;) {
-    var x = document.getElementById(&quot;subSortAccKill&quot;);
- } else if (type == &quot;food&quot;) {
-    var x = document.getElementById(&quot;subSortAccFood&quot;);
-  }
-  if (x.className.indexOf(&quot;w3-show&quot;) == -1) {
-    x.className += &quot; w3-show&quot;;
-    x.previousElementSibling.className += &quot; w3-grey&quot;;
-  } else { 
-    x.className = x.className.replace(&quot; w3-show&quot;, &quot;&quot;);
-    x.previousElementSibling.className = 
-    x.previousElementSibling.className.replace(&quot; w3-grey&quot;, &quot;&quot;);
-  }
-}
-&lt;/script&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -16011,7 +15911,7 @@ button {
 	&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
 	
 	&lt;div class=&quot;w3-container w3-theme-d2&quot;&gt;
-		&lt;span id=&quot;close-sidebar-btn&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
+		&lt;span id=&quot;close-dropdown-btn&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
 		&lt;br&gt;
 		&lt;div class=&quot;w3-padding w3-center&quot;&gt;
 			&lt;span style=&quot;font-size:1vw;&quot;&gt;Fluffy Breeder&lt;/span&gt;
@@ -16027,194 +15927,200 @@ button {
 
 &lt;&lt;widget &quot;sortButtons&quot;&gt;&gt;
 
-	&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-dark-grey&quot; onclick=&quot;sortAccFunc()&quot;&gt;Sort &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-	&lt;div id=&quot;sortAcc&quot; class=&quot;w3-hide w3-grey w3-card&quot;&gt;
-		@@#sortbutton;&lt;&lt;button &#39;Breed &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-			&lt;&lt;if _breedUp == false&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _breedUp = true&gt;&gt;				
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _breedUp = false&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/button&gt;&gt;@@
-
-		@@#sortbutton;&lt;&lt;button &#39;Age &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-			&lt;&lt;if _ageUp == false&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _ageUp = true&gt;&gt;				
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _ageUp = false&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/button&gt;&gt;@@
-	
-	&lt;&lt;if $args[0] != &quot;breeding&quot;&gt;&gt;
-		@@#sortbutton;&lt;&lt;button &#39;Gender &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-			&lt;&lt;if _genderUp == false&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender &lt; $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender &gt; $globalFluffies[b].gender) ? -1 : 0;}) &gt;&gt; 
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _genderUp = true&gt;&gt;				
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender &lt; $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender &gt; $globalFluffies[a].gender) ? -1 : 0;}) &gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;set _genderUp = false&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/button&gt;&gt;@@
-	&lt;&lt;/if&gt;&gt;
-
-		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;stats&#39;)&quot;&gt;Stats &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-		&lt;div id=&quot;subSortAccStat&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-			@@#subsortbutton;&lt;&lt;button &#39;Strength &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _strUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) &gt;&gt;
+	&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
+		&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Sort&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+		&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
+			@@#sortbutton;&lt;&lt;button &#39;Breed &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _breedUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed &lt; $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed &gt; $globalFluffies[a].breed) ? -1 : 0;}) &gt;&gt;
 					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _strUp = true&gt;&gt;				
+					&lt;&lt;set _breedUp = true&gt;&gt;				
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) &gt;&gt; 
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed &lt; $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed &gt; $globalFluffies[b].breed) ? -1 : 0;}) &gt;&gt;
 					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _strUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-			
-			@@#subsortbutton;&lt;&lt;button &#39;Energy &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _engUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _engUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _engUp = false&gt;&gt;
+					&lt;&lt;set _breedUp = false&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@
 
-			@@#subsortbutton;&lt;&lt;button &#39;Charm &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _chaUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) &gt;&gt;
+			@@#sortbutton;&lt;&lt;button &#39;Age &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _ageUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) &gt;&gt;
 					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _chaUp = true&gt;&gt;				
+					&lt;&lt;set _ageUp = true&gt;&gt;				
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) &gt;&gt; 
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) &gt;&gt; 
 					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _chaUp = false&gt;&gt;
+					&lt;&lt;set _ageUp = false&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@
+		
+		&lt;&lt;if $args[0] != &quot;breeding&quot;&gt;&gt;
+			@@#sortbutton;&lt;&lt;button &#39;Gender &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+				&lt;&lt;if _genderUp == false&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender &lt; $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender &gt; $globalFluffies[b].gender) ? -1 : 0;}) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _genderUp = true&gt;&gt;				
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender &lt; $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender &gt; $globalFluffies[a].gender) ? -1 : 0;}) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;set _genderUp = false&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;@@
+		&lt;&lt;/if&gt;&gt;
 
-			@@#subsortbutton;&lt;&lt;button &#39;Thinking &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _thiUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _thiUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _thiUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+			&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot;&gt;
+				&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Stats&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+				&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+					@@#sortbutton;&lt;&lt;button &#39;Strength &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _strUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _strUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _strUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					
+					@@#sortbutton;&lt;&lt;button &#39;Energy &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _engUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _engUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _engUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
 
-			@@#subsortbutton;&lt;&lt;button &#39;Learning &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _leaUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _leaUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _leaUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-			
-			@@#subsortbutton;&lt;&lt;button &#39;Fertility &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _ferUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _ferUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _ferUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-		&lt;/div&gt;
+					@@#sortbutton;&lt;&lt;button &#39;Charm &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _chaUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _chaUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _chaUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
 
-		&lt;button class=&quot;w3-button w3-block w3-left-align w3-hover-cyan w3-grey&quot; onclick=&quot;subSortAccFunc(&#39;attributes&#39;)&quot;&gt;Attributes &lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-		&lt;div id=&quot;subSortAccAtt&quot; class=&quot;w3-hide w3-white w3-card&quot;&gt;
-			@@#subsortbutton;&lt;&lt;button &#39;Trust &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _trustUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _trustUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _trustUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-			
-			@@#subsortbutton;&lt;&lt;button &#39;Training &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _trainingUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _trainingUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _trainingUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+					@@#sortbutton;&lt;&lt;button &#39;Thinking &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _thiUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _thiUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _thiUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
 
-			@@#subsortbutton;&lt;&lt;button &#39;Temperament &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _temperamentUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _temperamentUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _temperamentUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+					@@#sortbutton;&lt;&lt;button &#39;Learning &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _leaUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _leaUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _leaUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					
+					@@#sortbutton;&lt;&lt;button &#39;Fertility &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _ferUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _ferUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _ferUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+				&lt;/div&gt;
+			&lt;/div&gt;
 
-			@@#subsortbutton;&lt;&lt;button &#39;Happiness &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _happyUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happy - $globalFluffies[b].happy);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _happyUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happy - $globalFluffies[a].happy);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _happyUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+			&lt;div class=&quot;dropdown-container w3-left-align w3-grey&quot; id=&quot;subsort-attr-btn&quot;&gt;
+				&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Attributes&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+				&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
+					@@#sortbutton;&lt;&lt;button &#39;Trust &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _trustUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _trustUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _trustUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					
+					@@#sortbutton;&lt;&lt;button &#39;Training &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _trainingUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _trainingUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _trainingUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
 
-			@@#subsortbutton;&lt;&lt;button &#39;Stress &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _stressUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _stressUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _stressUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-			
-			@@#subsortbutton;&lt;&lt;button &#39;Trauma &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
-				&lt;&lt;if _traumaUp == false&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _traumaUp = true&gt;&gt;				
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
-					&lt;&lt;set _traumaUp = false&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+					@@#sortbutton;&lt;&lt;button &#39;Temperament &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _temperamentUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _temperamentUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _temperamentUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+
+					@@#sortbutton;&lt;&lt;button &#39;Happiness &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _happyUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happy - $globalFluffies[b].happy);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _happyUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happy - $globalFluffies[a].happy);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _happyUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+
+					@@#sortbutton;&lt;&lt;button &#39;Stress &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _stressUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _stressUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _stressUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					
+					@@#sortbutton;&lt;&lt;button &#39;Trauma &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
+						&lt;&lt;if _traumaUp == false&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _traumaUp = true&gt;&gt;				
+						&lt;&lt;else&gt;&gt;
+							&lt;&lt;run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList $args&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;set _traumaUp = false&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+				&lt;/div&gt;
+			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="pronoun widgets" tags="widget nobr" position="1225,475" size="100,100">/* **********
