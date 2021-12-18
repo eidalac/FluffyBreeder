@@ -894,6 +894,15 @@ button {
 
 		<<set _price = Number(_price).toFixed(2)>>
 		<<set $cash = Number(Number($cash) + Number(_price)).toFixed(2)>>
+
+		<<if isNaN($cash)>>
+			<<set $cash = 10>>
+		<</if>>
+
+		<<if $cash < 0>>>
+			<<set $cash = 0>>
+		<</if>>
+
 		<<run console.log("Customer needs $cash = " + $cash)>>
 
 		<<replace "#result-msg">>
