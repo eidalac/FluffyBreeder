@@ -7268,7 +7268,7 @@ The stop setup lets you configure the shop.
 &lt;h2&gt;Shop Stats&lt;/h2&gt;
 The shop has 3 stats: Space, Shelter and Display.  Stats are capped at 750.  
 &lt;br&gt;Space is used for buying updgrades in the future.  @@.orange;This feature is not yet implemented.@@
-&lt;br&gt;Shelter determines how many fluffies you can keep.  If your population is higher than this you can not get more fluffies and breeding is blocked.  Part of this is due to system limitations - having more than 1000 fluffies will cause the TWINE script to fail as it can&#39;t manage a loop of that size.
+&lt;br&gt;Shelter determines how many fluffies you can keep.  If your population is higher than this you cannot get more fluffies and breeding is blocked.  Part of this is due to system limitations - having more than 1000 fluffies will cause the TWINE script to fail as it can&#39;t manage a loop of that size.
 &lt;br&gt;Display sets the number of fluffies you can have on sale at one time.
 
 &lt;&lt;case &quot;Running your Store&quot;&gt;&gt;
@@ -7295,7 +7295,7 @@ Cash is your @@.yellowgreen;¤@@ on hand, while upkeep tracks your expenses this
 This tracks the fluffies you have as well as the current limit based on your shelter amount, as well as a break down of foals, mares and stallions.
 &lt;br&gt;
 &lt;br&gt;The Check Fluffies and Check Displays links will show a list of all fluffies based on if they are on sale or not.
-&lt;br&gt;The fluffy lists this brings up has most options for interaction witn the fluffies.
+&lt;br&gt;The fluffy lists this brings up has most options for interaction with the fluffies.
 &lt;h2&gt;@@.coral;Store@@&lt;/h2&gt;
 This tracks the store stats (Shelter, Display and Space) as well as a link for buying improvements.
 &lt;h2&gt;@@.coral;Get Fluffies@@&lt;/h2&gt;
@@ -12948,6 +12948,8 @@ function subSortAccFunc(type) {
 &lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
 &lt;&lt;run console.log(&quot;Gentic Test.  geneString = &#39;&quot; + $activeFluffy.geneString + &quot;&#39;&quot;)&gt;&gt;
 
+&lt;&lt;set _masterColor = &quot;B/b;Y/y;R/r;O/o;W/w;&quot;&gt;&gt;
+
 You are editing the genes of:
 &lt;br&gt;&lt;span id=&quot;desc&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;/span&gt;
 
@@ -13269,13 +13271,20 @@ Coat Color:
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _ccString  to _ccString.trim()&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ccString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;if _ccString.charAt(_mcString.length-1) != &quot;;&quot;&gt;&gt;
+		&lt;&lt;set _ccString  = _ccString + &quot;;&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;set _geneCheck = _ccString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)&gt;&gt;
+	&lt;&lt;if _ccString.length != _masterColor.length&gt;&gt;
+		&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ccString + &quot;&#39; invalid length, revert to master gene!&quot;)&gt;&gt;
+		&lt;&lt;set _ccString = _masterColor&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ccString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;set _geneCheck = _ccString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)&gt;&gt;
+	&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
-
-	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	&lt;&lt;if _geneCheck === null&gt;&gt;
 		&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -13305,7 +13314,8 @@ Coat Color:
  *** */
 Mane Color: 
 &lt;&lt;set _mcString  = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + &quot;;&quot;&gt;&gt;
-&lt;&lt;set _masterColor = &quot;B/b;Y/y;R/r;O/o;W/w;&quot;&gt;&gt;
+
+
 &lt;span id=&quot;mcolor&quot;&gt;
 	&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.getManeColorString()&gt;&gt;
 &lt;/span&gt;
@@ -13320,17 +13330,15 @@ Mane Color:
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;if _mcString.length != _masterColor.length&gt;&gt;
-		&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39; invalid lenght, revert to master gene!&quot;)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39; invalid length, revert to master gene!&quot;)&gt;&gt;
 		&lt;&lt;set _mcString = _masterColor&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _mcString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;set _geneCheck = _mcString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)&gt;&gt;
+	&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
 
-	&lt;&lt;set _geneCheck = _mcString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)&gt;&gt;
-
-&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
-
-	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	&lt;&lt;if _geneCheck === null&gt;&gt;
 		&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -13370,13 +13378,20 @@ Eye Color:
 &lt;&lt;button &quot;Enter&quot;&gt;&gt;
 	&lt;&lt;set _ecString to _ecString.trim()&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ecString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;if _ecString.charAt(_mcString.length-1) != &quot;;&quot;&gt;&gt;
+		&lt;&lt;set _ecString  = _ecString + &quot;;&quot;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;set _geneCheck = _ecString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)&gt;&gt;
+	&lt;&lt;if _ecString.length != _masterColor.length&gt;&gt;
+		&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ecString + &quot;&#39; invalid length, revert to master gene!&quot;)&gt;&gt;
+		&lt;&lt;set _ecString = _masterColor&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;run console.log(&quot;Gentic Test.  Gene = &#39;&quot; + _ecString + &quot;&#39;&quot;)&gt;&gt;
+	&lt;&lt;set _geneCheck = _ecString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)&gt;&gt;
+	&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
 
-&lt;&lt;run console.log(&quot;Gentic Test.  _geneCheck = &#39;&quot; + _geneCheck + &quot;&#39;&quot;)&gt;&gt;
-
-	/* If this returns false, the gene didn&#39;t match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	&lt;&lt;if _geneCheck === null&gt;&gt;
 		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;@@.orange;Invalid gene!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -13386,8 +13401,6 @@ Eye Color:
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;
 
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorString()&gt;&gt;
-
-
 
 		/* And update the pbreed */
 		&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;Gene set.  Eye Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].eColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -14863,7 +14876,7 @@ button {
 		happy: 0,
 		trauma: 0,
 		stress: 0
-	}	&gt;&gt;
+	} &gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -14960,9 +14973,9 @@ button {
 			stress: 0
 		} &gt;&gt;
 
-&lt;&lt;run console.log(&quot;Species test 0: &quot; + $activeFluffy.geneString.substring(100))&gt;&gt;
-&lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpecies)&gt;&gt;
-&lt;&lt;run console.log(&quot;Species test 2: &quot; + $activeFluffy.subSpeciesString)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Species test 0: &quot; + $activeFluffy.geneString.substring(100))&gt;&gt;
+		&lt;&lt;run console.log(&quot;Species test 1: &quot; + $activeFluffy.subSpecies)&gt;&gt;
+		&lt;&lt;run console.log(&quot;Species test 2: &quot; + $activeFluffy.subSpeciesString)&gt;&gt;
 
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
 		

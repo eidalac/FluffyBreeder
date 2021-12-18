@@ -18,6 +18,8 @@
 <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 <<run console.log("Gentic Test.  geneString = '" + $activeFluffy.geneString + "'")>>
 
+<<set _masterColor = "B/b;Y/y;R/r;O/o;W/w;">>
+
 You are editing the genes of:
 <br><span id="desc"><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>></span>
 
@@ -339,13 +341,20 @@ Coat Color:
 <<button "Enter">>
 	<<set _ccString  to _ccString.trim()>>
 
-<<run console.log("Gentic Test.  Gene = '" + _ccString + "'")>>
+	<<if _ccString.charAt(_mcString.length-1) != ";">>
+		<<set _ccString  = _ccString + ";">>
+	<</if>>
 
-	<<set _geneCheck = _ccString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)>>
+	<<if _ccString.length != _masterColor.length>>
+		<<run console.log("Gentic Test.  Gene = '" + _ccString + "' invalid length, revert to master gene!")>>
+		<<set _ccString = _masterColor>>
+	<</if>>
+	
+	<<run console.log("Gentic Test.  Gene = '" + _ccString + "'")>>
+	<<set _geneCheck = _ccString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)>>
+	<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
 
-<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
-
-	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	<<if _geneCheck === null>>
 		<<replace "#cc-form-error">>@@.orange;Invalid gene!@@<</replace>>
 	<<else>>
@@ -375,7 +384,8 @@ Coat Color:
  *** */
 Mane Color: 
 <<set _mcString  = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + ";">>
-<<set _masterColor = "B/b;Y/y;R/r;O/o;W/w;">>
+
+
 <span id="mcolor">
 	<<print $globalFluffies[$activeFluffy.ID].genes.getManeColorString()>>
 </span>
@@ -390,17 +400,15 @@ Mane Color:
 	<</if>>
 
 	<<if _mcString.length != _masterColor.length>>
-		<<run console.log("Gentic Test.  Gene = '" + _mcString + "' invalid lenght, revert to master gene!")>>
+		<<run console.log("Gentic Test.  Gene = '" + _mcString + "' invalid length, revert to master gene!")>>
 		<<set _mcString = _masterColor>>
 	<</if>>
 	
-<<run console.log("Gentic Test.  Gene = '" + _mcString + "'")>>
+	<<run console.log("Gentic Test.  Gene = '" + _mcString + "'")>>
+	<<set _geneCheck = _mcString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)>>
+	<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
 
-	<<set _geneCheck = _mcString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)>>
-
-<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
-
-	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	<<if _geneCheck === null>>
 		<<replace "#mc-form-error">>@@.orange;Invalid gene!@@<</replace>>
 	<<else>>
@@ -440,13 +448,20 @@ Eye Color:
 <<button "Enter">>
 	<<set _ecString to _ecString.trim()>>
 
-<<run console.log("Gentic Test.  Gene = '" + _ecString + "'")>>
+	<<if _ecString.charAt(_mcString.length-1) != ";">>
+		<<set _ecString  = _ecString + ";">>
+	<</if>>
 
-	<<set _geneCheck = _ecString.match(/(?:[bB]\W){2}(?:[yY]\W){2}(?:[rR]\W){2}(?:[oO]\W){2}(?:[wW]\W){2}/)>>
+	<<if _ecString.length != _masterColor.length>>
+		<<run console.log("Gentic Test.  Gene = '" + _ecString + "' invalid length, revert to master gene!")>>
+		<<set _ecString = _masterColor>>
+	<</if>>
+	
+	<<run console.log("Gentic Test.  Gene = '" + _ecString + "'")>>
+	<<set _geneCheck = _ecString.match(/(?:[bB][/][bB][;])(?:[yY][/][yY][;])(?:[rR][/][rR][;])(?:[oO][/][oO][;])(?:[wW][/][wW][;])/)>>
+	<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
 
-<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
-
-	/* If this returns false, the gene didn't match the expected pattern, so toss and error and do not save it.*/
+	/* If this is null the regex above failed to find a match */
 	<<if _geneCheck === null>>
 		<<replace "#ec-form-error">>@@.orange;Invalid gene!@@<</replace>>
 	<<else>>
@@ -456,8 +471,6 @@ Eye Color:
 		<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
 
 		<<set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorString()>>
-
-
 
 		/* And update the pbreed */
 		<<replace "#ec-form-error">>Gene set.  Eye Color = <<print $globalFluffies[$activeFluffy.ID].eColor>><br> <</replace>>
