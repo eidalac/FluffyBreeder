@@ -1062,7 +1062,7 @@ Genome.prototype.getMaxAgeDesc = function() {
 };
 
 /**
- * Retrieves the gene determining adult max Age.
+ * Retrieves the gene determining adult fertility.
  * This is defined as genes 10 and 11 (M/n;N/n).
  * 
  * There are 6 phenotype combinations

@@ -439,9 +439,13 @@ button {
 		
 	<<for _fl range $ourStore.fluffies>>
 		
-		<<if $args[0] === "breeding" && $activeFluffy.ID == _fl>>
-			<<continue>>
+		<<if $args[0] === "breeding">>
+			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
+				<<continue>>
+			<</if>>
 		<</if>>
+
+		
 				
 		/* Double check we are removing sold fluffies: */
 		<<if $globalFluffies[_fl].sold == true>>
