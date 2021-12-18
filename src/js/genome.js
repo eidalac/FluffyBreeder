@@ -330,9 +330,20 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 		if (i == 49)
 		{
 			/* TODO: Need to add some more special handling, but for now just copy the mom's gene for this one */
-			child_genes += this.elementAt(i).allele1;
-			child_genes += "/";
-			child_genes += this.elementAt(i).allele2;
+			switch (Math.floor(Math.random() * 2))
+			{
+				case 0:
+					child_genes += other_genome.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += other_genome.elementAt(i).allele2;
+					break;
+				default:
+					child_genes += this.elementAt(i).allele1;
+					child_genes += "/";
+					child_genes += this.elementAt(i).allele2;
+					break;
+
+			}
 		}
 		else
 		{
@@ -1051,7 +1062,7 @@ Genome.prototype.getMaxAgeDesc = function() {
 };
 
 /**
- * Retrieves the gene determining adult max Age.
+ * Retrieves the gene determining adult fertility.
  * This is defined as genes 10 and 11 (M/n;N/n).
  * 
  * There are 6 phenotype combinations

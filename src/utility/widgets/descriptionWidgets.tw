@@ -295,8 +295,11 @@ button {
 	<<if $globalFluffies[_fl].traits.includes("Feral") == true>>
 		<<set _price = Number(_price / 4).toFixed(2)>>
 	<</if>>
-	
-	
+
+	<<if $globalFluffies[_fl].subSpecies == 2>>
+		<<set _price = Number(_price * 1.3).toFixed(2)>>
+	<</if>>	
+
 	/* Debug flag since I can't track down this issue yet. */
 	<<if _price <= 0>>
 		<br>
@@ -436,9 +439,13 @@ button {
 		
 	<<for _fl range $ourStore.fluffies>>
 		
-		<<if $args[0] === "breeding" && $activeFluffy.ID == _fl>>
-			<<continue>>
+		<<if $args[0] === "breeding">>
+			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
+				<<continue>>
+			<</if>>
 		<</if>>
+
+		
 				
 		/* Double check we are removing sold fluffies: */
 		<<if $globalFluffies[_fl].sold == true>>
@@ -730,6 +737,9 @@ button {
 		<<set _price = Number(_price / 4).toFixed(2)>>
 	<</if>>
 
+	<<if $globalFluffies[_thisFluffy.ID].subSpecies == 2>>
+		<<set _price = Number(_price * 1.3).toFixed(2)>>
+	<</if>>
 
 	<<if  $debugMode>>
 		@@.orange;_price@@

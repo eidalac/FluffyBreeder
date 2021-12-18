@@ -52,6 +52,7 @@
 <<set $eventBirthRejection = []>>
 <<set $eventCustomer = []>>
 <<set $eventStress = []>>
+<<set $customerCards = []>>
 
 
 /* ***
@@ -492,6 +493,62 @@
 	<<if $globalFluffies[_ef].onDisplay == true>>
 		/* Push to event stack  */
 		<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
+
+		<<set _vissibleCards = [ "Species", "Gender", "Breed", "Coat", "Mane", "Eyes", "Age" ]>>
+		<<set _nonvissibleCards = [ "Personality", "Stat", "Temperament" ]>>
+
+		/* Generate 1-3 customer cards for each fluffy on display */
+		<<for _c = random(0,3); _c >= 0; _c-->>
+			/* Pick a trait for this card, favouring more vissible ones (color, breed, age) over non vissible ones */
+			
+			<<switch random(0,10)>>
+				<<case 0 1 2 3>>
+					/* Pick a non-vissible trait */	
+					<<switch _nonvissibleCards.random()>>
+						<<case "Personality">>
+							<<run $customerCards.push($globalFluffies[_ef].traits[0])>>
+						<<case "Stat">>
+							<<switch random(0, 16)>>
+								<<case 0 1>>
+									<<run $customerCards.push($globalFluffies[_ef].strength > 3 ? "High strength" : $globalFluffies[_ef].strength < 2 ? "low strength" : "mid strength")>>
+								<<case 2 3>>
+									<<run $customerCards.push($globalFluffies[_ef].energy > 3 ? "High energy" : $globalFluffies[_ef].energy < 2 ? "low energy" : "mid energy")>>
+								<<case 4 5 6 7>>
+									<<run $customerCards.push($globalFluffies[_ef].charm > 3 ? "High charm" : $globalFluffies[_ef].charm < 2 ? "low charm" : "mid charm")>>
+								<<case 8 9>>
+									<<run $customerCards.push($globalFluffies[_ef].thinking > 3 ? "High thinking" : $globalFluffies[_ef].thinking < 2 ? "low thinking" : "mid thinking")>>
+								<<case 10 11>>
+									<<run $customerCards.push($globalFluffies[_ef].learning > 3 ? "High learning" : $globalFluffies[_ef].learning < 2 ? "low learning" : "mid learning")>>
+								<<case 12>>
+									<<run $customerCards.push($globalFluffies[_ef].fertility > 3 ? "High fertility" : $globalFluffies[_ef].fertility < 2 ? "low fertility" : "mid fertility")>>
+								<<default>>
+									<<run $customerCards.push($globalFluffies[_ef].charm > 3 ? "High charm" : $globalFluffies[_ef].charm < 2 ? "low charm" : "mid charm")>>
+							<</switch>>
+						<<case "Temperament">>
+							<<run $customerCards.push($globalFluffies[_ef].temperament > 150 ? "High temperament" : $globalFluffies[_ef].temperament < 75 ? "low temperament" : "mid temperament")>>				
+					<</switch>>
+				<<default>>
+					/* Pick a vissible trait */
+					/*<<run $customerCards.push(_vissibleCards.random())>>*/
+
+					<<switch _vissibleCards.random()>>
+						<<case "Species">>
+							<<run $customerCards.push($globalFluffies[_ef].subSpeciesString)>>
+						<<case "Gender">>
+							<<run $customerCards.push($globalFluffies[_ef].gender)>>
+						<<case "Breed">>
+							<<run $customerCards.push($globalFluffies[_ef].breed)>>
+						<<case "Coat">>
+							<<run $customerCards.push($globalFluffies[_ef].cColor + " Coat")>>
+						<<case "Mane">>
+							<<run $customerCards.push($globalFluffies[_ef].mColor + " Mane")>>
+						<<case "Eyes">>
+							<<run $customerCards.push($globalFluffies[_ef].eColor + " Eyes")>>
+						<<case "Age">>
+							<<run $customerCards.push(Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks) + " Weeks Old")>>
+					<</switch>>
+			<</switch>>
+		<</for>>
 	<</if>>
 <<run console.log("Growth test -1: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
 <<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
@@ -883,6 +940,17 @@
  % Advance the date
 %/
 <<set $week++>>
+
+<<script>>
+    var date = new Date(State.variables.gameDate);
+    date.setDate(date.getDate() + 7);
+
+	State.variables.gameDate = date.toString();
+	State.variables.day = date.getDay();
+	State.variables.month = date.getMonth();
+	State.variables.year = date.getFullYear();
+<</script>>
+
 <<set $actions = 10>>
 
 
