@@ -555,8 +555,15 @@ window.NameList = {
 			"Lychee",
 			"Peach"
 		],
-		"Purple": [
+		"Black": [
+			"Charcoal",
+			"Night",
+			"Blacky",
+			"Darkness",
 			"Blackberry",
+			"Currant"
+		],
+		"Purple": [
 			"Blueberry",
 			"Boysenberry",
 			"Date",
