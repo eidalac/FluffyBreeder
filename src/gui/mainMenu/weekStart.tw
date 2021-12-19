@@ -26,14 +26,14 @@
 @@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
 /* Round the cash to 2 decimal places */
-<<set $cash = Number($cash).toFixed(2)>>
+<<script>>
+	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+<</script>>
 
 <<if isNaN($cash)>>
-	<<set $cash = 10>>
-<</if>>
-
-<<if $cash < 0>>>
-	<<set $cash = 0>>
+	<<script>>
+		State.variables.cash = Number(10).toFixed(2);
+	<</script>>
 <</if>>
 
 /* Set the UI info and the sidebar buttons*/

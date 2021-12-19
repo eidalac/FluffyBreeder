@@ -6833,16 +6833,16 @@ button {
 			&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
-
-		&lt;&lt;set _price = Number(_price).toFixed(2)&gt;&gt;
-		&lt;&lt;set $cash = Number(Number($cash) + Number(_price)).toFixed(2)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.temporary.price = Number(State.temporary.price).toFixed(2);
+			State.variables.cash = Number(State.variables.cash + State.temporary.price).toFixed(2);
+			State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
 
 		&lt;&lt;if isNaN($cash)&gt;&gt;
-			&lt;&lt;set $cash = 10&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		&lt;&lt;if $cash &lt; 0&gt;&gt;&gt;
-			&lt;&lt;set $cash = 0&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash = Number(10).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
@@ -9027,18 +9027,21 @@ Genes       Height multiplier
 /* ***
  *	Final expenses:
  *** */
-  
-&lt;&lt;set $costs = Number(Number($costs) + Number(_feedCost)).toFixed(2)&gt;&gt;
-&lt;&lt;set $cashLastWeek = $cash&gt;&gt;
-&lt;&lt;set $cash = Number($cash - $costs).toFixed(2)&gt;&gt;
+
+&lt;&lt;script&gt;&gt;
+	State.variables.costs = Number(State.variables.costs + State.temporary.feedCost).toFixed(2);
+	State.variables.cashLastWeek = State.variables.cash;
+	State.variables.cash -= State.variables.costs;
+	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
 
 &lt;&lt;if isNaN($cash)&gt;&gt;
-	&lt;&lt;set $cash = 10&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash = Number(10).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;if $cash &lt; 0&gt;&gt;&gt;
-	&lt;&lt;set $cash = 0&gt;&gt;
-&lt;&lt;/if&gt;&gt;
 
 &lt;br&gt;Upkeep this week was $costs.
 
@@ -9753,7 +9756,19 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;hr&gt;
 &lt;br&gt;
 &lt;&lt;button [[Open the Shop|Week Start]]&gt;&gt;
-	&lt;&lt;set $cash = Number($storePoints + 100), $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2), $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash = State.variables.storePoints + 100;
+		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter+$ourStore.space) / 5).toFixed(2);
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;set $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 
 &lt;/div&gt;
@@ -9866,14 +9881,14 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 @@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
 /* Round the cash to 2 decimal places */
-&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;
+&lt;&lt;script&gt;&gt;
+	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
 
 &lt;&lt;if isNaN($cash)&gt;&gt;
-	&lt;&lt;set $cash = 10&gt;&gt;
-&lt;&lt;/if&gt;&gt;
-
-&lt;&lt;if $cash &lt; 0&gt;&gt;&gt;
-	&lt;&lt;set $cash = 0&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash = Number(10).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Set the UI info and the sidebar buttons*/
@@ -10701,7 +10716,9 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Default difficulty settings
  *	Used in introSummary.tw
  *********** */
-&lt;&lt;set $cash = 1000&gt;&gt;
+&lt;&lt;script&gt;&gt;
+	State.variables.cash = Number(1000).toFixed(2);
+&lt;&lt;/script&gt;&gt;
 &lt;&lt;set $economy = 1&gt;&gt;
 &lt;&lt;set $alicornRarity = 1&gt;&gt; 
 &lt;&lt;set $alicornMonster = 1&gt;&gt; 
@@ -10876,7 +10893,6 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;set $cheater = 0&gt;&gt;
-&lt;&lt;set $cash = 1000&gt;&gt;
 &lt;&lt;set $actions = 10&gt;&gt;
 &lt;&lt;set $normalizedEvents = 0&gt;&gt;
 &lt;&lt;set $autosave = 1&gt;&gt;
@@ -11018,14 +11034,15 @@ profitsTotal: 0
 					&lt;&lt;elseif Number(_randomFluffies.length) &gt; 1 &amp;&amp; _c &gt; $actions&gt;&gt;
 						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this may fluffies.&quot; + _c)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
 					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $cash -= _price&gt;&gt;
+						&lt;&lt;script&gt;&gt;
+							State.variables.cash -= State.temporary.price
+							State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+						&lt;&lt;/script&gt;&gt;
 
 						&lt;&lt;if isNaN($cash)&gt;&gt;
-							&lt;&lt;set $cash = 10&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-
-						&lt;&lt;if $cash &lt; 0&gt;&gt;&gt;
-							&lt;&lt;set $cash = 0&gt;&gt;
+							&lt;&lt;script&gt;&gt;
+								State.variables.cash = Number(10).toFixed(2);
+							&lt;&lt;/script&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 
 						/* More than 1 fluffy present and selected */
@@ -11397,7 +11414,6 @@ profitsTotal: 0
 			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 			&lt;&lt;newFromGene $testChild 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.furStage = random(0, 200)&gt;&gt;
 
 			&lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
 			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
@@ -11882,7 +11898,16 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;elseif $ourStore.space &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 100&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 100
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.space += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11896,7 +11921,16 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;elseif $ourStore.space &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 1000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.space += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11910,7 +11944,16 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;elseif $ourStore.space &gt; 650&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 10000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.space += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11933,7 +11976,16 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;elseif $ourStore.shelter &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 100&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 100
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11947,7 +11999,16 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;elseif $ourStore.shelter &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 1000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11961,7 +12022,16 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;elseif $ourStore.shelter &gt; 650&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 10000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11983,7 +12053,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;elseif $ourStore.display &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 100&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 100
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.display += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11997,7 +12076,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;elseif $ourStore.display &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 1000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 1000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.display += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12011,7 +12099,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;elseif $ourStore.display &gt; 640&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;set $cash = $cash - 10000&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash -= 10000
+				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+
+			&lt;&lt;if isNaN($cash)&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					State.variables.cash = Number(10).toFixed(2);
+				&lt;&lt;/script&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $ourStore.display += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12029,7 +12126,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
 @@#basic_toys;&lt;&lt;button &quot;Buy Basic Toys&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 100&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash -= 100
+			State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+
+		&lt;&lt;if isNaN($cash)&gt;&gt;
+			&lt;&lt;script&gt;&gt;
+				State.variables.cash = Number(10).toFixed(2);
+			&lt;&lt;/script&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Toys&quot;)&gt;&gt;
@@ -12041,7 +12147,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
 @@#fancy_toys;&lt;&lt;button &quot;Buy Fancy Toys&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 500&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash -= 500
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Toys&quot;)&gt;&gt;
@@ -12053,7 +12168,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
 @@#deluxe_toys;&lt;&lt;button &quot;Buy Deluxe Toys&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 1000&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash -= 1000
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Toys&quot;)&gt;&gt;
@@ -12070,7 +12194,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
 @@#basic_training;&lt;&lt;button &quot;Buy Basic Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 100&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash -= 100
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Training Equipment&quot;)&gt;&gt;
@@ -12082,7 +12215,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
 @@#fancy_training;&lt;&lt;button &quot;Buy Fancy Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 500&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash -= 500
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Training Equipment&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#fancy_training button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -12093,7 +12235,16 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
 @@#deluxe_training;&lt;&lt;button &quot;Buy Deluxe Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;set $cash -= 1000&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash -= 1000
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
+
+	&lt;&lt;if isNaN($cash)&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Training Equipment&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#deluxe_training button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -15144,7 +15295,6 @@ button {
 		coatDensity: 100,
 		coatDensityAdd: 10,
 		coatCurl: 2,
-		furStage: 100,
 		subSpecies: 0,
 		subSpeciesString: &quot;Standard Fluffy&quot;,
 		health: 10,
@@ -15230,14 +15380,18 @@ button {
 			charm: $args[0].getCharm(),
 			thinking: $args[0].getThinking(),
 			learning: $args[0].getLearning(),
+			
+			
 			coatLengthAdd: _cl,
 			coatLength: $args[0].getCoatLength() + _cl,
+
 			coatDensityAdd: _cd,
+
 			coatDensity: $args[0].getCoatDensity() + _cd,
 			coatCurl: $args[0].getCoatCurl(),
-			furStage: 100,
 			subSpecies: _subspecies,
 			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
+
 			health: 10,
 			children: [],
 			specialFriend: -1,
@@ -15991,7 +16145,7 @@ button {
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeShaved + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -16180,7 +16334,7 @@ button {
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeShaved + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorMane + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -16440,15 +16594,16 @@ button {
  *	Displays case for the sidebar
  *** */
 &lt;&lt;widget &quot;SidebarCash&quot;&gt;&gt;
-	&lt;&lt;set $cash = Number($cash).toFixed(2)&gt;&gt;
-	&lt;&lt;set $costs = Number($costs).toFixed(2)&gt;&gt;
+
+	&lt;&lt;script&gt;&gt;
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+	&lt;&lt;/script&gt;&gt;
 
 	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;set $cash = 10&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;if $cash &lt; 0&gt;&gt;&gt;
-		&lt;&lt;set $cash = 0&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.cash = Number(10).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;span id=&quot;cash&quot;&gt;
@@ -16512,7 +16667,11 @@ button {
  *** */
 &lt;&lt;widget &quot;PlayerStatus&quot;&gt;&gt;
 	@@.coral;Owner Status@@
-	&lt;&lt;set $actions = Math.clamp(Math.trunc($actions), 0, 10)&gt;&gt;
+
+	&lt;&lt;script&gt;&gt;
+		State.variables.actions = Math.clamp(Math.trunc(State.variables.actions), 0, 10);
+	&lt;&lt;/script&gt;&gt;
+
 	&lt;br&gt;@@.lightcoral; Stamina@@ | 
 	&lt;&lt;switch $actions&gt;&gt;
 		&lt;&lt;case 10&gt;&gt;
@@ -16540,7 +16699,11 @@ button {
 	&lt;&lt;/switch&gt;&gt;
 	
 	&lt;br&gt; @@.lightcoral; Stress@@ | 
-	&lt;&lt;set $stress = Math.clamp(Math.trunc($stress), 0, 200)&gt;&gt;
+
+	&lt;&lt;script&gt;&gt;
+		State.variables.stress = Math.clamp(Math.trunc(State.variables.stress), 0, 200);
+	&lt;&lt;/script&gt;&gt;
+
 	&lt;&lt;if $stress &lt; 20&gt;&gt;
 		@@color:rgb(0,255,0);□□□□□□□□□□@@
 	&lt;&lt;elseif $stress &lt; 40&gt;&gt;
@@ -16565,7 +16728,11 @@ button {
 		@@color:rgb(255,0,0);■■■■■■■■■■@@
 	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;@@.lightcoral; Rep@@ | 
-	&lt;&lt;set $reputation = Math.clamp(Math.trunc($reputation), 0, 1000)&gt;&gt;
+	
+	&lt;&lt;script&gt;&gt;
+		State.variables.reputation = Math.clamp(Math.trunc(State.variables.reputation), 0, 1000);
+	&lt;&lt;/script&gt;&gt;
+
 	&lt;&lt;if $reputation &gt; 900&gt;&gt;
 		@@color:rgb(0,145,0);prestigious@@
 	&lt;&lt;elseif $reputation &gt; 800&gt;&gt;
@@ -16607,9 +16774,11 @@ button {
 	&lt;&lt;/if&gt;&gt;
 ($reputation)
 
-	&lt;&lt;set $training = Math.clamp(Math.trunc($training), 0, 200)&gt;&gt;
-	&lt;&lt;set $hugbox = Math.clamp(Math.trunc($hugbox), 0, 200)&gt;&gt;
-	&lt;&lt;set $abuse = Math.clamp(Math.trunc($abuse), 0, 200)&gt;&gt;
+	&lt;&lt;script&gt;&gt;
+		State.variables.training = Math.clamp(Math.trunc(State.variables.training), 0, 200);
+		State.variables.hugbox = Math.clamp(Math.trunc(State.variables.hugbox), 0, 200);
+		State.variables.abuse = Math.clamp(Math.trunc(State.variables.abuse), 0, 200);
+	&lt;&lt;/script&gt;&gt;
 
 	&lt;br&gt;@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
 &lt;&lt;/widget&gt;&gt;
@@ -16619,26 +16788,32 @@ button {
  *	Clamps fluffy stats
  *** */
 &lt;&lt;widget &quot;clampValues&quot;&gt;&gt;
-	&lt;&lt;if ndef arg[0]&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
 		&lt;&lt;run console.log(&quot;Called &lt;&lt;clampValues&gt;&gt; without Fluffy.&quot;)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $activeFluffy = $globalFluffies[$args[0].ID]&gt;&gt;
 		&lt;&lt;run console.log(&quot;Name&quot;, $activeFluffy.name)&gt;&gt;
-		/* Clamp These 0-10: */
-		&lt;&lt;set arg[0].strength = Math.clamp(Math.trunc(arg[0].strength), 0, 10)&gt;&gt;
-		&lt;&lt;set arg[0].energy = Math.clamp(Math.trunc(arg[0].energy), 0, 10)&gt;&gt;
-		&lt;&lt;set arg[0].charm = Math.clamp(Math.trunc(arg[0].charm), 0, 10)&gt;&gt;
-		&lt;&lt;set arg[0].thinking = Math.clamp(Math.trunc(arg[0].thinking), 0, 10)&gt;&gt;
-		&lt;&lt;set arg[0].learning = Math.clamp(Math.trunc(arg[0].learning), 0, 10)&gt;&gt;
-		&lt;&lt;set arg[0].fertility = Math.clamp(Math.trunc(arg[0].fertility), 0, 10)&gt;&gt;
-			
-		/* Clamp these to 0-200 */
-		&lt;&lt;set arg[0].furStage = Math.clamp(Math.trunc(arg[0].trust), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].trust = Math.clamp(Math.trunc(arg[0].trust), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].training = Math.clamp(Math.trunc(arg[0].training), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].temperament = Math.clamp(Math.trunc(arg[0].temperament), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].happy = Math.clamp(Math.trunc(arg[0].happy), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].stress = Math.clamp(Math.trunc(arg[0].stress), 0, 200)&gt;&gt;
-		&lt;&lt;set arg[0].trauma = Math.clamp(Math.trunc(arg[0].trauma), 0, 200)&gt;&gt;
+
+		/* Doing via script because I can&#39;t trust TWINE to do math */
+		&lt;&lt;script&gt;&gt;
+			const ID = State.variables.activeFluffy.ID;
+
+			/* Clamp These 0-10: */
+			State.variables.globalFluffies[ID].strength = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].strength), 0, 10);
+			State.variables.globalFluffies[ID].energy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].energy), 0, 10);
+			State.variables.globalFluffies[ID].charm = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].charm), 0, 10);
+			State.variables.globalFluffies[ID].thinking = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].thinking), 0, 10);
+			State.variables.globalFluffies[ID].learning = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].learning), 0, 10);
+			State.variables.globalFluffies[ID].fertility = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].fertility), 0, 10);
+
+			/* Clamp these to 0-200 */
+			State.variables.globalFluffies[ID].trust = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trust), 0, 200);
+			State.variables.globalFluffies[ID].training = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].training), 0, 200);
+			State.variables.globalFluffies[ID].temperament = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].temperament), 0, 200);
+			State.variables.globalFluffies[ID].happy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].happy), 0, 200);
+			State.variables.globalFluffies[ID].stress = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].stress), 0, 200);
+			State.variables.globalFluffies[ID].trauma = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trauma), 0, 200);
+		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 

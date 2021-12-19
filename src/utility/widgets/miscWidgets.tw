@@ -119,15 +119,16 @@
  *	Displays case for the sidebar
  *** */
 <<widget "SidebarCash">>
-	<<set $cash = Number($cash).toFixed(2)>>
-	<<set $costs = Number($costs).toFixed(2)>>
+
+	<<script>>
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+	<</script>>
 
 	<<if isNaN($cash)>>
-		<<set $cash = 10>>
-	<</if>>
-
-	<<if $cash < 0>>>
-		<<set $cash = 0>>
+		<<script>>
+			State.variables.cash = Number(10).toFixed(2);
+		<</script>>
 	<</if>>
 
 	<span id="cash">
@@ -191,7 +192,11 @@
  *** */
 <<widget "PlayerStatus">>
 	@@.coral;Owner Status@@
-	<<set $actions = Math.clamp(Math.trunc($actions), 0, 10)>>
+
+	<<script>>
+		State.variables.actions = Math.clamp(Math.trunc(State.variables.actions), 0, 10);
+	<</script>>
+
 	<br>@@.lightcoral; Stamina@@ | 
 	<<switch $actions>>
 		<<case 10>>
@@ -219,7 +224,11 @@
 	<</switch>>
 	
 	<br> @@.lightcoral; Stress@@ | 
-	<<set $stress = Math.clamp(Math.trunc($stress), 0, 200)>>
+
+	<<script>>
+		State.variables.stress = Math.clamp(Math.trunc(State.variables.stress), 0, 200);
+	<</script>>
+
 	<<if $stress < 20>>
 		@@color:rgb(0,255,0);□□□□□□□□□□@@
 	<<elseif $stress < 40>>
@@ -244,7 +253,11 @@
 		@@color:rgb(255,0,0);■■■■■■■■■■@@
 	<</if>>
 	<br>@@.lightcoral; Rep@@ | 
-	<<set $reputation = Math.clamp(Math.trunc($reputation), 0, 1000)>>
+	
+	<<script>>
+		State.variables.reputation = Math.clamp(Math.trunc(State.variables.reputation), 0, 1000);
+	<</script>>
+
 	<<if $reputation > 900>>
 		@@color:rgb(0,145,0);prestigious@@
 	<<elseif $reputation > 800>>
@@ -286,9 +299,11 @@
 	<</if>>
 ($reputation)
 
-	<<set $training = Math.clamp(Math.trunc($training), 0, 200)>>
-	<<set $hugbox = Math.clamp(Math.trunc($hugbox), 0, 200)>>
-	<<set $abuse = Math.clamp(Math.trunc($abuse), 0, 200)>>
+	<<script>>
+		State.variables.training = Math.clamp(Math.trunc(State.variables.training), 0, 200);
+		State.variables.hugbox = Math.clamp(Math.trunc(State.variables.hugbox), 0, 200);
+		State.variables.abuse = Math.clamp(Math.trunc(State.variables.abuse), 0, 200);
+	<</script>>
 
 	<br>@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
 <</widget>>
@@ -298,26 +313,32 @@
  *	Clamps fluffy stats
  *** */
 <<widget "clampValues">>
-	<<if ndef arg[0]>>
+	<<if ndef $args[0]>>
 		<<run console.log("Called <<clampValues>> without Fluffy.")>>
 	<<else>>
+		<<set $activeFluffy = $globalFluffies[$args[0].ID]>>
 		<<run console.log("Name", $activeFluffy.name)>>
-		/* Clamp These 0-10: */
-		<<set arg[0].strength = Math.clamp(Math.trunc(arg[0].strength), 0, 10)>>
-		<<set arg[0].energy = Math.clamp(Math.trunc(arg[0].energy), 0, 10)>>
-		<<set arg[0].charm = Math.clamp(Math.trunc(arg[0].charm), 0, 10)>>
-		<<set arg[0].thinking = Math.clamp(Math.trunc(arg[0].thinking), 0, 10)>>
-		<<set arg[0].learning = Math.clamp(Math.trunc(arg[0].learning), 0, 10)>>
-		<<set arg[0].fertility = Math.clamp(Math.trunc(arg[0].fertility), 0, 10)>>
-			
-		/* Clamp these to 0-200 */
-		<<set arg[0].furStage = Math.clamp(Math.trunc(arg[0].trust), 0, 200)>>
-		<<set arg[0].trust = Math.clamp(Math.trunc(arg[0].trust), 0, 200)>>
-		<<set arg[0].training = Math.clamp(Math.trunc(arg[0].training), 0, 200)>>
-		<<set arg[0].temperament = Math.clamp(Math.trunc(arg[0].temperament), 0, 200)>>
-		<<set arg[0].happy = Math.clamp(Math.trunc(arg[0].happy), 0, 200)>>
-		<<set arg[0].stress = Math.clamp(Math.trunc(arg[0].stress), 0, 200)>>
-		<<set arg[0].trauma = Math.clamp(Math.trunc(arg[0].trauma), 0, 200)>>
+
+		/* Doing via script because I can't trust TWINE to do math */
+		<<script>>
+			const ID = State.variables.activeFluffy.ID;
+
+			/* Clamp These 0-10: */
+			State.variables.globalFluffies[ID].strength = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].strength), 0, 10);
+			State.variables.globalFluffies[ID].energy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].energy), 0, 10);
+			State.variables.globalFluffies[ID].charm = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].charm), 0, 10);
+			State.variables.globalFluffies[ID].thinking = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].thinking), 0, 10);
+			State.variables.globalFluffies[ID].learning = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].learning), 0, 10);
+			State.variables.globalFluffies[ID].fertility = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].fertility), 0, 10);
+
+			/* Clamp these to 0-200 */
+			State.variables.globalFluffies[ID].trust = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trust), 0, 200);
+			State.variables.globalFluffies[ID].training = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].training), 0, 200);
+			State.variables.globalFluffies[ID].temperament = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].temperament), 0, 200);
+			State.variables.globalFluffies[ID].happy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].happy), 0, 200);
+			State.variables.globalFluffies[ID].stress = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].stress), 0, 200);
+			State.variables.globalFluffies[ID].trauma = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trauma), 0, 200);
+		<</script>>
 	<</if>>
 <</widget>>
 

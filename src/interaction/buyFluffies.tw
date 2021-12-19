@@ -70,14 +70,15 @@
 					<<elseif Number(_randomFluffies.length) > 1 && _c > $actions>>
 						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this may fluffies." + _c)>><<run Dialog.open()>>
 					<<else>>
-						<<set $cash -= _price>>
+						<<script>>
+							State.variables.cash -= State.temporary.price
+							State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+						<</script>>
 
 						<<if isNaN($cash)>>
-							<<set $cash = 10>>
-						<</if>>
-
-						<<if $cash < 0>>>
-							<<set $cash = 0>>
+							<<script>>
+								State.variables.cash = Number(10).toFixed(2);
+							<</script>>
 						<</if>>
 
 						/* More than 1 fluffy present and selected */
@@ -449,7 +450,6 @@
 			<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 			<<newFromGene $testChild 2>>
 			<<set $activeFluffy.age = 0>>
-			<<set $activeFluffy.furStage = random(0, 200)>>
 
 			<<run $activeFluffy.genes.setSubSpecies("2/6")>>
 			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
