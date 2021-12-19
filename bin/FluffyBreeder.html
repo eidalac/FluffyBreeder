@@ -6833,18 +6833,8 @@ button {
 			&lt;&lt;set _price = Number(Number(_price) + Number(random(5,10)))&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
-		&lt;&lt;script&gt;&gt;
-			State.temporary.price = Number(State.temporary.price).toFixed(2);
-			State.variables.cash = Number(State.variables.cash + State.temporary.price).toFixed(2);
-			State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-
-		&lt;&lt;if isNaN($cash)&gt;&gt;
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash = Number(10).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
+		&lt;&lt;cashMinus _price&gt;&gt;
+		
 		&lt;&lt;run console.log(&quot;Customer needs $cash = &quot; + $cash)&gt;&gt;
 
 		&lt;&lt;replace &quot;#result-msg&quot;&gt;&gt;
@@ -9031,16 +9021,10 @@ Genes       Height multiplier
 &lt;&lt;script&gt;&gt;
 	State.variables.costs = Number(State.variables.costs + State.temporary.feedCost).toFixed(2);
 	State.variables.cashLastWeek = State.variables.cash;
-	State.variables.cash -= State.variables.costs;
-	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
 	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 &lt;&lt;/script&gt;&gt;
 
-&lt;&lt;if isNaN($cash)&gt;&gt;
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash = Number(10).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-&lt;&lt;/if&gt;&gt;
+&lt;&lt;cashMinus $costs&gt;&gt;
 
 
 &lt;br&gt;Upkeep this week was $costs.
@@ -9758,16 +9742,13 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;button [[Open the Shop|Week Start]]&gt;&gt;
 	&lt;&lt;script&gt;&gt;
 		State.variables.cash = State.variables.storePoints + 100;
-		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter+$ourStore.space) / 5).toFixed(2);
+		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter + State.variables.ourStore.space) / 5).toFixed(2);
 		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
 		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 	&lt;&lt;/script&gt;&gt;
 
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashClamp&gt;&gt;
+
 	&lt;&lt;set $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
 &lt;&lt;/button&gt;&gt;
 
@@ -9881,15 +9862,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 @@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
 /* Round the cash to 2 decimal places */
-&lt;&lt;script&gt;&gt;
-	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-&lt;&lt;/script&gt;&gt;
-
-&lt;&lt;if isNaN($cash)&gt;&gt;
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash = Number(10).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-&lt;&lt;/if&gt;&gt;
+&lt;&lt;cashClamp&gt;&gt;
 
 /* Set the UI info and the sidebar buttons*/
 &lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
@@ -11034,17 +11007,8 @@ profitsTotal: 0
 					&lt;&lt;elseif Number(_randomFluffies.length) &gt; 1 &amp;&amp; _c &gt; $actions&gt;&gt;
 						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this may fluffies.&quot; + _c)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
 					&lt;&lt;else&gt;&gt;
-						&lt;&lt;script&gt;&gt;
-							State.variables.cash -= State.temporary.price
-							State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-						&lt;&lt;/script&gt;&gt;
-
-						&lt;&lt;if isNaN($cash)&gt;&gt;
-							&lt;&lt;script&gt;&gt;
-								State.variables.cash = Number(10).toFixed(2);
-							&lt;&lt;/script&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-
+						&lt;&lt;cashMinus _price&gt;&gt;
+	
 						/* More than 1 fluffy present and selected */
 						&lt;&lt;if _c &gt; 0&gt;&gt;
 							&lt;&lt;set $actions -= _c&gt;&gt;
@@ -11898,16 +11862,7 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;elseif $ourStore.space &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 100
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.space += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11920,17 +11875,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.space &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 1000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11944,16 +11890,7 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;elseif $ourStore.space &gt; 650&gt;&gt;
 			&lt;&lt;replace &quot;#space-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 10000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11976,16 +11913,7 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;elseif $ourStore.shelter &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 100
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -11998,17 +11926,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.shelter &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 1000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12021,17 +11940,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.shelter &gt; 650&gt;&gt;
 			&lt;&lt;replace &quot;#shelter-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 10000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12052,17 +11962,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.display &gt; 749&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 100
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.display += 1&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12075,17 +11976,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.display &gt; 740&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 1000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 10&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12098,17 +11990,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;You can&#39;t afford this!@@&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;elseif $ourStore.display &gt; 640&gt;&gt;
 			&lt;&lt;replace &quot;#display-form-error&quot;&gt;&gt;@@.orange;750 max!@@&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;else&gt;&gt; 
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash -= 10000
-				State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-
-			&lt;&lt;if isNaN($cash)&gt;&gt;
-				&lt;&lt;script&gt;&gt;
-					State.variables.cash = Number(10).toFixed(2);
-				&lt;&lt;/script&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 100&gt;&gt;
 			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -12126,16 +12009,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
 @@#basic_toys;&lt;&lt;button &quot;Buy Basic Toys&quot;&gt;&gt;	
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash -= 100
-			State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-
-		&lt;&lt;if isNaN($cash)&gt;&gt;
-			&lt;&lt;script&gt;&gt;
-				State.variables.cash = Number(10).toFixed(2);
-			&lt;&lt;/script&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -100&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Toys&quot;)&gt;&gt;
@@ -12147,16 +12021,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
 @@#fancy_toys;&lt;&lt;button &quot;Buy Fancy Toys&quot;&gt;&gt;	
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash -= 500
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -500&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Toys&quot;)&gt;&gt;
@@ -12168,16 +12033,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
 @@#deluxe_toys;&lt;&lt;button &quot;Buy Deluxe Toys&quot;&gt;&gt;	
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash -= 1000
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -1000&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Toys&quot;)&gt;&gt;
@@ -12194,16 +12050,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
 @@#basic_training;&lt;&lt;button &quot;Buy Basic Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash -= 100
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -100&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Training Equipment&quot;)&gt;&gt;
@@ -12215,16 +12062,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
 @@#fancy_training;&lt;&lt;button &quot;Buy Fancy Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash -= 500
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -500&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Training Equipment&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#fancy_training button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -12235,16 +12073,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
 @@#deluxe_training;&lt;&lt;button &quot;Buy Deluxe Training Equipment&quot;&gt;&gt;	
-	&lt;&lt;script&gt;&gt;
-		State.variables.cash -= 1000
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
+	&lt;&lt;cashAdd -1000&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Training Equipment&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#deluxe_training button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -16475,7 +16304,107 @@ button {
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="misc widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="math widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
+ * mathWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Widgets for math because I can&#39;t trust TWINE to add numbers.
+ *
+ *********** */
+
+
+/* ***
+ *	Call as &lt;&lt;cashAdd &lt;nubmer&gt;&gt;&gt;
+ *	Adds a value (or subtract if negative) to the $cash value.
+ *** */
+&lt;&lt;widget &quot;cashAdd&quot;&gt;&gt;
+	
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		/* Ignore if there are no args. */
+		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashAdd&gt;&gt;: called with no arguments.`)&gt;&gt;
+	
+	&lt;&lt;elseif isNaN($args[0])&gt;&gt;
+		/* Ignore if the arg can&#39;t be processed as a number. */
+		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashAdd&gt;&gt;: called with a non number ${$args[0]}.`)&gt;&gt;
+	
+	/* Process the math in java script. */
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			/* Upper bound check.  Number can be up to 1.8E308, this is about 1.8e50, so under by 250+ orders of magnitude: */
+			const maxCash = 180000000000000000000000000000000000000000000000000;
+
+			/* Cast the arg as a number: */
+			State.variables.args[0] = Number(State.variables.args[0]).toFixed(2);
+
+			/* Add the value: */
+			State.variables.cash = Number(Number(State.variables.cash) + Number(State.variables.args[0])).toFixed(2);
+
+			/* Clamp the value from 0 to maxCash: */
+			State.variables.cash = Math.clamp(State.variables.cash, 0, maxCash);
+
+			/* Round to 2 decimal digits: */
+			State.variables.cash = Number(State.variables.cash).toFixed(2);
+			/* Log if this is somehow NaN: */
+			if (isNaN(State.variables.cash))
+			{
+				console.log(`ERROR: &lt;&lt;cashAdd&gt;&gt;: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
+				State.variables.cash = Number(10).toFixed(2);
+			}
+		&lt;&lt;/script&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Call as &lt;&lt;cashMinus &lt;nubmer&gt;&gt;&gt;
+ *	Adds a value (or subtract if negative) to the $cash value.
+ *** */
+&lt;&lt;widget &quot;cashMinus&quot;&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		/* Ignore if there are no args. */
+		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashMinus&gt;&gt;: called with no arguments.`)&gt;&gt;
+	&lt;&lt;elseif isNaN($args[0])&gt;&gt;
+		/* Ignore if the arg can&#39;t be processed as a number. */
+		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashMinus&gt;&gt;: called with a non number ${$args[0]}.`)&gt;&gt;
+	&lt;&lt;elseif Number($args[0]) &lt;= 0&gt;&gt;
+		/* Ignore if the arg is set negative: */
+		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashMinus&gt;&gt;: called with a negative number ${$args[0]}.`)&gt;&gt;
+		&lt;&lt;cashAdd Number($args[0])&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;script&gt;&gt;
+			State.variables.args[0] = Number(Number(0) - Number(State.variables.args[0])).toFixed(2);
+		&lt;&lt;/script&gt;&gt;
+		&lt;&lt;cashAdd $args[0]&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+/* ***
+ *	Call as &lt;&lt;cashClamp&gt;&gt;
+ *	does a clamp check on $cash.
+ *** */
+&lt;&lt;widget &quot;cashClamp&quot;&gt;&gt;
+	
+	/* Process the math in java script. */
+	&lt;&lt;script&gt;&gt;
+		/* Upper bound check.  Number can be up to 1.8E308, this is about 1.8e50, so under by 250+ orders of magnitude: */
+		const maxCash = 180000000000000000000000000000000000000000000000000;
+
+		/* Clamp the value from 0 to maxCash: */
+		State.variables.cash = Math.min(Math.max(State.variables.cash, 0), maxCash);
+
+		/* Round to 2 decimal digits: */
+		State.variables.cash = Number(State.variables.cash).toFixed(2);
+
+		/* Log if this is somehow NaN: */
+		if (isNaN(State.variables.cash))
+		{
+			console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
+			State.variables.cash = Number(10).toFixed(2);
+		}
+	&lt;&lt;/script&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="misc widgets" tags="nobr widget" position="1225,475" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -16595,16 +16524,10 @@ button {
  *** */
 &lt;&lt;widget &quot;SidebarCash&quot;&gt;&gt;
 
+	&lt;&lt;cashClamp&gt;&gt;
 	&lt;&lt;script&gt;&gt;
-		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
 		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 	&lt;&lt;/script&gt;&gt;
-
-	&lt;&lt;if isNaN($cash)&gt;&gt;
-		&lt;&lt;script&gt;&gt;
-			State.variables.cash = Number(10).toFixed(2);
-		&lt;&lt;/script&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
 
 	&lt;span id=&quot;cash&quot;&gt;
 	&lt;&lt;if $cash &gt; 0&gt;&gt;
@@ -17133,7 +17056,7 @@ button {
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="pronoun widgets" tags="widget nobr" position="1225,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="pronoun widgets" tags="widget nobr" position="100,600" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

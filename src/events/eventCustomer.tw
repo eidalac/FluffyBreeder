@@ -891,18 +891,8 @@ button {
 			<<set _price = Number(Number(_price) + Number(random(5,10)))>>
 		<</if>>
 
-		<<script>>
-			State.temporary.price = Number(State.temporary.price).toFixed(2);
-			State.variables.cash = Number(State.variables.cash + State.temporary.price).toFixed(2);
-			State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-		<</script>>
-
-		<<if isNaN($cash)>>
-			<<script>>
-				State.variables.cash = Number(10).toFixed(2);
-			<</script>>
-		<</if>>
-
+		<<cashMinus _price>>
+		
 		<<run console.log("Customer needs $cash = " + $cash)>>
 
 		<<replace "#result-msg">>

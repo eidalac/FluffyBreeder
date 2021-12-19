@@ -202,16 +202,13 @@
 <<button [[Open the Shop|Week Start]]>>
 	<<script>>
 		State.variables.cash = State.variables.storePoints + 100;
-		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter+$ourStore.space) / 5).toFixed(2);
+		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter + State.variables.ourStore.space) / 5).toFixed(2);
 		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
 		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 	<</script>>
 
-	<<if isNaN($cash)>>
-		<<script>>
-			State.variables.cash = Number(10).toFixed(2);
-		<</script>>
-	<</if>>
+	<<cashClamp>>
+
 	<<set $encyclopedia = "Running your Store">>
 <</button>>
 

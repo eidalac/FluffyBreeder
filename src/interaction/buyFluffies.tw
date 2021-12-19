@@ -70,17 +70,8 @@
 					<<elseif Number(_randomFluffies.length) > 1 && _c > $actions>>
 						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this may fluffies." + _c)>><<run Dialog.open()>>
 					<<else>>
-						<<script>>
-							State.variables.cash -= State.temporary.price
-							State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
-						<</script>>
-
-						<<if isNaN($cash)>>
-							<<script>>
-								State.variables.cash = Number(10).toFixed(2);
-							<</script>>
-						<</if>>
-
+						<<cashMinus _price>>
+	
 						/* More than 1 fluffy present and selected */
 						<<if _c > 0>>
 							<<set $actions -= _c>>

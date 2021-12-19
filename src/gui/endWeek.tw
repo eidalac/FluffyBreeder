@@ -923,16 +923,10 @@
 <<script>>
 	State.variables.costs = Number(State.variables.costs + State.temporary.feedCost).toFixed(2);
 	State.variables.cashLastWeek = State.variables.cash;
-	State.variables.cash -= State.variables.costs;
-	State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
 	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 <</script>>
 
-<<if isNaN($cash)>>
-	<<script>>
-		State.variables.cash = Number(10).toFixed(2);
-	<</script>>
-<</if>>
+<<cashMinus $costs>>
 
 
 <br>Upkeep this week was $costs.
