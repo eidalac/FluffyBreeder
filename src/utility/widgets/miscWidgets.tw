@@ -185,6 +185,10 @@
 <</widget>>
 
 
+/* ***
+ *	Call as <<PlayerStatus>>
+ *	Displays player status
+ *** */
 <<widget "PlayerStatus">>
 	@@.coral;Owner Status@@
 	<<set $actions = Math.clamp(Math.trunc($actions), 0, 10)>>
@@ -289,6 +293,33 @@
 	<br>@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
 <</widget>>
 
+/* ***
+ *	Call as <<clampValues $fluffy>>
+ *	Clamps fluffy stats
+ *** */
+<<widget "clampValues">>
+	<<if ndef arg[0]>>
+		<<run console.log("Called <<clampValues>> without Fluffy.")>>
+	<<else>>
+		<<run console.log("Name", $activeFluffy.name)>>
+		/* Clamp These 0-10: */
+		<<set arg[0].strength = Math.clamp(Math.trunc(arg[0].strength), 0, 10)>>
+		<<set arg[0].energy = Math.clamp(Math.trunc(arg[0].energy), 0, 10)>>
+		<<set arg[0].charm = Math.clamp(Math.trunc(arg[0].charm), 0, 10)>>
+		<<set arg[0].thinking = Math.clamp(Math.trunc(arg[0].thinking), 0, 10)>>
+		<<set arg[0].learning = Math.clamp(Math.trunc(arg[0].learning), 0, 10)>>
+		<<set arg[0].fertility = Math.clamp(Math.trunc(arg[0].fertility), 0, 10)>>
+			
+		/* Clamp these to 0-200 */
+		<<set arg[0].furStage = Math.clamp(Math.trunc(arg[0].trust), 0, 200)>>
+		<<set arg[0].trust = Math.clamp(Math.trunc(arg[0].trust), 0, 200)>>
+		<<set arg[0].training = Math.clamp(Math.trunc(arg[0].training), 0, 200)>>
+		<<set arg[0].temperament = Math.clamp(Math.trunc(arg[0].temperament), 0, 200)>>
+		<<set arg[0].happy = Math.clamp(Math.trunc(arg[0].happy), 0, 200)>>
+		<<set arg[0].stress = Math.clamp(Math.trunc(arg[0].stress), 0, 200)>>
+		<<set arg[0].trauma = Math.clamp(Math.trunc(arg[0].trauma), 0, 200)>>
+	<</if>>
+<</widget>>
 
 /*		 	
 			<<set _geneCheck = $ordinalString.match(/\D*[#]+/)>>

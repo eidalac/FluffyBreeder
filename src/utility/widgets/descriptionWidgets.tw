@@ -104,22 +104,8 @@ button {
 				<<set $globalFluffies[_fl].isChecked = false>>
 				<<continue>>
 			<<else>>
-	
-			/* Clamp values: */
-			<<set $globalFluffies[_fl].strength = Math.clamp(Math.trunc($globalFluffies[_fl].strength), 0, 10)>>
-			<<set $globalFluffies[_fl].energy = Math.clamp(Math.trunc($globalFluffies[_fl].energy), 0, 10)>>
-			<<set $globalFluffies[_fl].charm = Math.clamp(Math.trunc($globalFluffies[_fl].charm), 0, 10)>>
-			<<set $globalFluffies[_fl].thinking = Math.clamp(Math.trunc($globalFluffies[_fl].thinking), 0, 10)>>
-			<<set $globalFluffies[_fl].learning = Math.clamp(Math.trunc($globalFluffies[_fl].learning), 0, 10)>>
-			<<set $globalFluffies[_fl].fertility = Math.clamp(Math.trunc($globalFluffies[_fl].fertility), 0, 10)>>
-		
-			/* Clamp these to 0-200 */
-			<<set $globalFluffies[_fl].trust = Math.clamp(Math.trunc($globalFluffies[_fl].trust), 0, 200)>>
-			<<set $globalFluffies[_fl].training = Math.clamp(Math.trunc($globalFluffies[_fl].training), 0, 200)>>
-			<<set $globalFluffies[_fl].temperament = Math.clamp(Math.trunc($globalFluffies[_fl].temperament), 0, 200)>>
-			<<set $globalFluffies[_fl].happy = Math.clamp(Math.trunc($globalFluffies[_fl].happy), 0, 200)>>
-			<<set $globalFluffies[_fl].stress = Math.clamp(Math.trunc($globalFluffies[_fl].stress), 0, 200)>>
-			<<set $globalFluffies[_fl].trauma = Math.clamp(Math.trunc($globalFluffies[_fl].trauma), 0, 200)>>
+
+			<<clampValues $globalFluffies[_fl]>>
 	
 			<<capture _fl>>
 			
@@ -386,22 +372,8 @@ button {
 
 	/*<<colorValue>>*/
 	<<statValue>>
-
-	/* Clamp These 0-10: */
-	<<set $activeFluffy.strength = Math.clamp(Math.trunc($activeFluffy.strength), 0, 10)>>
-	<<set $activeFluffy.energy = Math.clamp(Math.trunc($activeFluffy.energy), 0, 10)>>
-	<<set $activeFluffy.charm = Math.clamp(Math.trunc($activeFluffy.charm), 0, 10)>>
-	<<set $activeFluffy.thinking = Math.clamp(Math.trunc($activeFluffy.thinking), 0, 10)>>
-	<<set $activeFluffy.learning = Math.clamp(Math.trunc($activeFluffy.learning), 0, 10)>>
-	<<set $activeFluffy.fertility = Math.clamp(Math.trunc($activeFluffy.fertility), 0, 10)>>
-
-	/* Clamp these to 0-200 */
-	<<set $activeFluffy.trust = Math.clamp(Math.trunc($activeFluffy.trust), 0, 200)>>
-	<<set $activeFluffy.training = Math.clamp(Math.trunc($activeFluffy.training), 0, 200)>>
-	<<set $activeFluffy.temperament = Math.clamp(Math.trunc($activeFluffy.temperament), 0, 200)>>
-	<<set $activeFluffy.happy = Math.clamp(Math.trunc($activeFluffy.happy), 0, 200)>>
-	<<set $activeFluffy.stress = Math.clamp(Math.trunc($activeFluffy.stress), 0, 200)>>
-	<<set $activeFluffy.trauma = Math.clamp(Math.trunc($activeFluffy.trauma), 0, 200)>>
+	<<clampValues $activeFluffy>>
+	<<run console.log("Name", $activeFluffy.name)>>
 	 
 	<<if def $activeFluffy.ID && $activeFluffy.ID >= 0>>
 		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
@@ -513,26 +485,9 @@ button {
 	<<for _i = 0; _i < _fluffy.children.length; _i++>>
 		<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@ | ">> 
 	<</for>>
-	
-	
-	/* Clamp These 0-10: */
-	<<set _fluffy.strength = Math.clamp(Math.trunc(_fluffy.strength), 0, 10)>>
-	<<set _fluffy.energy = Math.clamp(Math.trunc(_fluffy.energy), 0, 10)>>
-	<<set _fluffy.charm = Math.clamp(Math.trunc(_fluffy.charm), 0, 10)>>
-	<<set _fluffy.thinking = Math.clamp(Math.trunc(_fluffy.thinking), 0, 10)>>
-	<<set _fluffy.learning = Math.clamp(Math.trunc(_fluffy.learning), 0, 10)>>
-	<<set _fluffy.fertility = Math.clamp(Math.trunc(_fluffy.fertility), 0, 10)>>
-		
-	 /* Clamp these to 0-200 */
-	 <<set _fluffy.trust = Math.clamp(Math.trunc(_fluffy.trust), 0, 200)>>
-	 <<set _fluffy.training = Math.clamp(Math.trunc(_fluffy.training), 0, 200)>>
-	 <<set _fluffy.temperament = Math.clamp(Math.trunc(_fluffy.temperament), 0, 200)>>
-	 <<set _fluffy.happy = Math.clamp(Math.trunc(_fluffy.happy), 0, 200)>>
-	 <<set _fluffy.stress = Math.clamp(Math.trunc(_fluffy.stress), 0, 200)>>
-	 <<set _fluffy.trauma = Math.clamp(Math.trunc(_fluffy.trauma), 0, 200)>>
 	 
-	 <<set $globalFluffies[_fluffy.ID] = _fluffy>>
-	 
+	<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+
 	<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<<else>>
@@ -540,9 +495,6 @@ button {
 		<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<</if>>
-
-
-	
 
 <<print _fluffy.traits[0]>> _fluffy.gender _fluffy.breed | Name: <<print _fluffy.name>> | <<inlineColor _fluffy.cColor>> coat <<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>| <<inlineColor _fluffy.mColor>> mane<</if>> <<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>| <<inlineColor _fluffy.eColor>> eyes<</if>>
 <br>Strength <<displayStat _fluffy.strength>> Energy <<displayStat _fluffy.energy>> Charm <<displayStat _fluffy.charm>> Thinking <<displayStat _fluffy.thinking>> Learning <<displayStat _fluffy.learning>> Fertility <<displayStat _fluffy.fertility>>
