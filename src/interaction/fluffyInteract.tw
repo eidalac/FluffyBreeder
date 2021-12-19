@@ -240,6 +240,60 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 
 
 <br>
+<div id="product-form">
+<<if $activeFluffy.subSpecies == 2>>
+	<<set _angora == true>>
+	<<set _desc = "Shear " + $activeFluffy.name>>
+<<elseif $activeFluffy.nursing > 0>>
+	<<set _milk == true>>
+	<<set _desc = "Milk " + $activeFluffy.name>>
+<</if>>
+<<if _angora>>
+	<<button _desc>>
+		<<if $actions > 0>>
+			<<set $actions-->>
+			<<set $stress -= 10>>
+			<<if $stress < 0>><<set $stress = 0>><</if>>
+			<<set $hugbox += 1>>
+			<<set $activeFluffy.trust++>>
+			<<set $activeFluffy.happy++>>
+			<<set $activeFluffy.temperament++>>
+			<<set $activeFluffy.stress-->>
+			
+			<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+				<<set $activeFluffy.stress-->>
+			<</if>>
+			<<if $ourStore.upgrades.includes("Fancy Toys")>>
+				<<set $activeFluffy.happy++>>
+			<</if>>
+			<<if $ourStore.upgrades.includes("Basic Toys")>>
+				<<set $activeFluffy.happy++>>
+				<<set $activeFluffy.stress-->>
+			<</if>>
+			
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+			<<replace "#shear-msg">>
+				<br><<- $title>><<colorizeText $activeFluffy.cColor "am bestest at pwayin\'! Pway AWW da games wit\'">>
+				<<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor ", heheheh!">>
+			<</replace>>
+			<<replace "#fluffy-name">><<intractDetails>><</replace>>
+		<<else>>
+			<<replace "#shear-msg">><br>You are too tired to shear right now.<</replace>>
+		<</if>>
+
+		<<replace "#train-msg">><</replace>>
+		<<replace "#abuse-msg">><</replace>>
+		<<replace "#rename-msg">><</replace>>
+		<<replace "#play-msg">><</replace>>
+		<<replace "#greet-msg">><</replace>>
+	<</button>>
+	<br>
+<</if>>
+/* Form for error message to display*/
+<span id="shear-msg"></span>
+</div>
+
+<br>
 <div id="play-form">
 <<set _desc = "Play with " + $activeFluffy.name>>
 <<button _desc>>
@@ -265,7 +319,10 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 		<</if>>
 		
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-		<<replace "#play-msg">><br><<- $title>><<colorizeText $activeFluffy.cColor "am bestest at pwayin\'! Pway AWW da games wit\'">><<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor ", heheheh!">><</replace>>
+		<<replace "#play-msg">>
+			<br><<- $title>><<colorizeText $activeFluffy.cColor "am bestest at pwayin\'! Pway AWW da games wit\'">>
+			<<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor ", heheheh!">>
+		<</replace>>
 		<<replace "#fluffy-name">><<intractDetails>><</replace>>
 	<<else>>
 		<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
