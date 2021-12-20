@@ -17,7 +17,7 @@ button {
  }
 </style>
 
-<<run console.log(`Customer test cards ${$customerCards}.`)>>
+<<run console.log(`DEBUG:[eventCustomer]: Customer test cards ${$customerCards}.`)>>
 
 /* Each customer is 'generated' per fluffy on display.  Don't do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
 <<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
@@ -33,7 +33,7 @@ button {
 /* For each "want" pluck a random card from our deck and assign it to this customer: */
 <<run _customerDeck = $customerCards.pluckMany(_customerWants)>>
 
-<<run console.log(`Customer test deck ${_customerDeck} (wants = ${_customerWants}).`)>>
+<<run console.log(`DEBUG:[eventCustomer]: Customer test deck ${_customerDeck} (wants = ${_customerWants}).`)>>
 
 <div class="w3-mobile">
 
@@ -356,11 +356,11 @@ button {
 
 	<<set _needsMatch = 0>>
 
-	<<run console.log(`Customer Test: Wants = ${_customerWants}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Wants = ${_customerWants}`)>>
 
 	<<if _customerWants != 0>>
 		<<for _card range _customerDeck>>
-			<<run console.log(`Customer Test: Need ${_card}`)>>
+			<<run console.log(`DEBUG: [eventCustomer]: Need ${_card}`)>>
 
 			/* Make sure the color groups are set: */
 			<<set $activeFluffy = $globalFluffies[_fl]>>
@@ -372,27 +372,27 @@ button {
 
 			/* Personality, +2 points if it matches, 0 otherwise */
 			<<if _card === $globalFluffies[_fl].traits[0]>>
-				<<run console.log(`Customer Test: Personality match (${$globalFluffies[_fl].traits[0]} === ${_card}`)>>
+				<<run console.log(`DEBUG: [eventCustomer]: Personality match (${$globalFluffies[_fl].traits[0]} === ${_card}`)>>
 				<<set _needsMatch += 2>>
 
 			/* Gender, +2 points if it matches, 0 otherwise */
 			<<elseif _card === $globalFluffies[_fl].gender>>
-				<<run console.log(`Customer Test: Gender match (${$globalFluffies[_fl].gender} === ${_card}`)>>
+				<<run console.log(`DEBUG: [eventCustomer]: Gender match (${$globalFluffies[_fl].gender} === ${_card}`)>>
 				<<set _needsMatch += 2>>
 
 			/* Breed, value depends on what is offered*/
 			<<elseif _card === "Earthy" || _card === "Unicorn" || _card === "Pegasus" || _card === "Alicorn">>
 				/* Pefect match, 2 points */
 				<<if $globalFluffies[_fl].breed === _card>>
-					<<run console.log(`Customer Test: Breed match (${$globalFluffies[_fl].breed} === ${_card}`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Breed match (${$globalFluffies[_fl].breed} === ${_card}`)>>
 					<<set _needsMatch += 2>>
 
 				/* Half matches */				
 				<<elseif $globalFluffies[_fl].breed != "Earthy">>
-					<<run console.log(`Customer Test: Breed half match (${$globalFluffies[_fl].breed} != ${_card}`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Breed half match (${$globalFluffies[_fl].breed} != ${_card}`)>>
 					<<set _needsMatch += 1>>
 				<<else>>
-					<<run console.log(`Customer Test: Breed no match found (${$globalFluffies[_fl].breed} != ${_card}`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Breed no match found (${$globalFluffies[_fl].breed} != ${_card}`)>>
 					<<set _needsMatch += 0>>
 				<</if>>			
 
@@ -466,18 +466,13 @@ button {
 
 			/* Thinking stat: */
 			<<elseif _card.includes("thinking")>>
-
-			<<run console.log(`Customer Test: thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)>>
-
 				<<if _card === "High thinking">>
-					<<run console.log(`Customer Test: High thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)>>
 					<<if $globalFluffies[_fl].thinking > 5>>
 						<<set _needsMatch += 2>>
 					<<elseif $globalFluffies[_fl].thinking > 3>>
 						<<set _needsMatch += 1>>
 					<</if>>
 				<<elseif _card === "Average thinking">>
-					<<run console.log(`Customer Test: Average thinking test (${$globalFluffies[_fl].thinking } vs ${_card}`)>>
 					<<if $globalFluffies[_fl].thinking < 5 && $globalFluffies[_fl].thinking >= 3>>
 						<<set _needsMatch += 2>>
 					<<else>>
@@ -561,7 +556,7 @@ button {
 			<<elseif _card.includes("Coat")>>
 				<<if _card.includes("Group")>>
 					<<if _card.includes($globalFluffies[_fl].colorGroup[0])>>
-						<<run console.log(`Customer Test: Coat Color Group Match (${$globalFluffies[_fl].colorGroup[0]} === ${_card})`)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Coat Color Group Match (${$globalFluffies[_fl].colorGroup[0]} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -577,12 +572,12 @@ button {
 							$globalFluffies[_fl].colorGroup[0] === "Yellow" && _card === "Purple" ||
 							$globalFluffies[_fl].colorGroup[0] === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`Customer Test: Coat Complimentary Group Match (${$globalFluffies[_fl].colorGroup[0]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Coat Complimentary Group Match (${$globalFluffies[_fl].colorGroup[0]} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
 				<<elseif _card.includes($globalFluffies[_fl].cColor)>>
-					<<run console.log(`Customer Test: Coat Color Match (${$globalFluffies[_fl].cColor} in ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Coat Color Match (${$globalFluffies[_fl].cColor} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 
@@ -590,7 +585,7 @@ button {
 			<<elseif _card.includes("Mane")>>
 				<<if _card.includes("Group")>>
 					<<if _card.includes($globalFluffies[_fl].colorGroup[1])>>
-						<<run console.log(`Customer Test: Mane Color Group Match (${$globalFluffies[_fl].colorGroup[1]} === ${_card})`)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Mane Color Group Match (${$globalFluffies[_fl].colorGroup[1]} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -606,12 +601,12 @@ button {
 							$globalFluffies[_fl].colorGroup[1] === "Yellow" && _card === "Purple" ||
 							$globalFluffies[_fl].colorGroup[1] === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`Customer Test: Mane Complimentary Group Match (${$globalFluffies[_fl].colorGroup[1]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Mane Complimentary Group Match (${$globalFluffies[_fl].colorGroup[1]} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
 				<<elseif _card.includes($globalFluffies[_fl].mColor)>>
-					<<run console.log(`Customer Test: Mane Color Match (${$globalFluffies[_fl].mColor} in ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Mane Color Match (${$globalFluffies[_fl].mColor} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 
@@ -619,7 +614,7 @@ button {
 			<<elseif _card.includes("Eyes")>>
 				<<if _card.includes("Group")>>
 					<<if _card.includes($globalFluffies[_fl].colorGroup[2])>>
-						<<run console.log(`Customer Test: Eye Color Group Match (${$globalFluffies[_fl].colorGroup[2]} === ${_card})`)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Eye Color Group Match (${$globalFluffies[_fl].colorGroup[2]} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -635,103 +630,103 @@ button {
 							$globalFluffies[_fl].colorGroup[2] === "Yellow" && _card === "Purple" ||
 							$globalFluffies[_fl].colorGroup[2] === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`Customer Test: Eye Complimentary Group Match (${$globalFluffies[_fl].colorGroup[2]]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Eye Complimentary Group Match (${$globalFluffies[_fl].colorGroup[2]]} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
 				<<elseif _card.includes($globalFluffies[_fl].eColor)>>
-					<<run console.log(`Customer Test: Eye Color Match (${$globalFluffies[_fl].eColor} in ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Eye Color Match (${$globalFluffies[_fl].eColor} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 			
 			/* Age "Newborn": */
 			<<elseif _card == "Newborn">>
 				<<if _cat == 0>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif _cat == 1>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 			/* Age "Chirpy": */
 			<<elseif _card == "Chirpy">>
 				<<if _cat == 1>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif _cat == 0>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<<elseif $globalFluffies[_fl].weaned === false>>
-					<<run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 			/* Age "Talky": */
 			<<elseif _card == "Talky">>
 				<<if $globalFluffies[_fl].weaned>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif $globalFluffies[_fl].weaned === false>>
-					<<run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<<elseif _cat < Number($globalFluffies[_fl].maturity/2)>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 			/* Age "Foal": */
 			<<elseif _card == "Foal">>
 				<<if _cat < Number($globalFluffies[_fl].maturity/2)>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif $globalFluffies[_fl].weaned>>
-					<<run console.log(`Customer Test: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (weaned: ${$globalFluffies[_fl].weaned} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<<elseif _cat <= $globalFluffies[_fl].maturity>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 			/* Age "Youth": */
 			<<elseif _card == "Youth">>
 				<<if _cat < $globalFluffies[_fl].maturity>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif _cat < Number($globalFluffies[_fl].maturity/2)>>
-					<<run console.log(`Customer Test: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<<elseif _cat < Number($globalFluffies[_fl].maxAge * 52 * 0.75)>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 			/* Age "Adult": */
 			<<elseif _card == "Adult">>
 				<<if _cat < Number($globalFluffies[_fl].maxAge * 52 * 0.75)>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<elseif _cat < $globalFluffies[_fl].maturity>>
-					<<run console.log(`Customer Test: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (maturity: ${$globalFluffies[_fl].maturity} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<<elseif _cat >= Number($globalFluffies[_fl].maxAge * 52 * 0.75)>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 
 			/* Age "Grey": */
 			<<elseif _card == "Grey">>
 				<<if _cat >= Number($globalFluffies[_fl].maxAge * 52 * 0.75)>>
-					<<run console.log(`Customer Test: Age Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<<else>>
-					<<run console.log(`Customer Test: Age Half Match (${_cat} <> ${_card})`)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
 					<<set _needsMatch += 1>>
 				<</if>>
 
 			<<elseif _card === $globalFluffies[_fl].subSpeciesString>>
-				<<run console.log(`Customer Test: subSpecies Match (${$globalFluffies[_fl].subSpeciesString} === ${_card})`)>>
+				<<run console.log(`DEBUG: [eventCustomer]: subSpecies Match (${$globalFluffies[_fl].subSpeciesString} === ${_card})`)>>
 				<<set _needsMatch += 2>>
 			<</if>>	
 		<</for>>
 	<</if>>
 
-	<<run console.log(`Customer Test: matches: (${_needsMatch} vs ${_customerWants})`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: matches: (${_needsMatch} vs ${_customerWants})`)>>
 
 	<<set _msgString = "">>
 	<<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
@@ -741,7 +736,7 @@ button {
 	<<set _price = Number($globalFluffies[_fl].training)>>
 	<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
 
-	<<run console.log(`Customer Test: Price 1: ${_price}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Price 1: ${_price}`)>>
 
 	<<switch $globalFluffies[_fl].breed>>
 		<<case "unicorn">>
@@ -756,7 +751,7 @@ button {
 	
 	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
 
-	<<run console.log(`Customer Test: Price 2: ${_price}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Price 2: ${_price}`)>>
 	
 	<<set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)>>
 	<<set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)>>
@@ -785,7 +780,7 @@ button {
 		<<set _price = Number(_price * 1.3).toFixed(2)>>
 	<</if>>	
 
-	<<run console.log(`Customer Test: Price 3: ${_price}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Price 3: ${_price}`)>>
 	
 	/* Debug flag since I can't track down this issue yet. */
 	<<if _price <= 0>>
@@ -807,20 +802,20 @@ button {
 
 	<<set _price = Number(_price * _priceBonus).toFixed(2)>>
 	
-	<<run console.log(`Customer Test: Price 4: ${_price}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Price 4: ${_price}`)>>
 
 	/* Check if they will accept the offer */
 	<<if _customerWants > 0 && Number(100 * Number(_needsMatch / Number(_customerWants * 2)).toFixed(2)) <= 33>>
 
-			<<run console.log(`Customer Test: Match Fail.`)>>
+			<<run console.log(`DEBUG: [eventCustomer]: Match Fail.`)>>
 
 			<<if _customerTolerance > 0>>
-				<<run console.log(`Customer Test: Tolerance pass.`)>>
+				<<run console.log(`DEBUG: [eventCustomer]: Tolerance pass.`)>>
 				<<set _customerTolerance-->>
 				<<set _msgString += "<br>@@.orange;They are not at all pleased with " + $globalFluffies[_fl].name + ".@@">>
 				<<replace "#result-msg">>_msgString<</replace>>
 			<<else>>
-				<<run console.log(`Customer Test: Tolerance fail.`)>>
+				<<run console.log(`DEBUG: [eventCustomer]: Tolerance fail.`)>>
 				<<set _msgString += "<br>@@.orange;This customer is fed up.@@">>
 				<<replace "#result-msg">>_msgString<</replace>>
 				<<replace "#fluffy-list">><</replace>>
@@ -828,7 +823,7 @@ button {
 			<</if>>
 	<<else>>
 
-		<<run console.log(`Customer Test: Accepts Match 1.`)>>
+		<<run console.log(`DEBUG: [eventCustomer]: Accepts Match 1.`)>>
 
 		<<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$globalFluffies[_fl].name + ".@@<br>">>
 		

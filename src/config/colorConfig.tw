@@ -28,8 +28,6 @@
 	<<set _maneGroup = "">>
 	<<set _eyeGroup = "">>
 
-	<<run console.log(`DEBUG: <<colorValue>>: Test 0: cColor = ${$activeFluffy.cColor}, mColor = ${$activeFluffy.mColor}, eColor = ${$activeFluffy.eColor}.`)>>
-
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
 	<<for _i = 0; _i < $Colors.length; _i++>>
 
@@ -121,8 +119,6 @@
 	<<else>>
 		<<set _wGene = [ "W/w;", "W/W;", "w/W;" ]>>
 
-		<<run console.log(`DEBUG: <<limitColor>>: Test 0: Arg1 = ${$args[0]}, Arg2 = ${$args[1]}.`)>>
-
 		/* Some logic/sanity checking: */ 
 		<<script>>
 			if (State.variables.args.length == 1)
@@ -137,18 +133,13 @@
 			}
 		<</script>>
 
-		<<run console.log(`DEBUG: <<limitColor>>: Test 1: Low = ${_low]}, high = ${_high}.`)>>
-
 		/* Ignor eyes, only look at coat and mane */
 		<<set _nColors = clone($Colors)>>
-		<<run console.log(`DEBUG: <<limitColor>>: Test 2: nColors = ${_nColors.length}.`)>>
 
 		/* Interate through the list of colors, if they match, remember the tier and group.*/
 		<<run _nColors.deleteWith(function (val) { 	return val.Tier < _low; })>>
 		<<run _nColors.deleteWith(function (val) { 	return val.Tier > _high; })>>
 
-		<<run console.log(`DEBUG: <<limitColor>>: Test 3: nColors = ${_nColors.length}.`)>>
-		
 		/* Now we have an arry for colors that are within the specified ranges.*/
 	
 		/*  	have to set the genes... */
@@ -159,18 +150,11 @@
 		<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene + _wGene.random())>>
 		<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene + _wGene.random())>>
 
-		<<run console.log(`DEBUG: <<limitColor>>: Test 4: geneString = ${$activeFluffy.geneString}.`)>>
-		
 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
-
-		<<run console.log(`DEBUG: <<limitColor>>: Test 5: geneString = ${$activeFluffy.geneString}.`)>>
 
 		<<set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()>>
 		<<set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()>>
 		<<set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()>>
-
-		<<run console.log(`DEBUG: <<limitColor>>: Test 6: cColor = ${$activeFluffy.cColor}.`)>>
-		<<run console.log(`DEBUG: <<limitColor>>: Test 7: mColor = ${$activeFluffy.mColor}.`)>>
 	<</if>>
 	
 <</widget>>
