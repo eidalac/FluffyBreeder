@@ -388,81 +388,64 @@
 	 *	Temperament ticks
 	 *
 	 *** */
-	 
-	 /* 130 is the base where we can get a smarty. */
-	 <<if $globalFluffies[_ef].temperament >= 130>>
-	 
-	 	<<if $globalFluffies[_ef].traits[0].includes("Smarty")>>
+	
+
+
+	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
+	<<set _smartyBase == Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))>>
+
+	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
+	/* This may be from -200 up to 200 */
+	/* Divide by 2 to normalize to -100 to 100 (aka 0-100)*/
+	<<set _smartyThreshold = Number($globalFluffies[_ef].temperament)>>
+	<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
+	<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
+	<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))>>
+
+	<<set _smartyChance = 0>>
+
+	/* Odds are based on personality: */
+	<<switch $globalFluffies[_ef].traits[0]>>
+		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+			/* 80% chance at max threshold: */
+			<<set _smartyChance = Number(20)>>
+		<<case "Diligent", "Curious", "Peppy", "Playful">>
+			/* 40% chance at max threshold: */
+			<<set _smartyChance = Number(60)>>
+		<<case "Lazy", "Cute", "Dull">>
+			/* 20% chance at max threshold: */
+			<<set _smartyChance = Number(80)>>
+		<<case "Shy", "Timid", "Pensive", "Sweet">>
+			/* 10% chance at max threshold: */			
+			<<set _smartyChance = Number(90)>>
+	<</switch>>
+
+	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
+	/* An existing smarty has a 1/4 chance of fireing an event. */
+		<<if $globalFluffies[_ef].traits[0].includes("Smarty")>>
 			<<if random(0,4) == 0>>
 				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 			<</if>>
-	 	<</if>>
-	
-		/* 190+ has the highest risk: */
-		<<if $globalFluffies[_ef].temperament >= 190>>
-			<<switch $globalFluffies[_ef].traits[0]>>
-				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
-					<<if random(0,4) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 190>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Diligent", "Curious", "Peppy", "Playful">>
-					<<if random(0,16) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 75>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Lazy", "Cute", "Dull">>
-					<<if random(0,32) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 50>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Shy", "Timid", "Pensive", "Sweet">>
-					<<if random(0,64) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 25>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-			 <</switch>>
 
-		/* 160+ has lower risk: */
-		<<elseif $globalFluffies[_ef].temperament >= 160>>
-			<<switch $globalFluffies[_ef].traits[0]>>
-				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
-					<<if random(0,8) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 160>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Diligent", "Curious", "Peppy", "Playful">>
-					<<if random(0,24) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 60>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Lazy", "Cute", "Dull">>
-					<<if random(0,48) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 30>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Shy", "Timid", "Pensive", "Sweet">>
-					<<if random(0,96) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 15>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-			 <</switch>>
-			 
-		/* 130+ has the lowest risk: */
+		/* Check if this fluffy may become a smarty: */
 		<<else>>
-			<<switch $globalFluffies[_ef].traits[0]>>
-				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
-					<<if random(0,16) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 130>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Diligent", "Curious", "Peppy", "Playful">>
-					<<if random(0,32) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 30>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Lazy", "Cute", "Dull">>
-					<<if random(0,64) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 15>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-				<<case "Shy", "Timid", "Pensive", "Sweet">>
-					<<if random(0,128) == 0 && ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) <= 7>>
-						<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-					<</if>>
-			 <</switch>>
-		 <</if>>
-		 
-	 <</if>> /* Close temperament check */
+			/*** ***********************************************
+			 * Check if this fluffy may become a smarty:
+			 *
+			 * _smartyThreshold (temp-(training+trust)) vs personalty 0-(50/100/150/200)
+			 *
+			 * So 0-100 > random (0, 90|80|60|20) we get a smarty.
+			 *
+			 * If threshold is 0 or less, this will always fail.
+			 * 
+			*** **********************************************/
+			<<if _smartyThreshold > random(0, _smartyChance)>
+				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+			<</if>>
+		<</if>>
+	<</if>>
+
+
 	 
 
 	/* ***

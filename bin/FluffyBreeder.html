@@ -8397,81 +8397,64 @@ Genes       Height multiplier
 	 *	Temperament ticks
 	 *
 	 *** */
-	 
-	 /* 130 is the base where we can get a smarty. */
-	 &lt;&lt;if $globalFluffies[_ef].temperament &gt;= 130&gt;&gt;
-	 
-	 	&lt;&lt;if $globalFluffies[_ef].traits[0].includes(&quot;Smarty&quot;)&gt;&gt;
+	
+
+
+	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
+	&lt;&lt;set _smartyBase == Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
+
+	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
+	/* This may be from -200 up to 200 */
+	/* Divide by 2 to normalize to -100 to 100 (aka 0-100)*/
+	&lt;&lt;set _smartyThreshold = Number($globalFluffies[_ef].temperament)&gt;&gt;
+	&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))&gt;&gt;
+	&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))&gt;&gt;
+	&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))&gt;&gt;
+
+	&lt;&lt;set _smartyChance = 0&gt;&gt;
+
+	/* Odds are based on personality: */
+	&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
+		&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
+			/* 80% chance at max threshold: */
+			&lt;&lt;set _smartyChance = Number(20)&gt;&gt;
+		&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
+			/* 40% chance at max threshold: */
+			&lt;&lt;set _smartyChance = Number(60)&gt;&gt;
+		&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
+			/* 20% chance at max threshold: */
+			&lt;&lt;set _smartyChance = Number(80)&gt;&gt;
+		&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
+			/* 10% chance at max threshold: */			
+			&lt;&lt;set _smartyChance = Number(90)&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+
+	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase&gt;&gt;
+	/* An existing smarty has a 1/4 chance of fireing an event. */
+		&lt;&lt;if $globalFluffies[_ef].traits[0].includes(&quot;Smarty&quot;)&gt;&gt;
 			&lt;&lt;if random(0,4) == 0&gt;&gt;
 				&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-	 	&lt;&lt;/if&gt;&gt;
-	
-		/* 190+ has the highest risk: */
-		&lt;&lt;if $globalFluffies[_ef].temperament &gt;= 190&gt;&gt;
-			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
-				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
-					&lt;&lt;if random(0,4) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 190&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
-					&lt;&lt;if random(0,16) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 75&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
-					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 50&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
-					&lt;&lt;if random(0,64) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 25&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-			 &lt;&lt;/switch&gt;&gt;
 
-		/* 160+ has lower risk: */
-		&lt;&lt;elseif $globalFluffies[_ef].temperament &gt;= 160&gt;&gt;
-			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
-				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
-					&lt;&lt;if random(0,8) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 160&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
-					&lt;&lt;if random(0,24) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 60&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
-					&lt;&lt;if random(0,48) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
-					&lt;&lt;if random(0,96) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 15&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-			 &lt;&lt;/switch&gt;&gt;
-			 
-		/* 130+ has the lowest risk: */
+		/* Check if this fluffy may become a smarty: */
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;switch $globalFluffies[_ef].traits[0]&gt;&gt;
-				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
-					&lt;&lt;if random(0,16) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 130&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
-					&lt;&lt;if random(0,32) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 30&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
-					&lt;&lt;if random(0,64) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 15&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
-					&lt;&lt;if random(0,128) == 0 &amp;&amp; ($globalFluffies[_ef].training + $globalFluffies[_ef].trust) &lt;= 7&gt;&gt;
-						&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-			 &lt;&lt;/switch&gt;&gt;
-		 &lt;&lt;/if&gt;&gt;
-		 
-	 &lt;&lt;/if&gt;&gt; /* Close temperament check */
+			/*** ***********************************************
+			 * Check if this fluffy may become a smarty:
+			 *
+			 * _smartyThreshold (temp-(training+trust)) vs personalty 0-(50/100/150/200)
+			 *
+			 * So 0-100 &gt; random (0, 90|80|60|20) we get a smarty.
+			 *
+			 * If threshold is 0 or less, this will always fail.
+			 * 
+			*** **********************************************/
+			&lt;&lt;if _smartyThreshold &gt; random(0, _smartyChance)&gt;
+				&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+
 	 
 
 	/* ***
@@ -11231,6 +11214,17 @@ profitsTotal: 0
 				&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
 
 				&lt;&lt;limitColor 1 2&gt;&gt;
+			&lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
+				/* fluffies have a 50% chance to be named */
+				&lt;&lt;switch random(0, 1)&gt;&gt;
+					&lt;&lt;case 0&gt;&gt;
+						&lt;&lt;fetchName&gt;&gt;
+						&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+					&lt;&lt;case 1&gt;&gt;
+						&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+					&lt;&lt;default&gt;&gt;
+						&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+				&lt;&lt;/switch&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 
 			/* Adjust things based on age for children/foals */
@@ -11260,17 +11254,6 @@ profitsTotal: 0
 					/* breeder fluffies always have a name */
 					&lt;&lt;fetchName&gt;&gt;
 					&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					/* fluffies have a 50% chance to be named */
-					&lt;&lt;switch random(0, 1)&gt;&gt;
-						&lt;&lt;case 0&gt;&gt;
-							&lt;&lt;fetchName&gt;&gt;
-							&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-						&lt;&lt;case 1&gt;&gt;
-							&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
-						&lt;&lt;default&gt;&gt;
-							&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
-					&lt;&lt;/switch&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				/* generate adult traits */
 				&lt;&lt;switch $activeFluffy.traits[0]&gt;&gt;
@@ -16006,13 +15989,13 @@ button {
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWingShaved + &#39;&quot; style=&quot;&#39; + + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWingShaved + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayShaved + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWing + &#39;&quot; style=&quot;&#39; + + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWing + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlay + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;

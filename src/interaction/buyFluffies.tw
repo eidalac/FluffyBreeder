@@ -453,6 +453,17 @@
 				<<set $activeFluffy.ageWeeks = random(6, 16)>>
 
 				<<limitColor 1 2>>
+			<<elseif $shop == "feral" || $shop == "mill">>
+				/* fluffies have a 50% chance to be named */
+				<<switch random(0, 1)>>
+					<<case 0>>
+						<<fetchName>>
+						<<set $activeFluffy.hasName = true>>
+					<<case 1>>
+						<<set $activeFluffy.name = "Fluffy">>
+					<<default>>
+						<<set $activeFluffy.name = "Fluffy">>
+				<</switch>>
 			<</if>>
 
 			/* Adjust things based on age for children/foals */
@@ -482,17 +493,6 @@
 					/* breeder fluffies always have a name */
 					<<fetchName>>
 					<<set $activeFluffy.hasName = true>>
-				<<else>>
-					/* fluffies have a 50% chance to be named */
-					<<switch random(0, 1)>>
-						<<case 0>>
-							<<fetchName>>
-							<<set $activeFluffy.hasName = true>>
-						<<case 1>>
-							<<set $activeFluffy.name = "Fluffy">>
-						<<default>>
-							<<set $activeFluffy.name = "Fluffy">>
-					<</switch>>
 				<</if>>
 				/* generate adult traits */
 				<<switch $activeFluffy.traits[0]>>
