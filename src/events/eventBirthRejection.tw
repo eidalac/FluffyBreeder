@@ -11,7 +11,7 @@
  *********** */
  
  
-<<run console.log("Rejection test 2: On event page.")>>
+<<run console.log(`DEBUG: [Event Birth Rejection]: On event page.`)>>
 
 /* Each rejection event is the foal being rejected */
 <<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
@@ -19,33 +19,34 @@
 
 <<if ndef $activeFluffy>>
 	/* Shouldn't happen, but just in case*/
-	<<run console.log("Rejection test 3: Skipped due to invalid/missing fluffy.")>>
+	<<run console.log(`ERROR: [Event Birth Rejection]: activeFluffy undefined.`)>>
 	<<goto "Event Main">>
 	
 <<elseif ndef $activeFluffy.mother>>
 	/* Shouldn't happen, but just in case*/
-	<<run console.log("Rejection test 3: Skipped due to invalid/missing mother.")>>
+	<<run console.log(`ERROR: [Event Birth Rejection]: mother undefined.`)>>
 	<<goto "Event Main">>
 
 <<elseif $ourStore.fluffies.includes($activeFluffy.mother) == false>>
 	/* Mother was removed in a prior event. */
-	<<run console.log("Rejection test 3: Skipped due to mother not being in store.")>>
+	<<run console.log(`ERROR: [Event Birth Rejection]: mother not in store.`)>>
 	<<goto "Event Main">>
 
 <<elseif $ourStore.fluffies.includes($activeFluffy.ID) == false>>
 	/* foal was removed in a prior event. */
-	<<run console.log("Rejection test 3: Skipped due to foal not being in store.")>>
+	<<run console.log(`ERROR: [Event Birth Rejection]: activeFluffy not in store.`)>>
 	<<goto "Event Main">>
 
 <<else>>
-<<run console.log("Rejection test 3: in event. " + $activeFluffy.colorGroup[0])>>
+	<<run console.log(`DEBUG: [Event Birth Rejection]: In event.`)>>
+
 	/* Check if this is a brown foal rejection: */
-	
-	
 	<<if $activeFluffy.colorGroup[0] == "Brown">>
-<<run console.log("Rejection test 3.1: in event.")>>	
+		<<run console.log(`DEBUG: [Event Birth Rejection]: Brown rejection: color group = ${$activeFluffy.colorGroup[0]}.`)>>
+
 		/* If the mom is brown or has the "good Mama" trait she will not reject the foal: */
 		<<if $globalFluffies[$activeFluffy.mother].colorGroup[0] == "Brown" || $globalFluffies[$activeFluffy.mother].traits.includes("Good Mama")>>
+			<<run console.log(`DEBUG: [Event Birth Rejection]: Brown rejection: mother borwn or good mother.`)>>
 			/* Skip this info for now */
 			<<goto "Event Main">>
 			/*
@@ -55,11 +56,13 @@
 			
 		/* < 10 = fear/terror, so fluffy will just be terrified of the babby */
 		<<elseif $globalFluffies[$activeFluffy.mother].temperament < 10>>
-			<br>@@.cyan;<<- $title>> halp... bad miwkie thief..save good fluffy mama, <<- $title>>...hu hu hu...@@
+			<br>
+			<<fluffSpeech "<title> halp... bad miwkie thief..save good fluffy mama, <title>...hu hu hu..." $globalFluffies[$activeFluffy.mother].cColor>>
 			<<set $globalFluffies[$activeFluffy.mother].stress += 25>>
 			<<set $globalFluffies[$activeFluffy.mother].trauma += 5>>
 			<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-<<run console.log("Rejection test 4: in event.")>>
+			
+			<<run console.log(`DEBUG: [Event Birth Rejection]: Pass via fear.`)>>
 		/* The main event: */
 		<<else>>
 			<br>It seems <<- $globalFluffies[$activeFluffy.mother].name>> is rejecting <<- $activeFluffy.name>>.
@@ -72,193 +75,193 @@
 				<<case "Diligent">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Miwkies onwy fow bestes' babbehs! Nu miwkies fow poopie babbeh!@@
-					
+						<<fluffSpeech "miwkies onwy fow bestes' babbehs! Nu miwkies fow poopie babbeh!" $globalFluffies[$activeFluffy.mother].cColor>>
+
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Miwkies fow bestes' babbehs. Nu miwkies fow poopie babbeh, bestes' babbehs nee miwkies!@@
+					<<fluffSpeech "Miwkies fow bestes' babbehs. Nu miwkies fow poopie babbeh, bestes' babbehs nee miwkies!" $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Bestes' babbehs nee miwkies... nu hab miwkies fow poopie wowstes' babbeh...@@
-	
+						<<fluffSpeech "Bestes' babbehs nee miwkies... nu hab miwkies fow poopie wowstes' babbeh.." $globalFluffies[$activeFluffy.mother].cColor>>
+
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?@@
+						<<fluffSpeech "Nu hab time… maybe gib tu wonewy mummah wifout babbehs?" $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 				<<case "Bossy">> 
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Nu gib miwkies and wub to wowstes' poopie babbeh!@@
+						<<fluffSpeech "Nu gib miwkies and wub to wowstes' poopie babbeh" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;NU! gu way! nu wan miwkie thief!@@
+						<<fluffSpeech "NU! gu way! nu wan miwkie thief" $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Poopie babbehs nu nee wub ow huggies.@@
+						<<fluffSpeech "Poopie babbehs nu nee wub ow huggies." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Nu wan gib wub to wowstes' poopie babbeh...@@
+						<<fluffSpeech "Nu wan gib wub to wowstes' poopie babbeh..." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 					
 				<<case "Curious">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Why hab wowstes', ugwy poopie babbeh? Nu pwetty!@@
+						<<fluffSpeech "Why hab wowstes', ugwy poopie babbeh? Nu pwetty" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Nu wike poopie babbeh... nu wub.@@
+						<<fluffSpeech "Nu wike poopie babbeh... nu wub." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Why nu smeww wike gud babbehs?@@
+						<<fluffSpeech "Why nu smeww wike gud babbehs?" $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Nu wike wowstes' babbeh...@@
+						<<fluffSpeech "Nu wike wowstes' babbeh..." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 					
 				<<case "Timid">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;<<- $title>>, nu wan ugwy babbeh.@@
+						<<fluffSpeech "<<- $title>>, nu wan ugwy babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Dis am ugwy babbeh, <<- $title>>...@@
+						<<fluffSpeech "Dis am ugwy babbeh, <<- $title>>..." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Nu wub... nu smeww pwetty...@@
+						<<fluffSpeech "Nu wub... nu smeww pwetty..." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Dat one am mistake babbeh, mummah sowwy@@
+						<<fluffSpeech "Dat one am mistake babbeh, mummah sowwy" $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 	
 				<<case "Pensive">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies!@@
+						<<fluffSpeech "Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Nu wan gib wub an' huggies to poopie babbeh.@@
+						<<fluffSpeech "Nu wan gib wub an' huggies to poopie babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Udda babbehs need miwkies a wot mowe…@@
+						<<fluffSpeech "Udda babbehs need miwkies a wot mowe..." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Nu wike poopie babbeh.@@
+						<<fluffSpeech "Nu wike poopie babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 	
 				<<case "Dull">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Nu cawe 'bout poopie babbeh! Nu wub!@@
+						<<fluffSpeech "Nu cawe 'bout poopie babbeh! Nu wub" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Nu wike poopie babbeh.@@
+						<<fluffSpeech "Nu wike poopie babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Too much babbehs awready anyways...@@
+						<<fluffSpeech "Too much babbehs awready anyways..." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Poopie babbeh... nu get wub ow huggies.@@
+						<<fluffSpeech "Poopie babbeh... nu get wub ow huggies." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 	
 				<<case "Sweet">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;<<- $globalFluffies[$activeFluffy.mother].name>>, hewp <<- $title>>, gib wowstes' babbeh nu wub.@@
+						<<fluffSpeech "<<- $globalFluffies[$activeFluffy.mother].name>>, hewp <<- $title>>, gib wowstes' babbeh nu wub." $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Wowstes' poopie babbeh nu need wub ow huggies.@@
+						<<fluffSpeech "Wowstes' poopie babbeh nu need wub ow huggies." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting…@@
+						<<fluffSpeech "Babbeh su bad… ruin fwuffpiwe… ruin ebbyting..." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Poopie babbeh... nu wan... huu huu....@@
+						<<fluffSpeech "Poopie babbeh... nu wan... huu huu...." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 	
 				<<case "Haughty">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Nu wike poopie babbeh an' nu gib ANY wub ow huggies!@@
+						<<fluffSpeech "Nu wike poopie babbeh an' nu gib ANY wub ow huggies" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs!@@
+						<<fluffSpeech "Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs" $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Wub and huggies //bad// fow poopie babbehs.@@
+						<<fluffSpeech "Wub and huggies //bad// fow poopie babbehs." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Ugwy, nu smeww pwetty babbeh am wowstes babbeh!@@
+						<<fluffSpeech "Ugwy, nu smeww pwetty babbeh am wowstes babbeh" $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 				<<case "Playful">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;Mummah wub babbehs... except poopie babbeh.@@
+						<<fluffSpeech "Mummah wub babbehs... except poopie babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Babbeh? wha’ babbeh?? mummah nu can eben see! hee hee hee@@
+						<<fluffSpeech "Babbeh? wha' babbeh?? mummah nu can eben see! hee hee hee" $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Mummah nu wub poopie babbeh!@@
+						<<fluffSpeech "Mummah nu wub poopie babbeh" $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...@@
+						<<fluffSpeech "Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh..." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 		
 				<<case "Rowdy">>
 					/* >= 190 - smarty */
 					<<if $globalFluffies[$activeFluffy.mother].temperament >= 190>>
-						@@.cyan;<<- $title>> gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh!@@
+						<<fluffSpeech "<<- $title>> gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh" $globalFluffies[$activeFluffy.mother].cColor>>
 					
 					/* >= 130 - bratty */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 130>>
-						@@.cyan;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes'.@@
+						<<fluffSpeech "Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes'." $globalFluffies[$activeFluffy.mother].cColor>>
 										
 					/* >= 70 - Normal */
 					<<elseif $globalFluffies[$activeFluffy.mother].temperament >= 70>>
-						@@.cyan;Sensitibe babbeh nu fun… nu gwow big an stwong.@@
+						<<fluffSpeech "Sensitibe babbeh nu fun… nu gwow big an stwong." $globalFluffies[$activeFluffy.mother].cColor>>
 	
 					/* >= 10 - Meek */
 					<<else>>
-						@@.cyan;Nu wan' stupi dummeh poopie babbeh.@@
+						<<fluffSpeech "Nu wan' stupi dummeh poopie babbeh." $globalFluffies[$activeFluffy.mother].cColor>>
 						
 					<</if>>
 	
 				<<default>>
-					<br>@@.cyan;Hachu poopie babhes.  Bad Babhe!@@
+					<br><<fluffSpeech "Hachu poopie babhes.  Bad Babhe" $globalFluffies[$activeFluffy.mother].cColor>>
 			<</switch>>
 			<br> 
 			<<set _punishString = "Punish " + $globalFluffies[$activeFluffy.mother].name>>
@@ -295,16 +298,16 @@
 			
 				<<set _ran = random(0, 199)>>
 				
-				<<run console.log("Rejection test 3: Training difficulty: " + _difficulty + " vs " + _ran)>>
+				<<run console.log(`DEBUG: [Event Birth Rejection]: raining difficulty: ${_difficulty} vs ${_ran}.`)>>
 		
 				<<if Number(_difficulty) >= Number(_ran)>>
 					<<set $globalFluffies[$activeFluffy.mother].traits.push("Good Mama")>>
-					<<set _reactionString = "@@.cyan;Am be gud mummah!  Wuv all Babhe!  Pomis!@@">>
+					<<set _reactionString = "Am be gud mummah!  Wuv all Babhe!  Pomis!">>
 				<<else>>
-					<<set _reactionString = "@@.cyan;But fluffy is gud mummah!  huuhuuhuu!@@">>
+					<<set _reactionString = "But fluffy is gud mummah!  huuhuuhuu!">>
 				<</if>>
 				
-				<<replace "#reaction-msg">><br>You discipline <<- $globalFluffies[$activeFluffy.mother].name>><br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+				<<replace "#reaction-msg">><br>You discipline <<- $globalFluffies[$activeFluffy.mother].name>><br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
 			<</button>>
 			@@.orange;Neutral option.@@
 			
@@ -319,9 +322,9 @@
 				<<set $activeFluffy.foodQuality = 0>>
 				
 				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-				<<set _reactionString = "@@.cyan;Nu miwkies for bad babbeh!@@">>
+				<<set _reactionString = "Nu miwkies for bad babbeh!">>
 				
-				<<replace "#reaction-msg">><br>You ignore it.<br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+				<<replace "#reaction-msg">><br>You ignore it.<br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
 			<</button>>
 			@@.orange;Abuse option.@@
 			
@@ -339,14 +342,14 @@
 				<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
 					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 				<<else>>
-					<<run console.log("eventBirthRejection - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+					<<run console.log(`ERROR: [eventBirthRejection]: invalid $activeFluffy ID ${$activeFluffy.ID} should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
 					<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
 					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 				<</if>>
 	
-				<<set _reactionString = "@@.cyan;Take bad babbehs for trashies?@@">>
+				<<set _reactionString = "Take bad babbehs for trashies?">>
 				
-				<<replace "#reaction-msg">><br>You take the foal for some formula.<br><<- _reactionString>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+				<<replace "#reaction-msg">><br>You take the foal for some formula.<br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
 			<</button>>
 			@@.orange;Hugbox option.@@
 		</span>
@@ -358,12 +361,3 @@
 <</if>> /* Close validation checks */
 
 
-
- 	
-
-/*
-<<set $nextButton = "Continue">>
-<<set $nextLink = "Event Main">>
-
-<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-*/

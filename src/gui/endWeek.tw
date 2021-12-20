@@ -17,6 +17,7 @@
 /* ***
  *	Base expenses
  *** */
+<<run console.log(`DEBUG: [endWeek]: Finances 1 : cash = ${$cash}, cost = ${$costs}.`)>>
 <<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)>>
 
 <<if $ourStore.upgrades.includes("Deluxe Toys")>>
@@ -33,7 +34,7 @@
 	<<set $costs += 1>>
 <</if>>
 
-
+<<run console.log(`DEBUG: [endWeek]: Finances 2 : cash = ${$cash}, cost = ${$costs}.`)>>
 /* moving the count updates to here, to prevent double loops */
 <<set $ourStore.stallions = 0>>
 <<set $ourStore.mares = 0>>
@@ -60,49 +61,41 @@
  *** */
 <<for _ef range $ourStore.fluffies>>
 
-<<run console.log("Logic Test 0 " + $ourStore.fluffies.length)>>
-
 	<<if $globalFluffies[_ef].ID != _ef>>
-		<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_ef].ID + ". Should be " + _ef)>>
+		<<run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
-		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
-		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
 		<<continue>>
 	<</if>>
 	
 	<<if $globalFluffies[_ef].dead == true>>
-		<<run console.log("Logic Test 1 - dead fluffy found: " + $globalFluffies[_ef].ID)>>
+		<<run console.log(`ERROR: [endWeek.tw]: dead fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
-		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
-		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
 		<<continue>>
 	<</if>>
 
 	<<if $globalFluffies[_ef].sold == true>>
-		<<run console.log("Logic Test 1 - sold fluffy found: " + $globalFluffies[_ef].ID)>>
+		<<run console.log(`ERROR: [endWeek.tw]: sold fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
-		<<run console.log("Logic Test 2 " + $ourStore.fluffies.length)>>
-		<<run console.log("Logic Test 3 " + $ourStore.fluffies)>>
 		<<continue>>
 	<</if>>
 
 	<<if $globalFluffies[_ef].dueDate > 7>>
-		<<run console.log("Logic Test 1 - invalid due date: " + $globalFluffies[_ef].dueDate)>>
+		<<run console.log(`ERROR: [endWeek.tw]: invalid due date: ${$globalFluffies[_ef].dueDate}.`)>>
 		<<set $globalFluffies[_ef].dueDate = 7>>
 	<</if>>
 
 	<<if $globalFluffies[_ef].specialFriend >= 0>>
 		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true>>
-			<<run console.log("endWeek: Dead Special friend found!")>>
+			<<run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)>>
 			<<set $globalFluffies[_ef].specialFriend = -1>>
 		<</if>>
 		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true>>
-			<<run console.log("endWeek: Sold Special friend found!")>>
+			<<run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)>>
 			<<set $globalFluffies[_ef].specialFriend = -1>>
 		<</if>>
 		
 		<<if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false>>
-			<<run console.log("endWeek: Invalid Special friend found!")>>
+			<<run console.log(`ERROR: [endWeek.tw]: Invalid Special friend found.`)>>
 			<<set $globalFluffies[_ef].specialFriend = -1>>
 		<</if>>
 	<</if>>
@@ -116,9 +109,9 @@
 	<</if>>
 	<<if ndef $globalFluffies[_ef].geneString>>
 		<<if $globalFluffies[_ef].gender == "male">>
-			<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0">>
+			<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 		<<else>>
-			<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1">>
+			<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 		<</if>>
 	<</if>>
 	<<if ndef $globalFluffies[_ef].weekAcquired>>
@@ -168,17 +161,12 @@
 	/* < 1 year old */
 	<<if Number($globalFluffies[_ef].age) == 0 && Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
 		<<set $ourStore.foals++>>
-		<<run console.log("Count test 1: Foals =  " + $ourStore.foals)>>
 
 	<<elseif $globalFluffies[_ef].gender == "male">>
 		<<set $ourStore.stallions++>>
-		<<run console.log("Count test 1: Stallions =  " + $ourStore.stallions + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<<else>>
 		<<set $ourStore.mares++>>
-		<<run console.log("Count test 1: Mares =  " + $ourStore.mares + " | " + $globalFluffies[_ef].ID + " | " + $globalFluffies[_ef].gender)>>
 	<</if>>
-		
-<<run console.log("Breeding test 0.1: " + $globalFluffies[_ef].name + " | " + $globalFluffies[_ef].gender)>>
 
 	/* some logic checking */
 	<<if ndef $globalFluffies[_ef].nursing>>
@@ -194,7 +182,7 @@
 		<br><<- $globalFluffies[_ef].name>> can't find it's mother!
 		<<set $globalFluffies[_ef].foodType = "Nothing">>
 	<</if>>
-<<run console.log("Growth test -2: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
+
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
@@ -210,8 +198,6 @@
 	<</if>>
 
 	/* Trauma ticks */
-<<run console.log("Trauma test 0: Trauma = " + $globalFluffies[_ef].trauma)>>
-<<run console.log("Stress test 0: Stress = " + $globalFluffies[_ef].stress)>>	 
 	/*
 	 * 200 - Morbidity
 	 */
@@ -303,8 +289,6 @@
 	<</if>>
 	
 	/* Stress ticks */
-<<run console.log("Trauma test 1: Trauma = " + $globalFluffies[_ef].trauma)>>
-<<run console.log("Stress test 1: Stress = " + $globalFluffies[_ef].stress)>>	
 	/*
 	 * 200 - Morbidity
 	 */
@@ -399,10 +383,6 @@
 			<<set $globalFluffies[_ef].stress -= 10>>
 		<</if>>
 	<</if>>
-
-<<run console.log("Trauma test 2: Trauma = " + $globalFluffies[_ef].trauma)>>
-<<run console.log("Stress test 2: Stress = " + $globalFluffies[_ef].stress)>>
-
 
 	/* ***
 	 *	Temperament ticks
@@ -581,8 +561,6 @@
 			<</for>>
 		<</if>>
 	<</if>>
-<<run console.log("Growth test -1: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
-<<run console.log("Count test 0: Age = " + ($globalFluffies[_ef].ageWeeks + ($globalFluffies[_ef].age * 52)) + " gender = " + $globalFluffies[_ef].gender)>>
 
 	/* ***
 	 *	Feed them.
@@ -668,9 +646,7 @@
 	/* ***
 	 *	Grow foals.
 	 *** */
-<<run console.log("Growth test 0: age = " + $globalFluffies[_ef].age + ". ageWeeks = " + $globalFluffies[_ef].ageWeeks)>>
 	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) <= 44>>
-<<run console.log("Growth test 0: weight = " + $globalFluffies[_ef].weight + " age = " + $globalFluffies[_ef].ageWeeks)>>
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
 	 	<<set _lMultiBase = 0.22>>
@@ -679,21 +655,16 @@
 	 	<<set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)>>
 	 	<<set _lengthRatio = Number($globalFluffies[_ef].maxLength / $globalFluffies[_ef].maxWeight).toFixed(3)>>
 	 	<<set _heightRatio = Number($globalFluffies[_ef].maxHeight / $globalFluffies[_ef].maxWeight).toFixed(3)>>
-<<run console.log("ratio test 0: " + _lengthRatio)>>
-<<run console.log("ratio test 1: " + _heightRatio)>>
 
 		<<set _mom = $globalFluffies[$globalFluffies[_ef].mother]>>
 		
 		<<if $globalFluffies[_ef].foodType == "Nursing">>
 			<<if _mom.nursingMax < _mom.nursing>>
-<<run console.log("Growth test 0.1: mother lacking milk")>>
 	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
-<<run console.log("Growth test 0.3 - nursed: " + $globalFluffies[_ef].maxLength)>>
 	 		<</if>>
 		<<elseif $globalFluffies[_ef].foodType == "Nothing">>
 			<<set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)>>
 	 	<<else>> 
-	 		<<run console.log("Growth test 0.2 - non nursed: " + _newWMulti  + " " + Number(Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)))>>
 	 		<<switch $globalFluffies[_ef].foodQuality>>
 	 			<<case 0>>
 	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
@@ -704,12 +675,6 @@
 	 			<<case 4>>	 		
 	 				<<set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)>>
 	 		<</switch>>
-	 		
-	 		/*
-	 		<<set _lMultiBase = Number(_lMultiBase * Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
-	 		<<set _lMultiAdd = Number(_lMultiAdd * Number(1 + Number($globalFluffies[_ef].foodQuality - 2) / 10).toFixed(3)).toFixed(3)>>
-	 		*/
-	 		<<run console.log("Growth test 0.3 - non nursed: " + _newWMulti)>>
 		<</if>>
 
 
@@ -722,15 +687,6 @@
 	 	<<set $globalFluffies[_ef].height = Number(_newL).toFixed(2)>>
 		<<set $globalFluffies[_ef].length = Number(_newH).toFixed(2)>>
 
-/*
-		<<set $globalFluffies[_ef].height = Number($globalFluffies[_ef].maxHeight * (_lMultiBase + ($globalFluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)>>
-		<<set $globalFluffies[_ef].length = Number($globalFluffies[_ef].maxLength * (_lMultiBase + ($globalFluffies[_ef].ageWeeks * _lMultiAdd))).toFixed(2)>>
-*/
-
-<<run console.log("Growth test 0.4: _newW = " + _newW + " _newL = " + _newL + " _newH " + _newH )>>
-<<run console.log("Growth test 0.5: weight = " + $globalFluffies[_ef].weight + " length = " + $globalFluffies[_ef].length + " height " + $globalFluffies[_ef].height )>>
-
-<<run console.log("Growth test 1: weight % = " + Number($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight))>>
 		<<if ($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight) > 0.14 && $globalFluffies[_ef].weaned == false>> 	
 	 		<<set $globalFluffies[$globalFluffies[_ef].mother].nursing-->>
 
@@ -748,15 +704,6 @@
 	 		<<if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0>>
 	 			<br><<print $globalFluffies[$globalFluffies[_ef].mother].name>> is done nursing.
 	 		<</if>> 
-	 		/*
-	 		<<set $ourStore.foals-->>
-	 		
-			<<if $globalFluffies[_ef].gender == "male">>
-				<<set $ourStore.stallions++>>
-			<<else>>
-				<<set $ourStore.mares++>>
-			<</if>>
-			*/
 	 	<</if>>
 	<</if>>
 	
@@ -823,8 +770,6 @@
 
 		<<clampValues $globalFluffies[_ef]>>
 
-<<run console.log("Mating test 1: " + $globalFluffies[_ef].specialFriend + " | " + $globalFluffies[_ef].gender)>>
-
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
@@ -838,7 +783,6 @@
 		
 		<<if $globalFluffies[_ef].pregnant>>
 			<<if $globalFluffies[_ef].dueDate == 0>>
-				<<run console.log("Birth test 0:  " + $globalFluffies[_ef].name + " added to birth even queue.")>>
 				/* Push to event stack  */
 				<<run $eventBirths.push($globalFluffies[_ef].ID)>>
 				
@@ -863,7 +807,6 @@
 	 *	Caculate stress
 	 *** */
 	 
-	 <<run console.log("Stress test 0: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 	 /* First get a value based on temperament: */
 	 /* >= 190 - smarty */
 	 <<if $globalFluffies[_ef].temperament >= 190>>
@@ -885,7 +828,6 @@
 	 	<<set _thisStress = 2>>
 	 <</if>>
 	 
-	 <<run console.log("Stress test 1: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 	 /* Then check based on personaity: */
 	 <<switch $globalFluffies[_ef].traits[0]>>
 		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
@@ -898,7 +840,6 @@
 			<<set _thisStress = Number(_thisStress) + 0>>
 	 <</switch>>
 	 
-	 <<run console.log("Stress test 2: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 	 /* If this a foal being nursed by the mother, drop the stress: */
 	 <<if $globalFluffies[_ef].foodType == "Nursing">>
 	 	<<set _temp = Number(Number(_thisStress) / 80).toFixed(2)>>
@@ -906,12 +847,7 @@
 	 	<<set _temp = Number(Number(_thisStress) / 8).toFixed(2)>>
 	 <</if>>
 
-<<run console.log("Stress test 3: _temp = " + _temp + ". _stressor = " + _stressor)>>
-
 	<<set _stressor = Number(Number(_stressor) + Number(_temp)).toFixed(2)>>
-	 
-	 
-	<<run console.log("Stress test 3: _thisStress = " + _thisStress + ". _stressor = " + _stressor + ".")>>
 
 <</for>> /* Close store loop */
 
@@ -919,20 +855,20 @@
 /* ***
  *	Final expenses:
  *** */
+<<run console.log(`DEBUG: [endWeek]: 2 Finances: cash = ${$cash}, cost = ${$costs}, feedCost = ${_feedCost}.`)>>
 
 <<script>>
-	State.variables.costs = Number(State.variables.costs + State.temporary.feedCost).toFixed(2);
-	State.variables.cashLastWeek = State.variables.cash;
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.cashLastWeek = Number(State.variables.cash);
 	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 <</script>>
+
+<<run console.log(`DEBUG: [endWeek]: 3 Finances: cash = ${$cash}, cost = ${$costs}.`)>>
 
 <<cashMinus $costs>>
 
 
 <br>Upkeep this week was $costs.
-
-
-<<run console.log("Stress test 4: _stressor = " + _stressor + ".")>>
 
 <<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
 
@@ -943,9 +879,7 @@
 <<set $stressUp = Number(_stressor)>>
 <br>Stress this week was $stressUp.
 
-<<run console.log("Stress test 5: $stress  = " + $stress + ".")>>
 <<set $stress = Number(Number($stress) + Number($stressUp))>>
-<<run console.log("Stress test 6: $stress  = " + $stress + ".")>>
 
 /* Build stress event list: Check once for every 10 points of stress the player has*/
 <<for _stressCount = 10; _stressCount <= $stress; _stressCount += 10>>

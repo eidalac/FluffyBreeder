@@ -32,14 +32,12 @@
 		<br><<print $globalFluffies[$activeFluffy.specialFriend].name>> and $activeFluffy.name are no longer special friends.
 		<br>@@.cyan;HUHUHU WORST SADIES.@@
 
-<<run console.log("Details test 0: $activeFluffy.specialFriend  = " + $activeFluffy.specialFriend + " | $activeFluffy.name = " + $activeFluffy.name + " | ")>>
 		<<if def $globalFluffies[$activeFluffy.specialFriend]>>
 			<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
 		<</if>>
 	
 		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
 		<<set $activeFluffy.specialFriend = -1>>
-<<run console.log("Display check 1: " + $activeFluffy.specialFriend)>>
 	<</if>>
 	
 	<br>You move $activeFluffy.name to the display area for sale.
@@ -47,12 +45,10 @@
 	
 	<<statValue>>
 
-<<run console.log("Display check 2: " + $activeFluffy.onDisplay)>>
-
 	<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 	<<else>>
-		<<run console.log("fluffySelling - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+		<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${$activeFluffy.ID} Should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
 		<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
 		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 	<</if>>

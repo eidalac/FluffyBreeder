@@ -765,7 +765,7 @@ button {
 	<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
 	
 	<<if _price == 0>>
-		<<run console.log("Customer Test: _price was 0.")>>
+		<<run console.log(`ERROR: [eventCustomer]: price was 0.`)>>
 		<<set _price = Number($earthPrice.mart)>>
 	<</if>>
 	
@@ -833,8 +833,7 @@ button {
 		<<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$globalFluffies[_fl].name + ".@@<br>">>
 		
 		<<if $globalFluffies[_fl].ID != _fl>>
-			<<run console.log("Logic Test 1 - Invalid ID found: " + $globalFluffies[_fl].ID + ". Should be " + _fl)>>
-			/* <<run $ourStore.fluffies.delete(_fl)>>*/
+			<<run console.log(`ERROR: [eventCustomer]: Invalid ID found: ${$globalFluffies[_fl].ID}, Should be ${_fl}.`)>>
 			<<set $globalFluffies[_fl].ID = _fl>>
 		<</if>> 
 		
@@ -874,9 +873,7 @@ button {
 
 		/* Random chance to 'upsell'*/
 		<<set _chance = Number(($training + $reputation) / 4).toFixed(2)>>
-
-		<<run console.log("Upgraded check _chance = " + _chance)>>
-		
+	
 		<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
 			<br>You add some deluxe toys to the sale.
 			<br> 				
@@ -892,8 +889,6 @@ button {
 		<</if>>
 
 		<<cashMinus _price>>
-		
-		<<run console.log("Customer needs $cash = " + $cash)>>
 
 		<<replace "#result-msg">>
 			_msgString
@@ -902,12 +897,6 @@ button {
 		<<replace "#navbar">><</replace>>
 		<<timed 5ms>><<replace "#fluffy-list">><</replace>><</timed>>
 
-		<<run console.log("Customer test pre removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>						
 		<<run $ourStore.fluffies.delete(_fl)>>
-		<<run console.log("Customer test post removal of {" + _fl + "} = " + $ourStore.fluffies.length)>>
-		<<run console.log("Customer test post removal:" + $ourStore.fluffies.length)>>
 	<</if>> /* Close needs check */
-
-	<<run console.log(`Customer Test: Went to NULL, out of bounds.`)>>
-
 <</widget>>

@@ -12,7 +12,7 @@
 
 
 /* ***
- *	Call as <<cashAdd <nubmer>>>
+ *	Call as <<cashAdd <number>>>
  *	Adds a value (or subtract if negative) to the $cash value.
  *** */
 <<widget "cashAdd">>
@@ -72,7 +72,7 @@
 		<</script>>
 	<</if>>
 
-	<<cashAdd Number($args[0])>>
+	<<cashAdd $args[0]>>
 <</widget>>
 
 
@@ -100,4 +100,46 @@
 			State.variables.cash = Number(10).toFixed(2);
 		}
 	<</script>>
+<</widget>>
+
+
+/* ***
+ *	Call as <<clampValues $fluffy>>
+ *	Clamps fluffy stats
+ *** */
+<<widget "clampValues">>
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<clampValues>>: called with no Fluffy.`)>>
+	<<elseif ndef $args[0].ID>>
+		<<run console.log(`ERROR: <<clampValues>>: ID is not define.`)>>
+	<<elseif ndef $globalFluffies[$args[0].ID]>>
+		<<run console.log(`ERROR: <<clampValues>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
+			<<run console.log(`ERROR: <<clampValues>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+
+			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+		<</if>>
+		/* Doing via script because I can't trust TWINE to do math */
+		<<script>>
+			const ID = State.variables.args[0].ID;
+
+			/* Clamp These 0-10: */
+			State.variables.globalFluffies[ID].strength = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].strength, 0, 10));
+			State.variables.globalFluffies[ID].energy = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].energy, 0, 10));
+			State.variables.globalFluffies[ID].charm = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].charm, 0, 10));
+			State.variables.globalFluffies[ID].thinking = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].thinking, 0, 10));
+			State.variables.globalFluffies[ID].learning = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].learning, 0, 10));
+			State.variables.globalFluffies[ID].fertility = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].fertility, 0, 10));
+
+			/* Clamp these to 0-200 */
+			State.variables.globalFluffies[ID].trust = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trust, 0, 200));
+			State.variables.globalFluffies[ID].training = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].training, 0, 200));
+			State.variables.globalFluffies[ID].temperament = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].temperament, 0, 200));
+			State.variables.globalFluffies[ID].happy = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].happy, 0, 200));
+			State.variables.globalFluffies[ID].stress = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].stress, 0, 200));
+			State.variables.globalFluffies[ID].trauma = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trauma, 0, 200));
+		<</script>>
+	<</if>>
 <</widget>>

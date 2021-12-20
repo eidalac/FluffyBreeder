@@ -302,56 +302,6 @@
 	<br>@@.lightcoral; EXP@@ | $training ( Hugbox $hugbox | Abuse $abuse )
 <</widget>>
 
-/* ***
- *	Call as <<clampValues $fluffy>>
- *	Clamps fluffy stats
- *** */
-<<widget "clampValues">>
-	<<if ndef $args[0]>>
-		<<run console.log("Called <<clampValues>> without Fluffy.")>>
-	<<else>>
-		<<set $activeFluffy = $globalFluffies[$args[0].ID]>>
-		<<run console.log("Name", $activeFluffy.name)>>
-
-		/* Doing via script because I can't trust TWINE to do math */
-		<<script>>
-			const ID = State.variables.activeFluffy.ID;
-
-			/* Clamp These 0-10: */
-			State.variables.globalFluffies[ID].strength = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].strength), 0, 10);
-			State.variables.globalFluffies[ID].energy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].energy), 0, 10);
-			State.variables.globalFluffies[ID].charm = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].charm), 0, 10);
-			State.variables.globalFluffies[ID].thinking = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].thinking), 0, 10);
-			State.variables.globalFluffies[ID].learning = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].learning), 0, 10);
-			State.variables.globalFluffies[ID].fertility = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].fertility), 0, 10);
-
-			/* Clamp these to 0-200 */
-			State.variables.globalFluffies[ID].trust = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trust), 0, 200);
-			State.variables.globalFluffies[ID].training = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].training), 0, 200);
-			State.variables.globalFluffies[ID].temperament = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].temperament), 0, 200);
-			State.variables.globalFluffies[ID].happy = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].happy), 0, 200);
-			State.variables.globalFluffies[ID].stress = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].stress), 0, 200);
-			State.variables.globalFluffies[ID].trauma = Math.clamp(Math.trunc(State.variables.globalFluffies[ID].trauma), 0, 200);
-		<</script>>
-	<</if>>
-<</widget>>
-
-/*		 	
-			<<set _geneCheck = $ordinalString.match(/\D*[#]+/)>>
-			
-			<br>
-			<<- $ordinalString.match(/\D*[#]+/)>>
-			
-			<<set $ordinalString = "numba #">>
-			<<- $ordinalString.match(/\D*[#]+/)>>
-			
-			<<set $ordinalString = "#">>
-			<<- $ordinalString.match(/\D*[#]+/)>>
-			
-			<<set $ordinalString = "27">>
-			<<- $ordinalString.match(/\D*[#]+/)>>
-*/
-
 <<widget "OptionsWidget">>
 	<div class="w3-modal-content">
 		<header class="w3-container w3-teal"> 
@@ -360,12 +310,8 @@
 		</header>
 		<div class="w3-container w3-dark-grey">
 			<<if ndef $nameType>><<set $nameType = "ordinal">><</if>>
-
-			<<run console.log("Options test 0 : " + $ordinalString)>>	
 			
 			<<if ndef $ordinalString>><<set $ordinalString = "This fluffy">><</if>>
-			
-			<<run console.log("Options test 1 : " + $ordinalString)>>
 			
 			<br>
 			<div class="w3-container w3-padding">
@@ -386,11 +332,9 @@
 					<<else>>
 						<<set $ordinalString = _tempString>>
 						<<replace "#textbox-error">>Ok, oridnal name set to "<<- $ordinalString>> #".<</replace>>
-<<run console.log("Options test 2 : " + $ordinalString)>>
 					<</if>>
 				<</button>>
 				<span id="textbox-error"></span>
-<<run console.log("Options test 3 : " + $ordinalString)>>
 				<br>
 				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ Namelist</label>
 
@@ -401,8 +345,6 @@
 	        	<label><<checkbox "$inlineSprites" false true autocheck>>In-line Sprites.  Uncheck to use 'art\sprites3' folder</label>
         	</div>
 
-<<run console.log("Options test 4 : " + $ordinalString)>>
-
 				<p><<button "Display Variables">><<checkvars>><</button>></p>
 				<p><<button "Bug Report">><<bugreport>><</button>></p>
 		
@@ -412,7 +354,6 @@
 			<<timed 5ms>>
 				<<run $("#radiobutton-nametype-1").prop( "disabled", true )>>
 			<</timed>>
-			<<run console.log("Options test 5 : " + $ordinalString)>>
         </div>
         <footer class="w3-container w3-teal">
         	<p>Modal Footer</p>

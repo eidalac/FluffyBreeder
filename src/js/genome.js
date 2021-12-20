@@ -308,17 +308,14 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 
 	if (prototypeF.length != this.length)
 	{
-		console.log("Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
+		console.log("ERROR: Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
 		this.genes = prototypeF.genes;
 	}
 	else if (prototypeM.length != other_genome.length)
 	{
-		console.log("Genome breedWithGenome: father gene length incorrect, reset to default gene.");
+		console.log("ERROR: Genome breedWithGenome: father gene length incorrect, reset to default gene.");
 		other_genome = prototypeM;
 	}
-
-	console.log("Genome breedWithGenome: mom = " + this + ".");
-	console.log("Genome breedWithGenome: dad = " + other_genome + ".");
 
 	for (var i = 0; i < this.length; i++) {
 		
@@ -353,35 +350,26 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 					child_genes += this.elementAt(i).allele2;
 					child_genes += "/";
 					child_genes += other_genome.elementAt(i).allele2;
-
-					//console.log("Genome breedWithGenome: 0 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
 					break;
 				case 1:
 					child_genes += this.elementAt(i).allele2;
 					child_genes += "/";
 					child_genes += other_genome.elementAt(i).allele1;
-
-					//console.log("Genome breedWithGenome: 1 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
 					break;
 				case 2:
 					child_genes += this.elementAt(i).allele1;
 					child_genes += "/";
 					child_genes += other_genome.elementAt(i).allele2;
-
-					//console.log("Genome breedWithGenome: 2 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
 					break;
 				default:
 					child_genes += this.elementAt(i).allele1;
 					child_genes += "/";
 					child_genes += other_genome.elementAt(i).allele1;
-
-					//console.log("Genome breedWithGenome: 3 child_genes.substring " + i + " = " + child_genes.substring((i*4), (i*4)+3) + ".")
 					break;
 			}
 		}
 	}
 
-	console.log("Genome breedWithGenome: child  = " + child_genes + ".");
     return Genome.fromString(child_genes); 
 }
 
@@ -517,8 +505,7 @@ Genome.prototype.triplePhenotype = function(index, gene_string) {
 	 * Combinations are:
 	 * A/A, A/a, a/A, a/a and B/B, B/b, b/B, b/b
 	 * **/
-//console.log("gene checked = " +geneOne[0].toUpperCase())
-//console.log("containment check = " + parts.includes(geneOne[0].toUpperCase()))
+
 	// Check for any genes that do not match the profile
 	if (!parts.includes(geneOne[0].toUpperCase()) || !parts.includes(geneOne[0].toUpperCase())) {
 		return -1;
@@ -645,15 +632,15 @@ Genome.prototype.getLengthGene = function() {
  */
 Genome.prototype.setLength = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
-//console.log("test check 1 = " +  new_gene)
+
 	switch (test_gene.triplePhenotype(0, "A/B/C")) {
 	case -1:
 		 // gene string does not match, abort.
-//console.log("test check 2 = false")
+
 		return false;
 	default:
 		// we matched a valid gene, continue.
-//console.log("test check 2 = true")
+
 		this.genes[1] = new_gene.substring(0, 3);
 		this.genes[2] = new_gene.substring(4, 7);
 		this.genes[3] = new_gene.substring(8, 11);
@@ -822,15 +809,15 @@ Genome.prototype.getHeight = function() {
  */
 Genome.prototype.setHeight = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
-// console.log("test check 1 = " +  new_gene)
+
 	switch (test_gene.doublePhenotype(0, "E/F")) {
 	case -1:
 		 // gene string does not match, abort.
-//console.log("test check 2 = false")
+
 		return false;
 	default:
 		// we matched a valid gene, continue.
-//console.log("test check 2 = true")
+
 		this.genes[4] = new_gene.substring(0, 3);
 		this.genes[5] = new_gene.substring(4, 7);
 		return true;
@@ -2084,20 +2071,17 @@ Genome.prototype.getInbreedingGene = function() {
  * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
  */
 Genome.prototype.setInbreeding = function(new_gene) {
-	//var test_gene = Genome.fromString(new_gene);
 	
 	var new_gene = new_gene.replace(";", "");
 	var parts = new_gene.split('/');
-//console.log("gene checked = " + parts + " " + parts.length)
+
 	if (parts.length != 2)
 		return false;
 	
 	if (Number.isInteger(Number(parts[0])) && Number.isInteger(Number(parts[1]))) {
-		//console.log("true gene = " + parts)
 		this.genes[42] = parts[0] + "/" + parts[1];
 		return true;
 	} else {
-		//console.log("false gene = " + parts)
 		return false;
 	}
 };
@@ -2148,15 +2132,14 @@ Genome.prototype.setInbreeding = function(new_gene) {
  */
 Genome.prototype.setCoatLength = function(new_gene) {
 	var test_gene = Genome.fromString(new_gene);
-// console.log("test check 1 = " +  new_gene)
+
 	switch (test_gene.doublePhenotype(0, "C/L")) {
 	case -1:
 		 // gene string does not match, abort.
-//console.log("test check 2 = false")
+
 		return false;
 	default:
 		// we matched a valid gene, continue.
-//console.log("test check 2 = true")
 		this.genes[43] = new_gene.substring(0, 3);
 		this.genes[44] = new_gene.substring(4, 7);
 		return true;
@@ -2220,8 +2203,6 @@ Genome.prototype.getCoatLengthDesc = function() {
  */
 Genome.prototype.getCoatDensity = function() {
 
-	console.log("coat density check 1")
-	
 	switch (this.doublePhenotype(45, "C/D")) {
 	case 0:
 		return 40;
@@ -2447,7 +2428,7 @@ Genome.prototype.getCoatCurlDesc = function() {
 Genome.prototype.setSubSpecies = function(new_gene) {
 	var new_gene = new_gene.replace(";", "");
 	var parts = new_gene.split('/');
-//console.log("gene checked = " + parts + " " + parts.length)
+
 	if (parts.length != 2)
 	{
 		this.genes[49] = "0/0";
@@ -2462,11 +2443,9 @@ Genome.prototype.setSubSpecies = function(new_gene) {
 	}
 
 	if (Number.isInteger(Number(parts[0])) && Number.isInteger(Number(parts[1]))) {
-		//console.log("true gene = " + parts)
 		this.genes[49] = parts[0] + "/" + parts[1];
 		return true;
 	} else {
-		//console.log("false gene = " + parts)
 		// if it's invald just set it to the default value.
 		this.genes[49] = "0/0";
 		return true;
@@ -2579,8 +2558,7 @@ Genome.prototype.clearDefect = function(index) {
 
 	
 	var ran = Math.floor(((Math.random() * 2) + 1));
-	
-console.log("clear defects parts = " + parts[0] + " " + parts[1] + " " + ran)
+
 
 	switch (ran) {
 	case 1:
@@ -2596,7 +2574,4 @@ console.log("clear defects parts = " + parts[0] + " " + parts[1] + " " + ran)
 	}
 
 	this.genes[index] = parts[0] + "/" + parts[1];
-
-console.log("cleared defects parts = " + this.genes[index])
-
 };

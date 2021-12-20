@@ -161,18 +161,13 @@
 			charm: $args[0].getCharm(),
 			thinking: $args[0].getThinking(),
 			learning: $args[0].getLearning(),
-			
-			
 			coatLengthAdd: _cl,
 			coatLength: $args[0].getCoatLength() + _cl,
-
 			coatDensityAdd: _cd,
-
 			coatDensity: $args[0].getCoatDensity() + _cd,
 			coatCurl: $args[0].getCoatCurl(),
 			subSpecies: _subspecies,
 			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
-
 			health: 10,
 			children: [],
 			specialFriend: -1,
@@ -192,10 +187,6 @@
 			trauma: 0,
 			stress: 0
 		} >>
-
-		<<run console.log("Species test 0: " + $activeFluffy.geneString.substring(100))>>
-		<<run console.log("Species test 1: " + $activeFluffy.subSpecies)>>
-		<<run console.log("Species test 2: " + $activeFluffy.subSpeciesString)>>
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 		
@@ -355,7 +346,6 @@
 
 /* Weight defect */
 <<if $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) && $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase()>>
-<<run console.log("Gene Defect: " + $activeFluffy.geneString.substring(28,29) + "/" + $activeFluffy.geneString.substring(30,31))>>
 	
 	<<set _multiplier = Number(Number(10 + _defectLevel) / 10).toFixed(2)>>
 	<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
@@ -421,19 +411,16 @@
 <<if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()>>
 	<<run $activeFluffy.traits.push("Runt")>>
 	<<set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)>>
-<<run console.log("Gene Defect = Runt. _multiplier = " + _multiplier)>>
-<<run console.log("Gene Defect = Runt. maxLength = " + $activeFluffy.maxLength + ". maxHeight = " + $activeFluffy.maxHeight + ". maxWeight = " + $activeFluffy.maxWeight)>>
 	<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-<<run console.log("Gene Defect = Runt. maxLength = " + $activeFluffy.maxLength + ". maxHeight = " + $activeFluffy.maxHeight + ". maxWeight = " + $activeFluffy.maxWeight)>>
 
-	<<set $activeFluffy.energy -= _defectLevel>>
-	<<set $activeFluffy.strength -= _defectLevel>>
-	<<set $activeFluffy.charm -= _defectLevel>>
+	<<set $activeFluffy.energy -= Number(_defectLevel)>>
+	<<set $activeFluffy.strength -= Number(_defectLevel)>>
+	<<set $activeFluffy.charm -= Number(_defectLevel)>>
 <</if>>
 
 /* Stomach defect */

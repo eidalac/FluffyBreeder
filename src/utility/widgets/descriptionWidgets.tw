@@ -373,13 +373,12 @@ button {
 	/*<<colorValue>>*/
 	<<statValue>>
 	<<clampValues $activeFluffy>>
-	<<run console.log("Name", $activeFluffy.name)>>
 	 
 	<<if def $activeFluffy.ID && $activeFluffy.ID >= 0>>
 		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
 			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<<else>>
-			<<run console.log("FluffyDesc - invalid $activeFluffy ID: " + $activeFluffy.ID + ". Should be " + $globalFluffies[$activeFluffy.ID].ID)>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: invalid $activeFluffy ID: ${$activeFluffy.ID} Should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
 			<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
 			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 		<</if>>
@@ -390,7 +389,7 @@ button {
 		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 
 		<<if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies("0/0;") == false>>
-			<<run console.log("FluffyDesc - missing subSpeciesString and failed to reset gene to default.")>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing subSpeciesString and failed to reset gene to default.`)>>
 		<<else>>
 			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
@@ -404,7 +403,7 @@ button {
 		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 
 		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatLength("C/c;L/l;") == false>>
-			<<run console.log("FluffyDesc - missing coatLength and failed to reset gene to default.")>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing coatLength and failed to reset gene to default.`)>>
 		<<else>>
 			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
@@ -420,7 +419,7 @@ button {
 		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 
 		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity("C/c;D/d;") == false>>
-			<<run console.log("FluffyDesc - missing setCoatDensity and failed to reset gene to default.")>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing CoatDensity and failed to reset gene to default.`)>>
 		<<else>>
 			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
@@ -434,7 +433,7 @@ button {
 		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
 		
 		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl("C/c;C/c;") == false>>
-			<<run console.log("FluffyDesc - missing setCoatDensity and failed to reset gene to default.")>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing CoatCurl and failed to reset gene to default.`)>>
 		<<else>>
 			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
@@ -491,7 +490,7 @@ button {
 	<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<<else>>
-		<<run console.log("shortDesc - invalid $activeFluffy ID: " + _fluffy.ID + ". Should be " + $globalFluffies[_fluffy.ID].ID)>>
+		<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)>>
 		<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
 		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 	<</if>>

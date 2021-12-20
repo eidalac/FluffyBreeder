@@ -1,7 +1,7 @@
 :: Gene Test
 
 /* **********
- * weekSave.tw
+ * geneTest.tw
  *
  * Package: FluffyBreeder
  * Format: Twine2 (Sugarcube 2)
@@ -11,15 +11,14 @@
  *********** */
 <<set _geneCheck = "">>
 
-
-
-<<run console.log("Gentic Test.  Gene = '" + $globalFluffies[$activeFluffy.ID].geneString + "'")>>
+<<run console.log(`DEBUG: [geneTest]: Gene = ${$globalFluffies[$activeFluffy.ID].geneString}.`)>>
 
 <<set _geneCheck = $globalFluffies[$activeFluffy.ID].geneString.match(/((X\/X|X\/Y|Y\/X);)(A\/A;B\/B;C\/C;)(E\/E;F\/F;)(G\/G;H\/H;)(J\/J;K\/K;)(M\/M;N\/N;)(S\/S;X\/X;)([Ee]\/[Ee];[Pa]\/[Pa];[Ua]\/[Ua];)(B\/B;Y\/Y;R\/R;O\/O;W\/W;){3}(S\/S;T\/T;)(E\/E;N\/N;)(C\/C;H\/H;)(T\/T;H\/H;)(L\/L;E\/E;)(\d+\/\d+;)(C\/C;L\/L;)(C\/C;D\/D;)(C\/C;C\/C;)([\dA-F]\/[\dA-F])/gi)>>
 
-<<run console.log("Gentic Test.  _geneCheck = '" + _geneCheck + "'")>>
+<<run console.log(`DEBUG: [geneTest]: _geneCheck = ${_geneCheck}.`)>>
 
 <<if _geneCheck === null>>
+	<<run console.log(`WARNING: [geneTest]: invalid Gene = ${$globalFluffies[$activeFluffy.ID].geneString}.`)>>
 	<br><br>@@.red;Invalid gene found:@@ '<<-$globalFluffies[$activeFluffy.ID].geneString>>'.
 	[[Return to Gene Lab|Gene Lab]]
 <<else>>

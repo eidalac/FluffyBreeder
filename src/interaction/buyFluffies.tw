@@ -172,44 +172,7 @@
 	<</timed>>
 	
 	<<timed 10ms>>
-/*
-		<<if $actions < Number(_randomFluffies.length)>>
-			<<run $("#shopbutton button").addClass("w3-disabled")>>
-			<<run $("#buybutton button").addClass("w3-disabled")>>
-			<<run $("#shopbutton button").prop("disabled", true)>>
-			<<run $("#buybutton button").prop("disabled", true)>>
-			
-			<br>//You are too tired for more shopping//.
-			<br>
-		<<elseif Number(_randomFluffies.length) > 1>>
-			<<set _c = 0>>
-			<<for $activeFluffy range _randomFluffies>>
-				<<if _randomFluffies.isChecked>>
-					<<run _c++>>
-				<</if>>
-			<</for>>
 
-			<<if _c < 1>>
-				<<run $("#shopbutton button").addClass("w3-disabled")>>
-				<<run $("#buybutton button").addClass("w3-disabled")>>
-				<<run $("#shopbutton button").prop("disabled", true)>>
-				<<run $("#buybutton button").prop("disabled", true)>>
-				
-				<br>//no fluffies selected//.
-				<br>
-			<<elseif $actions < _c>>
-				<<run $("#shopbutton button").addClass("w3-disabled")>>
-				<<run $("#buybutton button").addClass("w3-disabled")>>
-				<<run $("#shopbutton button").prop("disabled", true)>>
-				<<run $("#buybutton button").prop("disabled", true)>>
-			
-			<br>//too many fluffies selected//.
-			<br>
-			<</if>>
-		<<else>>
-		<br><br><br> <<print Number(_randomFluffies.length)>>
-		<</if>>
-		*/
 		<<if Number(_price) >  Number($cash) && Number(_price) != 0>>
 			<<run $("#buybutton button").addClass("w3-disabled")>>
 			<<run $("#buybutton button").prop("disabled", true)>>
@@ -268,7 +231,6 @@
 
 				/* solo foal */
 				<<case 0>>
-					<<run console.log("Fluffy shopping - generating : solo child")>>
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 					<<set $activeFluffy.age = 0>>
@@ -282,7 +244,6 @@
 
 				/* mated pair */
 				<<case 1 2 3>>
-					<<run console.log("Fluffy shopping - generating : mated pair")>>
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
@@ -309,11 +270,8 @@
 					<<set $mom.specialFriend = $dad.ID>>
 					<<set $dad.specialFriend = $mom.ID>>
 
-					<<run console.log("Fluffy shopping generating: mated pair check : " + $mom.specialFriend + " + " + $dad.specialFriend + ".")>>
-
 					/* 25% chance the female is pregnate */
 					<<if random(0,3) == 3>>
-						<<run console.log("Fluffy shopping generating: mated pair with pregnacy.")>>
 						<<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
 							
 						<<set $mom.pregnant = true>>
@@ -325,19 +283,12 @@
 
 					/* Cull at 25% */
 					<<if random(0,3) == 0>>
-						<<run console.log("Fluffy shopping generating: mated pair culled.")>>
 						<<run _culledParent = _randomFluffies.pluck()>>
 						<<deadFluffy $globalFluffies[_culledParent.ID]>>
-						
-						/* 25% chance a solo female is pregers */
-						<<if _culledParent.gender == "male" && $mom.pregnant>>
-							<<run console.log("Fluffy shopping - generated solo preg female.")>>
-						<</if>>
 					<</if>>
 				
 				/* family group*/
 				<<case 5 6 7 8>>
-					<<run console.log("Fluffy shopping - generating : family group")>>
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
@@ -366,21 +317,14 @@
 					<<set $mom.specialFriend = $dad.ID>>
 					<<set $dad.specialFriend = $mom.ID>>
 
-					<<run console.log("Fluffy shopping generating: mated pair check : " + $mom.specialFriend + " + " + $dad.specialFriend + ".")>>
-
-					<<run console.log("Fluffy shopping - generating : family group - Litter = " + _litter + ".")>>
 
 					<<for _ls = 0; _ls < _litter; _ls++>>
-						<<run console.log("Fluffy shopping - generating : family group : pushing child " + _ls + ".")>>
-						
 						<<breedFluffies $mom $dad>>
 						<<set $activeFluffy.age = 0>>
 						<<set $activeFluffy.ageWeeks = random(1, 6)>>
 
 						/* Cull children at 25% */
-						<<if random(0,3) == 0>>
-							<<run console.log("Fluffy shopping - generating: - culled child.")>>
-						<<else>>
+						<<if random(0,3) != 0>>
 							<<run $activeFluffy.traits.push("Feral")>>
 							<<run _randomFluffies.push($activeFluffy)>>
 							<<set $activeFluffy.ID = $globalFluffies.length>>
@@ -397,9 +341,7 @@
 							<<else>>
 								/* weaned */
 								<<set $globalFluffies[$activeFluffy.ID].weaned = true>>
-							<</if>>
-
-							<<run console.log("Fluffy shopping - generating : family group : pushed child " + _ls + ".")>>						
+							<</if>>					
 						<</if>>
 					
 					<</for>>
@@ -412,21 +354,17 @@
 
 					/* Cull parrents at 25% */
 					<<if random(0,3) == 3>>
-						<<run console.log("Fluffy shopping generated family, culling mother.")>>
 						<<run _culledParent = _randomFluffies.deleteAt($mom)>>
 						<<deadFluffy $mom>>
 					<</if>>
 
 					<<if random(0,3) == 2>>
-						<<run console.log("Fluffy shopping generated family, culling father.")>>
 						<<run _culledParent = _randomFluffies.deleteAt($dad)>>
 						<<deadFluffy $dad>>
 					<</if>>
 				
 				/* Single fluffy */
 				<<default>>
-
-					<<run console.log("Fluffy shopping - generating : solo fluffy")>>
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
@@ -450,7 +388,6 @@
 			<<set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()>>
 
 		<<else>>
-			<<run console.log("Fluffy shopping - generating : single non feral")>>
 			<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 			<<newFromGene $testChild>>
 		<</if>>
@@ -469,8 +406,7 @@
 			<<run $globalFluffies.push($activeFluffy)>>
 			<<run _randomFluffies.push($activeFluffy)>>
 		<</if>>
-		
-		<<run console.log("Fluffy shopping - generating : " + _randomFluffies.length + " fluffies")>>
+
 		/* We may have generated one or a family, so run the checks on all of them in turn. */
 		<<for _rf = 0; _rf < _randomFluffies.length; _rf++>>
 			<<set $activeFluffy = _randomFluffies[_rf]>>
@@ -484,12 +420,8 @@
 			/* Pick a random defect gene, remove it from the list, check if it's defective and if it is, up the defect cont*/
 			<<for $defenctIndex.length > 0>>
 				<<set _ri = $defenctIndex.pluck()>>
-				<<run console.log("Fluffy shopping gene defect test: [" + _ri + "] "+ $activeFluffy.geneString.substring(_ri, _ri+3))>>
-			
-				<<if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) && $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
-					<<run console.log("Fluffy shopping gene defect found: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
 
-					<<run console.log("Fluffy shopping full gene " + $activeFluffy.geneString)>>
+				<<if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) && $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()>>
 					
 					/* Max of 3 gene defects at fluffy mart, 4 in a shelter, 5 in a mill, one from a breeder */
 					<<if $shop == "mart" && _defectCount >= Number(2 + random(0,1))>>
@@ -502,10 +434,8 @@
 						<<run $activeFluffy.genes.clearDefect(_ri)>>
 						<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 					<<elseif $shop == "breeder" && _defectCount >= Number(0 + random(0,1))>>
-						<<run console.log("Fluffy shopping gene: clearing index " + _ri)>>
 						<<run $activeFluffy.genes.clearDefect(_ri)>>
 						<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
-						<<run console.log("Fluffy shopping gene: after clearing: " + $activeFluffy.geneString.substring(_ri, _ri+3))>>
 					<<else>>
 						<<set _defectCount++>>
 					<</if>>
@@ -515,21 +445,14 @@
 					<</if>>
 				<</if>>
 			<</for>>
-			
-			<<run console.log("Fluffy mart defect count: " + _defectCount)>>
-		
-			<<run console.log("Fluffy shopping - sanity check #0 - length = " + _randomFluffies.length + ".")>>
+
 
 			<<if $shop == "mill">>
 				<<set $activeFluffy.name = "Fluffy No. "+Number(random(1, 999))>>
 				<<set $activeFluffy.age = 0>>
 				<<set $activeFluffy.ageWeeks = random(6, 16)>>
 
-				<<run console.log("Fluffy mill color test 0: " + $activeFluffy.cColor)>>
-
 				<<limitColor 1 2>>
-
-				<<run console.log("Fluffy mill color test 1: " + $activeFluffy.cColor)>>
 			<</if>>
 
 			/* Adjust things based on age for children/foals */
@@ -626,14 +549,8 @@
 			/* Set any traits from bad genes: */
 			<<setGeneTraits>>
 
-			<<run console.log("Fluffy shopping - sanity check #2 - length = " + _randomFluffies.length + ".")>>
-
-			<<run console.log("Fluffy breeder color test 0: " + $shop)>>
-
 			<<if $shop == "breeder">>
-				<<run console.log("Fluffy breeder color test 1: " + $activeFluffy.cColor)>>
 				<<limitColor 4 6>>
-				<<run console.log("Fluffy breeder color test 2: " + $activeFluffy.cColor)>>
 			<</if>>
 
 			<<set _inbreed = String(random(0,50) + "/" + random(50,99)) + ";">>
@@ -644,12 +561,9 @@
 			<<colorGroup>>
 			<<statValue>>
 
-			<<run console.log("Fluffy shopping - sanity check #3 - length = " + _randomFluffies.length + ".")>>
-
 			<<set _randomFluffies[_rf].isChecked = false>>
 			<<set _randomFluffies[_rf] = $activeFluffy>>
 		<</for>>
-		<<run console.log("Fluffy shopping - completed generation of : " + _randomFluffies.length + " fluffies")>>
 	<</if>>
 
 	<br>
@@ -707,11 +621,8 @@
 				<</if>>
 
 				<<set _price = Number($activeFluffy.training)>>
-				<<run console.log("Price test 1: " + _price)>>		
 
 				<<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
-
-				<<run console.log("Price test 2: " + _price)>>
 
 				<<switch $activeFluffy.breed>>
 					<<case "unicorn">>
@@ -730,15 +641,12 @@
 					<<set _ageMulti = 1>>
 				<</if>>
 				
-				<<run console.log("Price test 5: " + _price)>>
 				<<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
-				<<run console.log("Price test 6: " + _price)>>
 				<<set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)>>
-				<<run console.log("Price test 7: " + _price)>>
 				<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks < 45>>
 					<<set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)>>
 				<</if>>
-				<<run console.log("Price test 8: " + _price)>>
+
 				<<set _price = Number(_price * _ageMulti).toFixed(2)>>
 
 				<<if $shop == "angora">>

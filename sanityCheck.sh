@@ -54,7 +54,7 @@ $GREP "<<set[^{>=]*==" -- 'src/*' | myprint "DoubleEqualsInSet"
 # Check for, e.g   <<if slaves[foo]>>
 $GREP "<<\([^>]\|[^>]>[^>]\)*[^$]slaves\[" -- 'src/*' | myprint "MissingDollar"
 # Check for missing $ or _ in variable name:
-$GREP -e "<<[a-zA-Z]\([^>\"]\|[^>]>[^>]\|\"[^\"]*\"\)* [a-zA-Z]\+ * =" -- "src/**/*.tw" | myprint "MissingDollar2"
+#$GREP -e "<<[a-zA-Z]\([^>\"\]\|[^>]>[^>]\|\"[^\"]*\"\)* [a-zA-Z]\+ * =" -- "src/**/*.tw" | myprint "MissingDollar2"
 # Check for missing command, e.g.  <<foo =
 $GREP -e "<<[a-zA-Z]* = *" -- "src/**/*.tw" | myprint "BadCommand"
 # Check for duplicate words, e.g. with with
@@ -77,7 +77,7 @@ $GREP 'elseif $ ' -- 'src/*' | myprint "Missing ; before statement"
 # Check for an unrecognized letter before >>
 $GREP "[^]a-zA-Z0-9 \")}'+-\*\`] *>>" -- 'src/*' | myprint "StrangeCharacterAtEndOfCommand"
 # Check for a . inside a <<>>
-$GREP "<<[a-zA-Z]\([^\"'>]\|[^\"'>]>[^\"'>]\)*[a-zA-Z][.][^a-zA-Z]" -- "src/**/*.tw"| myprint "StrangeCharacterAfterDot"
+$GREP "<<[a-zA-Z]\([^\"'>]\|[^\"'>]>[^\"'>]\)*[a-zA-Z][.][^a-zA-Z\`]" -- "src/**/*.tw"| myprint "StrangeCharacterAfterDot"
 # Check for @@.  instead of .@@
 # $GREP -E "@@(\.|,|;|:)\s" -- "src/**/*.tw" | myprint "WrongSelectorPunctuation"
 $GREP "@@[a-z]\+;" -- 'src/*' | myprint "SelectorMissingDot"

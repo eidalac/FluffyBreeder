@@ -11,8 +11,6 @@
  *********** */
  
  
-<<run console.log("Mating test 2:  on event page")>>
- 
 /* Each mating event target is the mare being mated */
 <<set _mom = $globalFluffies[$currentEvent.target]>>
 
@@ -21,22 +19,22 @@
 
 <<if ndef _dad>>
 	/* Father was removed in a prior event. */
-	<<run console.log("Mating test 3: Skipped due to invalid/missing father.")>>
+	<<run console.log(`ERROR: [eventMating]: _dad not defined.`)>>
 	<<goto "Event Main">>
 
 <<elseif ndef _mom>>
 	/* Shouldn't happen, but just in case*/
-	<<run console.log("Mating test 3: Skipped due to invalid mother.")>>
+	<<run console.log(`ERROR: [eventMating]: _mom not defined.`)>>
 	<<goto "Event Main">>
 
 <<elseif $ourStore.fluffies.includes(_mom.ID) == false>>
 	/* Mother was removed in a prior event. */
-	<<run console.log("Mating test 3: Skipped due to mother not being in store.")>>
+	<<run console.log(`ERROR: [eventMating]: _mom not in store.`)>>
 	<<goto "Event Main">>
 
 <<elseif $ourStore.fluffies.includes(_dad.ID) == false>>
 	/* Mother was removed in a prior event. */
-	<<run console.log("Mating test 3: Skipped due to father not being in store.")>>
+	<<run console.log(`ERROR: [eventMating]: _dad not in store.`)>>
 	<<goto "Event Main">>
 
 <<else>>
@@ -45,11 +43,9 @@
 
 	/* Check this here for now, may want to add events if the male is forcefull */				
 	<<if _mom.pregnant || _mom.nursing != 0>>
-	<<run console.log("Mating test 3 (pregant or nursing): " + _mom.nursing + " | " + _mom.pregnant)>>
 		<<goto "Event Main">>
 	<<elseif _count > $ourStore.shelter>>
 	<h1>Mating</h1>
-	<<run console.log("Mating test 4 (lacking shelter): " + _mom.nursing + " | " + _mom.pregnant)>>
 		<br>_mom.name and _dad.name wanted to have special hugs, but there is no room for more foals, so you have to separate them.
 		<br>@@.cyan;huhuhu@@
 		<<set _mom.pregnant = false>>
@@ -59,11 +55,7 @@
 		<br>enf enf enf
 		<br>//@@.cyan;GOODFEELS@@//
 	
-<<run console.log("eventMating - _mom.fertility: " + _mom.fertility + ". _dad.fertility: " + _dad.fertility)>>
-
 		<<set _litter = Math.clamp(Math.round((_mom.fertility + _dad.fertility) / 2) + random(-1, 3), 1, 8)>>
-		
-<<run console.log("eventMating - _litter: " + _litter)>>
 
 		<<set _mom.pregnant = true>>
 		<<set _mom.pregnantBy = _dad.ID>>
@@ -76,7 +68,7 @@
 	<<if _mom.ID == $globalFluffies[_mom.ID].ID>> 
 		<<set $globalFluffies[_mom.ID] = _mom>>
 	<<else>>
-		<<run console.log("eventMating - invalid mom ID: " + _mom.ID + ". Should be " + $globalFluffies[_mom.ID].ID)>>
+		<<run console.log(`ERROR: [eventMating]: invalid mom ID: ${_mom.ID} Should be ${$globalFluffies[_mom.ID].ID}.`)>>
 		<<set _mom.ID = $globalFluffies[_mom.ID].ID>>
 		<<set $globalFluffies[_mom.ID] = _mom>>
 	<</if>>
@@ -84,7 +76,7 @@
 	<<if _dad.ID == $globalFluffies[_dad.ID].ID>> 
 		<<set $globalFluffies[_dad.ID] = _dad>>
 	<<else>>
-		<<run console.log("eventMating - invalid _dad ID: " + _dad.ID + ". Should be " + $globalFluffies[_dad.ID].ID)>>
+		<<run console.log(`ERROR: [eventMating]: invalid mom ID: ${_dad.ID} Should be ${$globalFluffies[_dad.ID].ID}.`)>>
 		<<set _dad.ID = $globalFluffies[_dad.ID].ID>>
 		<<set $globalFluffies[_dad.ID] = _dad>>
 	<</if>>

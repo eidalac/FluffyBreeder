@@ -15,8 +15,6 @@
 <</for>>
 */
  
- 
-<<run console.log("Stress test 2:  on birth event page")>>
 <<set $nextButton = " ">>
 
 /* 0-10 outcomes 0 is pure hugbox, 1-5 are non abuse, 6-10 are abusive.  Higher the number the worse the outcome. */
@@ -36,7 +34,6 @@
 
 	/* How much do we lean to hubox vs abuse? */
 	<<set _leaning = Number($hugbox - $abuse)>>
-<<run console.log("Stress test 3: _leaning = " + _leaning)>>
 	/* More hugbox */
 	<<if _leaning > 0>>
 		<<set _subEvent = random(1, 5)>>
@@ -47,8 +44,7 @@
 	<<else>>
 		<<set _subEvent = random(3, 7)>>
 	<</if>> /* Close leaning check*/
-	
-<<run console.log("Stress test 4: _subEvent = " + _subEvent)>>
+
  	/* Now a random chance to raise/lower the event number based on player xp and stress */
  	
  	/* Higher the stress trigger, more likely for a bad event. */
@@ -56,19 +52,16 @@
  		<<set _subEvent++>>
  	<</if>>
 
-<<run console.log("Stress test 5: _subEvent = " + _subEvent)>>
  	/* Better results from higher hubox stat */
  	<<if $hugbox >= random(0,199)>>
   		<<set _subEvent-->>
  	<</if>>
 
-<<run console.log("Stress test 6: _subEvent = " + _subEvent)>> 	
  	/* Worse events from higher abuse stat: */
  	<<if $abuse >= random(0,199)>>
   		<<set _subEvent-->>
  	<</if>>
 
-<<run console.log("Stress test 7: _subEvent = " + _subEvent)>>
 	/* Clamp in the existing range*/
 	<<set _subEvent = Math.clamp(Math.trunc(_subEvent), 0, 10)>>
  	
@@ -92,12 +85,6 @@
 
 /* We now have 1-5 random fluffies to use for the event */
 <<set _eventFluffies = $ourStore.fluffies.randomMany(_fluffyCount)>>
-
-<<run console.log("Stress test 8: " + _eventFluffies.length)>>
-
-<<run console.log("Stress test 9: " + _subEvent)>>
-
-<<run console.log("Stress test 10: " + $stress)>>
 
 <h1>Stress Event</h1>
 
@@ -342,7 +329,6 @@
 		<br>  
 		<br>As you lay there 
 		<<for _i, _eFluff range _eventFluffies>>
-		<<run console.log("Stress test 7: " + _i)>>
 			<<- $globalFluffies[_eFluff].name>><<- (_i < _eventFluffies.length - 1) ? (_i < _eventFluffies.length - 2) ? ',' : ', and' : ''>>
 		<</for>> all form a makeshift 'fluff pile' to try and comfort you.
 		<br>
@@ -359,8 +345,6 @@
 		<</if>>
 		
 <</switch>>
-
-<<run console.log("Stress test 6: " + $stress)>>
 
  	<<set $nextButton = "Continue">>
 	<<set $nextLink = "Event Main">>
