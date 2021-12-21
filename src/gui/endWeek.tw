@@ -490,6 +490,8 @@
 								<</switch>>
 							<<case "Temperament">>
 								<<set _push = $globalFluffies[_ef].temperament > 190 ? "High temperament" : $globalFluffies[_ef].temperament < 130 ? "Low temperament" : "Average temperament">>
+							<<default>>
+								<<set _push = $globalFluffies[_ef].traits[0]>>
 						<</switch>>
 					<<default>>
 						/* Pick a vissible trait */
@@ -538,9 +540,16 @@
 								<<else>>
 									<<set _push = "Grey">>
 								<</if>>
+							<<default>>
+								<<set _push = $globalFluffies[_ef].breed>>
 						<</switch>>
-					<</switch>>
-				<<run $customerCards.push(_push)>>
+				<</switch>>
+
+				<<if ndef _push>>
+					<<run console.log(`ERROR: [endWeek]: customer card is undefined.`)>>
+				<<else>>
+					<<run $customerCards.push(_push)>>
+				<</if>>
 			<</for>>
 		<</if>>
 	<</if>>
