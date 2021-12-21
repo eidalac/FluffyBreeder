@@ -6837,12 +6837,12 @@ button {
 			&lt;&lt;goto &quot;Event Stress&quot;&gt;&gt;
 		&lt;&lt;case &quot;Smarty&quot;&gt;&gt;
 			&lt;&lt;goto &quot;Event Smarty&quot;&gt;&gt;
+		&lt;&lt;case &quot;Starvation&quot;&gt;&gt;
+			&lt;&lt;goto &quot;Event Starvation&quot;&gt;&gt;
 		&lt;&lt;default&gt;&gt;
 			&lt;&lt;run console.log(`ERROR: [eventMain]: invalid event type called: ${event.type}.`)&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
-
 &lt;&lt;else&gt;&gt;
-	
 	/* no events fired*/
 	&lt;&lt;goto &quot;Week Save&quot;&gt;&gt;
 	
@@ -7205,7 +7205,62 @@ button {
 &lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 
 &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
-*/</tw-passagedata><tw-passagedata pid="9" name="Event Stress" tags="nobr" position="1100,100" size="100,100">/* **********
+*/</tw-passagedata><tw-passagedata pid="9" name="Event Starvation" tags="nobr" position="1100,100" size="100,100">/* **********
+ * eventStarvation.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for fluffy starving.
+ *
+ *********** */
+ 
+ 
+/* Set fluffy and whether or not it is starving */
+&lt;&lt;set _fluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
+&lt;&lt;set _enable = $currentEvent.enable&gt;&gt;
+
+&lt;&lt;if ndef _fluffy || $ourStore.fluffies.includes(_fluffy.ID) == false&gt;&gt;
+	/* Fluffy was removed in a prior event. */
+	&lt;&lt;run console.log(`ERROR: [eventStarvation]: _fluffy not defined.`)&gt;&gt;
+	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+&lt;&lt;else&gt;&gt;
+
+    &lt;h1&gt;Starvation&lt;/h1&gt;
+    &lt;br&gt;
+    &lt;&lt;if _enable == true&gt;&gt;
+		&lt;&lt;if _fluffy.traits.includes(&#39;Starving&#39;)&gt;&gt;
+			&lt;&lt;set _starve = 0&gt;&gt;
+			&lt;&lt;colorizeText _fluffy.cColor _fluffy.name&gt;&gt; has died of starvation.
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _starve = 1&gt;&gt;
+			&lt;&lt;colorizeText _fluffy.cColor _fluffy.name&gt;&gt; is starving.
+			&lt;br&gt;&lt;&lt;fluffSpeech  &quot;huu huu... &lt;fluffy&gt; hab wowstes\&#39; tummy huwties...&quot; _fluffy.cColor&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _starve = 2&gt;&gt;
+		&lt;&lt;colorizeText _fluffy.cColor _fluffy.name&gt;&gt; is no longer starving.
+		&lt;br&gt;&lt;&lt;fluffSpeech  &quot;tank \&#39;ou fow nummies, &lt;title&gt;...&quot; _fluffy.cColor&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
+	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
+
+	&lt;br&gt;&lt;br&gt;
+	&lt;&lt;button [[CONTINUE|Event Main]]&gt;&gt;
+		&lt;&lt;set $encyclopedia = 0&gt;&gt;
+		&lt;&lt;run console.log(_starve)&gt;&gt;
+		&lt;&lt;switch _starve&gt;&gt;
+			&lt;&lt;case 0&gt;&gt;
+				&lt;&lt;removeFluffy _fluffy&gt;&gt;
+			&lt;&lt;case 1&gt;&gt;
+				&lt;&lt;run _fluffy.traits.push(&quot;Starving&quot;)&gt;&gt;
+			&lt;&lt;case 2&gt;&gt;
+				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== &#39;Starving&#39;)&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+	&lt;&lt;/button&gt;&gt;
+
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="10" name="Event Stress" tags="nobr" position="1225,100" size="100,100">/* **********
  * eventStress.tw
  *
  * Package: FluffyBreeder
@@ -7438,7 +7493,7 @@ button {
 			&lt;&lt;set $stress -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	
-	/* Abuse: Trama */
+	/* Abuse: Trauma */
 	&lt;&lt;case 8&gt;&gt;
 		&lt;br&gt;Enraged, you attempt to beat the stupid out of
 
@@ -7491,7 +7546,7 @@ button {
 	
 	/* Abuse: Murder */
 	&lt;&lt;case 10&gt;&gt;
-		&lt;br&gt;Your would fades to shades of red and black.  You have a vague sense of ripping and tearing.  When it is done you stand over the remains of 
+		&lt;br&gt;Your world fades to shades of red and black.  You have a vague sense of ripping and tearing.  When it is done you stand over the remains of 
 
 		&lt;&lt;for _i, _eFluff range _eventFluffies&gt;&gt;
 			&lt;&lt;- $globalFluffies[_eFluff].name&gt;&gt;&lt;&lt;- (_i &lt; _eventFluffies.length - 1) ? (_i &lt; _eventFluffies.length - 2) ? &#39;,&#39; : &#39;, and&#39; : &#39;.&#39;&gt;&gt;
@@ -7505,13 +7560,7 @@ button {
 					&lt;&lt;set $globalFluffies[_eFluff].specialFriend = -1&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 	
-			&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_eFluff].ID)&gt;&gt;
-	
-			&lt;&lt;if $globalFluffies[_eFluff].gender == &quot;male&quot;&gt;&gt;
-				&lt;&lt;set $ourStore.stallions--&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;set $ourStore.mares--&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;removeFluffy $globalFluffies[_eFluff]&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
 		&lt;br&gt;
 
@@ -7554,7 +7603,7 @@ button {
  	&lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
 	&lt;&lt;set $nextLink = &quot;Event Main&quot;&gt;&gt;
 	
-	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="10" name="Encyclopedia" tags="nobr" position="1225,100" size="100,100">/* **********
+	&lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]</tw-passagedata><tw-passagedata pid="11" name="Encyclopedia" tags="nobr" position="100,225" size="100,100">/* **********
  * encyclopedia.tw
  *
  * Package: FluffyBreeder
@@ -7784,7 +7833,7 @@ This list shows all fluffies in your store that are not on display (up for sale)
 The list displays a basic stat block for each fluffy.
 &lt;br&gt;In the future some stats will be hidden until you reach certain EXP levels.
 &lt;br&gt;
-&lt;br&gt;The default name is is &quot;this fluffy&quot; followed by a number for easy of tracking.  Clicking on the name will take you to the [[Fluffy Interaction|Encyclopedia][$encyclopedia = &quot;Fluffy Interaction&quot;]] page.
+&lt;br&gt;The default name is is &quot;Fluffy&quot; followed by a number for easy of tracking.  Clicking on the name will take you to the [[Fluffy Interaction|Encyclopedia][$encyclopedia = &quot;Fluffy Interaction&quot;]] page.
 &lt;br&gt;A fluffy can be renamed on the Fluffy Interaction page.
 &lt;br&gt;
 &lt;br&gt;For details of the various stats and terms, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = &quot;Fluffy Statistics&quot;]] page.
@@ -8009,7 +8058,7 @@ Genes       Height multiplier
 		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
 		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="11" name="End Week" tags="nobr" position="100,225" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="12" name="End Week" tags="nobr" position="225,225" size="100,100">/* **********
  * endWeek.tw
  *
  * Package: FluffyBreeder
@@ -8062,6 +8111,7 @@ Genes       Height multiplier
 &lt;&lt;set $eventBirthRejection = []&gt;&gt;
 &lt;&lt;set $eventCustomer = []&gt;&gt;
 &lt;&lt;set $eventStress = []&gt;&gt;
+&lt;&lt;set $eventStarvation = []&gt;&gt;
 &lt;&lt;set $customerCards = []&gt;&gt;
 
 
@@ -8110,8 +8160,10 @@ Genes       Height multiplier
 	&lt;&lt;/if&gt;&gt;
 
 	/* First some tedius house keeping: */
+	&lt;&lt;pruneTraits $globalFluffies[_ef]&gt;&gt;
+
 	&lt;&lt;if ndef $globalFluffies[_ef].name&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].name = &quot;This fluffy&quot;&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].name = &quot;Fluffy&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if ndef $globalFluffies[_ef].gender&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].gender = &quot;female&quot;&gt;&gt;
@@ -8558,23 +8610,25 @@ Genes       Height multiplier
 	 *	Feed them.
 	 *** */
 	 &lt;&lt;set _foodBonus = 0&gt;&gt;
+	 &lt;&lt;if $globalFluffies[_ef].foodType != &quot;Nothing&quot; &amp;&amp; $globalFluffies[_ef].traits.includes(&#39;Starving&#39;)&gt;&gt;
+		&lt;&lt;run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: false })&gt;&gt;
+	 &lt;&lt;/if&gt;&gt;
 	 &lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
 	 	&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
 	 		/* Quality has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt; 			
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
 	 		/* Cheap has some malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 3&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
 	 		/* Trash has more malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress += 2&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trauma++&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trust--&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
@@ -8583,54 +8637,59 @@ Genes       Height multiplier
 	 	&lt;&lt;case &quot;Greens&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
 	 		/* Quality has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].stress--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma--&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
 	 		/* Cheap has some malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust--&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament ++&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
 	 		/* Trash has more malus */
 	 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust -= 2&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust -= 3&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
 	 	&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
 	 		/* Quality has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 2&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 20&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 20&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 20&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
 	 		/* Good has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 2&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 2&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 1&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 4&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
 	 		/* Basic has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 1&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 1&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 1&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 3&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 1&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
 	 		/* Trash has some malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy -= 1&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust -= 1&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].happy++&gt;&gt;
+				&lt;&lt;set $globalFluffies[_ef].trust--&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
 	 	&lt;&lt;case &quot;Nothing&quot;&gt;&gt;
 	 		/* Quality doesn&#39;t matter */
-			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
- 			&lt;&lt;set $globalFluffies[_ef].trust -= 2&gt;&gt;
- 			&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].stress += 20&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].trauma += 20&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ef].happy -= 20&gt;&gt;
+ 			&lt;&lt;set $globalFluffies[_ef].trust -= 20&gt;&gt;
+ 			&lt;&lt;set $globalFluffies[_ef].temperament -= 20&gt;&gt;
+
+			&lt;&lt;run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: true })&gt;&gt;
 	 &lt;&lt;/switch&gt;&gt;
 	 
 
@@ -8928,6 +8987,10 @@ Genes       Height multiplier
 	&lt;&lt;run $eventList.push( { target: _subEvent, type: &quot;Rejection&quot; } )&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
+&lt;&lt;for _subEvent range $eventStarvation&gt;&gt;
+	&lt;&lt;run $eventList.push( { target: _subEvent.target, enable:_subEvent.enable, type: &quot;Starvation&quot; } )&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
 &lt;&lt;run $eventList.shuffle()&gt;&gt;
 
 &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0, $nextButton = &quot; &quot;]]
@@ -8937,7 +9000,7 @@ Genes       Height multiplier
 
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="12" name="Disclaimer" tags="nobr" position="225,225" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="13" name="Disclaimer" tags="nobr" position="350,225" size="100,100">/* **********
  * Disclaimer.tw
  *
  * Package: FluffyBreeder
@@ -9038,7 +9101,7 @@ Body:
 	style=&quot;position: relative; width: 140px; height: 140x; padding: 5px; border: 0px solid grey&quot;&gt;
 
 &lt;/div&gt;
-*/</tw-passagedata><tw-passagedata pid="13" name="Gene Test" tags="" position="350,225" size="100,100">/* **********
+*/</tw-passagedata><tw-passagedata pid="14" name="Gene Test" tags="" position="475,225" size="100,100">/* **********
  * geneTest.tw
  *
  * Package: FluffyBreeder
@@ -9061,7 +9124,7 @@ Body:
 	[[Return to Gene Lab|Gene Lab]]
 &lt;&lt;else&gt;&gt;
 	&lt;&lt;goto &quot;Fluffy Interact&quot;&gt;&gt;
-&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Intro Summary" tags="nobr" position="475,225" size="100,100">/* **********
+&lt;&lt;/if&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Intro Summary" tags="nobr" position="600,225" size="100,100">/* **********
  * introSummary.tw
  *
  * Package: FluffyBreeder
@@ -9367,7 +9430,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		&lt;&lt;run $(&quot;#smart_hard button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
 		&lt;&lt;run $(&quot;#smart_lite button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Shop Intro" tags="nobr" position="600,225" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Shop Intro" tags="nobr" position="725,225" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -9646,7 +9709,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;timed 10ms&gt;&gt;
 	&lt;&lt;shopUpdate&gt;&gt;
-&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="16" name="Week Save" tags="autosave" position="725,225" size="100,100">/* **********
+&lt;&lt;/timed&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Week Save" tags="autosave" position="850,225" size="100,100">/* **********
  * weekSave.tw
  *
  * Package: FluffyBreeder
@@ -9661,7 +9724,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  
 
 &lt;&lt;set $showEncyclopedia = 1, $encyclopedia = &quot;Running your Store&quot;&gt;&gt;
-&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Week Start" tags="nobr" position="850,225" size="100,100">/* **********
+&lt;&lt;goto &quot;Week Start&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="Week Start" tags="nobr" position="975,225" size="100,100">/* **********
  * weekStart.tw
  *
  * Package: FluffyBreeder
@@ -9719,21 +9782,27 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			
 				@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 				@@#sortbutton;&lt;&lt;button [[Fluffy Shelter|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 				@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 				@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 				@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 				@@#sortbutton;&lt;&lt;button [[Angora Shop|Buy Fluffies]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
+					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
 		&lt;/div&gt;
@@ -9794,7 +9863,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		/* Sort/Show */
 		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="18" name="newborn sprite" tags="nobr widget" position="975,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="newborn sprite" tags="nobr widget" position="1100,225" size="100,100">&lt;&lt;widget &quot;newbornSprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -9813,7 +9882,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -9843,7 +9912,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="19" name="chirpy sprite" tags="nobr widget" position="1100,225" size="100,100">&lt;&lt;widget &quot;chirpySprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="chirpy sprite" tags="nobr widget" position="1225,225" size="100,100">&lt;&lt;widget &quot;chirpySprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -9862,7 +9931,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -9896,7 +9965,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="20" name="talky sprite" tags="nobr widget" position="1225,225" size="100,100">&lt;&lt;widget &quot;talkySprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="talky sprite" tags="nobr widget" position="100,350" size="100,100">&lt;&lt;widget &quot;talkySprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -9915,7 +9984,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -9954,7 +10023,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="21" name="foal sprite" tags="nobr widget" position="100,350" size="100,100">&lt;&lt;widget &quot;foalSprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="foal sprite" tags="nobr widget" position="225,350" size="100,100">&lt;&lt;widget &quot;foalSprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -9973,7 +10042,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -10015,7 +10084,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="youth sprite" tags="nobr widget" position="225,350" size="100,100">&lt;&lt;widget &quot;youthSprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="youth sprite" tags="nobr widget" position="350,350" size="100,100">&lt;&lt;widget &quot;youthSprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -10034,7 +10103,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -10077,7 +10146,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="23" name="adult sprite" tags="nobr widget" position="350,350" size="100,100">&lt;&lt;widget &quot;adultSprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="adult sprite" tags="nobr widget" position="475,350" size="100,100">&lt;&lt;widget &quot;adultSprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -10096,7 +10165,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -10182,7 +10251,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="24" name="grey sprite" tags="nobr widget" position="475,350" size="100,100">&lt;&lt;widget &quot;greySprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="grey sprite" tags="nobr widget" position="600,350" size="100,100">&lt;&lt;widget &quot;greySprite&quot;&gt;&gt;
 
 &lt;&lt;set _subspecies = $args[0] ? $args[0].subSpecies : 0&gt;&gt;
 &lt;&lt;switch _subspecies&gt;&gt;
@@ -10201,7 +10270,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
     &lt;&lt;case 5&gt;&gt;
         &lt;&lt;set _speciesName = &#39;plant&#39;&gt;&gt;
     &lt;&lt;default&gt;&gt;
-        &lt;&lt;set _speciesName = &#39;&#39;&gt;&gt;
+        &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = true&gt;&gt;&lt;&lt;/if&gt;&gt;
@@ -10305,12 +10374,12 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="25" name="other sprites" tags="nobr widget" position="600,350" size="100,100">&lt;&lt;widget &quot;iconSprite&quot;&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="26" name="other sprites" tags="nobr widget" position="725,350" size="100,100">&lt;&lt;widget &quot;iconSprite&quot;&gt;&gt;
 
 
 &lt;&lt;set _iconSprite = &quot; data:image/png;base64,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&quot;&gt;&gt;
 
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="26" name="StoryCaption" tags="" position="725,350" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="27" name="StoryCaption" tags="" position="850,350" size="100,100">/* **********
  *	storyCaption.tw
  *
  *	Package: FluffyBreeder
@@ -10458,7 +10527,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 &lt;&lt;/nobr&gt;&gt;
 */
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="27" name="init" tags="nobr" position="850,350" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="28" name="init" tags="nobr" position="975,350" size="100,100">/* **********
  *	Fluffy Breeder
  *  a text-based fluffy management game
  *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
@@ -10559,8 +10628,8 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set $ourStore = {
 	name: &quot;The Store&quot;,
 	space: 0,
-	shelter: 0,
-	display: 0,
+	shelter: 4,
+	display: 1,
 	onDisplay: 0,
 	fluffies: [],
 	stallions: 0,
@@ -10761,7 +10830,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="28" name="Buy Fluffies" tags="nobr" position="975,350" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="29" name="Buy Fluffies" tags="nobr" position="1100,350" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -10794,7 +10863,6 @@ profitsTotal: 0
 		&lt;div id=&quot;navbar&quot; class=&quot;w3-bar w3-dark-grey&quot;&gt;
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;
-			  		&lt;&lt;set $actions--&gt;&gt;
 			  		&lt;&lt;goto $nextLink&gt;&gt;
 			  	&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
@@ -10997,7 +11065,7 @@ profitsTotal: 0
 					&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 					&lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 
 					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
@@ -11008,14 +11076,14 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
@@ -11053,14 +11121,14 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
@@ -11086,7 +11154,7 @@ profitsTotal: 0
 
 						/* Cull children at 25% */
 						&lt;&lt;if random(0,3) != 0&gt;&gt;
-							&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+							&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 							&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 							&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 							&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
@@ -11129,7 +11197,7 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;run $activeFluffy.traits.push(&quot;Feral&quot;)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 
 					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
@@ -11524,7 +11592,7 @@ profitsTotal: 0
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="29" name="Buy Upgrades" tags="nobr" position="1100,350" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="30" name="Buy Upgrades" tags="nobr" position="1225,350" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -11879,7 +11947,7 @@ Upgrades:
 		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
 		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="Fluffy Breeding" tags="nobr" position="1225,350" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Breeding" tags="nobr" position="100,475" size="100,100">/* **********
  * fluffyBreeding.tw
  *
  * Package: FluffyBreeder
@@ -11999,7 +12067,7 @@ Upgrades:
 		/* Sort/Show */
 		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Feeding" tags="nobr" position="100,475" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="32" name="Fluffy Feeding" tags="nobr" position="225,475" size="100,100">/* **********
  * fluffyFeeding.tw
  *
  * Package: FluffyBreeder
@@ -12140,7 +12208,7 @@ Upgrades:
 &lt;&lt;SidebarButton&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="32" name="Fluffy Interact" tags="nobr" position="225,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy Interact" tags="nobr" position="350,475" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -12378,42 +12446,39 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 &lt;br&gt;
 &lt;div id=&quot;product-form&quot;&gt;
-&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-	&lt;&lt;set _angora = true&gt;&gt;
+&lt;&lt;if $activeFluffy.furStage &gt; 67&gt;&gt;
+	&lt;&lt;set _shear = true&gt;&gt;
 	&lt;&lt;set _desc = &quot;Shear &quot; + $activeFluffy.name&gt;&gt;
 &lt;&lt;elseif $activeFluffy.nursing &gt; 0&gt;&gt;
 	&lt;&lt;set _milk = true&gt;&gt;
 	&lt;&lt;set _desc = &quot;Milk &quot; + $activeFluffy.name&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if _angora&gt;&gt;
+&lt;&lt;if _shear&gt;&gt;
 	&lt;&lt;button _desc&gt;&gt;
 		&lt;&lt;if $actions &gt; 0&gt;&gt;
 			&lt;&lt;set $actions--&gt;&gt;
 			&lt;&lt;set $stress -= 10&gt;&gt;
 			&lt;&lt;if $stress &lt; 0&gt;&gt;&lt;&lt;set $stress = 0&gt;&gt;&lt;&lt;/if&gt;&gt;
-			&lt;&lt;set $hugbox += 1&gt;&gt;
-			&lt;&lt;set $activeFluffy.trust++&gt;&gt;
-			&lt;&lt;set $activeFluffy.happy++&gt;&gt;
-			&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
-			&lt;&lt;set $activeFluffy.stress--&gt;&gt;
-			
-			&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.stress--&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy++&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy++&gt;&gt;
-				&lt;&lt;set $activeFluffy.stress--&gt;&gt;
+
+			&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+				&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
+					&lt;&lt;set $activeFluffy.furStage = 101&gt;&gt;
+				&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
+					&lt;&lt;set $activeFluffy.furStage = 68&gt;&gt;
+				&lt;&lt;else $activeFluffy.furStage &gt; 67&gt;&gt;
+					&lt;&lt;set $activeFluffy.furStage = 0&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;set $activeFluffy.furStage = 0&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 			
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 			&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;
-				&lt;br&gt;&lt;&lt;- $title&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;am bestest at pwayin\&#39;! Pway AWW da games wit\&#39;&quot;&gt;&gt;
-				&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;, heheheh!&quot;&gt;&gt;
+				&lt;br&gt;&lt;&lt;fluffSpeech&quot;huu huu... why taek pwetty fwuff fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;
 			&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;replace &quot;#fluffy-name&quot;&gt;&gt;&lt;&lt;intractDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;elseif $activeFluffy.furStage &lt;= 67&gt;&gt;
+			&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor $activeFluffy.name&gt;&gt; cannot be sheared.&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;&lt;br&gt;You are too tired to shear right now.&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -12574,21 +12639,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 				&lt;&lt;set $abuse++&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID].dead = true&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID].onDisplay = false&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID].pregnant = false&gt;&gt;
-			&lt;&lt;set $globalFluffies[$activeFluffy.ID].nursing = 0&gt;&gt;
-					
-			&lt;&lt;if $globalFluffies[$activeFluffy.ID].specialFriend != -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[$activeFluffy.ID].specialFriend = -1&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-				
-			&lt;&lt;if $globalFluffies[$activeFluffy.ID].foodType == &quot;Nursing&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;
-			&lt;&lt;/if&gt;&gt; /* Close nursing check */
-			
-			&lt;&lt;run $ourStore.fluffies.delete($activeFluffy.ID)&gt;&gt;
+			&lt;&lt;killFluffy $activeFluffy&gt;&gt;
 		&lt;&lt;/button&gt;&gt;
 
 	&lt;&lt;/replace&gt;&gt;
@@ -12612,7 +12663,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		/* Sort/Show */
 		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy List" tags="nobr" position="350,475" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy List" tags="nobr" position="475,475" size="100,100">/* **********
  * fluffyList.tw
  *
  * Package: FluffyBreeder
@@ -13091,7 +13142,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		/* Sort/Show */
 		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
 	});
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy Selling" tags="nobr" position="475,475" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="35" name="Fluffy Selling" tags="nobr" position="600,475" size="100,100">/* **********
  * fluffyselling.tw
  *
  * Package: FluffyBreeder
@@ -13170,7 +13221,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;SidebarButton&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="35" name="Gene Lab" tags="nobr" position="600,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="36" name="Gene Lab" tags="nobr" position="725,475" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -14222,7 +14273,7 @@ Subspecies:
 &lt;br&gt;
 [[Exit the Lab|Gene Test]]
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="36" name="description widgets" tags="widget nobr" position="725,475" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="37" name="description widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -14279,8 +14330,6 @@ button {
 				&lt;&lt;continue&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-
-		
 				
 		/* Double check we are removing sold fluffies: */
 		&lt;&lt;if $globalFluffies[_fl].sold == true&gt;&gt;
@@ -14372,11 +14421,11 @@ button {
 							&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]&lt;&lt;else&gt;&gt;[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]&lt;&lt;/if&gt;&gt;
 							| [[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Feeding&quot;]] $globalFluffies[_fl].foodType
 							&lt;&lt;switch $globalFluffies[_fl].foodQuality&gt;&gt;
-								&lt;&lt;case 0&gt;&gt; (trash)
+								&lt;&lt;case 0&gt;&gt; &lt;&lt;if $globalFluffies[_fl].foodType != &quot;Nothing&quot;&gt;&gt; (trash) &lt;&lt;else&gt;&gt;&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case 1&gt;&gt; (cheap)
 								&lt;&lt;case 2&gt;&gt; (basic)
 								&lt;&lt;case 3&gt;&gt; (good)
-								&lt;&lt;case 4&gt;&gt; (quality)
+								&lt;&lt;case 4&gt;&gt; (premium)
 								&lt;&lt;case -1&gt;&gt; 
 							&lt;&lt;/switch&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
@@ -14585,6 +14634,80 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
+ *	Called as &lt;&lt;addTrait $trait $fluffy&gt;&gt;
+ *
+ *	Adds trait to fluffy.
+ *** */
+ &lt;&lt;widget &quot;addTrait&quot;&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: called with no trait.`)&gt;&gt;
+	&lt;&lt;elseif ndef $args[1]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: called with no Fluffy. Defaulting to $activeFluffy.`)&gt;&gt;
+		&lt;&lt;set _fluffy = $activeFluffy&gt;&gt;
+	&lt;&lt;elseif ndef $args[1].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: ID not defined.`)&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[1].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: Fluffy ID ${$args[1].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;if $args[1].ID != $globalFluffies[$args[1].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: Fluffy ID ${$args[1].ID} does not match global ID ${$globalFluffies[$args[1].ID].ID}.`)&gt;&gt;
+
+			&lt;&lt;set $args[1].ID = Number($globalFluffies[$args[1].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[1].ID] = $args[1]&gt;&gt;
+			&lt;&lt;set _fluffy = $args[1]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;set _trait = $args[0]&gt;&gt;
+
+		&lt;&lt;if _fluffy.traits.includes(_trait)&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: Did not add ${_trait} to ${_fluffy}. Reason: Duplicate trait`)&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run _fluffy.traits.push(_trait)&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Called as &lt;&lt;pruneTraits $fluffy&gt;&gt;
+ *
+ *	Prunes deprecated or duplicate traits from fluffy.
+ *** */
+&lt;&lt;widget &quot;pruneTraits&quot;&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: called with no Fluffy.`)&gt;&gt;
+	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: ID not defined.`)&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
+
+			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;set _fluffy = $args[0]&gt;&gt;
+
+		/* Count occurrences, remove if duplicate */
+		&lt;&lt;set _countOccurrences = (arr, val) =&gt; arr.reduce((a, v) =&gt; (v === val ? a + 1 : a), 0)&gt;&gt;
+
+		/* List of deprecated traits */
+		&lt;&lt;set _deprecated = [&quot;Infertile&quot;, &quot;feeble1&quot;, &quot;feeble2&quot;, &quot;Runt 1&quot;, &quot;Runt 2&quot;]&gt;&gt;
+
+		&lt;&lt;for _trait range _fluffy.traits&gt;&gt;
+			&lt;&lt;if _countOccurrences(_fluffy.traits, _trait) &gt; 1&gt;&gt;
+				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;if _deprecated.includes(_trait)&gt;&gt;
+				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
  *	Called as &lt;&lt;FluffyDesc&gt;&gt;
  *	Targets &amp;activeFluffy
  *
@@ -14764,7 +14887,7 @@ button {
 	&lt;/div&gt;
 
 	&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="37" name="fluffy creation widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="38" name="fluffy creation widgets" tags="widget nobr" position="975,475" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -14869,158 +14992,173 @@ button {
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 &lt;&lt;widget &quot;newFromGene&quot;&gt;&gt;
-	&lt;&lt;if def $args.length&gt;&gt;
-		&lt;&lt;set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()&gt;&gt;
-		&lt;&lt;set _l = random(0, 1)&gt;&gt;
-		&lt;&lt;set _f = random(0, 1)&gt;&gt;
-		&lt;&lt;set _h = random(0, 2) / 100&gt;&gt;
-		&lt;&lt;set _m = random(0, 2)&gt;&gt;
-		&lt;&lt;set _cl = random(0, 2)&gt;&gt;
-		&lt;&lt;set _cd = random(0,30)&gt;&gt;
-
-		&lt;&lt;set _L = Number($args[0].getLength() + _l).toFixed(2)&gt;&gt;
-		&lt;&lt;set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)&gt;&gt;
-		&lt;&lt;set _W = Number($args[0].getWeight() * _L).toFixed(2)&gt;&gt;
-
-		&lt;&lt;set $activeFluffy = {
-			name: &quot;Fluffy&quot;,
-			hasName: false,
-			geneString: $args[0].toString(),
-			genes: $args[0],
-			weekAcquired: 0,
-			origin: 0,
-			ID: -1,
-			sID: -1,
-			gender: $args[0].getGenderString().toLowerCase(),
-			length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
-			maxLength: _L,
-			lengthAdd: _l, 
-			maxHeight: _H,
-			height: Number(randomFloat(_H*0.95,_H)).toFixed(2),
-			heightMulti: $args[0].getHeight() + _h,
-			heightAdd: _h,
-			weight: Number(randomFloat(_W * .79, _W)).toFixed(2),
-			maxWeight: _W,
-			weightMulti: $args[0].getWeight(),
-			maxAge: $args[0].getMaxAge(),
-			age: 0,
-			ageWeeks: 0,  
-			maxFertility: $args[0].getFertility() + _f,
-			fertility: $args[0].getFertility() + _f,
-			fertilityAdd: _f,
-			maxMaturity: $args[0].getMaturity() + _m,
-			maturity: $args[0].getMaturity() + _m,
-			maturityAdd: _m,
-			breed: $args[0].getBreedString().toLowerCase(),
-			cColor: $args[0].getCoatColorString(),
-			mColor: $args[0].getManeColorString(),
-			eColor: $args[0].getEyeColorString(),
-			colorGroup: [],
-			mother: -1,
-			father: -1,
-			trust: 0,
-			training: 0,
-			strength: $args[0].getStrong(),
-			energy: $args[0].getEnergy(),
-			charm: $args[0].getCharm(),
-			thinking: $args[0].getThinking(),
-			learning: $args[0].getLearning(),
-			coatLengthAdd: _cl,
-			coatLength: $args[0].getCoatLength() + _cl,
-			coatDensityAdd: _cd,
-			coatDensity: $args[0].getCoatDensity() + _cd,
-			coatCurl: $args[0].getCoatCurl(),
-			subSpecies: _subspecies,
-			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
-			health: 10,
-			children: [],
-			specialFriend: -1,
-			pregnant: false,
-			pregnantBy: -1,
-			nursing: 0,
-			nursingMax: 0,
-			onDisplay: false,
-			sold: false,
-			dead: false,
-			weaned: true,
-			traits: [],
-			foodType: &quot;Kibble&quot;,
-			foodQuality: 2,
-			temperament: 100,
-			happy: 0,
-			trauma: 0,
-			stress: 0
-		} &gt;&gt;
-
-		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
-		
-		&lt;&lt;set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))&gt;&gt;
-		&lt;&lt;set $activeFluffy.age = Math.round(_rAge/52)&gt;&gt;
-		&lt;&lt;set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)&gt;&gt;
-
-		&lt;&lt;switch $alicornRarity&gt;&gt;
-		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
-				&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
-				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;default&gt;&gt;
-			&lt;&lt;if $activeFluffy.breed.toLowerCase() == &quot;alicorn&quot; or $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
-				&lt;&lt;switch random(0, 5)&gt;&gt;
-				&lt;&lt;case 0 1&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
-				&lt;&lt;case 2 3&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
-				&lt;&lt;case 4&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;earthy&quot;&gt;&gt;
-				&lt;&lt;case 5&gt;&gt;
-					&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;/switch&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/switch&gt;&gt;
-
-		/* Pick a random child trait:*/
-		&lt;&lt;switch random(0,4)&gt;&gt;
-			&lt;&lt;case 0&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Fussy&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.strength++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
-			&lt;&lt;case 1&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Shy&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-			&lt;&lt;case 2&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Lazy&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-			&lt;&lt;case 3&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
-			&lt;&lt;case 4&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Peppy&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
-			&lt;&lt;default&gt;&gt;
-				&lt;&lt;set $activeFluffy.traits.push(&quot;Cute&quot;)&gt;&gt;
-				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
-		&lt;&lt;/switch&gt;&gt;
-
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: called with no Fluffy.`)&gt;&gt;
+	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: ID isn&#39;t defined.`)&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;br&gt;&lt;br&gt;@@.red; newFromGene called with no gene.@@&lt;br&gt;&lt;br&gt;
+		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
+
+			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if def $args.length&gt;&gt;
+			&lt;&lt;set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()&gt;&gt;
+			&lt;&lt;run console.log(_subspecies)&gt;&gt;
+			&lt;&lt;set _l = random(0, 1)&gt;&gt;
+			&lt;&lt;set _f = random(0, 1)&gt;&gt;
+			&lt;&lt;set _h = random(0, 2) / 100&gt;&gt;
+			&lt;&lt;set _m = random(0, 2)&gt;&gt;
+			&lt;&lt;set _cl = random(0, 2)&gt;&gt;
+			&lt;&lt;set _cd = random(0,30)&gt;&gt;
+
+			&lt;&lt;set _L = Number($args[0].getLength() + _l).toFixed(2)&gt;&gt;
+			&lt;&lt;set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)&gt;&gt;
+			&lt;&lt;set _W = Number($args[0].getWeight() * _L).toFixed(2)&gt;&gt;
+
+			&lt;&lt;set $activeFluffy = {
+				name: &quot;Fluffy&quot;,
+				hasName: false,
+				geneString: $args[0].toString(),
+				genes: $args[0],
+				weekAcquired: 0,
+				origin: 0,
+				ID: -1,
+				sID: -1,
+				gender: $args[0].getGenderString().toLowerCase(),
+				length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
+				maxLength: _L,
+				lengthAdd: _l, 
+				maxHeight: _H,
+				height: Number(randomFloat(_H*0.95,_H)).toFixed(2),
+				heightMulti: $args[0].getHeight() + _h,
+				heightAdd: _h,
+				weight: Number(randomFloat(_W * .79, _W)).toFixed(2),
+				maxWeight: _W,
+				weightMulti: $args[0].getWeight(),
+				maxAge: $args[0].getMaxAge(),
+				age: 0,
+				ageWeeks: 0,  
+				maxFertility: $args[0].getFertility() + _f,
+				fertility: $args[0].getFertility() + _f,
+				fertilityAdd: _f,
+				maxMaturity: $args[0].getMaturity() + _m,
+				maturity: $args[0].getMaturity() + _m,
+				maturityAdd: _m,
+				breed: $args[0].getBreedString().toLowerCase(),
+				cColor: $args[0].getCoatColorString(),
+				mColor: $args[0].getManeColorString(),
+				eColor: $args[0].getEyeColorString(),
+				colorGroup: [],
+				mother: -1,
+				father: -1,
+				trust: 0,
+				training: 0,
+				strength: $args[0].getStrong(),
+				energy: $args[0].getEnergy(),
+				charm: $args[0].getCharm(),
+				thinking: $args[0].getThinking(),
+				learning: $args[0].getLearning(),
+				coatLengthAdd: _cl,
+				coatLength: $args[0].getCoatLength() + _cl,
+				coatDensityAdd: _cd,
+				coatDensity: $args[0].getCoatDensity() + _cd,
+				coatCurl: $args[0].getCoatCurl(),
+				subSpecies: _subspecies,
+				subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
+				health: 10,
+				children: [],
+				specialFriend: -1,
+				pregnant: false,
+				pregnantBy: -1,
+				nursing: 0,
+				nursingMax: 0,
+				onDisplay: false,
+				sold: false,
+				dead: false,
+				weaned: true,
+				traits: [],
+				foodType: &quot;Kibble&quot;,
+				foodQuality: 2,
+				temperament: 100,
+				happy: 0,
+				trauma: 0,
+				stress: 0
+			} &gt;&gt;
+
+			&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
+			
+			&lt;&lt;set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))&gt;&gt;
+			&lt;&lt;set $activeFluffy.age = Math.round(_rAge/52)&gt;&gt;
+			&lt;&lt;set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)&gt;&gt;
+
+			&lt;&lt;switch $alicornRarity&gt;&gt;
+			&lt;&lt;case 0&gt;&gt;
+				&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;case 1&gt;&gt;
+				&lt;&lt;if $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;default&gt;&gt;
+				&lt;&lt;if $activeFluffy.breed.toLowerCase() == &quot;alicorn&quot; or $activeFluffy.breed.toUpperCase() == &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+					&lt;&lt;switch random(0, 5)&gt;&gt;
+					&lt;&lt;case 0 1&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;case 2 3&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;case 4&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;earthy&quot;&gt;&gt;
+					&lt;&lt;case 5&gt;&gt;
+						&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;/switch&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+
+			/* Pick a random child trait:*/
+			&lt;&lt;switch random(0,4)&gt;&gt;
+				&lt;&lt;case 0&gt;&gt;
+					&lt;&lt;addTrait &quot;Fussy&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.strength++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
+				&lt;&lt;case 1&gt;&gt;
+					&lt;&lt;addTrait &quot;Shy&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+				&lt;&lt;case 2&gt;&gt;
+					&lt;&lt;addTrait &quot;Lazy&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+				&lt;&lt;case 3&gt;&gt;
+					&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
+				&lt;&lt;case 4&gt;&gt;
+					&lt;&lt;addTrait &quot;Peppy&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;&lt;br&gt;@@.red; newFromGene called with no gene.@@&lt;br&gt;&lt;br&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -15031,7 +15169,7 @@ button {
  *	Set genetic traits on $activeFluffy
  *** */
 &lt;&lt;widget &quot;setGeneTraits&quot;&gt;&gt;
-
+&lt;&lt;run console.log($args.full)&gt;&gt;
 
 /* 3 possible &#39;misc&#39; defects (used to rate general defect severity)*/
 &lt;&lt;set _defectLevel = 1&gt;&gt;
@@ -15051,7 +15189,7 @@ button {
  /* Inbreeding */
 &lt;&lt;set _inbreed = $activeFluffy.geneString.substring(168).split(&#39;/&#39;)&gt;&gt;
 &lt;&lt;if Number(_inbreed[0]) == Number(_inbreed[1])&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Inbred&quot;)&gt;&gt;
+	&lt;&lt;addTrait &quot;Inbred&quot; $activeFluffy&gt;&gt;
 	&lt;&lt;set $activeFluffy.strength -= _defectLevel&gt;&gt;
 	&lt;&lt;set $activeFluffy.energy -= _defectLevel&gt;&gt;
 	&lt;&lt;set $activeFluffy.charm -= _defectLevel&gt;&gt;
@@ -15064,19 +15202,19 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) &amp;&amp; $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Slow&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Slow&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Limp&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Limp&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Lame&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Lame&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Crippled&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Crippled&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15087,21 +15225,21 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) &amp;&amp; $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Breathless&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Breathless&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Bronchitis&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Bronchitis&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Asthmatic&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Asthmatic&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Lung Cancer&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Lung Cancer&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 3&gt;&gt;
@@ -15117,19 +15255,19 @@ button {
 
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Chubby&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Chubby&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Overweight&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Overweight&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Fat&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Fat&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy  -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Obese&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Obese&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15145,20 +15283,20 @@ button {
 
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Weak&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Weak&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Feeble&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Feeble&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Sickly&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Sickly&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Anemic&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Anemic&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.strength -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15167,13 +15305,13 @@ button {
 
 /* Fertility defect */
 &lt;&lt;if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) &amp;&amp; $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()&gt;&gt;
-	/* &lt;&lt;run $activeFluffy.traits.push(&quot;Infertile&quot;)&gt;&gt; */
+	/* &lt;&lt;addTrait &quot;Infertile&quot; $activeFluffy&gt;&gt; */
 	&lt;&lt;set $activeFluffy.fertility -= _defectLevel&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* Growth Defect */
 &lt;&lt;if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) &amp;&amp; $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()&gt;&gt;
-	&lt;&lt;run $activeFluffy.traits.push(&quot;Runt&quot;)&gt;&gt;
+	&lt;&lt;addTrait &quot;Runt&quot; $activeFluffy&gt;&gt;
 	&lt;&lt;set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)&gt;&gt;
@@ -15191,21 +15329,21 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) &amp;&amp; $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Delicate&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Delicate&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Nauseous&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Nauseous&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Ulcers&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Ulcers&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Appendicitis&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Appendicitis&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15223,21 +15361,21 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) &amp;&amp; $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Silly&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Silly&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 1&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Simple&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Simple&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Moron&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Moron&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Imbecile&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Imbecile&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15248,19 +15386,19 @@ button {
 &lt;&lt;if $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) &amp;&amp; $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()&gt;&gt;
 	&lt;&lt;switch _defectLevel&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Nearsighted&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Nearsighted&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 1&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Colourblind&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Colourblind&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 1&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Near-Blind&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Near-Blind&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 2&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;run $activeFluffy.traits.push(&quot;Blind&quot;)&gt;&gt;
+			&lt;&lt;addTrait &quot;Blind&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy -= 3&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning -= 4&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -15274,7 +15412,7 @@ button {
  *	Sets the target as $activefluffy.
  *** */
 &lt;&lt;widget &quot;Focus&quot;&gt;&gt;
-	&lt;&lt;if $args.length == true&gt;&gt;
+	&lt;&lt;if def $args.length&gt;&gt;
 		&lt;&lt;set $activeFluffy = $args[0]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
@@ -15346,61 +15484,89 @@ button {
  *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
 &lt;&lt;widget &quot;deadFluffy&quot;&gt;&gt;
-	&lt;&lt;set _ID = $args[0].ID&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: called with no Fluffy.`)&gt;&gt;
+	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: ID is not defined.`)&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
 
-	&lt;&lt;set $globalFluffies[_ID].dead = true&gt;&gt;
-	&lt;&lt;set $globalFluffies[_ID].onDisplay = false&gt;&gt;
-	&lt;&lt;set $globalFluffies[_ID].pregnant = false&gt;&gt;
-	
-	&lt;&lt;if $globalFluffies[_ID].nursing &gt; 0&gt;&gt;
-		&lt;&lt;for _child range $globalFluffies[_ID].children&gt;&gt;
-			&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
-				&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[_child].stress += 30&gt;&gt;
-				&lt;&lt;set $globalFluffies[_child].trauma += 10&gt;&gt;
-				&lt;&lt;set $globalFluffies[_child].happy -= 10&gt;&gt;
-			&lt;&lt;/if&gt;&gt; /* Close nursing check */
-		&lt;&lt;/for&gt;&gt; /* Close child check*/
-	&lt;&lt;/if&gt;&gt; /* Close Nursing check */
-	
-	&lt;&lt;if $globalFluffies[_ID].foodType == &quot;Nursing&quot;&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].nursing--&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].stress += 40&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].happy -= 20&gt;&gt;
-	&lt;&lt;/if&gt;&gt; /* Close Nursing foal check */
-	
-	&lt;&lt;set $globalFluffies[_ID].nursing = 0&gt;&gt;
-	
-	&lt;&lt;if $globalFluffies[_ID].specialFriend != -1&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20&gt;&gt;
-		&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ID].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set _ID = $args[0].ID&gt;&gt;
+
+		&lt;&lt;set $globalFluffies[_ID].dead = true&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ID].onDisplay = false&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ID].pregnant = false&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_ID].nursing &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $globalFluffies[_ID].children&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].foodType == &quot;Nursing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodType = &quot;Nothing&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].foodQuality = -1&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].stress += 30&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].trauma += 10&gt;&gt;
+					&lt;&lt;set $globalFluffies[_child].happy -= 10&gt;&gt;
+				&lt;&lt;/if&gt;&gt; /* Close nursing check */
+			&lt;&lt;/for&gt;&gt; /* Close child check*/
+		&lt;&lt;/if&gt;&gt; /* Close Nursing check */
+		
+		&lt;&lt;if $globalFluffies[_ID].foodType == &quot;Nursing&quot;&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].nursing--&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].stress += 40&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].happy -= 20&gt;&gt;
+		&lt;&lt;/if&gt;&gt; /* Close Nursing foal check */
+		
+		&lt;&lt;set $globalFluffies[_ID].nursing = 0&gt;&gt;
+		
+		&lt;&lt;if $globalFluffies[_ID].specialFriend != -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20&gt;&gt;
+			&lt;&lt;set $globalFluffies[_ID].specialFriend = -1&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Call as &lt;&lt;removeFluffy Fluffy&gt;&gt;
+ *	Call as &lt;&lt;removeFluffy $fluffy&gt;&gt;
  *
- *	Removes a fluffy from the store
+ *	Removes a fluffy from the store.
  *** */
 &lt;&lt;widget &quot;removeFluffy&quot;&gt;&gt;
-	&lt;&lt;set _ID = $args[0].ID&gt;&gt;
-
-	&lt;&lt;deadFluffy $args[0]&gt;&gt;
-	
-	&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ID].ID)&gt;&gt;
-
-	&lt;&lt;if Number($globalFluffies[_ID].age) == 0 &amp;&amp; Number($globalFluffies[_ID].ageWeeks) &lt;= $globalFluffies[_ID].maturity&gt;&gt;
-		&lt;&lt;set $ourStore.foals--&gt;&gt;
-	&lt;&lt;elseif $globalFluffies[_ID].gender == &quot;male&quot;&gt;&gt;
-		&lt;&lt;set $ourStore.stallions--&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: called with no Fluffy.`)&gt;&gt;
+	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: ID is not defined.`)&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
+
+			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set _ID = $args[0].ID&gt;&gt;
+
+		&lt;&lt;deadFluffy $args[0]&gt;&gt;
+		
+		&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ID].ID)&gt;&gt;
+
+		&lt;&lt;if Number($globalFluffies[_ID].age) == 0 &amp;&amp; Number($globalFluffies[_ID].ageWeeks) &lt;= $globalFluffies[_ID].maturity&gt;&gt;
+			&lt;&lt;set $ourStore.foals--&gt;&gt;
+		&lt;&lt;elseif $globalFluffies[_ID].gender == &quot;male&quot;&gt;&gt;
+			&lt;&lt;set $ourStore.stallions--&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set $ourStore.mares--&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="38" name="image widgets" tags="nobr widget" position="975,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="image widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
  * imageWidgets.tw
  *
  * Package: FluffyBreeder
@@ -15592,7 +15758,7 @@ button {
 		
 		/* Coat */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
@@ -15650,7 +15816,7 @@ button {
 
 		/* Mane */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeWingOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
@@ -15693,7 +15859,7 @@ button {
 		/* Horns */
 		&lt;&lt;if $args[0] === &quot;unicorn&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-				&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+				&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHornOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHorn + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
@@ -15781,7 +15947,7 @@ button {
 
 		/* Coat */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.cColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
@@ -15839,7 +16005,7 @@ button {
 
 		/* Mane */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot; ||  $args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeWingOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot; class=&quot;&#39; + $activeFluffy.mColor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;earthie&quot; || $args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
@@ -15894,7 +16060,7 @@ button {
 
 		/* Outlines */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;alicorn&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif $args[0] === &quot;pegasus&quot;&gt;&gt;
@@ -15965,7 +16131,7 @@ button {
 		
 		/* Overlay */
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if  $activeFluffy.furStage &gt;= 167&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayOvergrown + &#39;&quot; style=&quot;&#39; + _styleString + &#39;&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
 				&lt;&lt;if $args[0] === &quot;pegasus&quot; || $args[0] === &quot;alicorn&quot;&gt;&gt;
@@ -16002,7 +16168,7 @@ button {
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="39" name="math widgets" tags="nobr widget" position="1100,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="math widgets" tags="nobr widget" position="1225,475" size="100,100">/* **********
  * mathWidgets.tw
  *
  * Package: FluffyBreeder
@@ -16113,7 +16279,7 @@ button {
 	&lt;&lt;if ndef $args[0]&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: called with no Fluffy.`)&gt;&gt;
 	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: ID is not define.`)&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: ID not defined.`)&gt;&gt;
 	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -16144,7 +16310,7 @@ button {
 			State.variables.globalFluffies[ID].trauma = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trauma, 0, 200));
 		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="misc widgets" tags="nobr widget" position="1225,475" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="misc widgets" tags="nobr widget" position="100,600" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -16455,7 +16621,7 @@ button {
 		&lt;div class=&quot;w3-container w3-dark-grey&quot;&gt;
 			&lt;&lt;if ndef $nameType&gt;&gt;&lt;&lt;set $nameType = &quot;ordinal&quot;&gt;&gt;&lt;&lt;/if&gt;&gt;
 			
-			&lt;&lt;if ndef $ordinalString&gt;&gt;&lt;&lt;set $ordinalString = &quot;This fluffy&quot;&gt;&gt;&lt;&lt;/if&gt;&gt;
+			&lt;&lt;if ndef $ordinalString&gt;&gt;&lt;&lt;set $ordinalString = &quot;Fluffy&quot;&gt;&gt;&lt;&lt;/if&gt;&gt;
 			
 			&lt;br&gt;
 			&lt;div class=&quot;w3-container w3-padding&quot;&gt;
@@ -16486,7 +16652,7 @@ button {
 	        	
 	        	&lt;&lt;if ndef $inlineSprites&gt;&gt;&lt;&lt;set $inlineSprites = &quot;true&quot;&gt;&gt;&lt;&lt;/if&gt;&gt;
 	        	
-	        	&lt;label&gt;&lt;&lt;checkbox &quot;$inlineSprites&quot; false true autocheck&gt;&gt;In-line Sprites.  Uncheck to use &#39;art\sprites3&#39; folder&lt;/label&gt;
+	        	&lt;label&gt;&lt;&lt;checkbox &quot;$inlineSprites&quot; false true&gt;&gt;In-line Sprites.  Uncheck to use &#39;art\sprites3&#39; folder&lt;/label&gt;
         	&lt;/div&gt;
 
 				&lt;p&gt;&lt;&lt;button &quot;Display Variables&quot;&gt;&gt;&lt;&lt;checkvars&gt;&gt;&lt;&lt;/button&gt;&gt;&lt;/p&gt;
@@ -16737,7 +16903,7 @@ button {
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="pronoun widgets" tags="widget nobr" position="100,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="42" name="pronoun widgets" tags="widget nobr" position="225,600" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

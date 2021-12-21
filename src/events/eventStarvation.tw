@@ -1,0 +1,59 @@
+:: Event Starvation [nobr]
+
+/* **********
+ * eventStarvation.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for fluffy starving.
+ *
+ *********** */
+ 
+ 
+/* Set fluffy and whether or not it is starving */
+<<set _fluffy = $globalFluffies[$currentEvent.target]>>
+<<set _enable = $currentEvent.enable>>
+
+<<if ndef _fluffy || $ourStore.fluffies.includes(_fluffy.ID) == false>>
+	/* Fluffy was removed in a prior event. */
+	<<run console.log(`ERROR: [eventStarvation]: _fluffy not defined.`)>>
+	<<goto "Event Main">>
+<<else>>
+
+    <h1>Starvation</h1>
+    <br>
+    <<if _enable == true>>
+		<<if _fluffy.traits.includes('Starving')>>
+			<<set _starve = 0>>
+			<<colorizeText _fluffy.cColor _fluffy.name>> has died of starvation.
+		<<else>>
+			<<set _starve = 1>>
+			<<colorizeText _fluffy.cColor _fluffy.name>> is starving.
+			<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
+		<</if>>
+	<<else>>
+		<<set _starve = 2>>
+		<<colorizeText _fluffy.cColor _fluffy.name>> is no longer starving.
+		<br><<fluffSpeech  "tank \'ou fow nummies, <title>..." _fluffy.cColor>>
+	<</if>>
+
+	<<set $nextButton = "Continue">>
+	<<set $nextLink = "Event Main">>
+
+	<br><br>
+	<<button [[CONTINUE|Event Main]]>>
+		<<set $encyclopedia = 0>>
+		<<run console.log(_starve)>>
+		<<switch _starve>>
+			<<case 0>>
+				<<removeFluffy _fluffy>>
+			<<case 1>>
+				<<addTrait "Starving" _fluffy>>
+			<<case 2>>
+				<<run _fluffy.traits.filter(e => e !== 'Starving')>>
+		<</switch>>
+	<</button>>
+
+<</if>>
+

@@ -53,6 +53,7 @@
 <<set $eventBirthRejection = []>>
 <<set $eventCustomer = []>>
 <<set $eventStress = []>>
+<<set $eventStarvation = []>>
 <<set $customerCards = []>>
 
 
@@ -101,8 +102,10 @@
 	<</if>>
 
 	/* First some tedius house keeping: */
+	<<pruneTraits $globalFluffies[_ef]>>
+
 	<<if ndef $globalFluffies[_ef].name>>
-		<<set $globalFluffies[_ef].name = "This fluffy">>
+		<<set $globalFluffies[_ef].name = "Fluffy">>
 	<</if>>
 	<<if ndef $globalFluffies[_ef].gender>>
 		<<set $globalFluffies[_ef].gender = "female">>
@@ -549,6 +552,9 @@
 	 *	Feed them.
 	 *** */
 	 <<set _foodBonus = 0>>
+	 <<if $globalFluffies[_ef].foodType != "Nothing" && $globalFluffies[_ef].traits.includes('Starving')>>
+		<<run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: false })>>
+	 <</if>>
 	 <<switch $globalFluffies[_ef].foodType>>
 	 	<<case "Kibble">>
 	 		<<if $globalFluffies[_ef].foodQuality > 3>>
@@ -624,6 +630,8 @@
 			<<set $globalFluffies[_ef].happy -= 20>>
  			<<set $globalFluffies[_ef].trust -= 20>>
  			<<set $globalFluffies[_ef].temperament -= 20>>
+
+			<<run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: true })>>
 	 <</switch>>
 	 
 
@@ -919,6 +927,10 @@
 
 <<for _subEvent range $eventBirthRejection>>
 	<<run $eventList.push( { target: _subEvent, type: "Rejection" } )>>
+<</for>>
+
+<<for _subEvent range $eventStarvation>>
+	<<run $eventList.push( { target: _subEvent.target, enable:_subEvent.enable, type: "Starvation" } )>>
 <</for>>
 
 <<run $eventList.shuffle()>>
