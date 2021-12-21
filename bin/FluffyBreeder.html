@@ -7254,7 +7254,7 @@ button {
 			&lt;&lt;case 0&gt;&gt;
 				&lt;&lt;removeFluffy _fluffy&gt;&gt;
 			&lt;&lt;case 1&gt;&gt;
-				&lt;&lt;run _fluffy.traits.push(&quot;Starving&quot;)&gt;&gt;
+				&lt;&lt;addTrait &quot;Starving&quot; _fluffy&gt;&gt;
 			&lt;&lt;case 2&gt;&gt;
 				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== &#39;Starving&#39;)&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
@@ -8551,6 +8551,8 @@ Genes       Height multiplier
 								&lt;&lt;/switch&gt;&gt;
 							&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].temperament &gt; 190 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 130 ? &quot;Low temperament&quot; : &quot;Average temperament&quot;&gt;&gt;
+							&lt;&lt;default&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].traits[0]&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;default&gt;&gt;
 						/* Pick a vissible trait */
@@ -8599,9 +8601,16 @@ Genes       Height multiplier
 								&lt;&lt;else&gt;&gt;
 									&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
+							&lt;&lt;default&gt;&gt;
+								&lt;&lt;set _push = $globalFluffies[_ef].breed&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
-					&lt;&lt;/switch&gt;&gt;
-				&lt;&lt;run $customerCards.push(_push)&gt;&gt;
+				&lt;&lt;/switch&gt;&gt;
+
+				&lt;&lt;if ndef _push&gt;&gt;
+					&lt;&lt;run console.log(`ERROR: [endWeek]: customer card is undefined.`)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;run $customerCards.push(_push)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -14673,20 +14682,11 @@ button {
  *	Prunes deprecated or duplicate traits from fluffy.
  *** */
 &lt;&lt;widget &quot;pruneTraits&quot;&gt;&gt;
-	&lt;&lt;if ndef $args[0]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: called with no Fluffy.`)&gt;&gt;
-	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: ID not defined.`)&gt;&gt;
-	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;fluffyError&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
-
-			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
-			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
 		&lt;&lt;set _fluffy = $args[0]&gt;&gt;
 
 		/* Count occurrences, remove if duplicate */
@@ -14992,19 +14992,11 @@ button {
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 &lt;&lt;widget &quot;newFromGene&quot;&gt;&gt;
-	&lt;&lt;if ndef $args[0]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: called with no Fluffy.`)&gt;&gt;
-	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: ID isn&#39;t defined.`)&gt;&gt;
-	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;fluffyError&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: &lt;&lt;newFromGene&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
-
-			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
-			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;if def $args.length&gt;&gt;
 			&lt;&lt;set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()&gt;&gt;
 			&lt;&lt;run console.log(_subspecies)&gt;&gt;
@@ -15484,19 +15476,11 @@ button {
  *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
 &lt;&lt;widget &quot;deadFluffy&quot;&gt;&gt;
-	&lt;&lt;if ndef $args[0]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: called with no Fluffy.`)&gt;&gt;
-	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: ID is not defined.`)&gt;&gt;
-	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;fluffyError&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: &lt;&lt;deadFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
-
-			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
-			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set _ID = $args[0].ID&gt;&gt;
 
 		&lt;&lt;set $globalFluffies[_ID].dead = true&gt;&gt;
@@ -15539,19 +15523,11 @@ button {
  *	Removes a fluffy from the store.
  *** */
 &lt;&lt;widget &quot;removeFluffy&quot;&gt;&gt;
-	&lt;&lt;if ndef $args[0]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: called with no Fluffy.`)&gt;&gt;
-	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: ID is not defined.`)&gt;&gt;
-	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;fluffyError&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: &lt;&lt;removeFluffy&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
-
-			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
-			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;set _ID = $args[0].ID&gt;&gt;
 
 		&lt;&lt;deadFluffy $args[0]&gt;&gt;
@@ -16276,19 +16252,11 @@ button {
  *	Clamps fluffy stats
  *** */
 &lt;&lt;widget &quot;clampValues&quot;&gt;&gt;
-	&lt;&lt;if ndef $args[0]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: called with no Fluffy.`)&gt;&gt;
-	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: ID not defined.`)&gt;&gt;
-	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+	&lt;&lt;fluffyError $args&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
-
-			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
-			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
 		/* Doing via script because I can&#39;t trust TWINE to do math */
 		&lt;&lt;script&gt;&gt;
 			const ID = State.variables.args[0].ID;
@@ -16447,6 +16415,32 @@ button {
 	&lt;br&gt;
 &lt;&lt;/widget&gt;&gt;
 
+
+/* ***
+ *  Call as &lt;&lt;fluffyError $args&gt;&gt;
+ *
+ *	Error handler for fluffies.
+ *** */
+&lt;&lt;widget &quot;fluffyError&quot;&gt;&gt;
+	&lt;&lt;if ndef $args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffyError&gt;&gt;: called with no Fluffy.`)&gt;&gt;
+		&lt;&lt;set $fluffyError = true&gt;&gt;
+	&lt;&lt;elseif ndef $args[0].ID&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffyError&gt;&gt;: ID is not defined.`)&gt;&gt;
+		&lt;&lt;set $fluffyError = true&gt;&gt;
+	&lt;&lt;elseif ndef $globalFluffies[$args[0].ID]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffyError&gt;&gt;: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)&gt;&gt;
+		&lt;&lt;set $fluffyError = true&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;if $args[0].ID != $globalFluffies[$args[0].ID].ID&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffyError&gt;&gt;: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)&gt;&gt;
+
+			&lt;&lt;set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$args[0].ID] = $args[0]&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
 /* ***
  *	Call as &lt;&lt;SidebarFluffies&gt;&gt;
  *	Displays fluffies for the sidebar

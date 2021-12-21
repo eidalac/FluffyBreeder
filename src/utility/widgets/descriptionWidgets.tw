@@ -372,7 +372,7 @@ button {
 		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy. Defaulting to $activeFluffy.`)>>
 		<<set _fluffy = $activeFluffy>>
 	<<elseif ndef $args[1].ID>>
-		<<run console.log(`ERROR: <<addTrait>>: ID is not defined.`)>>
+		<<run console.log(`ERROR: <<addTrait>>: ID not defined.`)>>
 	<<elseif ndef $globalFluffies[$args[1].ID]>>
 		<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${$args[1].ID} is not defined in globalFluffies.`)>>
 	<<else>>
@@ -400,20 +400,11 @@ button {
  *	Prunes deprecated or duplicate traits from fluffy.
  *** */
 <<widget "pruneTraits">>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<pruneTraits>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<pruneTraits>>: ID is not defined.`)>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<pruneTraits>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<fluffyError>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<pruneTraits>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<pruneTraits>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
-
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
-		<</if>>
-
 		<<set _fluffy = $args[0]>>
 
 		/* Count occurrences, remove if duplicate */

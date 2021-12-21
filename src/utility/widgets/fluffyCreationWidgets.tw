@@ -105,19 +105,11 @@
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 <<widget "newFromGene">>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<newFromGene>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<newFromGene>>: ID isn't defined.`)>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<newFromGene>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<fluffyError>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<newFromGene>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<newFromGene>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
-
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
-		<</if>>
 		<<if def $args.length>>
 			<<set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()>>
 			<<run console.log(_subspecies)>>
@@ -597,19 +589,11 @@
  *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
 <<widget "deadFluffy">>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<deadFluffy>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<deadFluffy>>: ID is not defined.`)>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<deadFluffy>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<fluffyError>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<deadFluffy>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<deadFluffy>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
-
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
-		<</if>>
 		<<set _ID = $args[0].ID>>
 
 		<<set $globalFluffies[_ID].dead = true>>
@@ -652,19 +636,11 @@
  *	Removes a fluffy from the store.
  *** */
 <<widget "removeFluffy">>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<removeFluffy>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<removeFluffy>>: ID is not defined.`)>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<removeFluffy>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<fluffyError>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<removeFluffy>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<removeFluffy>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
-
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
-		<</if>>
 		<<set _ID = $args[0].ID>>
 
 		<<deadFluffy $args[0]>>

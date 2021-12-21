@@ -108,19 +108,11 @@
  *	Clamps fluffy stats
  *** */
 <<widget "clampValues">>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<clampValues>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<clampValues>>: ID is not defined.`)>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<clampValues>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<fluffyError $args>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<clampValues>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<clampValues>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
-
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
-		<</if>>
 		/* Doing via script because I can't trust TWINE to do math */
 		<<script>>
 			const ID = State.variables.args[0].ID;
