@@ -105,158 +105,173 @@
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 <<widget "newFromGene">>
-	<<if def $args.length>>
-		<<set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()>>
-		<<set _l = random(0, 1)>>
-		<<set _f = random(0, 1)>>
-		<<set _h = random(0, 2) / 100>>
-		<<set _m = random(0, 2)>>
-		<<set _cl = random(0, 2)>>
-		<<set _cd = random(0,30)>>
-
-		<<set _L = Number($args[0].getLength() + _l).toFixed(2)>>
-		<<set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)>>
-		<<set _W = Number($args[0].getWeight() * _L).toFixed(2)>>
-
-		<<set $activeFluffy = {
-			name: "Fluffy",
-			hasName: false,
-			geneString: $args[0].toString(),
-			genes: $args[0],
-			weekAcquired: 0,
-			origin: 0,
-			ID: -1,
-			sID: -1,
-			gender: $args[0].getGenderString().toLowerCase(),
-			length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
-			maxLength: _L,
-			lengthAdd: _l, 
-			maxHeight: _H,
-			height: Number(randomFloat(_H*0.95,_H)).toFixed(2),
-			heightMulti: $args[0].getHeight() + _h,
-			heightAdd: _h,
-			weight: Number(randomFloat(_W * .79, _W)).toFixed(2),
-			maxWeight: _W,
-			weightMulti: $args[0].getWeight(),
-			maxAge: $args[0].getMaxAge(),
-			age: 0,
-			ageWeeks: 0,  
-			maxFertility: $args[0].getFertility() + _f,
-			fertility: $args[0].getFertility() + _f,
-			fertilityAdd: _f,
-			maxMaturity: $args[0].getMaturity() + _m,
-			maturity: $args[0].getMaturity() + _m,
-			maturityAdd: _m,
-			breed: $args[0].getBreedString().toLowerCase(),
-			cColor: $args[0].getCoatColorString(),
-			mColor: $args[0].getManeColorString(),
-			eColor: $args[0].getEyeColorString(),
-			colorGroup: [],
-			mother: -1,
-			father: -1,
-			trust: 0,
-			training: 0,
-			strength: $args[0].getStrong(),
-			energy: $args[0].getEnergy(),
-			charm: $args[0].getCharm(),
-			thinking: $args[0].getThinking(),
-			learning: $args[0].getLearning(),
-			coatLengthAdd: _cl,
-			coatLength: $args[0].getCoatLength() + _cl,
-			coatDensityAdd: _cd,
-			coatDensity: $args[0].getCoatDensity() + _cd,
-			coatCurl: $args[0].getCoatCurl(),
-			subSpecies: _subspecies,
-			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
-			health: 10,
-			children: [],
-			specialFriend: -1,
-			pregnant: false,
-			pregnantBy: -1,
-			nursing: 0,
-			nursingMax: 0,
-			onDisplay: false,
-			sold: false,
-			dead: false,
-			weaned: true,
-			traits: [],
-			foodType: "Kibble",
-			foodQuality: 2,
-			temperament: 100,
-			happy: 0,
-			trauma: 0,
-			stress: 0
-		} >>
-
-		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
-		
-		<<set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))>>
-		<<set $activeFluffy.age = Math.round(_rAge/52)>>
-		<<set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)>>
-
-		<<switch $alicornRarity>>
-		<<case 0>>
-			<<if $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
-				<<set $activeFluffy.breed = "alicorn">>
-			<</if>>
-		<<case 1>>
-			<<if $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
-				<<if random(0, 1) == 0>>
-					<<set $activeFluffy.breed = "unicorn">>
-				<<else>>
-					<<set $activeFluffy.breed = "pegasus">>
-				<</if>>
-			<</if>>
-		<<default>>
-			<<if $activeFluffy.breed.toLowerCase() == "alicorn" or $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
-				<<switch random(0, 5)>>
-				<<case 0 1>>
-					<<set $activeFluffy.breed = "unicorn">>
-				<<case 2 3>>
-					<<set $activeFluffy.breed = "pegasus">>
-				<<case 4>>
-					<<set $activeFluffy.breed = "earthy">>
-				<<case 5>>
-					<<set $activeFluffy.breed = "alicorn">>
-				<</switch>>
-			<</if>>
-		<</switch>>
-
-		/* Pick a random child trait:*/
-		<<switch random(0,4)>>
-			<<case 0>>
-				<<set $activeFluffy.traits.push("Fussy")>>
-				<<set $activeFluffy.strength++>>
-				<<set $activeFluffy.temperament = 140>>
-				<<set $activeFluffy.happy = 60>>
-			<<case 1>>
-				<<set $activeFluffy.traits.push("Shy")>>
-				<<set $activeFluffy.learning++>>
-				<<set $activeFluffy.temperament = 80>>
-				<<set $activeFluffy.happy = 80>>
-			<<case 2>>
-				<<set $activeFluffy.traits.push("Lazy")>>
-				<<set $activeFluffy.thinking++>>
-				<<set $activeFluffy.temperament = 80>>
-				<<set $activeFluffy.happy = 80>>
-			<<case 3>>
-				<<set $activeFluffy.traits.push("Cute")>>
-				<<set $activeFluffy.charm++>>
-				<<set $activeFluffy.temperament = 100>>
-				<<set $activeFluffy.happy = 120>>
-			<<case 4>>
-				<<set $activeFluffy.traits.push("Peppy")>>
-				<<set $activeFluffy.energy++>>
-				<<set $activeFluffy.temperament = 120>>
-				<<set $activeFluffy.happy = 100>>
-			<<default>>
-				<<set $activeFluffy.traits.push("Cute")>>
-				<<set $activeFluffy.charm++>>
-				<<set $activeFluffy.temperament = 120>>
-		<</switch>>
-
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<newFromGene>>: called with no Fluffy.`)>>
+	<<elseif ndef $args[0].ID>>
+		<<run console.log(`ERROR: <<newFromGene>>: ID isn't defined.`)>>
+	<<elseif ndef $globalFluffies[$args[0].ID]>>
+		<<run console.log(`ERROR: <<newFromGene>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
 	<<else>>
-		<br><br>@@.red; newFromGene called with no gene.@@<br><br>
+		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
+			<<run console.log(`ERROR: <<newFromGene>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+
+			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+		<</if>>
+		<<if def $args.length>>
+			<<set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()>>
+			<<run console.log(_subspecies)>>
+			<<set _l = random(0, 1)>>
+			<<set _f = random(0, 1)>>
+			<<set _h = random(0, 2) / 100>>
+			<<set _m = random(0, 2)>>
+			<<set _cl = random(0, 2)>>
+			<<set _cd = random(0,30)>>
+
+			<<set _L = Number($args[0].getLength() + _l).toFixed(2)>>
+			<<set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)>>
+			<<set _W = Number($args[0].getWeight() * _L).toFixed(2)>>
+
+			<<set $activeFluffy = {
+				name: "Fluffy",
+				hasName: false,
+				geneString: $args[0].toString(),
+				genes: $args[0],
+				weekAcquired: 0,
+				origin: 0,
+				ID: -1,
+				sID: -1,
+				gender: $args[0].getGenderString().toLowerCase(),
+				length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
+				maxLength: _L,
+				lengthAdd: _l, 
+				maxHeight: _H,
+				height: Number(randomFloat(_H*0.95,_H)).toFixed(2),
+				heightMulti: $args[0].getHeight() + _h,
+				heightAdd: _h,
+				weight: Number(randomFloat(_W * .79, _W)).toFixed(2),
+				maxWeight: _W,
+				weightMulti: $args[0].getWeight(),
+				maxAge: $args[0].getMaxAge(),
+				age: 0,
+				ageWeeks: 0,  
+				maxFertility: $args[0].getFertility() + _f,
+				fertility: $args[0].getFertility() + _f,
+				fertilityAdd: _f,
+				maxMaturity: $args[0].getMaturity() + _m,
+				maturity: $args[0].getMaturity() + _m,
+				maturityAdd: _m,
+				breed: $args[0].getBreedString().toLowerCase(),
+				cColor: $args[0].getCoatColorString(),
+				mColor: $args[0].getManeColorString(),
+				eColor: $args[0].getEyeColorString(),
+				colorGroup: [],
+				mother: -1,
+				father: -1,
+				trust: 0,
+				training: 0,
+				strength: $args[0].getStrong(),
+				energy: $args[0].getEnergy(),
+				charm: $args[0].getCharm(),
+				thinking: $args[0].getThinking(),
+				learning: $args[0].getLearning(),
+				coatLengthAdd: _cl,
+				coatLength: $args[0].getCoatLength() + _cl,
+				coatDensityAdd: _cd,
+				coatDensity: $args[0].getCoatDensity() + _cd,
+				coatCurl: $args[0].getCoatCurl(),
+				subSpecies: _subspecies,
+				subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
+				health: 10,
+				children: [],
+				specialFriend: -1,
+				pregnant: false,
+				pregnantBy: -1,
+				nursing: 0,
+				nursingMax: 0,
+				onDisplay: false,
+				sold: false,
+				dead: false,
+				weaned: true,
+				traits: [],
+				foodType: "Kibble",
+				foodQuality: 2,
+				temperament: 100,
+				happy: 0,
+				trauma: 0,
+				stress: 0
+			} >>
+
+			<<set $activeFluffy.preWeight = $activeFluffy.weight>>
+			
+			<<set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))>>
+			<<set $activeFluffy.age = Math.round(_rAge/52)>>
+			<<set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)>>
+
+			<<switch $alicornRarity>>
+			<<case 0>>
+				<<if $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
+					<<set $activeFluffy.breed = "alicorn">>
+				<</if>>
+			<<case 1>>
+				<<if $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.breed = "unicorn">>
+					<<else>>
+						<<set $activeFluffy.breed = "pegasus">>
+					<</if>>
+				<</if>>
+			<<default>>
+				<<if $activeFluffy.breed.toLowerCase() == "alicorn" or $activeFluffy.breed.toUpperCase() == "SETTING_DEPENDENT_BREED">>
+					<<switch random(0, 5)>>
+					<<case 0 1>>
+						<<set $activeFluffy.breed = "unicorn">>
+					<<case 2 3>>
+						<<set $activeFluffy.breed = "pegasus">>
+					<<case 4>>
+						<<set $activeFluffy.breed = "earthy">>
+					<<case 5>>
+						<<set $activeFluffy.breed = "alicorn">>
+					<</switch>>
+				<</if>>
+			<</switch>>
+
+			/* Pick a random child trait:*/
+			<<switch random(0,4)>>
+				<<case 0>>
+					<<addTrait "Fussy" $activeFluffy>>
+					<<set $activeFluffy.strength++>>
+					<<set $activeFluffy.temperament = 140>>
+					<<set $activeFluffy.happy = 60>>
+				<<case 1>>
+					<<addTrait "Shy" $activeFluffy>>
+					<<set $activeFluffy.learning++>>
+					<<set $activeFluffy.temperament = 80>>
+					<<set $activeFluffy.happy = 80>>
+				<<case 2>>
+					<<addTrait "Lazy" $activeFluffy>>
+					<<set $activeFluffy.thinking++>>
+					<<set $activeFluffy.temperament = 80>>
+					<<set $activeFluffy.happy = 80>>
+				<<case 3>>
+					<<addTrait "Cute" $activeFluffy>>
+					<<set $activeFluffy.charm++>>
+					<<set $activeFluffy.temperament = 100>>
+					<<set $activeFluffy.happy = 120>>
+				<<case 4>>
+					<<addTrait "Peppy" $activeFluffy>>
+					<<set $activeFluffy.energy++>>
+					<<set $activeFluffy.temperament = 120>>
+					<<set $activeFluffy.happy = 100>>
+				<<default>>
+					<<addTrait "Cute" $activeFluffy>>
+					<<set $activeFluffy.charm++>>
+					<<set $activeFluffy.temperament = 120>>
+			<</switch>>
+
+		<<else>>
+			<br><br>@@.red; newFromGene called with no gene.@@<br><br>
+		<</if>>
 	<</if>>
 <</widget>>
 
@@ -267,7 +282,7 @@
  *	Set genetic traits on $activeFluffy
  *** */
 <<widget "setGeneTraits">>
-
+<<run console.log($args.full)>>
 
 /* 3 possible 'misc' defects (used to rate general defect severity)*/
 <<set _defectLevel = 1>>
@@ -287,7 +302,7 @@
  /* Inbreeding */
 <<set _inbreed = $activeFluffy.geneString.substring(168).split('/')>>
 <<if Number(_inbreed[0]) == Number(_inbreed[1])>>
-	<<run $activeFluffy.traits.push("Inbred")>>
+	<<addTrait "Inbred" $activeFluffy>>
 	<<set $activeFluffy.strength -= _defectLevel>>
 	<<set $activeFluffy.energy -= _defectLevel>>
 	<<set $activeFluffy.charm -= _defectLevel>>
@@ -300,19 +315,19 @@
 <<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Slow")>>
+			<<addTrait "Slow" $activeFluffy>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Limp")>>
+			<<addTrait "Limp" $activeFluffy>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Lame")>>
+			<<addTrait "Lame" $activeFluffy>>
 			<<set $activeFluffy.energy  -= 3>>
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Crippled")>>
+			<<addTrait "Crippled" $activeFluffy>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -323,21 +338,21 @@
 <<if $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Breathless")>>
+			<<addTrait "Breathless" $activeFluffy>>
 			<<set $activeFluffy.energy-->>
 			<<set $activeFluffy.strength-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Bronchitis")>>
+			<<addTrait "Bronchitis" $activeFluffy>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Asthmatic")>>
+			<<addTrait "Asthmatic" $activeFluffy>>
 			<<set $activeFluffy.energy  -= 3>>
 			<<set $activeFluffy.strength -= 3>>
 			<<set $activeFluffy.charm -= 2>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Lung Cancer")>>
+			<<addTrait "Lung Cancer" $activeFluffy>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 4>>
 			<<set $activeFluffy.charm -= 3>>
@@ -353,19 +368,19 @@
 
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Chubby")>>
+			<<addTrait "Chubby" $activeFluffy>>
 			<<set $activeFluffy.energy-->>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Overweight")>>
+			<<addTrait "Overweight" $activeFluffy>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Fat")>>
+			<<addTrait "Fat" $activeFluffy>>
 			<<set $activeFluffy.energy  -= 3>>
 			<<set $activeFluffy.strength -= 1>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Obese")>>
+			<<addTrait "Obese" $activeFluffy>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 2>>
 			<<set $activeFluffy.charm -= 2>>
@@ -381,20 +396,20 @@
 
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Weak")>>
+			<<addTrait "Weak" $activeFluffy>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.strength -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Feeble")>>
+			<<addTrait "Feeble" $activeFluffy>>
 			<<set $activeFluffy.energy -= 3>>
 			<<set $activeFluffy.strength -= 2>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Sickly")>>
+			<<addTrait "Sickly" $activeFluffy>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Anemic")>>
+			<<addTrait "Anemic" $activeFluffy>>
 			<<set $activeFluffy.energy -= 4>>
 			<<set $activeFluffy.strength -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -403,13 +418,13 @@
 
 /* Fertility defect */
 <<if $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase()>>
-	/* <<run $activeFluffy.traits.push("Infertile")>> */
+	/* <<addTrait "Infertile" $activeFluffy>> */
 	<<set $activeFluffy.fertility -= _defectLevel>>
 <</if>>
 
 /* Growth Defect */
 <<if $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase()>>
-	<<run $activeFluffy.traits.push("Runt")>>
+	<<addTrait "Runt" $activeFluffy>>
 	<<set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)>>
 	<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
 	<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
@@ -427,21 +442,21 @@
 <<if $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Delicate")>>
+			<<addTrait "Delicate" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Nauseous")>>
+			<<addTrait "Nauseous" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 2>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Ulcers")>>
+			<<addTrait "Ulcers" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Appendicitis")>>
+			<<addTrait "Appendicitis" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 4>>
 			<<set $activeFluffy.learning -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -459,21 +474,21 @@
 <<if $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Silly")>>
+			<<addTrait "Silly" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 1>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Simple")>>
+			<<addTrait "Simple" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 2>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.charm -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Moron")>>
+			<<addTrait "Moron" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 3>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Imbecile")>>
+			<<addTrait "Imbecile" $activeFluffy>>
 			<<set $activeFluffy.thinking -= 4>>
 			<<set $activeFluffy.learning -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -484,19 +499,19 @@
 <<if $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
 	<<switch _defectLevel>>
 		<<case 1>>
-			<<run $activeFluffy.traits.push("Nearsighted")>>
+			<<addTrait "Nearsighted" $activeFluffy>>
 			<<set $activeFluffy.learning -= 1>>
 		<<case 2>>
-			<<run $activeFluffy.traits.push("Colourblind")>>
+			<<addTrait "Colourblind" $activeFluffy>>
 			<<set $activeFluffy.learning -= 2>>
 			<<set $activeFluffy.energy -= 1>>
 		<<case 3>>
-			<<run $activeFluffy.traits.push("Near-Blind")>>
+			<<addTrait "Near-Blind" $activeFluffy>>
 			<<set $activeFluffy.energy -= 2>>
 			<<set $activeFluffy.learning -= 3>>
 			<<set $activeFluffy.charm -= 1>>
 		<<default>>
-			<<run $activeFluffy.traits.push("Blind")>>
+			<<addTrait "Blind" $activeFluffy>>
 			<<set $activeFluffy.energy -= 3>>
 			<<set $activeFluffy.learning -= 4>>
 			<<set $activeFluffy.charm -= 2>>
@@ -510,7 +525,7 @@
  *	Sets the target as $activefluffy.
  *** */
 <<widget "Focus">>
-	<<if $args.length == true>>
+	<<if def $args.length>>
 		<<set $activeFluffy = $args[0]>>
 	<</if>>
 <</widget>>
@@ -582,58 +597,86 @@
  *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
 <<widget "deadFluffy">>
-	<<set _ID = $args[0].ID>>
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<deadFluffy>>: called with no Fluffy.`)>>
+	<<elseif ndef $args[0].ID>>
+		<<run console.log(`ERROR: <<deadFluffy>>: ID is not defined.`)>>
+	<<elseif ndef $globalFluffies[$args[0].ID]>>
+		<<run console.log(`ERROR: <<deadFluffy>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
+			<<run console.log(`ERROR: <<deadFluffy>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
 
-	<<set $globalFluffies[_ID].dead = true>>
-	<<set $globalFluffies[_ID].onDisplay = false>>
-	<<set $globalFluffies[_ID].pregnant = false>>
-	
-	<<if $globalFluffies[_ID].nursing > 0>>
-		<<for _child range $globalFluffies[_ID].children>>
-			<<if $globalFluffies[_child].foodType == "Nursing">>
-				<<set $globalFluffies[_child].foodType = "Nothing">>
-				<<set $globalFluffies[_child].foodQuality = -1>>
-				<<set $globalFluffies[_child].stress += 30>>
-				<<set $globalFluffies[_child].trauma += 10>>
-				<<set $globalFluffies[_child].happy -= 10>>
-			<</if>> /* Close nursing check */
-		<</for>> /* Close child check*/
-	<</if>> /* Close Nursing check */
-	
-	<<if $globalFluffies[_ID].foodType == "Nursing">>
-		<<set $globalFluffies[$globalFluffies[_ID].mother].nursing-->>
-		<<set $globalFluffies[$globalFluffies[_ID].mother].stress += 40>>
-		<<set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5>>
-		<<set $globalFluffies[$globalFluffies[_ID].mother].happy -= 20>>
-	<</if>> /* Close Nursing foal check */
-	
-	<<set $globalFluffies[_ID].nursing = 0>>
-	
-	<<if $globalFluffies[_ID].specialFriend != -1>>
-		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>
-		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
-		<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
-		<<set $globalFluffies[_ID].specialFriend = -1>>
+			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+		<</if>>
+		<<set _ID = $args[0].ID>>
+
+		<<set $globalFluffies[_ID].dead = true>>
+		<<set $globalFluffies[_ID].onDisplay = false>>
+		<<set $globalFluffies[_ID].pregnant = false>>
+		
+		<<if $globalFluffies[_ID].nursing > 0>>
+			<<for _child range $globalFluffies[_ID].children>>
+				<<if $globalFluffies[_child].foodType == "Nursing">>
+					<<set $globalFluffies[_child].foodType = "Nothing">>
+					<<set $globalFluffies[_child].foodQuality = -1>>
+					<<set $globalFluffies[_child].stress += 30>>
+					<<set $globalFluffies[_child].trauma += 10>>
+					<<set $globalFluffies[_child].happy -= 10>>
+				<</if>> /* Close nursing check */
+			<</for>> /* Close child check*/
+		<</if>> /* Close Nursing check */
+		
+		<<if $globalFluffies[_ID].foodType == "Nursing">>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].nursing-->>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].stress += 40>>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5>>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].happy -= 20>>
+		<</if>> /* Close Nursing foal check */
+		
+		<<set $globalFluffies[_ID].nursing = 0>>
+		
+		<<if $globalFluffies[_ID].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
+			<<set $globalFluffies[_ID].specialFriend = -1>>
+		<</if>>
 	<</if>>
 <</widget>>
 
 /* ***
- *	Call as <<removeFluffy Fluffy>>
+ *	Call as <<removeFluffy $fluffy>>
  *
- *	Removes a fluffy from the store
+ *	Removes a fluffy from the store.
  *** */
 <<widget "removeFluffy">>
-	<<set _ID = $args[0].ID>>
-
-	<<deadFluffy $args[0]>>
-	
-	<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
-
-	<<if Number($globalFluffies[_ID].age) == 0 && Number($globalFluffies[_ID].ageWeeks) <= $globalFluffies[_ID].maturity>>
-		<<set $ourStore.foals-->>
-	<<elseif $globalFluffies[_ID].gender == "male">>
-		<<set $ourStore.stallions-->>
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<removeFluffy>>: called with no Fluffy.`)>>
+	<<elseif ndef $args[0].ID>>
+		<<run console.log(`ERROR: <<removeFluffy>>: ID is not defined.`)>>
+	<<elseif ndef $globalFluffies[$args[0].ID]>>
+		<<run console.log(`ERROR: <<removeFluffy>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
 	<<else>>
-		<<set $ourStore.mares-->>
+		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
+			<<run console.log(`ERROR: <<removeFluffy>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+
+			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+		<</if>>
+		<<set _ID = $args[0].ID>>
+
+		<<deadFluffy $args[0]>>
+		
+		<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
+
+		<<if Number($globalFluffies[_ID].age) == 0 && Number($globalFluffies[_ID].ageWeeks) <= $globalFluffies[_ID].maturity>>
+			<<set $ourStore.foals-->>
+		<<elseif $globalFluffies[_ID].gender == "male">>
+			<<set $ourStore.stallions-->>
+		<<else>>
+			<<set $ourStore.mares-->>
+		<</if>>
 	<</if>>
 <</widget>>

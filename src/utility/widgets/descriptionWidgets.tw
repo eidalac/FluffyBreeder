@@ -57,8 +57,6 @@ button {
 				<<continue>>
 			<</if>>
 		<</if>>
-
-		
 				
 		/* Double check we are removing sold fluffies: */
 		<<if $globalFluffies[_fl].sold == true>>
@@ -150,11 +148,11 @@ button {
 							<<if $listType != "Display">>[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]<<else>>[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]<</if>>
 							| [[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]] $globalFluffies[_fl].foodType
 							<<switch $globalFluffies[_fl].foodQuality>>
-								<<case 0>> (trash)
+								<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">> (trash) <<else>><</if>>
 								<<case 1>> (cheap)
 								<<case 2>> (basic)
 								<<case 3>> (good)
-								<<case 4>> (quality)
+								<<case 4>> (premium)
 								<<case -1>> 
 							<</switch>>
 						<</if>>
@@ -360,6 +358,80 @@ button {
 	<</if>>
 	
 	<<set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)>>
+<</widget>>
+
+/* ***
+ *	Called as <<addTrait $trait $fluffy>>
+ *
+ *	Adds trait to fluffy.
+ *** */
+ <<widget "addTrait">>
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<addTrait>>: called with no trait.`)>>
+	<<elseif ndef $args[1]>>
+		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy. Defaulting to $activeFluffy.`)>>
+		<<set _fluffy = $activeFluffy>>
+	<<elseif ndef $args[1].ID>>
+		<<run console.log(`ERROR: <<addTrait>>: ID not defined.`)>>
+	<<elseif ndef $globalFluffies[$args[1].ID]>>
+		<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${$args[1].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if $args[1].ID != $globalFluffies[$args[1].ID].ID>>
+			<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${$args[1].ID} does not match global ID ${$globalFluffies[$args[1].ID].ID}.`)>>
+
+			<<set $args[1].ID = Number($globalFluffies[$args[1].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[1].ID] = $args[1]>>
+			<<set _fluffy = $args[1]>>
+		<</if>>
+
+		<<set _trait = $args[0]>>
+
+		<<if _fluffy.traits.includes(_trait)>>
+			<<run console.log(`ERROR: <<addTrait>>: Did not add ${_trait} to ${_fluffy}. Reason: Duplicate trait`)>>
+		<<else>>
+			<<run _fluffy.traits.push(_trait)>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<pruneTraits $fluffy>>
+ *
+ *	Prunes deprecated or duplicate traits from fluffy.
+ *** */
+<<widget "pruneTraits">>
+	<<if ndef $args[0]>>
+		<<run console.log(`ERROR: <<pruneTraits>>: called with no Fluffy.`)>>
+	<<elseif ndef $args[0].ID>>
+		<<run console.log(`ERROR: <<pruneTraits>>: ID not defined.`)>>
+	<<elseif ndef $globalFluffies[$args[0].ID]>>
+		<<run console.log(`ERROR: <<pruneTraits>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
+			<<run console.log(`ERROR: <<pruneTraits>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+
+			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+		<</if>>
+
+		<<set _fluffy = $args[0]>>
+
+		/* Count occurrences, remove if duplicate */
+		<<set _countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0)>>
+
+		/* List of deprecated traits */
+		<<set _deprecated = ["Infertile", "feeble1", "feeble2", "Runt 1", "Runt 2"]>>
+
+		<<for _trait range _fluffy.traits>>
+			<<if _countOccurrences(_fluffy.traits, _trait) > 1>>
+				<<run _fluffy.traits.filter(e => e !== _trait)>>
+			<</if>>
+
+			<<if _deprecated.includes(_trait)>>
+				<<run _fluffy.traits.filter(e => e !== _trait)>>
+			<</if>>
+		<</for>>
+	<</if>>
 <</widget>>
 
 /* ***

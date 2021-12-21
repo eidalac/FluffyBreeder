@@ -238,42 +238,39 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 
 <br>
 <div id="product-form">
-<<if $activeFluffy.subSpecies == 2>>
-	<<set _angora = true>>
+<<if $activeFluffy.furStage > 67>>
+	<<set _shear = true>>
 	<<set _desc = "Shear " + $activeFluffy.name>>
 <<elseif $activeFluffy.nursing > 0>>
 	<<set _milk = true>>
 	<<set _desc = "Milk " + $activeFluffy.name>>
 <</if>>
-<<if _angora>>
+<<if _shear>>
 	<<button _desc>>
 		<<if $actions > 0>>
 			<<set $actions-->>
 			<<set $stress -= 10>>
 			<<if $stress < 0>><<set $stress = 0>><</if>>
-			<<set $hugbox += 1>>
-			<<set $activeFluffy.trust++>>
-			<<set $activeFluffy.happy++>>
-			<<set $activeFluffy.temperament++>>
-			<<set $activeFluffy.stress-->>
-			
-			<<if $ourStore.upgrades.includes("Deluxe Toys")>>
-				<<set $activeFluffy.stress-->>
-			<</if>>
-			<<if $ourStore.upgrades.includes("Fancy Toys")>>
-				<<set $activeFluffy.happy++>>
-			<</if>>
-			<<if $ourStore.upgrades.includes("Basic Toys")>>
-				<<set $activeFluffy.happy++>>
-				<<set $activeFluffy.stress-->>
+
+			<<if $activeFluffy.subSpecies == 2>>
+				<<if $activeFluffy.furStage > 167>>
+					<<set $activeFluffy.furStage = 101>>
+				<<elseif $activeFluffy.furStage > 100>>
+					<<set $activeFluffy.furStage = 68>>
+				<<else $activeFluffy.furStage > 67>>
+					<<set $activeFluffy.furStage = 0>>
+				<</if>>
+			<<else>>
+				<<set $activeFluffy.furStage = 0>>
 			<</if>>
 			
 			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 			<<replace "#shear-msg">>
-				<br><<- $title>><<colorizeText $activeFluffy.cColor "am bestest at pwayin\'! Pway AWW da games wit\'">>
-				<<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor ", heheheh!">>
+				<br><<fluffSpeech"huu huu... why taek pwetty fwuff fwom <fluffy>?" $activeFluffy.cColor>>
 			<</replace>>
 			<<replace "#fluffy-name">><<intractDetails>><</replace>>
+		<<elseif $activeFluffy.furStage <= 67>>
+			<<replace "#shear-msg">><br><<colorizeText $activeFluffy.cColor $activeFluffy.name>> cannot be sheared.<</replace>>
 		<<else>>
 			<<replace "#shear-msg">><br>You are too tired to shear right now.<</replace>>
 		<</if>>
@@ -434,21 +431,7 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 				<<set $abuse++>>
 			<</if>>
 		
-			<<set $globalFluffies[$activeFluffy.ID].dead = true>>
-			<<set $globalFluffies[$activeFluffy.ID].onDisplay = false>>
-			<<set $globalFluffies[$activeFluffy.ID].pregnant = false>>
-			<<set $globalFluffies[$activeFluffy.ID].nursing = 0>>
-					
-			<<if $globalFluffies[$activeFluffy.ID].specialFriend != -1>>
-				<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1>>
-				<<set $globalFluffies[$activeFluffy.ID].specialFriend = -1>>
-			<</if>>
-				
-			<<if $globalFluffies[$activeFluffy.ID].foodType == "Nursing">>
-				<<set $globalFluffies[$activeFluffy.mother].nursing-->>
-			<</if>> /* Close nursing check */
-			
-			<<run $ourStore.fluffies.delete($activeFluffy.ID)>>
+			<<killFluffy $activeFluffy>>
 		<</button>>
 
 	<</replace>>
