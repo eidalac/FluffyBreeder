@@ -18,15 +18,15 @@
  *** */
 <<widget "MainLinks">>
 	<center>
-	<<switch $personalAttention>>
-		<<case "business">>You plan to focus on business this week.
-		<<case "trading">>This week you will learn trading.
-		<<case "warfare">>This week you will learn modern combat tactics.
-		<<case "engineering">>This week you will learn engineering.
-		<<case "medicine">>This week you will learn medicine.
-		<<default>>
-	<</switch>>
-
+		<<switch $personalAttention>>
+			<<case "business">>You plan to focus on business this week.
+			<<case "trading">>This week you will learn trading.
+			<<case "warfare">>This week you will learn modern combat tactics.
+			<<case "engineering">>This week you will learn engineering.
+			<<case "medicine">>This week you will learn medicine.
+			<<default>>
+		<</switch>>
+	</center>
 	/*<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@*/
 <</widget>>
 
@@ -107,83 +107,71 @@ button {
 	
 			<<capture _fl>>
 			
-				<div class="fluffy-description">
+				<label>
+					<div class="fluffy-description">
+					
+						<div class="fluffy-checkbox">
+							<<if $args[0] != "customer" && $args[0] != "breeding">><<checkbox "$globalFluffies[_fl].isChecked" false true `$globalFluffies[_fl].isChecked ? 'checked' : ''`>><</if>>
+						</div>
 				
-					<div class="fluffy-checkbox">
-						<<if $args[0] != "customer" && $args[0] != "breeding">><<checkbox "$globalFluffies[_fl].isChecked" false true `$globalFluffies[_fl].isChecked ? 'checked' : ''`>><</if>>
-					</div>
-			
-					<div class="fluffy-desc-top w3-row w3-dark-grey">
-						<div class="fluffy-name w3-container">
-							<<if $args[0] === "customer" || $args[0] === "breeding">>
-								<<- $globalFluffies[_fl].name>>
-							<<else>>
-								[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
-							<</if>>
-						</div>
-						<div class="fluffy-quickactions w3-rest w3-container">
-						<<if $args[0] === "customer">>
-							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
-							
-							<<button _buttonString>>
-								<<OfferFluffy $globalFluffies[_fl].ID>>
-							<</button>>
-						<<elseif $args[0] === "breeding">>
-							<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
-							
-							<<button _buttonString "Fluffy Breeding">>
-								<<set $activeFluffy = $globalFluffies[_breeder]>>
-
-								<<if $globalFluffies[_fl].gender == "male">>
-									<<set $breedStal = _fl>>
-									<<set $breedMare = _breeder>>
+						<div class="fluffy-desc-top w3-row w3-dark-grey">
+							<div class="fluffy-name w3-container">
+								<<if $args[0] === "customer" || $args[0] === "breeding">>
+									<<- $globalFluffies[_fl].name>>
 								<<else>>
-									<<set $breedMare = _fl>>
-									<<set $breedStal = _breeder>>
+									[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
 								<</if>>
-							<</button>>
-						<<else>>
-								[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]]
-							<<if $listType != "Display">>
-								[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+							</div>
+							<div class="fluffy-quickactions w3-rest w3-container">
+							<<if $args[0] === "customer">>
+								<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+								
+								<<button _buttonString>>
+									<<OfferFluffy $globalFluffies[_fl].ID>>
+								<</button>>
+							<<elseif $args[0] === "breeding">>
+								<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
+								
+								<<button _buttonString "Fluffy Breeding">>
+									<<set $activeFluffy = $globalFluffies[_breeder]>>
+
+									<<if $globalFluffies[_fl].gender == "male">>
+										<<set $breedStal = _fl>>
+										<<set $breedMare = _breeder>>
+									<<else>>
+										<<set $breedMare = _fl>>
+										<<set $breedStal = _breeder>>
+									<</if>>
+								<</button>>
 							<<else>>
-								[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+									[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]]
+								<<if $listType != "Display">>
+									[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+								<<else>>
+									[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+								<</if>>
+								[[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
+								<<set _foodType = $globalFluffies[_fl].foodType>>
+								<<switch $globalFluffies[_fl].foodQuality>>
+									<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">> <span><<print `${_foodType} (trash)`>></span> <<else>><</if>>
+									<<case 1>> <span><<print `${_foodType} (cheap)`>></span>
+									<<case 2>> <span><<print `${_foodType} (basic)`>></span>
+									<<case 3>> <span><<print `${_foodType} (good)`>></span>
+									<<case 4>> <span><<print `${_foodType} (premium)`>></span>
+									<<case -1>>
+									
+								<</switch>>
 							<</if>>
-							[[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
-							<<set _foodType = $globalFluffies[_fl].foodType>>
-							<<switch $globalFluffies[_fl].foodQuality>>
-								<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">> <span><<print `${_foodType} (trash)`>></span> <<else>><</if>>
-								<<case 1>> <span><<print `${_foodType} (cheap)`>></span>
-								<<case 2>> <span><<print `${_foodType} (basic)`>></span>
-								<<case 3>> <span><<print `${_foodType} (good)`>></span>
-								<<case 4>> <span><<print `${_foodType} (premium)`>></span>
-								<<case -1>>
-								
-							<</switch>>
-						<</if>>
+							</div>
 						</div>
-					</div>
-					<div class="fluffy-desc-bottom w3-row w3-dark-grey">
-						<div class="fluffy-image">
+
+						<div class="fluffy-desc-bottom w3-row w3-dark-grey">
 							<<set $activeFluffy = $globalFluffies[_fl]>>
-			
-							<<switch $globalFluffies[_fl].breed>>
-							<<case "earthy" "Earthy">>
-								<<fluffyImage "earthie">>
-			
-							<<case "unicorn" "Unicorn">>
-								<<fluffyImage "unicorn">>
-								
-							<<case "pegasus" "Pegasus">>
-								<<fluffyImage "pegasus">>
-			
-							<<default>>
-								<<fluffyImage "alicorn">>		
-							<</switch>>
+							<<drawSprite $globalFluffies[_fl]>>
+							<<shortDesc $globalFluffies[_fl]>>
 						</div>
-						<<shortDesc $globalFluffies[_fl]>>
 					</div>
-				</div>
+				</label>
 			<</capture>>
 		<</if>>
 	<</for>>
@@ -397,38 +385,6 @@ button {
 <</widget>>
 
 /* ***
- *	Called as <<pruneTraits $fluffy>>
- *
- *	Prunes deprecated or duplicate traits from fluffy.
- *** */
-<<widget "pruneTraits">>
-	<<fluffyError $args[0]>>
-	<<if $fluffyError>>
-		<<run console.log(`ERROR: <<pruneTraits>>: $fluffyError`)>>
-		<<set $fluffyError = false>>
-	<<else>>
-		<<set _fluffy = $args[0]>>
-		<<personalityFix _fluffy>>
-
-		/* Count occurrences, remove if duplicate */
-		<<set _countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0)>>
-
-		/* List of deprecated traits */
-		<<set _deprecated = ["Infertile", "feeble1", "feeble2", "Runt 1", "Runt 2"]>>
-
-		<<for _trait range _fluffy.traits>>
-			<<if _countOccurrences(_fluffy.traits, _trait) > 1>>
-				<<run _fluffy.traits.filter(e => e !== _trait)>>
-			<</if>>
-
-			<<if _deprecated.includes(_trait)>>
-				<<run _fluffy.traits.filter(e => e !== _trait)>>
-			<</if>>
-		<</for>>
-	<</if>>
-<</widget>>
-
-/* ***
  *	Called as <<personalityFix $fluffy>>
  *
  *	Fixes traits[0] being personality
@@ -563,104 +519,89 @@ button {
  *	Displays a condensed diplay of fluffy information
  *** */
 <<widget "shortDesc">>
-<<capture _children>>
-	<<set _fluffy = $args[0]>>
-	<<set _children = "">>
-	<<for _i = 0; _i < _fluffy.children.length; _i++>>
-		<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@">> 
-	<</for>>
-	 
-	<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+	<<capture _children>>
+		<<set _fluffy = $args[0]>>
+		<<set _children = "">>
+		<<for _i = 0; _i < _fluffy.children.length; _i++>>
+			<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@">> 
+		<</for>>
+		
+		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
 
-	<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
-		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
-	<<else>>
-		<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)>>
-		<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
-		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
-	<</if>>
-<<clampValues _fluffy>>
-<<personalityFix _fluffy>>
-<div class="fluffy-details">
-	<div class="fluffy-details-left">
-		<div class="fluffy-color">
-			<span><<- _fluffy.personality>> _fluffy.gender _fluffy.breed</span>
-			<span> Name: <<print _fluffy.name>></span>
-			<span>Coat: <<inlineColor _fluffy.cColor>></span>
-			<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
-				<span>Mane: <<inlineColor _fluffy.mColor>></span>
-			<</if>>
-			<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
-				<span>Eyes: <<inlineColor _fluffy.eColor>></span>
-			<</if>>
+		<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
+			<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+		<<else>>
+			<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)>>
+			<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
+			<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+		<</if>>
+		<<clampValues _fluffy>>
+		<<personalityFix _fluffy>>
+		<div class="fluffy-details">
+			<div class="fluffy-details-left">
+				<div class="fluffy-color">
+					<span><<- _fluffy.personality>> _fluffy.gender _fluffy.breed</span>
+					<span> Name: <<print _fluffy.name>></span>
+					<span>Coat: <<inlineColor _fluffy.cColor>></span>
+					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
+						<span>Mane: <<inlineColor _fluffy.mColor>></span>
+					<</if>>
+					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
+						<span>Eyes: <<inlineColor _fluffy.eColor>></span>
+					<</if>>
+				</div>
+				<div class="fluffy-traits">
+					<span>Traits:</span>
+					<<for _i = 0; _i < _fluffy.traits.length; _i++>>
+						<span><<- _fluffy.traits[_i]>></span>
+					<</for>>
+				</div>
+				<div class="fluffy-family">
+					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: @@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@</span><</if>>
+					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: @@.cyan;<<print $globalFluffies[_fluffy.father].name>>@@</span><</if>> 
+					<<if _fluffy.specialFriend != -1>><span>Special Friend: @@.cyan;<<print $globalFluffies[_fluffy.specialFriend].name>>@@</span><</if>>
+					<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
+					<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>
+					<<if _fluffy.nursing > 0>><span>Is nursing <<print _fluffy.nursing >> foals</span><</if>>
+				</div>
+				<div class="fluffy-price">
+					<span>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>></span>
+				</div>
+			</div>
+			<div class="fluffy-details-right">
+				<div class="fluffy-stats">
+					<span>Strength <<displayStat _fluffy.strength>></span>
+					<span>Energy <<displayStat _fluffy.energy>></span>
+					<span>Charm <<displayStat _fluffy.charm>></span>
+					<span>Thinking <<displayStat _fluffy.thinking>></span>
+					<span>Learning <<displayStat _fluffy.learning>></span>
+					<span>Fertility <<displayStat _fluffy.fertility>></span>
+					<span>Trust <<displayAttribute _fluffy.trust>></span>
+					<span>Training <<displayAttribute _fluffy.training>></span>
+					<span>Temperament <<displayAttribute _fluffy.temperament>></span>
+					<span>Happiness <<displayAttribute _fluffy.happy>></span>
+					<span>Stress <<displayAttribute _fluffy.stress>></span>
+					<span>Trauma <<displayAttribute _fluffy.trauma>></span>
+				</div>
+				<div class="fluffy-age">
+					<span>Age: _fluffy.age years and _fluffy.ageWeeks weeks</span>
+					<span>Maximum age: _fluffy.maxAge years</span>
+					<span>Weight: _fluffy.weight KG </span>
+					<span>Length: _fluffy.length cm </span>
+					<span>Height: _fluffy.height cm </span>
+				</div>
+			</div>
 		</div>
-		<div class="fluffy-traits">
-			<span>Traits:</span>
-			<<for _i = 0; _i < _fluffy.traits.length; _i++>>
-				<span><<- _fluffy.traits[_i]>></span>
-			<</for>>
-		</div>
-		<div class="fluffy-family">
-			<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: @@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@</span><</if>>
-			<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: @@.cyan;<<print $globalFluffies[_fluffy.father].name>>@@</span><</if>> 
-			<<if _fluffy.specialFriend != -1>><span>Special Friend: @@.cyan;<<print $globalFluffies[_fluffy.specialFriend].name>>@@</span><</if>>
-			<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
-			<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>
-			<<if _fluffy.nursing > 0>><span>Is nursing <<print _fluffy.nursing >> foals</span><</if>>
-		</div>
-		<div class="fluffy-price">
-			<span>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>></span>
-		</div>
-	</div>
-	<div class="fluffy-details-right">
-		<div class="fluffy-stats">
-			<span>Strength <<displayStat _fluffy.strength>></span>
-			<span>Energy <<displayStat _fluffy.energy>></span>
-			<span>Charm <<displayStat _fluffy.charm>></span>
-			<span>Thinking <<displayStat _fluffy.thinking>></span>
-			<span>Learning <<displayStat _fluffy.learning>></span>
-			<span>Fertility <<displayStat _fluffy.fertility>></span>
-			<span>Trust <<displayAttribute _fluffy.trust>></span>
-			<span>Training <<displayAttribute _fluffy.training>></span>
-			<span>Temperament <<displayAttribute _fluffy.temperament>></span>
-			<span>Happiness <<displayAttribute _fluffy.happy>></span>
-			<span>Stress <<displayAttribute _fluffy.stress>></span>
-			<span>Trauma <<displayAttribute _fluffy.trauma>></span>
-		</div>
-		<div class="fluffy-age">
-			<span>Age: _fluffy.age years and _fluffy.ageWeeks weeks</span>
-			<span>Maximum age: _fluffy.maxAge years</span>
-			<span>Weight: _fluffy.weight KG </span>
-			<span>Length: _fluffy.length cm </span>
-			<span>Height: _fluffy.height cm </span>
-		</div>
-	</div>
-</div>
-<</capture>>
+	<</capture>>
 <</widget>>
-
-
-
-
 
 
 
 <<widget "intractDetails">>
 	<<PlayerStatus>><hr>
-
-		<div class="fluffy-desc-bottom w3-row w3-dark-grey">
-			<div class="fluffy-image">
-			<<switch $activeFluffy.breed>>
-			<<case "earthy" "Earthy">>
-				<<fluffyImage "earthie">>
-			<<case "unicorn" "Unicorn">>
-				<<fluffyImage "unicorn">>
-			<<case "pegasus" "Pegasus">>
-				<<fluffyImage "pegasus">>
-			<<default>>
-				<<fluffyImage "alicorn">>		
-			<</switch>>
-		</div>
+	
+	<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+		<<drawSprite $activeFluffy>>
 		<div class="w3-rest w3-container" style="white-space: nowrap; font-size:1vw;">
 			<p class="hang"><<FluffyDesc>></p>
 		</div>

@@ -600,3 +600,39 @@
 		<</if>>
 	<</if>>
 <</widget>>
+
+
+
+/* ***
+ *	Call as <<drawSprite fluffy>>
+ *
+ *	Makes a div/sprite for this fluffy based on breed
+ *** */
+<<widget "drawSprite">>
+	<<fluffyError $args[0]>>
+	
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<fluffyError>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<set _ID = $args[0].ID>>
+
+		<div class="fluffy-image">
+			<<set $activeFluffy = $globalFluffies[_ID]>>
+
+			<<switch $globalFluffies[_ID].breed>>
+				<<case "earthy" "Earthy">>
+					<<fluffyImage "earthie">>
+
+				<<case "unicorn" "Unicorn">>
+					<<fluffyImage "unicorn">>
+					
+				<<case "pegasus" "Pegasus">>
+					<<fluffyImage "pegasus">>
+
+				<<default>>
+					<<fluffyImage "alicorn">>		
+			<</switch>>
+		</div>
+	<</if>>
+<</widget>>

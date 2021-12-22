@@ -11615,25 +11615,9 @@ profitsTotal: 0
 				&lt;div style=&quot;position: relative; left: -22px; top: 22px; z-index: -1; height:20px&quot;&gt;
 					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_id].isChecked&quot; false true `$globalFluffies[_id].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
-
-					&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
-						&lt;div class=&quot;fluffy-image&quot;&gt;
-						&lt;&lt;set $activeFluffy = $globalFluffies[_id]&gt;&gt;
-
-						&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
-							&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
-		
-							&lt;&lt;case &quot;unicorn&quot; &quot;Unicorn&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;unicorn&quot;&gt;&gt;
-							
-							&lt;&lt;case &quot;pegasus&quot; &quot;Pegasus&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;pegasus&quot;&gt;&gt;
-		
-							&lt;&lt;default&gt;&gt;
-								&lt;&lt;fluffyImage &quot;alicorn&quot;&gt;&gt;		
-						&lt;&lt;/switch&gt;&gt;
-					&lt;/div&gt;
+				
+				&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+					&lt;&lt;drawSprite $globalFluffies[_id]&gt;&gt;
 					&lt;div class=&quot;w3-rest w3-container&quot; style=&quot;font-size:1vw;&quot;&gt;
 						&lt;p class=&quot;hang&quot;&gt;&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;&lt;/p&gt;
 					&lt;/div&gt;
@@ -12668,7 +12652,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 					&lt;&lt;set $activeFluffy.furStage = 101&gt;&gt;
 				&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
 					&lt;&lt;set $activeFluffy.furStage = 68&gt;&gt;
-				&lt;&lt;else $activeFluffy.furStage &gt; 67&gt;&gt;
+				&lt;&lt;else&gt;&gt; /* $activeFluffy.furStage &gt; 67&gt;&gt;*/
 					&lt;&lt;set $activeFluffy.furStage = 0&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
@@ -13322,6 +13306,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		&lt;&lt;timed 10ms&gt;&gt;
 			&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;/timed&gt;&gt;
+	&lt;/div&gt;
 &lt;/div&gt;
 
 
@@ -14491,15 +14476,15 @@ Subspecies:
  *** */
 &lt;&lt;widget &quot;MainLinks&quot;&gt;&gt;
 	&lt;center&gt;
-	&lt;&lt;switch $personalAttention&gt;&gt;
-		&lt;&lt;case &quot;business&quot;&gt;&gt;You plan to focus on business this week.
-		&lt;&lt;case &quot;trading&quot;&gt;&gt;This week you will learn trading.
-		&lt;&lt;case &quot;warfare&quot;&gt;&gt;This week you will learn modern combat tactics.
-		&lt;&lt;case &quot;engineering&quot;&gt;&gt;This week you will learn engineering.
-		&lt;&lt;case &quot;medicine&quot;&gt;&gt;This week you will learn medicine.
-		&lt;&lt;default&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
-
+		&lt;&lt;switch $personalAttention&gt;&gt;
+			&lt;&lt;case &quot;business&quot;&gt;&gt;You plan to focus on business this week.
+			&lt;&lt;case &quot;trading&quot;&gt;&gt;This week you will learn trading.
+			&lt;&lt;case &quot;warfare&quot;&gt;&gt;This week you will learn modern combat tactics.
+			&lt;&lt;case &quot;engineering&quot;&gt;&gt;This week you will learn engineering.
+			&lt;&lt;case &quot;medicine&quot;&gt;&gt;This week you will learn medicine.
+			&lt;&lt;default&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+	&lt;/center&gt;
 	/*&lt;span id=&quot;managePA&quot;&gt;&lt;strong&gt;&lt;&lt;link &quot;Change plans&quot;&gt;&gt;&lt;&lt;goto &quot;Personal Attention Select&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;&lt;/strong&gt;&lt;/span&gt; @@.cyan;[A]@@*/
 &lt;&lt;/widget&gt;&gt;
 
@@ -14580,83 +14565,71 @@ button {
 	
 			&lt;&lt;capture _fl&gt;&gt;
 			
-				&lt;div class=&quot;fluffy-description&quot;&gt;
+				&lt;label&gt;
+					&lt;div class=&quot;fluffy-description&quot;&gt;
+					
+						&lt;div class=&quot;fluffy-checkbox&quot;&gt;
+							&lt;&lt;if $args[0] != &quot;customer&quot; &amp;&amp; $args[0] != &quot;breeding&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_fl].isChecked&quot; false true `$globalFluffies[_fl].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
+						&lt;/div&gt;
 				
-					&lt;div class=&quot;fluffy-checkbox&quot;&gt;
-						&lt;&lt;if $args[0] != &quot;customer&quot; &amp;&amp; $args[0] != &quot;breeding&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_fl].isChecked&quot; false true `$globalFluffies[_fl].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
-					&lt;/div&gt;
-			
-					&lt;div class=&quot;fluffy-desc-top w3-row w3-dark-grey&quot;&gt;
-						&lt;div class=&quot;fluffy-name w3-container&quot;&gt;
-							&lt;&lt;if $args[0] === &quot;customer&quot; || $args[0] === &quot;breeding&quot;&gt;&gt;
-								&lt;&lt;- $globalFluffies[_fl].name&gt;&gt;
-							&lt;&lt;else&gt;&gt;
-								[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Interaction&quot;]]
-							&lt;&lt;/if&gt;&gt;
-						&lt;/div&gt;
-						&lt;div class=&quot;fluffy-quickactions w3-rest w3-container&quot;&gt;
-						&lt;&lt;if $args[0] === &quot;customer&quot;&gt;&gt;
-							&lt;&lt;set _buttonString = &quot;Offer &quot; + $globalFluffies[_fl].name&gt;&gt;
-							
-							&lt;&lt;button _buttonString&gt;&gt;
-								&lt;&lt;OfferFluffy $globalFluffies[_fl].ID&gt;&gt;
-							&lt;&lt;/button&gt;&gt;
-						&lt;&lt;elseif $args[0] === &quot;breeding&quot;&gt;&gt;
-							&lt;&lt;set _buttonString = &quot;Breed with &quot; + $globalFluffies[_fl].name&gt;&gt;
-							
-							&lt;&lt;button _buttonString &quot;Fluffy Breeding&quot;&gt;&gt;
-								&lt;&lt;set $activeFluffy = $globalFluffies[_breeder]&gt;&gt;
-
-								&lt;&lt;if $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
-									&lt;&lt;set $breedStal = _fl&gt;&gt;
-									&lt;&lt;set $breedMare = _breeder&gt;&gt;
+						&lt;div class=&quot;fluffy-desc-top w3-row w3-dark-grey&quot;&gt;
+							&lt;div class=&quot;fluffy-name w3-container&quot;&gt;
+								&lt;&lt;if $args[0] === &quot;customer&quot; || $args[0] === &quot;breeding&quot;&gt;&gt;
+									&lt;&lt;- $globalFluffies[_fl].name&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;set $breedMare = _fl&gt;&gt;
-									&lt;&lt;set $breedStal = _breeder&gt;&gt;
+									[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Interaction&quot;]]
 								&lt;&lt;/if&gt;&gt;
-							&lt;&lt;/button&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-								[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]]
-							&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;
-								[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+							&lt;/div&gt;
+							&lt;div class=&quot;fluffy-quickactions w3-rest w3-container&quot;&gt;
+							&lt;&lt;if $args[0] === &quot;customer&quot;&gt;&gt;
+								&lt;&lt;set _buttonString = &quot;Offer &quot; + $globalFluffies[_fl].name&gt;&gt;
+								
+								&lt;&lt;button _buttonString&gt;&gt;
+									&lt;&lt;OfferFluffy $globalFluffies[_fl].ID&gt;&gt;
+								&lt;&lt;/button&gt;&gt;
+							&lt;&lt;elseif $args[0] === &quot;breeding&quot;&gt;&gt;
+								&lt;&lt;set _buttonString = &quot;Breed with &quot; + $globalFluffies[_fl].name&gt;&gt;
+								
+								&lt;&lt;button _buttonString &quot;Fluffy Breeding&quot;&gt;&gt;
+									&lt;&lt;set $activeFluffy = $globalFluffies[_breeder]&gt;&gt;
+
+									&lt;&lt;if $globalFluffies[_fl].gender == &quot;male&quot;&gt;&gt;
+										&lt;&lt;set $breedStal = _fl&gt;&gt;
+										&lt;&lt;set $breedMare = _breeder&gt;&gt;
+									&lt;&lt;else&gt;&gt;
+										&lt;&lt;set $breedMare = _fl&gt;&gt;
+										&lt;&lt;set $breedStal = _breeder&gt;&gt;
+									&lt;&lt;/if&gt;&gt;
+								&lt;&lt;/button&gt;&gt;
 							&lt;&lt;else&gt;&gt;
-								[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+									[[Breeding|Fluffy Breeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = &quot;Fluffy Breeding&quot;]]
+								&lt;&lt;if $listType != &quot;Display&quot;&gt;&gt;
+									[[Put on Sale|Fluffy Selling][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+								&lt;&lt;else&gt;&gt;
+									[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+								&lt;&lt;/if&gt;&gt;
+								[[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Feeding&quot;]]
+								&lt;&lt;set _foodType = $globalFluffies[_fl].foodType&gt;&gt;
+								&lt;&lt;switch $globalFluffies[_fl].foodQuality&gt;&gt;
+									&lt;&lt;case 0&gt;&gt; &lt;&lt;if $globalFluffies[_fl].foodType != &quot;Nothing&quot;&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (trash)`&gt;&gt;&lt;/span&gt; &lt;&lt;else&gt;&gt;&lt;&lt;/if&gt;&gt;
+									&lt;&lt;case 1&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (cheap)`&gt;&gt;&lt;/span&gt;
+									&lt;&lt;case 2&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (basic)`&gt;&gt;&lt;/span&gt;
+									&lt;&lt;case 3&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (good)`&gt;&gt;&lt;/span&gt;
+									&lt;&lt;case 4&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (premium)`&gt;&gt;&lt;/span&gt;
+									&lt;&lt;case -1&gt;&gt;
+									
+								&lt;&lt;/switch&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
-							[[Food|Fluffy Feeding][$nextButton = &quot;Back.&quot;, $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = &quot;Fluffy Feeding&quot;]]
-							&lt;&lt;set _foodType = $globalFluffies[_fl].foodType&gt;&gt;
-							&lt;&lt;switch $globalFluffies[_fl].foodQuality&gt;&gt;
-								&lt;&lt;case 0&gt;&gt; &lt;&lt;if $globalFluffies[_fl].foodType != &quot;Nothing&quot;&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (trash)`&gt;&gt;&lt;/span&gt; &lt;&lt;else&gt;&gt;&lt;&lt;/if&gt;&gt;
-								&lt;&lt;case 1&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (cheap)`&gt;&gt;&lt;/span&gt;
-								&lt;&lt;case 2&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (basic)`&gt;&gt;&lt;/span&gt;
-								&lt;&lt;case 3&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (good)`&gt;&gt;&lt;/span&gt;
-								&lt;&lt;case 4&gt;&gt; &lt;span&gt;&lt;&lt;print `${_foodType} (premium)`&gt;&gt;&lt;/span&gt;
-								&lt;&lt;case -1&gt;&gt;
-								
-							&lt;&lt;/switch&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
+							&lt;/div&gt;
 						&lt;/div&gt;
-					&lt;/div&gt;
-					&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
-						&lt;div class=&quot;fluffy-image&quot;&gt;
+
+						&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
 							&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
-			
-							&lt;&lt;switch $globalFluffies[_fl].breed&gt;&gt;
-							&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
-			
-							&lt;&lt;case &quot;unicorn&quot; &quot;Unicorn&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;unicorn&quot;&gt;&gt;
-								
-							&lt;&lt;case &quot;pegasus&quot; &quot;Pegasus&quot;&gt;&gt;
-								&lt;&lt;fluffyImage &quot;pegasus&quot;&gt;&gt;
-			
-							&lt;&lt;default&gt;&gt;
-								&lt;&lt;fluffyImage &quot;alicorn&quot;&gt;&gt;		
-							&lt;&lt;/switch&gt;&gt;
+							&lt;&lt;drawSprite $globalFluffies[_fl]&gt;&gt;
+							&lt;&lt;shortDesc $globalFluffies[_fl]&gt;&gt;
 						&lt;/div&gt;
-						&lt;&lt;shortDesc $globalFluffies[_fl]&gt;&gt;
 					&lt;/div&gt;
-				&lt;/div&gt;
+				&lt;/label&gt;
 			&lt;&lt;/capture&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
@@ -14870,38 +14843,6 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Called as &lt;&lt;pruneTraits $fluffy&gt;&gt;
- *
- *	Prunes deprecated or duplicate traits from fluffy.
- *** */
-&lt;&lt;widget &quot;pruneTraits&quot;&gt;&gt;
-	&lt;&lt;fluffyError $args[0]&gt;&gt;
-	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: $fluffyError`)&gt;&gt;
-		&lt;&lt;set $fluffyError = false&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _fluffy = $args[0]&gt;&gt;
-		&lt;&lt;personalityFix _fluffy&gt;&gt;
-
-		/* Count occurrences, remove if duplicate */
-		&lt;&lt;set _countOccurrences = (arr, val) =&gt; arr.reduce((a, v) =&gt; (v === val ? a + 1 : a), 0)&gt;&gt;
-
-		/* List of deprecated traits */
-		&lt;&lt;set _deprecated = [&quot;Infertile&quot;, &quot;feeble1&quot;, &quot;feeble2&quot;, &quot;Runt 1&quot;, &quot;Runt 2&quot;]&gt;&gt;
-
-		&lt;&lt;for _trait range _fluffy.traits&gt;&gt;
-			&lt;&lt;if _countOccurrences(_fluffy.traits, _trait) &gt; 1&gt;&gt;
-				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;if _deprecated.includes(_trait)&gt;&gt;
-				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-
-/* ***
  *	Called as &lt;&lt;personalityFix $fluffy&gt;&gt;
  *
  *	Fixes traits[0] being personality
@@ -15036,104 +14977,89 @@ button {
  *	Displays a condensed diplay of fluffy information
  *** */
 &lt;&lt;widget &quot;shortDesc&quot;&gt;&gt;
-&lt;&lt;capture _children&gt;&gt;
-	&lt;&lt;set _fluffy = $args[0]&gt;&gt;
-	&lt;&lt;set _children = &quot;&quot;&gt;&gt;
-	&lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;
-		&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[_fluffy.children[_i]].name + &quot;@@&quot;&gt;&gt; 
-	&lt;&lt;/for&gt;&gt;
-	 
-	&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
+	&lt;&lt;capture _children&gt;&gt;
+		&lt;&lt;set _fluffy = $args[0]&gt;&gt;
+		&lt;&lt;set _children = &quot;&quot;&gt;&gt;
+		&lt;&lt;for _i = 0; _i &lt; _fluffy.children.length; _i++&gt;&gt;
+			&lt;&lt;run _children += &quot;@@.cyan;&quot; + $globalFluffies[_fluffy.children[_i]].name + &quot;@@&quot;&gt;&gt; 
+		&lt;&lt;/for&gt;&gt;
+		
+		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
 
-	&lt;&lt;if _fluffy.ID == $globalFluffies[_fluffy.ID].ID&gt;&gt; 
-		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffySelling&gt;&gt;: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)&gt;&gt;
-		&lt;&lt;set _fluffy.ID = $globalFluffies[_fluffy.ID].ID&gt;&gt;
-		&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;clampValues _fluffy&gt;&gt;
-&lt;&lt;personalityFix _fluffy&gt;&gt;
-&lt;div class=&quot;fluffy-details&quot;&gt;
-	&lt;div class=&quot;fluffy-details-left&quot;&gt;
-		&lt;div class=&quot;fluffy-color&quot;&gt;
-			&lt;span&gt;&lt;&lt;- _fluffy.personality&gt;&gt; _fluffy.gender _fluffy.breed&lt;/span&gt;
-			&lt;span&gt; Name: &lt;&lt;print _fluffy.name&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Coat: &lt;&lt;inlineColor _fluffy.cColor&gt;&gt;&lt;/span&gt;
-			&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;
-				&lt;span&gt;Mane: &lt;&lt;inlineColor _fluffy.mColor&gt;&gt;&lt;/span&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;
-				&lt;span&gt;Eyes: &lt;&lt;inlineColor _fluffy.eColor&gt;&gt;&lt;/span&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;if _fluffy.ID == $globalFluffies[_fluffy.ID].ID&gt;&gt; 
+			&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffySelling&gt;&gt;: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)&gt;&gt;
+			&lt;&lt;set _fluffy.ID = $globalFluffies[_fluffy.ID].ID&gt;&gt;
+			&lt;&lt;set $globalFluffies[_fluffy.ID] = _fluffy&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;clampValues _fluffy&gt;&gt;
+		&lt;&lt;personalityFix _fluffy&gt;&gt;
+		&lt;div class=&quot;fluffy-details&quot;&gt;
+			&lt;div class=&quot;fluffy-details-left&quot;&gt;
+				&lt;div class=&quot;fluffy-color&quot;&gt;
+					&lt;span&gt;&lt;&lt;- _fluffy.personality&gt;&gt; _fluffy.gender _fluffy.breed&lt;/span&gt;
+					&lt;span&gt; Name: &lt;&lt;print _fluffy.name&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Coat: &lt;&lt;inlineColor _fluffy.cColor&gt;&gt;&lt;/span&gt;
+					&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;
+						&lt;span&gt;Mane: &lt;&lt;inlineColor _fluffy.mColor&gt;&gt;&lt;/span&gt;
+					&lt;&lt;/if&gt;&gt;
+					&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;
+						&lt;span&gt;Eyes: &lt;&lt;inlineColor _fluffy.eColor&gt;&gt;&lt;/span&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;fluffy-traits&quot;&gt;
+					&lt;span&gt;Traits:&lt;/span&gt;
+					&lt;&lt;for _i = 0; _i &lt; _fluffy.traits.length; _i++&gt;&gt;
+						&lt;span&gt;&lt;&lt;- _fluffy.traits[_i]&gt;&gt;&lt;/span&gt;
+					&lt;&lt;/for&gt;&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;fluffy-family&quot;&gt;
+					&lt;&lt;if _fluffy.mother == -1&gt;&gt;&lt;span&gt;Mother: @@.orange;Unknown@@&lt;/span&gt;&lt;&lt;else&gt;&gt;&lt;span&gt;Mother: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt;
+					&lt;&lt;if _fluffy.father == -1&gt;&gt;&lt;span&gt;Father: @@.orange;Unknown@@&lt;/span&gt;&lt;&lt;else&gt;&gt;&lt;span&gt;Father: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt; 
+					&lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;&lt;span&gt;Special Friend: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt;
+					&lt;span&gt;Children: &lt;&lt;linkreplace &quot;_fluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;&lt;/span&gt;
+					&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;span&gt;Is due to give birth in &lt;&lt;print _fluffy.dueDate&gt;&gt; weeks&lt;/span&gt;&lt;&lt;/if&gt;&gt;
+					&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;span&gt;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;/span&gt;&lt;&lt;/if&gt;&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;fluffy-price&quot;&gt;
+					&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;&lt;/span&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
+			&lt;div class=&quot;fluffy-details-right&quot;&gt;
+				&lt;div class=&quot;fluffy-stats&quot;&gt;
+					&lt;span&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;&lt;/span&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;fluffy-age&quot;&gt;
+					&lt;span&gt;Age: _fluffy.age years and _fluffy.ageWeeks weeks&lt;/span&gt;
+					&lt;span&gt;Maximum age: _fluffy.maxAge years&lt;/span&gt;
+					&lt;span&gt;Weight: _fluffy.weight KG &lt;/span&gt;
+					&lt;span&gt;Length: _fluffy.length cm &lt;/span&gt;
+					&lt;span&gt;Height: _fluffy.height cm &lt;/span&gt;
+				&lt;/div&gt;
+			&lt;/div&gt;
 		&lt;/div&gt;
-		&lt;div class=&quot;fluffy-traits&quot;&gt;
-			&lt;span&gt;Traits:&lt;/span&gt;
-			&lt;&lt;for _i = 0; _i &lt; _fluffy.traits.length; _i++&gt;&gt;
-				&lt;span&gt;&lt;&lt;- _fluffy.traits[_i]&gt;&gt;&lt;/span&gt;
-			&lt;&lt;/for&gt;&gt;
-		&lt;/div&gt;
-		&lt;div class=&quot;fluffy-family&quot;&gt;
-			&lt;&lt;if _fluffy.mother == -1&gt;&gt;&lt;span&gt;Mother: @@.orange;Unknown@@&lt;/span&gt;&lt;&lt;else&gt;&gt;&lt;span&gt;Mother: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if _fluffy.father == -1&gt;&gt;&lt;span&gt;Father: @@.orange;Unknown@@&lt;/span&gt;&lt;&lt;else&gt;&gt;&lt;span&gt;Father: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.father].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt; 
-			&lt;&lt;if _fluffy.specialFriend != -1&gt;&gt;&lt;span&gt;Special Friend: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.specialFriend].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt;
-			&lt;span&gt;Children: &lt;&lt;linkreplace &quot;_fluffy.children.length&quot;&gt;&gt;_children&lt;&lt;/linkreplace&gt;&gt;&lt;/span&gt;
-			&lt;&lt;if _fluffy.pregnant == true&gt;&gt;&lt;span&gt;Is due to give birth in &lt;&lt;print _fluffy.dueDate&gt;&gt; weeks&lt;/span&gt;&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if _fluffy.nursing &gt; 0&gt;&gt;&lt;span&gt;Is nursing &lt;&lt;print _fluffy.nursing &gt;&gt; foals&lt;/span&gt;&lt;&lt;/if&gt;&gt;
-		&lt;/div&gt;
-		&lt;div class=&quot;fluffy-price&quot;&gt;
-			&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;&lt;/span&gt;
-		&lt;/div&gt;
-	&lt;/div&gt;
-	&lt;div class=&quot;fluffy-details-right&quot;&gt;
-		&lt;div class=&quot;fluffy-stats&quot;&gt;
-			&lt;span&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt;&lt;/span&gt;
-			&lt;span&gt;Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;&lt;/span&gt;
-		&lt;/div&gt;
-		&lt;div class=&quot;fluffy-age&quot;&gt;
-			&lt;span&gt;Age: _fluffy.age years and _fluffy.ageWeeks weeks&lt;/span&gt;
-			&lt;span&gt;Maximum age: _fluffy.maxAge years&lt;/span&gt;
-			&lt;span&gt;Weight: _fluffy.weight KG &lt;/span&gt;
-			&lt;span&gt;Length: _fluffy.length cm &lt;/span&gt;
-			&lt;span&gt;Height: _fluffy.height cm &lt;/span&gt;
-		&lt;/div&gt;
-	&lt;/div&gt;
-&lt;/div&gt;
-&lt;&lt;/capture&gt;&gt;
+	&lt;&lt;/capture&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
-
-
-
-
 
 
 
 &lt;&lt;widget &quot;intractDetails&quot;&gt;&gt;
 	&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;
-
-		&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
-			&lt;div class=&quot;fluffy-image&quot;&gt;
-			&lt;&lt;switch $activeFluffy.breed&gt;&gt;
-			&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
-				&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
-			&lt;&lt;case &quot;unicorn&quot; &quot;Unicorn&quot;&gt;&gt;
-				&lt;&lt;fluffyImage &quot;unicorn&quot;&gt;&gt;
-			&lt;&lt;case &quot;pegasus&quot; &quot;Pegasus&quot;&gt;&gt;
-				&lt;&lt;fluffyImage &quot;pegasus&quot;&gt;&gt;
-			&lt;&lt;default&gt;&gt;
-				&lt;&lt;fluffyImage &quot;alicorn&quot;&gt;&gt;		
-			&lt;&lt;/switch&gt;&gt;
-		&lt;/div&gt;
+	
+	&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+		&lt;&lt;drawSprite $activeFluffy&gt;&gt;
 		&lt;div class=&quot;w3-rest w3-container&quot; style=&quot;white-space: nowrap; font-size:1vw;&quot;&gt;
 			&lt;p class=&quot;hang&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;/p&gt;
 		&lt;/div&gt;
@@ -16384,6 +16310,42 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+
+/* ***
+ *	Call as &lt;&lt;drawSprite fluffy&gt;&gt;
+ *
+ *	Makes a div/sprite for this fluffy based on breed
+ *** */
+&lt;&lt;widget &quot;drawSprite&quot;&gt;&gt;
+	&lt;&lt;fluffyError $args[0]&gt;&gt;
+	
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffyError&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _ID = $args[0].ID&gt;&gt;
+
+		&lt;div class=&quot;fluffy-image&quot;&gt;
+			&lt;&lt;set $activeFluffy = $globalFluffies[_ID]&gt;&gt;
+
+			&lt;&lt;switch $globalFluffies[_ID].breed&gt;&gt;
+				&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
+					&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
+
+				&lt;&lt;case &quot;unicorn&quot; &quot;Unicorn&quot;&gt;&gt;
+					&lt;&lt;fluffyImage &quot;unicorn&quot;&gt;&gt;
+					
+				&lt;&lt;case &quot;pegasus&quot; &quot;Pegasus&quot;&gt;&gt;
+					&lt;&lt;fluffyImage &quot;pegasus&quot;&gt;&gt;
+
+				&lt;&lt;default&gt;&gt;
+					&lt;&lt;fluffyImage &quot;alicorn&quot;&gt;&gt;		
+			&lt;&lt;/switch&gt;&gt;
+		&lt;/div&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="40" name="math widgets" tags="nobr widget" position="1225,475" size="100,100">/* **********
  * mathWidgets.tw
