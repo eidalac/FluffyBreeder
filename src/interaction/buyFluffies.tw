@@ -494,51 +494,51 @@
 					<<set $activeFluffy.hasName = true>>
 				<</if>>
 				/* generate adult traits */
-				<<switch $activeFluffy.traits[0]>>
+				<<switch $activeFluffy.personality>>
 					<<case "Fussy">>
 						<<if random(0, 1) == 0>>
-							<<set $activeFluffy.traits[0] = "Diligent">>
+							<<set $activeFluffy.personality = "Diligent">>
 							<<set $activeFluffy.learning++>>
 							<<set $activeFluffy.temperament += 20>>
 						<<else>>
-							<<set $activeFluffy.traits[0] = "Bossy">>
+							<<set $activeFluffy.personality = "Bossy">>
 							<<set $activeFluffy.charm-->>
 							<<set $activeFluffy.temperament += 30>>
 						<</if>>
 					<<case "Shy">>
 						<<if random(0, 1) == 0>>
-							<<set $activeFluffy.traits[0] = "Curious">>
+							<<set $activeFluffy.personality = "Curious">>
 							<<set $activeFluffy.energy++>>
 							<<set $activeFluffy.temperament += 10>>
 						<<else>>
-							<<set $activeFluffy.traits[0] = "Timid">>
+							<<set $activeFluffy.personality = "Timid">>
 							<<set $activeFluffy.strength-->>
 						<</if>>
 					<<case "Lazy">>
 						<<if random(0, 1) == 0>>
-							<<set $activeFluffy.traits[0] = "Pensive">>
+							<<set $activeFluffy.personality = "Pensive">>
 							<<set $activeFluffy.learning++>>
 						<<else>>
-							<<set $activeFluffy.traits[0] = "Dull">>
+							<<set $activeFluffy.personality = "Dull">>
 							<<set $activeFluffy.energy-->>
 						<</if>>
 					<<case "Cute">>
 						<<if random(0, 1) == 0>>
-							<<set $activeFluffy.traits[0] = "Sweet">>
+							<<set $activeFluffy.personality = "Sweet">>
 							<<set $activeFluffy.learning++>>
 							<<set $activeFluffy.temperament += 10>>
 						<<else>>
-							<<set $activeFluffy.traits[0] = "Haughty">>
+							<<set $activeFluffy.personality = "Haughty">>
 							<<set $activeFluffy.learning-->>
 							<<set $activeFluffy.temperament += 20>>
 						<</if>>
 					<<case "Peppy">>
 						<<if random(0, 1) == 0>>
-							<<set $activeFluffy.traits[0] = "Playful">>
+							<<set $activeFluffy.personality = "Playful">>
 							<<set $activeFluffy.charm++>>
 							<<set $activeFluffy.temperament += 10>>
 						<<else>>
-							<<set $activeFluffy.traits[0] = "Rowdy">>
+							<<set $activeFluffy.personality = "Rowdy">>
 							<<set $activeFluffy.charm-->>
 							<<set $activeFluffy.temperament += 10>>
 						<</if>>
@@ -663,7 +663,8 @@
 				<<timed 5ms>>
 					<<set $activeFluffy = _randomFluffies[0]>>
 					<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 2>>
-						<<switch $activeFluffy.traits[0]>>
+						<<personalityFix $activeFluffy>>
+						<<switch $activeFluffy.personality>>
 							<<case "Fussy">>
 								<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' nyu housie fow bestest babbeh?" $activeFluffy.cColor >><</replace>>
 							<<case "Shy">>

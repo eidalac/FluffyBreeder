@@ -408,7 +408,8 @@
 	<<set _smartyChance = 0>>
 
 	/* Odds are based on personality: */
-	<<switch $globalFluffies[_ef].traits[0]>>
+	<<personalityFix $globalFluffies[_ef]>>
+	<<switch $globalFluffies[_ef].personality>>
 		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
 			/* 80% chance at max threshold: */
 			<<set _smartyChance = Number(20)>>
@@ -425,7 +426,7 @@
 
 	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
 	/* An existing smarty has a 1/4 chance of fireing an event. */
-		<<if $globalFluffies[_ef].traits[0].includes("Smarty")>>
+		<<if $globalFluffies[_ef].personality.includes("Smarty")>>
 			<<if random(0,4) == 0>>
 				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 			<</if>>
@@ -473,7 +474,7 @@
 						/* Pick a non-vissible trait */	
 						<<switch _nonvissibleCards.random()>>
 							<<case "Personality">>
-								<<set _push = $globalFluffies[_ef].traits[0]>>
+								<<set _push = $globalFluffies[_ef].personality>>
 							<<case "Stat">>
 								<<switch random(0, 16)>>
 									<<case 0 1>>
@@ -494,7 +495,7 @@
 							<<case "Temperament">>
 								<<set _push = $globalFluffies[_ef].temperament > 190 ? "High temperament" : $globalFluffies[_ef].temperament < 130 ? "Low temperament" : "Average temperament">>
 							<<default>>
-								<<set _push = $globalFluffies[_ef].traits[0]>>
+								<<set _push = $globalFluffies[_ef].personality>>
 						<</switch>>
 					<<default>>
 						/* Pick a vissible trait */
@@ -713,56 +714,56 @@
 	 *	Check for maturity and update traits:
 	 *** */
 	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) >= $globalFluffies[_ef].maturity>>
-			<<switch $globalFluffies[_ef].traits[0]>>
+			<<switch $globalFluffies[_ef].personality>>
 				<<case "Fussy">>
 					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].traits[0] = "Diligent">>
+						<<set $globalFluffies[_ef].personality = "Diligent">>
 						<<set $globalFluffies[_ef].learning++>>
 						<<set $globalFluffies[_ef].temperament += 20>>
 						<<set $globalFluffies[_ef].happy -= 10>>
 					<<else>>
-						<<set $globalFluffies[_ef].traits[0] = "Bossy">>
+						<<set $globalFluffies[_ef].personality = "Bossy">>
 						<<set $globalFluffies[_ef].charm-->>
 						<<set $globalFluffies[_ef].temperament += 30>>
 						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Shy">>
 					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].traits[0] = "Curious">>
+						<<set $globalFluffies[_ef].personality = "Curious">>
 						<<set $globalFluffies[_ef].energy++>>
 					<<else>>
-						<<set $globalFluffies[_ef].traits[0] = "Timid">>
+						<<set $globalFluffies[_ef].personality = "Timid">>
 						<<set $globalFluffies[_ef].strength-->>
 						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Lazy">>
 					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].traits[0] = "Pensive">>
+						<<set $globalFluffies[_ef].personality = "Pensive">>
 						<<set $globalFluffies[_ef].learning++>>
 					<<else>>
-						<<set $globalFluffies[_ef].traits[0] = "Dull">>
+						<<set $globalFluffies[_ef].personality = "Dull">>
 						<<set $globalFluffies[_ef].energy-->>
 					<</if>>
 				<<case "Cute">>
 					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].traits[0] = "Sweet">>
+						<<set $globalFluffies[_ef].personality = "Sweet">>
 						<<set $globalFluffies[_ef].learning++>>
 						<<set $globalFluffies[_ef].temperament -= 10>>
 						<<set $globalFluffies[_ef].happy += 10>>
 					<<else>>
-						<<set $globalFluffies[_ef].traits[0] = "Haughty">>
+						<<set $globalFluffies[_ef].personality = "Haughty">>
 						<<set $globalFluffies[_ef].learning-->>
 						<<set $globalFluffies[_ef].temperament += 20>>
 						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 				<<case "Peppy">>
 					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].traits[0] = "Playful">>
+						<<set $globalFluffies[_ef].personality = "Playful">>
 						<<set $globalFluffies[_ef].charm++>>
 						<<set $globalFluffies[_ef].temperament -= 10>>
 						<<set $globalFluffies[_ef].happy += 10>>
 					<<else>>
-						<<set $globalFluffies[_ef].traits[0] = "Rowdy">>
+						<<set $globalFluffies[_ef].personality = "Rowdy">>
 						<<set $globalFluffies[_ef].charm-->>
 						<<set $globalFluffies[_ef].temperament += 10>>
 						<<set $globalFluffies[_ef].happy += 10>>
@@ -831,7 +832,7 @@
 	 <</if>>
 	 
 	 /* Then check based on personaity: */
-	 <<switch $globalFluffies[_ef].traits[0]>>
+	 <<switch $globalFluffies[_ef].personality>>
 		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
 			<<set _thisStress = Number(_thisStress) + 3>>
 		<<case "Diligent", "Curious", "Peppy", "Playful">>

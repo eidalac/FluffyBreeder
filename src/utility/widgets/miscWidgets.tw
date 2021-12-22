@@ -139,23 +139,24 @@
 
 
 /* ***
- *  Call as <<fluffyError $args>>
+ *  Call as <<fluffyError $fluffy>>
  *
  *	Error handler for fluffies.
  *** */
 <<widget "fluffyError">>
+	<<run console.log($args.full)>>
 	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<fluffyError>>: called with no Fluffy.`)>>
+		<<run console.log(`ERROR: <<fluffyError $args>>: called with no Fluffy.`)>>
 		<<set $fluffyError = true>>
 	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<fluffyError>>: ID is not defined.`)>>
+		<<run console.log(`ERROR: <<fluffyError $args>>: ID is not defined.`)>>
 		<<set $fluffyError = true>>
 	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<fluffyError>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+		<<run console.log(`ERROR: <<fluffyError $args>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
 		<<set $fluffyError = true>>
 	<<else>>
 		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<fluffyError>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+			<<run console.log(`ERROR: <<fluffyError $args>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
 
 			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
 			<<set $globalFluffies[$args[0].ID] = $args[0]>>
@@ -163,6 +164,7 @@
 		<<set $fluffyError = false>>
 	<</if>>
 <</widget>>
+
 /* ***
  *	Call as <<SidebarFluffies>>
  *	Displays fluffies for the sidebar
