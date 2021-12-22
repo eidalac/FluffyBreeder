@@ -552,9 +552,13 @@ button {
 				</div>
 				<div class="fluffy-traits">
 					<span>Traits:</span>
+					<div class="fluffy-traits-list">
 					<<for _i = 0; _i < _fluffy.traits.length; _i++>>
-						<span><<- _fluffy.traits[_i]>></span>
+						<<set _trait = _fluffy.traits[_i]>>
+						<<set _trait_id = _trait.toLowerCase().replace('-', '').replace(' ', '')>>
+						<<print "<span class='fluffy-traits-entry info-toggle' data-info='trait_" + _trait_id + "'>" + _trait + "</span>">>
 					<</for>>
+					</div>
 				</div>
 				<div class="fluffy-family">
 					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: @@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@</span><</if>>
@@ -602,10 +606,6 @@ button {
 	
 	<div class="fluffy-desc-bottom w3-row w3-dark-grey">
 		<<drawSprite $activeFluffy>>
-		<div class="w3-rest w3-container" style="white-space: nowrap; font-size:1vw;">
-			<p class="hang"><<FluffyDesc>></p>
-		</div>
+		<<shortDesc $activeFluffy>>
 	</div>
-
-	<br>Sale Price: <<displayPrice $activeFluffy>>
 <</widget>>

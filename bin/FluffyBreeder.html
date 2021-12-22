@@ -908,6 +908,7 @@ button:disabled{
 }
 
 /* Stats */
+
 .stat-value {
   text-align: center;
 }
@@ -930,6 +931,24 @@ button:disabled{
 }
 .stat-unknown {
   color: purple;
+}
+
+/* Info Container */
+
+.info-container {
+  display: none;
+  position: absolute;
+  margin-top: -50px;
+  width: 500px;
+  background: grey;
+  z-index: 2;
+  border: 1px solid white;
+  border-radius: 50px;
+  padding: 1em;
+  cursor: pointer;
+}
+.info-active.info-container {
+  display: flex;
 }
 
 /* Sidebar */
@@ -1075,17 +1094,31 @@ button:disabled{
 }
 
 .fluffy-color {
-  width: 50%;
+  width: 100%;
   display: flex;
   flex-direction: column;
 }
 
-.fluffy-traits {
+.fluffy-traits-list {
   display: flex;
   flex-direction: row;
+  flex-wrap: wrap;
 }
-.fluffy-traits > span {
+.fluffy-traits-entry {
+  position: relative;
   padding: 0 0.5em 0 0.5em;
+  border: 1px solid white;
+  margin: 0.2em;
+  border-radius: 50px;
+  cursor: pointer;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.fluffy-traits-entry:hover {
+  background: white;
+  color: black;
 }
 
 .fluffy-family {
@@ -4647,11 +4680,21 @@ Genome.prototype.clearDefect = function(index) {
 /* twine-user-script #5: "main.js" */
 // Insert global js here
 
-$( document ).ready(function() {
-	$('#cash').on("click", function () {
-		console.log('test');
-	})
-});
+/* ----- Utility ----- */
+
+window.renderInfo = function(e) {
+  $('.info-container').css('left', `${e.pageX}px`);
+  $('.info-container').css('top', `${e.pageY}px`);
+}
+
+window.getInfo = function(info_id) {
+  switch(info_id) {
+    case 'trait_feral':
+      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
+    default:
+      return `${info_id} has no info yet.`
+  }
+}
 
 /* ----- Sidebar ----- */
 
@@ -7826,7 +7869,7 @@ button {
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 		  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
@@ -8644,7 +8687,7 @@ Genes       Height multiplier
 
 
 	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
-	&lt;&lt;set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
+	&lt;&lt;set _smartyBase == Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
 
 	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
 	/* This may be from -200 up to 200 */
@@ -9962,7 +10005,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			@@#sortbutton;&lt;&lt;button &quot;End Week&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
@@ -10027,7 +10070,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
-&lt;div class=&quot;w3-container&quot; id=&quot;main&quot; style=&quot;font-size:1vw;&quot;&gt;
+&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
 
 	Open for business for the week
 
@@ -11618,9 +11661,7 @@ profitsTotal: 0
 				
 				&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
 					&lt;&lt;drawSprite $globalFluffies[_id]&gt;&gt;
-					&lt;div class=&quot;w3-rest w3-container&quot; style=&quot;font-size:1vw;&quot;&gt;
-						&lt;p class=&quot;hang&quot;&gt;&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;&lt;/p&gt;
-					&lt;/div&gt;
+					&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;
 				&lt;/div&gt;
 			&lt;/label&gt;
 
@@ -11698,7 +11739,7 @@ profitsTotal: 0
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
 								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\ babbehs.&#39;&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\&#39; babbehs.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
 									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
@@ -11778,7 +11819,11 @@ profitsTotal: 0
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="30" name="Buy Upgrades" tags="nobr" position="1225,350" size="100,100">/* **********
+&lt;/div&gt;
+
+ &lt;&lt;script&gt;&gt;
+ 	importScripts(&quot;../bin/globals.js&quot;,);
+ &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="30" name="Buy Upgrades" tags="nobr" position="1225,350" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -11801,7 +11846,7 @@ profitsTotal: 0
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
@@ -11820,7 +11865,7 @@ profitsTotal: 0
 &lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
-&lt;div class=&quot;w3-container&quot; id=&quot;main&quot; style=&quot;font-size:1vw;&quot;&gt;
+&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
 
 /* Validate data added in recent update: */
 &lt;&lt;if ndef $ourStore.upgrades&gt;&gt;
@@ -12125,14 +12170,7 @@ Upgrades:
 &lt;&lt;/timed&gt;&gt;
 
 &lt;&lt;script&gt;&gt;
-	$(document).ready(function () {
-		/* Sidebar */
-		/*  Check if mobile */
-		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
-		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
-		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
-	});
+ 	importScripts(&quot;../bin/globals.js&quot;,);
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="31" name="Fluffy Breeding" tags="nobr" position="100,475" size="100,100">/* **********
  * fluffyBreeding.tw
  *
@@ -12156,7 +12194,7 @@ Upgrades:
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;set $listType = &quot;All&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
@@ -12181,7 +12219,7 @@ Upgrades:
 		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
-&lt;div class=&quot;w3-container&quot; id=&quot;main&quot; style=&quot;font-size:1vw;&quot;&gt;
+&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
 
 	&lt;span id=&quot;fluffy-name&quot;&gt;
 		&lt;&lt;intractDetails&gt;&gt;
@@ -12242,17 +12280,7 @@ Upgrades:
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
-	$(document).ready(function () {
-		/* Sidebar */
-		/*  Check if mobile */
-		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
-		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
-		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
-
-		/* Sort/Show */
-		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
-	});
+ 	importScripts(&quot;../bin/globals.js&quot;,);
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="32" name="Fluffy Feeding" tags="nobr" position="225,475" size="100,100">/* **********
  * fluffyFeeding.tw
  *
@@ -12393,8 +12421,12 @@ Upgrades:
 /* Sidebar link for mobile users */
 &lt;&lt;SidebarButton&gt;&gt;
 
+&lt;/div&gt;
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy Interact" tags="nobr" position="350,475" size="100,100">/* **********
+
+&lt;&lt;script&gt;&gt;
+ 	importScripts(&quot;../bin/globals.js&quot;,);
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="33" name="Fluffy Interact" tags="nobr" position="350,475" size="100,100">/* **********
  * fluffyInteract.tw
  *
  * Package: FluffyBreeder
@@ -12419,7 +12451,7 @@ Upgrades:
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 			@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
 		&lt;/div&gt;
@@ -12437,12 +12469,10 @@ Upgrades:
 &lt;&lt;run $(&quot;#sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
-&lt;div class=&quot;w3-container&quot; id=&quot;main&quot; style=&quot;font-size:1vw;&quot;&gt;
-
+&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
 	&lt;span id=&quot;fluffy-name&quot;&gt;
 		&lt;&lt;intractDetails&gt;&gt;
 	&lt;/span&gt;
-&lt;hr&gt;
 
 			
 
@@ -12450,10 +12480,10 @@ Upgrades:
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
-&lt;&lt;if $debugMode == true || $unlockGeneLab == true&gt;&gt;
-	[[Enter the Gene Lab|Gene Lab][$encyclopedia = &quot;Gene Lab&quot;]]
-	&lt;hr&gt;
-&lt;&lt;/if&gt;&gt;
+	&lt;&lt;if $debugMode == true || $unlockGeneLab == true&gt;&gt;
+		[[Enter the Gene Lab|Gene Lab][$encyclopedia = &quot;Gene Lab&quot;]]
+		&lt;hr&gt;
+	&lt;&lt;/if&gt;&gt;
 
 	&lt;div class=&quot;w3-container&quot; id=&quot;greet-container&quot;&gt;
 		&lt;&lt;timed 5ms&gt;&gt;
@@ -12839,17 +12869,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
-	$(document).ready(function () {
-		/* Sidebar */
-		/*  Check if mobile */
-		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
-		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
-		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
-
-		/* Sort/Show */
-		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
-	});
+ 	importScripts(&quot;../bin/globals.js&quot;,);
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Fluffy List" tags="nobr" position="475,475" size="100,100">/* **********
  * fluffyList.tw
  *
@@ -12883,7 +12903,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 
 	&lt;&lt;sidebarTop&gt;&gt;
 
-	&lt;div class=&quot;w3-teal&quot; style=&quot;font-size:1vw;&quot;&gt;
+	&lt;div class=&quot;w3-teal&quot;&gt;
 
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 		  	@@#sortbutton;&lt;&lt;button &quot;Back&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
@@ -13301,11 +13321,9 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */ 
 		&lt;div id=&quot;list-count&quot;&gt;&lt;/div&gt;
 		&lt;hr&gt;
-		&lt;div id=&quot;fluffy-list&quot;&gt;&lt;/div&gt;
-	
-		&lt;&lt;timed 10ms&gt;&gt;
-			&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList&gt;&gt;&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/timed&gt;&gt;
+		&lt;div id=&quot;fluffy-list&quot;&gt;
+			&lt;&lt;FluffyList&gt;&gt;
+		&lt;/div&gt;
 	&lt;/div&gt;
 &lt;/div&gt;
 
@@ -13316,17 +13334,7 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;/timed&gt;&gt;
 
 &lt;&lt;script&gt;&gt;
-	$(document).ready(function () {
-		/* Sidebar */
-		/*  Check if mobile */
-		var mq = window.matchMedia(&#39;(min-width: 767px)&#39;);
-		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$(&#39;#openNav&#39;).on(&quot;click&quot;, window.openSidebar);
-		$(&#39;#close-dropdown-btn&#39;).on(&quot;click&quot;, window.closeSidebar);
-
-		/* Sort/Show */
-		$(&#39;.dropdown-btn&#39;).on(&quot;click&quot;, window.toggleButton);
-	});
+ 	importScripts(&quot;../bin/globals.js&quot;,);
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="35" name="Fluffy Selling" tags="nobr" position="600,475" size="100,100">/* **********
  * fluffyselling.tw
  *
@@ -13406,7 +13414,11 @@ Special Friend: &lt;&lt;if $activeFluffy.specialFriend == -1&gt;&gt;[[None|Fluff
 &lt;&lt;SidebarButton&gt;&gt;
 
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="36" name="Gene Lab" tags="nobr" position="725,475" size="100,100">/* **********
+&lt;/div&gt;
+
+&lt;&lt;script&gt;&gt;
+ 	importScripts(&quot;../bin/globals.js&quot;,);
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="36" name="Gene Lab" tags="nobr" position="725,475" size="100,100">/* **********
  *	geneLab.tw
  *
  *	Package: FluffyBreeder
@@ -14458,7 +14470,12 @@ Subspecies:
 &lt;br&gt;
 [[Exit the Lab|Gene Test]]
 
-&lt;/div&gt;</tw-passagedata><tw-passagedata pid="37" name="description widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
+&lt;/div&gt;
+
+
+&lt;&lt;script&gt;&gt;
+ 	importScripts(&quot;../bin/globals.js&quot;,);
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="37" name="description widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -15010,9 +15027,13 @@ button {
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-traits&quot;&gt;
 					&lt;span&gt;Traits:&lt;/span&gt;
+					&lt;div class=&quot;fluffy-traits-list&quot;&gt;
 					&lt;&lt;for _i = 0; _i &lt; _fluffy.traits.length; _i++&gt;&gt;
-						&lt;span&gt;&lt;&lt;- _fluffy.traits[_i]&gt;&gt;&lt;/span&gt;
+						&lt;&lt;set _trait = _fluffy.traits[_i]&gt;&gt;
+						&lt;&lt;set _trait_id = _trait.toLowerCase().replace(&#39;-&#39;, &#39;&#39;).replace(&#39; &#39;, &#39;&#39;)&gt;&gt;
+						&lt;&lt;print &quot;&lt;span class=&#39;fluffy-traits-entry info-toggle&#39; data-info=&#39;trait_&quot; + _trait_id + &quot;&#39;&gt;&quot; + _trait + &quot;&lt;/span&gt;&quot;&gt;&gt;
 					&lt;&lt;/for&gt;&gt;
+					&lt;/div&gt;
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-family&quot;&gt;
 					&lt;&lt;if _fluffy.mother == -1&gt;&gt;&lt;span&gt;Mother: @@.orange;Unknown@@&lt;/span&gt;&lt;&lt;else&gt;&gt;&lt;span&gt;Mother: @@.cyan;&lt;&lt;print $globalFluffies[_fluffy.mother].name&gt;&gt;@@&lt;/span&gt;&lt;&lt;/if&gt;&gt;
@@ -15060,12 +15081,8 @@ button {
 	
 	&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
 		&lt;&lt;drawSprite $activeFluffy&gt;&gt;
-		&lt;div class=&quot;w3-rest w3-container&quot; style=&quot;white-space: nowrap; font-size:1vw;&quot;&gt;
-			&lt;p class=&quot;hang&quot;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;/p&gt;
-		&lt;/div&gt;
+		&lt;&lt;shortDesc $activeFluffy&gt;&gt;
 	&lt;/div&gt;
-
-	&lt;br&gt;Sale Price: &lt;&lt;displayPrice $activeFluffy&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="38" name="fluffy creation widgets" tags="widget nobr" position="975,475" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
@@ -16893,7 +16910,7 @@ button {
 		&lt;span id=&quot;close-dropdown-btn&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
 		&lt;br&gt;
 		&lt;div class=&quot;w3-padding w3-center&quot;&gt;
-			&lt;span style=&quot;font-size:1vw;&quot;&gt;Fluffy Breeder&lt;/span&gt;
+			&lt;span&gt;Fluffy Breeder&lt;/span&gt;
 			
 			&lt;&lt;iconSprite&gt;&gt;
 			

@@ -1,10 +1,20 @@
 // Insert global js here
 
-$( document ).ready(function() {
-	$('#cash').on("click", function () {
-		console.log('test');
-	})
-});
+/* ----- Utility ----- */
+
+window.renderInfo = function(e) {
+  $('.info-container').css('left', `${e.pageX}px`);
+  $('.info-container').css('top', `${e.pageY}px`);
+}
+
+window.getInfo = function(info_id) {
+  switch(info_id) {
+    case 'trait_feral':
+      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
+    default:
+      return `${info_id} has no info yet.`
+  }
+}
 
 /* ----- Sidebar ----- */
 

@@ -25,7 +25,7 @@
 
 	<<sidebarTop>>
 
-	<div class="w3-teal" style="font-size:1vw;">
+	<div class="w3-teal">
 		<div class="w3-dropdown-hover">
 			@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
 		</div>
@@ -43,12 +43,10 @@
 <<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
 <</timed>>
 
-<div class="w3-container" id="main" style="font-size:1vw;">
-
+<div class="w3-container" id="main">
 	<span id="fluffy-name">
 		<<intractDetails>>
 	</span>
-<hr>
 
 			
 
@@ -56,10 +54,10 @@
 /* ***
  *	Debug option to enter a genetic editing mode.
  *** */
-<<if $debugMode == true || $unlockGeneLab == true>>
-	[[Enter the Gene Lab|Gene Lab][$encyclopedia = "Gene Lab"]]
-	<hr>
-<</if>>
+	<<if $debugMode == true || $unlockGeneLab == true>>
+		[[Enter the Gene Lab|Gene Lab][$encyclopedia = "Gene Lab"]]
+		<hr>
+	<</if>>
 
 	<div class="w3-container" id="greet-container">
 		<<timed 5ms>>
@@ -445,15 +443,5 @@ Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][
 </div>
 
 <<script>>
-	$(document).ready(function () {
-		/* Sidebar */
-		/*  Check if mobile */
-		var mq = window.matchMedia('(min-width: 767px)');
-		if (mq.matches) {openSidebar();} else {closeSidebar();}
-		$('#openNav').on("click", window.openSidebar);
-		$('#close-dropdown-btn').on("click", window.closeSidebar);
-
-		/* Sort/Show */
-		$('.dropdown-btn').on("click", window.toggleButton);
-	});
+ 	importScripts("../bin/globals.js",);
 <</script>>
