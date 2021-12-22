@@ -372,8 +372,7 @@ button {
 	<<if ndef $args[0]>>
 		<<run console.log(`ERROR: <<addTrait>>: called with no trait.`)>>
 	<<elseif ndef $args[1]>>
-		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy. Defaulting to $activeFluffy.`)>>
-		<<set _fluffy = $activeFluffy>>
+		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy.`)>>
 	<<elseif ndef $args[1].ID>>
 		<<run console.log(`ERROR: <<addTrait>>: ID not defined.`)>>
 	<<elseif ndef $globalFluffies[$args[1].ID]>>
@@ -384,9 +383,9 @@ button {
 
 			<<set $args[1].ID = Number($globalFluffies[$args[1].ID].ID).toFixed(0)>>
 			<<set $globalFluffies[$args[1].ID] = $args[1]>>
-			<<set _fluffy = $args[1]>>
 		<</if>>
 
+		<<set _fluffy = $args[1]>>
 		<<set _trait = $args[0]>>
 
 		<<if _fluffy.traits.includes(_trait)>>
@@ -649,8 +648,8 @@ button {
 <<widget "intractDetails">>
 	<<PlayerStatus>><hr>
 
-	<div class="w3-row w3-dark-grey">
-		<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px;">
+		<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+			<div class="fluffy-image">
 			<<switch $activeFluffy.breed>>
 			<<case "earthy" "Earthy">>
 				<<fluffyImage "earthie">>

@@ -1080,6 +1080,14 @@ button:disabled{
   flex-direction: column;
 }
 
+.fluffy-traits {
+  display: flex;
+  flex-direction: row;
+}
+.fluffy-traits > span {
+  padding: 0 0.5em 0 0.5em;
+}
+
 .fluffy-family {
   display: flex;
   flex-direction: column;
@@ -1111,6 +1119,7 @@ button:disabled{
   }
   .fluffy-color {
     align-items: center;
+    width: 100%;
   }
   .fluffy-desc-top {
     height: auto;
@@ -8635,7 +8644,7 @@ Genes       Height multiplier
 
 
 	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
-	&lt;&lt;set _smartyBase == Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
+	&lt;&lt;set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
 
 	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
 	/* This may be from -200 up to 200 */
@@ -11257,10 +11266,9 @@ profitsTotal: 0
 					&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 					&lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
-
 					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 				/* mated pair */
@@ -11268,14 +11276,12 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
@@ -11285,8 +11291,11 @@ profitsTotal: 0
 
 					&lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
+
 					&lt;&lt;set $dad.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
 
 					&lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
 					&lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
@@ -11313,14 +11322,12 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 
@@ -11332,24 +11339,26 @@ profitsTotal: 0
 
 					&lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
+					
 					&lt;&lt;set $dad.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
 
 					&lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
 					&lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
 
-
 					&lt;&lt;for _ls = 0; _ls &lt; _litter; _ls++&gt;&gt;
-						&lt;&lt;breedFluffies $mom $dad&gt;&gt;
-						&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-						&lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
-
 						/* Cull children at 25% */
 						&lt;&lt;if random(0,3) != 0&gt;&gt;
-							&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+							&lt;&lt;breedFluffies $mom $dad&gt;&gt;
+							&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+							&lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
+
 							&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-							&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-							&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+
+							&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+
 							&lt;&lt;run $mom.children.push($activeFluffy.ID)&gt;&gt;
 							&lt;&lt;run $dad.children.push($activeFluffy.ID)&gt;&gt;
 
@@ -11362,7 +11371,7 @@ profitsTotal: 0
 							&lt;&lt;else&gt;&gt;
 								/* weaned */
 								&lt;&lt;set $globalFluffies[$activeFluffy.ID].weaned = true&gt;&gt;
-							&lt;&lt;/if&gt;&gt;					
+							&lt;&lt;/if&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					
 					&lt;&lt;/for&gt;&gt;
@@ -11389,10 +11398,10 @@ profitsTotal: 0
 					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
 					&lt;&lt;newFromGene $testChild&gt;&gt;
 
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
-
 					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+
 					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;elseif $shop == &quot;angora&quot;&gt;&gt;
@@ -11516,8 +11525,8 @@ profitsTotal: 0
 					&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				/* generate adult traits */
-				&lt;&lt;switch $activeFluffy.personality&gt;&gt;
-					&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+				&lt;&lt;switch random(0,4)&gt;&gt;
+					&lt;&lt;case 0&gt;&gt;
 						&lt;&lt;if random(0, 1) == 0&gt;&gt;
 							&lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
@@ -11527,7 +11536,7 @@ profitsTotal: 0
 							&lt;&lt;set $activeFluffy.charm--&gt;&gt;
 							&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Shy&quot;&gt;&gt;
+					&lt;&lt;case 1&gt;&gt;
 						&lt;&lt;if random(0, 1) == 0&gt;&gt;
 							&lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.energy++&gt;&gt;
@@ -11536,7 +11545,7 @@ profitsTotal: 0
 							&lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.strength--&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+					&lt;&lt;case 2&gt;&gt;
 						&lt;&lt;if random(0, 1) == 0&gt;&gt;
 							&lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
@@ -11544,7 +11553,7 @@ profitsTotal: 0
 							&lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Cute&quot;&gt;&gt;
+					&lt;&lt;case 3&gt;&gt;
 						&lt;&lt;if random(0, 1) == 0&gt;&gt;
 							&lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
@@ -11554,7 +11563,7 @@ profitsTotal: 0
 							&lt;&lt;set $activeFluffy.learning--&gt;&gt;
 							&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+					&lt;&lt;case 4&gt;&gt;
 						&lt;&lt;if random(0, 1) == 0&gt;&gt;
 							&lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
 							&lt;&lt;set $activeFluffy.charm++&gt;&gt;
@@ -11607,8 +11616,8 @@ profitsTotal: 0
 					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_id].isChecked&quot; false true `$globalFluffies[_id].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
 
-				&lt;div class=&quot;w3-row w3-dark-grey&quot;&gt;
-					&lt;div class=&quot;w3-col w3-container&quot; style=&quot;position: relative; top: 0px; left:0px; width:160px; height:170px&quot;&gt;
+					&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+						&lt;div class=&quot;fluffy-image&quot;&gt;
 						&lt;&lt;set $activeFluffy = $globalFluffies[_id]&gt;&gt;
 
 						&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
@@ -14839,8 +14848,7 @@ button {
 	&lt;&lt;if ndef $args[0]&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: called with no trait.`)&gt;&gt;
 	&lt;&lt;elseif ndef $args[1]&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: called with no Fluffy. Defaulting to $activeFluffy.`)&gt;&gt;
-		&lt;&lt;set _fluffy = $activeFluffy&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: called with no Fluffy.`)&gt;&gt;
 	&lt;&lt;elseif ndef $args[1].ID&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: &lt;&lt;addTrait&gt;&gt;: ID not defined.`)&gt;&gt;
 	&lt;&lt;elseif ndef $globalFluffies[$args[1].ID]&gt;&gt;
@@ -14851,9 +14859,9 @@ button {
 
 			&lt;&lt;set $args[1].ID = Number($globalFluffies[$args[1].ID].ID).toFixed(0)&gt;&gt;
 			&lt;&lt;set $globalFluffies[$args[1].ID] = $args[1]&gt;&gt;
-			&lt;&lt;set _fluffy = $args[1]&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
+		&lt;&lt;set _fluffy = $args[1]&gt;&gt;
 		&lt;&lt;set _trait = $args[0]&gt;&gt;
 
 		&lt;&lt;if _fluffy.traits.includes(_trait)&gt;&gt;
@@ -15116,8 +15124,8 @@ button {
 &lt;&lt;widget &quot;intractDetails&quot;&gt;&gt;
 	&lt;&lt;PlayerStatus&gt;&gt;&lt;hr&gt;
 
-	&lt;div class=&quot;w3-row w3-dark-grey&quot;&gt;
-		&lt;div class=&quot;w3-col w3-container&quot; style=&quot;position: relative; top: 0px; left:0px; width:160px;&quot;&gt;
+		&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+			&lt;div class=&quot;fluffy-image&quot;&gt;
 			&lt;&lt;switch $activeFluffy.breed&gt;&gt;
 			&lt;&lt;case &quot;earthy&quot; &quot;Earthy&quot;&gt;&gt;
 				&lt;&lt;fluffyImage &quot;earthie&quot;&gt;&gt;
@@ -15358,39 +15366,6 @@ button {
 					&lt;&lt;set $activeFluffy.breed = &quot;alicorn&quot;&gt;&gt;
 				&lt;&lt;/switch&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/switch&gt;&gt;
-
-		/* Pick a random child trait:*/
-		&lt;&lt;switch random(0,4)&gt;&gt;
-			&lt;&lt;case 0&gt;&gt;
-				&lt;&lt;addTrait &quot;Fussy&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.strength++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
-			&lt;&lt;case 1&gt;&gt;
-				&lt;&lt;addTrait &quot;Shy&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-			&lt;&lt;case 2&gt;&gt;
-				&lt;&lt;addTrait &quot;Lazy&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
-			&lt;&lt;case 3&gt;&gt;
-				&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
-			&lt;&lt;case 4&gt;&gt;
-				&lt;&lt;addTrait &quot;Peppy&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
-				&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
-			&lt;&lt;default&gt;&gt;
-				&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
-				&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-				&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
 
 	&lt;&lt;else&gt;&gt;
@@ -15692,15 +15667,7 @@ button {
 
 	&lt;&lt;set $activeFluffy.mother = _mom.ID&gt;&gt;
 	&lt;&lt;set $activeFluffy.father = _dad.ID&gt;&gt;
-	&lt;&lt;newFoal&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
 
-/* ***
- *	Call as &lt;&lt;newFoal&gt;&gt;
- *
- *	Changes size information to reflect a newborn.
- *** */
-&lt;&lt;widget &quot;newFoal&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 	&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
 	&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;
@@ -15709,6 +15676,42 @@ button {
 	&lt;&lt;set $activeFluffy.weaned = false&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodType = &quot;Nursing&quot;&gt;&gt;
 	&lt;&lt;set $activeFluffy.foodQuality = -1&gt;&gt;
+
+	&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+	&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+
+	/* Pick a random child trait:*/
+	&lt;&lt;switch random(0,4)&gt;&gt;
+		&lt;&lt;case 0&gt;&gt;
+			&lt;&lt;addTrait &quot;Fussy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.strength++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
+		&lt;&lt;case 1&gt;&gt;
+			&lt;&lt;addTrait &quot;Shy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;addTrait &quot;Lazy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
+		&lt;&lt;case 3&gt;&gt;
+			&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
+		&lt;&lt;case 4&gt;&gt;
+			&lt;&lt;addTrait &quot;Peppy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
+		&lt;&lt;default&gt;&gt;
+			&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 

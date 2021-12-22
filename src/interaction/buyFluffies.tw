@@ -235,10 +235,9 @@
 					<<set $activeFluffy.age = 0>>
 					<<set $activeFluffy.ageWeeks = random(2, 12)>>
 
-					<<addTrait "Feral" $activeFluffy>>
-
 					<<set $activeFluffy.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($activeFluffy)>>
+					<<addTrait "Feral" $activeFluffy>>
 					<<run _randomFluffies.push($activeFluffy)>>
 
 				/* mated pair */
@@ -246,14 +245,12 @@
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
-					<<addTrait "Feral" $activeFluffy>>
 					<<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
 					<<run _randomFluffies.push($activeFluffy)>>
 
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
-					<<addTrait "Feral" $activeFluffy>>
 					<<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
 					<<run _randomFluffies.push($activeFluffy)>>
 
@@ -263,8 +260,11 @@
 
 					<<set $mom.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($mom)>>
+					<<addTrait "Feral" $mom>>
+
 					<<set $dad.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($dad)>>
+					<<addTrait "Feral" $dad>>
 
 					<<set $mom.specialFriend = $dad.ID>>
 					<<set $dad.specialFriend = $mom.ID>>
@@ -291,14 +291,12 @@
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
-					<<addTrait "Feral" $activeFluffy>>
 					<<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
 					<<run _randomFluffies.push($activeFluffy)>>
 
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
-					<<addTrait "Feral" $activeFluffy>>
 					<<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
 					<<run _randomFluffies.push($activeFluffy)>>
 
@@ -310,24 +308,26 @@
 
 					<<set $mom.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($mom)>>
+					<<addTrait "Feral" $mom>>
+					
 					<<set $dad.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($dad)>>
+					<<addTrait "Feral" $dad>>
 
 					<<set $mom.specialFriend = $dad.ID>>
 					<<set $dad.specialFriend = $mom.ID>>
 
-
 					<<for _ls = 0; _ls < _litter; _ls++>>
-						<<breedFluffies $mom $dad>>
-						<<set $activeFluffy.age = 0>>
-						<<set $activeFluffy.ageWeeks = random(1, 6)>>
-
 						/* Cull children at 25% */
 						<<if random(0,3) != 0>>
-							<<addTrait "Feral" $activeFluffy>>
+							<<breedFluffies $mom $dad>>
+							<<set $activeFluffy.age = 0>>
+							<<set $activeFluffy.ageWeeks = random(1, 6)>>
+
 							<<run _randomFluffies.push($activeFluffy)>>
-							<<set $activeFluffy.ID = $globalFluffies.length>>
-							<<run $globalFluffies.push($activeFluffy)>>
+
+							<<addTrait "Feral" $activeFluffy>>
+
 							<<run $mom.children.push($activeFluffy.ID)>>
 							<<run $dad.children.push($activeFluffy.ID)>>
 
@@ -340,7 +340,7 @@
 							<<else>>
 								/* weaned */
 								<<set $globalFluffies[$activeFluffy.ID].weaned = true>>
-							<</if>>					
+							<</if>>
 						<</if>>
 					
 					<</for>>
@@ -367,10 +367,10 @@
 					<<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
 					<<newFromGene $testChild>>
 
-					<<addTrait "Feral" $activeFluffy>>
-
 					<<set $activeFluffy.ID = $globalFluffies.length>>
 					<<run $globalFluffies.push($activeFluffy)>>
+					<<addTrait "Feral" $activeFluffy>>
+
 					<<run _randomFluffies.push($activeFluffy)>>
 			<</switch>>
 		<<elseif $shop == "angora">>
@@ -494,8 +494,8 @@
 					<<set $activeFluffy.hasName = true>>
 				<</if>>
 				/* generate adult traits */
-				<<switch $activeFluffy.personality>>
-					<<case "Fussy">>
+				<<switch random(0,4)>>
+					<<case 0>>
 						<<if random(0, 1) == 0>>
 							<<set $activeFluffy.personality = "Diligent">>
 							<<set $activeFluffy.learning++>>
@@ -505,7 +505,7 @@
 							<<set $activeFluffy.charm-->>
 							<<set $activeFluffy.temperament += 30>>
 						<</if>>
-					<<case "Shy">>
+					<<case 1>>
 						<<if random(0, 1) == 0>>
 							<<set $activeFluffy.personality = "Curious">>
 							<<set $activeFluffy.energy++>>
@@ -514,7 +514,7 @@
 							<<set $activeFluffy.personality = "Timid">>
 							<<set $activeFluffy.strength-->>
 						<</if>>
-					<<case "Lazy">>
+					<<case 2>>
 						<<if random(0, 1) == 0>>
 							<<set $activeFluffy.personality = "Pensive">>
 							<<set $activeFluffy.learning++>>
@@ -522,7 +522,7 @@
 							<<set $activeFluffy.personality = "Dull">>
 							<<set $activeFluffy.energy-->>
 						<</if>>
-					<<case "Cute">>
+					<<case 3>>
 						<<if random(0, 1) == 0>>
 							<<set $activeFluffy.personality = "Sweet">>
 							<<set $activeFluffy.learning++>>
@@ -532,7 +532,7 @@
 							<<set $activeFluffy.learning-->>
 							<<set $activeFluffy.temperament += 20>>
 						<</if>>
-					<<case "Peppy">>
+					<<case 4>>
 						<<if random(0, 1) == 0>>
 							<<set $activeFluffy.personality = "Playful">>
 							<<set $activeFluffy.charm++>>
@@ -585,8 +585,8 @@
 					<<if $shop == "feral">><<checkbox "$globalFluffies[_id].isChecked" false true `$globalFluffies[_id].isChecked ? 'checked' : ''`>><</if>>
 				</div>
 
-				<div class="w3-row w3-dark-grey">
-					<div class="w3-col w3-container" style="position: relative; top: 0px; left:0px; width:160px; height:170px">
+					<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+						<div class="fluffy-image">
 						<<set $activeFluffy = $globalFluffies[_id]>>
 
 						<<switch $globalFluffies[_id].breed>>
