@@ -947,6 +947,7 @@ button:disabled{
   padding: 1em;
   cursor: pointer;
   text-align: center;
+  justify-content: center;
 }
 .info-active.info-container {
   display: flex;
@@ -13867,11 +13868,11 @@ Breed:
 			/* Alicorn checks: */
 			&lt;&lt;switch $alicornRarity&gt;&gt;
 			&lt;&lt;case 0&gt;&gt;
-				&lt;&lt;if $globalFluffies[$activeFluffy.ID].breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.getBreedString() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
 					&lt;&lt;set $globalFluffies[$activeFluffy.ID].breed = &quot;alicorn&quot;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case 1&gt;&gt;
-				&lt;&lt;if $globalFluffies[$activeFluffy.ID].breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;if $globalFluffies[$activeFluffy.ID].genes.getBreedString() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
 					&lt;&lt;if random(0, 1) === 0&gt;&gt;
 						&lt;&lt;set $globalFluffies[$activeFluffy.ID].breed = &quot;unicorn&quot;&gt;&gt;
 					&lt;&lt;else&gt;&gt;
@@ -13879,7 +13880,7 @@ Breed:
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;default&gt;&gt;
-				&lt;&lt;if $globalFluffies[$activeFluffy.ID].breed.toLowerCase() === &quot;alicorn&quot; or $globalFluffies[$activeFluffy.ID].breed.toUpperCase() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
+				&lt;&lt;if $globalFluffies[$activeFluffy.ID].breed.toLowerCase() === &quot;alicorn&quot; or $globalFluffies[$activeFluffy.ID].genes.getBreedString() === &quot;SETTING_DEPENDENT_BREED&quot;&gt;&gt;
 					&lt;&lt;switch random(0, 5)&gt;&gt;
 					&lt;&lt;case 0 1&gt;&gt;
 						&lt;&lt;set $globalFluffies[$activeFluffy.ID].breed = &quot;unicorn&quot;&gt;&gt;
@@ -14817,7 +14818,7 @@ button {
  *	Normal ranges for a stat are 0-6
  *** */
 &lt;&lt;widget &quot;displayStat&quot;&gt;&gt;
-	&lt;&lt;if  $debugMode&gt;&gt;[@@.orange;$args[0]@@]&lt;&lt;else&gt;&gt;
+	&lt;&lt;if  $debugMode&gt;&gt;@@.orange;$args[0]@@&lt;&lt;else&gt;&gt;
 		&lt;&lt;- $training &gt;= 60 ? $args[0] &lt; 3 ? `@@.stat-low .stat-value;${$args[0]}@@` : $args[0] &lt; 5 ? `@@.stat-average.stat-value;${$args[0]}@@` : `@@.stat-high .stat-value;${$args[0]}@@` : $training &gt;= 40 ? $args[0] &lt; 3 ? `@@.stat-low .stat-value;Low@@` : $args[0] &lt; 5 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
@@ -14829,7 +14830,7 @@ button {
  *** */
 &lt;&lt;widget &quot;displayAttribute&quot;&gt;&gt;
 	&lt;&lt;if  $debugMode&gt;&gt;
-		[@@.orange;$args[0]@@]
+		@@.orange;$args[0]@@
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;- $training &gt;= 100 ? $args[0] &lt; 67 ? `@@.stat-low .stat-value;${$args[0]}@@` : $args[0] &lt; 101 ? `@@.stat-average.stat-value;${$args[0]}@@` : `@@.stat-high .stat-value;${$args[0]}@@` : $training &gt;= 50 ? $args[0] &lt; 67 ? `@@.stat-low .stat-value;Low@@` : $args[0] &lt; 101 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`&gt;&gt;&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
