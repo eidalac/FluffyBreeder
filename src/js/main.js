@@ -1,5 +1,7 @@
 // Insert global js here
 
+importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
+
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {
@@ -20,8 +22,6 @@ window.renderInfo = function(e) {
 
 window.getInfo = function(info_id) {
   switch(info_id) {
-    case 'trait_feral':
-      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
     case 'attribute_trust':
       return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
     case 'attribute_happiness':
@@ -34,6 +34,14 @@ window.getInfo = function(info_id) {
       return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
     case 'attribute_temperament':
       return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
+    case 'trait_feral':
+      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
+    case 'trait_nearsighted':
+      return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
+    case 'trait_colourblind':
+      return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
+    case 'trait_feeble':
+      return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.`
     default:
       return `${info_id} has no info yet.`
   }

@@ -46,12 +46,16 @@ function compile() {
 			file="bin/FluffyBreeder_${COMMIT}.html"
 		fi
 	fi
+	
+	devTools/concatFiles.sh src/css/ '*.css' bin/fb.css
 
-	$TWEEGO_EXE -o "$file" src/ || build_failed="true"
+	$TWEEGO_EXE -o "$file" --module=bin/fb.css src/ || build_failed="true"
 	if [ "$build_failed" = "true" ]; then
 		echoError "Build failed."
 		exit 1
 	fi
+
+	rm -f bin/fb.css
 
 	echoMessage "Saved to $file."
 }
