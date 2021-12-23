@@ -946,6 +946,7 @@ button:disabled{
   border-radius: 50px;
   padding: 1em;
   cursor: pointer;
+  text-align: center;
 }
 .info-active.info-container {
   display: flex;
@@ -1078,19 +1079,37 @@ button:disabled{
   justify-content: space-between;
   padding: 1em;
 }
+.fluffy-details > div > div {
+  padding: 0.5em;
+}
 
-.fluffy-stats {
+.fluffy-stats,
+.fluffy-attributes {
   width: 100%;
   display: flex;
   flex-direction: row;
   flex-wrap: wrap;
   justify-content: center;
 }
-.fluffy-stats > span {
-  padding: 0em 1em 1em 1em;
+.fluffy-stats .stat-entry,
+.fluffy-attributes .attribute-entry  {
+  padding: 0em 0.5em 0em 0.5em;
   display: flex;
   flex-direction: column;
   align-items: center;
+  margin: 0.2em;
+  border-radius: 50px;
+  cursor: pointer;
+  width: 30%;
+}
+.fluffy-stats .stat-entry:hover,
+.fluffy-stats .stat-entry:hover .stat-value:before,
+.fluffy-stats .stat-entry:hover .stat-value:after,
+.fluffy-attributes .attribute-entry:hover,
+.fluffy-attributes .attribute-entry:hover .attribute-value:before,
+.fluffy-attributes .attribute-entry:hover .attribute-value:after {
+  background: lightgray;
+  color: black;
 }
 
 .fluffy-color {
@@ -1099,6 +1118,10 @@ button:disabled{
   flex-direction: column;
 }
 
+.fluffy-traits {
+  display: flex;
+  flex-direction: column;
+}
 .fluffy-traits-list {
   display: flex;
   flex-direction: row;
@@ -1117,7 +1140,7 @@ button:disabled{
   flex-wrap: wrap;
 }
 .fluffy-traits-entry:hover {
-  background: white;
+  background: lightgray;
   color: black;
 }
 
@@ -1136,6 +1159,10 @@ button:disabled{
 
 /* On screens that are 1600px or less */
 @media screen and (max-width: 1600px) {
+  .fluffy-stats .stat-entry,
+  .fluffy-attributes .attribute-entry {
+    width: 45%;
+  }
   .fluffy-image img {
     width: 250px;
     height: 250px;
@@ -1144,6 +1171,12 @@ button:disabled{
 
 /* On screens that are 1200px or less */
 @media screen and (max-width: 1200px) {
+  .fluffy-traits {
+    align-items: center;
+  }
+  .fluffy-traits-list {
+    justify-content: center;
+  }
   .fluffy-details {
     flex-direction: row;
   }
@@ -1182,6 +1215,9 @@ button:disabled{
 
 /* On screens that are 992px or less */
 @media screen and (max-width: 992px) {
+  .info-container {
+    width: 50vw;
+  }
   .fluffy-details {
     flex-direction: column;
   }
@@ -1189,6 +1225,17 @@ button:disabled{
 
 /* On screens that are 576px or less */
 @media screen and (max-width: 576px) {
+  .fluffy-stats .stat-entry,
+  .fluffy-attributes .attribute-entry {
+    width: 48%;
+    margin: 0.2em 0.1em 0.2em 0.1em;
+  }
+  .fluffy-details > div > div {
+    padding: 0.2em;
+  }
+  .fluffy-details > div {
+    padding: 0;
+  }
   .fluffy-image {
     height: 200px;
   }
@@ -1196,6 +1243,18 @@ button:disabled{
     width: 200px;
     height: 200px;
   }
+}
+
+/* On screens that are 448px or less */
+@media screen and (max-width: 448px) {
+  .info-container {
+    width: 100vw;
+  }
+}
+
+/* On screens that are 413px or less */
+@media screen and (max-width: 413px) {
+
 }
 /* twine-user-stylesheet #8: "normalize.css" */
 /*! normalize.css v3.0.3 | MIT License | github.com/necolas/normalize.css */
@@ -4683,14 +4742,37 @@ Genome.prototype.clearDefect = function(index) {
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {
-  $('.info-container').css('left', `${e.pageX}px`);
-  $('.info-container').css('top', `${e.pageY}px`);
+  var mq = window.matchMedia('(min-width: 767px)');
+  const offsetX = 250;
+  const offsetY = 250;
+  const distanceX = (window.innerWidth - offsetX);
+  const distanceY = (window.innerHeight - offsetY);
+  let x = Math.max(Math.min(distanceX, e.pageX), offsetX)
+  let y = Math.max(Math.min(distanceY, e.pageY), offsetY)
+  if (mq.matches) {
+    $('.info-container').css('left', `${x-offsetX}px`);
+    $('.info-container').css('top', `${e.pageY}px`);
+  } else {
+    $('.info-container').css('top', `${e.pageY}px`);
+  }
 }
 
 window.getInfo = function(info_id) {
   switch(info_id) {
     case 'trait_feral':
       return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
+    case 'attribute_trust':
+      return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
+    case 'attribute_happiness':
+      return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
+    case 'attribute_trauma':
+      return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
+    case 'attribute_stress':
+      return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
+    case 'attribute_training':
+      return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
+    case 'attribute_temperament':
+      return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
     default:
       return `${info_id} has no info yet.`
   }
@@ -15049,18 +15131,20 @@ button {
 			&lt;/div&gt;
 			&lt;div class=&quot;fluffy-details-right&quot;&gt;
 				&lt;div class=&quot;fluffy-stats&quot;&gt;
-					&lt;span&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt;&lt;/span&gt;
-					&lt;span&gt;Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_strength&quot;&gt;Strength &lt;&lt;displayStat _fluffy.strength&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_energy&quot;&gt;Energy &lt;&lt;displayStat _fluffy.energy&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_charm&quot;&gt;Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_thinking&quot;&gt;Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_learning&quot;&gt;Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_strength&quot;&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
+				&lt;/div&gt;
+				&lt;div class=&quot;fluffy-attributes&quot;&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_trust&quot;&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_training&quot;&gt;Training &lt;&lt;displayAttribute _fluffy.training&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_temperament&quot;&gt;Temperament &lt;&lt;displayAttribute _fluffy.temperament&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_happiness&quot;&gt;Happiness &lt;&lt;displayAttribute _fluffy.happy&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_stress&quot;&gt;Stress &lt;&lt;displayAttribute _fluffy.stress&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_trauma&quot;&gt;Trauma &lt;&lt;displayAttribute _fluffy.trauma&gt;&gt;&lt;/span&gt;
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-age&quot;&gt;
 					&lt;span&gt;Age: _fluffy.age years and _fluffy.ageWeeks weeks&lt;/span&gt;

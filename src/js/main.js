@@ -3,14 +3,37 @@
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {
-  $('.info-container').css('left', `${e.pageX}px`);
-  $('.info-container').css('top', `${e.pageY}px`);
+  var mq = window.matchMedia('(min-width: 767px)');
+  const offsetX = 250;
+  const offsetY = 250;
+  const distanceX = (window.innerWidth - offsetX);
+  const distanceY = (window.innerHeight - offsetY);
+  let x = Math.max(Math.min(distanceX, e.pageX), offsetX)
+  let y = Math.max(Math.min(distanceY, e.pageY), offsetY)
+  if (mq.matches) {
+    $('.info-container').css('left', `${x-offsetX}px`);
+    $('.info-container').css('top', `${e.pageY}px`);
+  } else {
+    $('.info-container').css('top', `${e.pageY}px`);
+  }
 }
 
 window.getInfo = function(info_id) {
   switch(info_id) {
     case 'trait_feral':
       return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
+    case 'attribute_trust':
+      return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
+    case 'attribute_happiness':
+      return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
+    case 'attribute_trauma':
+      return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
+    case 'attribute_stress':
+      return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
+    case 'attribute_training':
+      return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
+    case 'attribute_temperament':
+      return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
     default:
       return `${info_id} has no info yet.`
   }

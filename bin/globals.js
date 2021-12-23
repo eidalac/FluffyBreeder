@@ -35,7 +35,10 @@ $( document ).ready(function() {
     /* Hide info */
     $('html').on("click", function (e) {
       let $target = $(e.target);
-      if(!$target.closest('.info-toggle').length && !$target.closest('.info-container').length && !$target.closest('.macro-checkbox').length) {
+      // if(!$target.closest('.info-toggle').length && !$target.closest('.info-container').length && !$target.closest('.macro-checkbox').length) {
+      //   $('.info-active').removeClass('info-active');
+      // }
+      if(!$target.closest('.info-toggle').length && !$target.closest('.macro-checkbox').length) {
         $('.info-active').removeClass('info-active');
       }
     });
