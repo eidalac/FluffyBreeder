@@ -40,7 +40,7 @@ button {
 
 
 <<widget "FluffyList">>
-	<<if $args[0] === "breeding">>
+	<<if _args[0] === "breeding">>
 		<<if $activeFluffy.gender === 'female'>>
 			<<set $listType = "Stallions">>
 		<<else>>
@@ -52,7 +52,7 @@ button {
 		
 	<<for _fl range $ourStore.fluffies>>
 		
-		<<if $args[0] === "breeding">>
+		<<if _args[0] === "breeding">>
 			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
 				<<continue>>
 			<</if>>
@@ -111,25 +111,25 @@ button {
 					<div class="fluffy-description">
 					
 						<div class="fluffy-checkbox">
-							<<if $args[0] != "customer" && $args[0] != "breeding">><<checkbox "$globalFluffies[_fl].isChecked" false true `$globalFluffies[_fl].isChecked ? 'checked' : ''`>><</if>>
+							<<if _args[0] != "customer" && _args[0] != "breeding">><<checkbox "$globalFluffies[_fl].isChecked" false true `$globalFluffies[_fl].isChecked ? 'checked' : ''`>><</if>>
 						</div>
 				
 						<div class="fluffy-desc-top w3-row w3-dark-grey">
 							<div class="fluffy-name w3-container">
-								<<if $args[0] === "customer" || $args[0] === "breeding">>
+								<<if _args[0] === "customer" || _args[0] === "breeding">>
 									<<- $globalFluffies[_fl].name>>
 								<<else>>
 									[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
 								<</if>>
 							</div>
 							<div class="fluffy-quickactions w3-rest w3-container">
-							<<if $args[0] === "customer">>
+							<<if _args[0] === "customer">>
 								<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
 								
 								<<button _buttonString>>
 									<<OfferFluffy $globalFluffies[_fl].ID>>
 								<</button>>
-							<<elseif $args[0] === "breeding">>
+							<<elseif _args[0] === "breeding">>
 								<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
 								
 								<<button _buttonString "Fluffy Breeding">>
@@ -183,18 +183,18 @@ button {
  *	Called as <<inlineColor $color>>
  *	Returns the string colored as an HTML color.
  *** */
-<<widget "inlineColor">><<if $args[0] != "Black">><<- "@@color:"+$args[0]+";"+$args[0]>><<else>><<- "@@background:"+$args[0]+"; color:white;"+$args[0]>><</if>><</widget>>
+<<widget "inlineColor">><<if _args[0] != "Black">><<- "@@color:"+_args[0]+";"+_args[0]>><<else>><<- "@@background:"+_args[0]+"; color:white;"+_args[0]>><</if>><</widget>>
 
 /* ***
  *	Called as <<colorizeText $color $message>>
  *	Returns the message in provided color.
  *** */
 <<widget "colorizeText">>
-	<<set _msg = $args[1] ? $args[1] : "">>
-	<<if $args[0] != "Black">>
-		<<- `@@color:${$args[0]};${$args[1]}`>>
+	<<set _msg = _args[1] ? _args[1] : "">>
+	<<if _args[0] != "Black">>
+		<<- `@@color:${_args[0]};${_args[1]}`>>
 	<<else>>
-		<<- `@@background:${$args[0]}; color:white;${_msg}`>>
+		<<- `@@background:${_args[0]}; color:white;${_msg}`>>
 	<</if>>
 <</widget>>
 
@@ -204,13 +204,13 @@ button {
  * 	Replaces '<fluffy>' with actual name.
  *** */
 <<widget "fluffSpeech">>
-	<<set _msg = $args[0] ? $args[0] : "">>
-	<<if $args[0] != "Black">>
-		<<- `@@color:${$args[1]};`+'"'+`
+	<<set _msg = _args[0] ? _args[0] : "">>
+	<<if _args[0] != "Black">>
+		<<- `@@color:${_args[1]};`+'"'+`
 			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}
 		`+'"'>>
 	<<else>>
-		<<- `@@background:${$args[1]}; color:white;`+'"'+`
+		<<- `@@background:${_args[1]}; color:white;`+'"'+`
 			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W")}
 		`+'"'>>
 	<</if>>
@@ -260,8 +260,8 @@ button {
  *	Normal ranges for a stat are 0-6
  *** */
 <<widget "displayStat">>
-	<<if  $debugMode>>@@.orange;$args[0]@@<<else>>
-		<<- $training >= 60 ? $args[0] < 3 ? `@@.stat-low .stat-value;${$args[0]}@@` : $args[0] < 5 ? `@@.stat-average.stat-value;${$args[0]}@@` : `@@.stat-high .stat-value;${$args[0]}@@` : $training >= 40 ? $args[0] < 3 ? `@@.stat-low .stat-value;Low@@` : $args[0] < 5 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`>>
+	<<if  $debugMode>>@@.orange;_args[0]@@<<else>>
+		<<- $training >= 60 ? _args[0] < 3 ? `@@.stat-low .stat-value;${_args[0]}@@` : _args[0] < 5 ? `@@.stat-average.stat-value;${_args[0]}@@` : `@@.stat-high .stat-value;${_args[0]}@@` : $training >= 40 ? _args[0] < 3 ? `@@.stat-low .stat-value;Low@@` : _args[0] < 5 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`>>
 	<</if>>
 <</widget>>
 
@@ -272,9 +272,9 @@ button {
  *** */
 <<widget "displayAttribute">>
 	<<if  $debugMode>>
-		@@.orange;$args[0]@@
+		@@.orange;_args[0]@@
 	<<else>>
-		<<- $training >= 100 ? $args[0] < 67 ? `@@.stat-low .stat-value;${$args[0]}@@` : $args[0] < 101 ? `@@.stat-average.stat-value;${$args[0]}@@` : `@@.stat-high .stat-value;${$args[0]}@@` : $training >= 50 ? $args[0] < 67 ? `@@.stat-low .stat-value;Low@@` : $args[0] < 101 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`>><</if>>
+		<<- $training >= 100 ? _args[0] < 67 ? `@@.stat-low .stat-value;${_args[0]}@@` : _args[0] < 101 ? `@@.stat-average.stat-value;${_args[0]}@@` : `@@.stat-high .stat-value;${_args[0]}@@` : $training >= 50 ? _args[0] < 67 ? `@@.stat-low .stat-value;Low@@` : _args[0] < 101 ? `@@.stat-average .stat-value;Average@@` : `@@.stat-high .stat-value;High@@` : `@@.stat-high .stat-unknown;???@@`>><</if>>
 <</widget>>
 
 /* ***
@@ -282,7 +282,7 @@ button {
  *	Returns a display of this fluffys sale price, based on the player xp level.
   *** */
 <<widget "displayPrice">>
-	<<set _thisFluffy = $args[0]>>
+	<<set _thisFluffy = _args[0]>>
 
 	<<set _price = Number($globalFluffies[_thisFluffy.ID].training)>>
 	<<set _price = Number(_price) + Number(Number($globalFluffies[_thisFluffy.ID].trust/10))>>
@@ -357,24 +357,24 @@ button {
  *	Adds trait to fluffy.
  *** */
  <<widget "addTrait">>
-	<<if ndef $args[0]>>
+	<<if ndef _args[0]>>
 		<<run console.log(`ERROR: <<addTrait>>: called with no trait.`)>>
-	<<elseif ndef $args[1]>>
+	<<elseif ndef _args[1]>>
 		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy.`)>>
-	<<elseif ndef $args[1].ID>>
+	<<elseif ndef _args[1].ID>>
 		<<run console.log(`ERROR: <<addTrait>>: ID not defined.`)>>
-	<<elseif ndef $globalFluffies[$args[1].ID]>>
-		<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${$args[1].ID} is not defined in globalFluffies.`)>>
+	<<elseif ndef $globalFluffies[_args[1].ID]>>
+		<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${_args[1].ID} is not defined in globalFluffies.`)>>
 	<<else>>
-		<<if $args[1].ID != $globalFluffies[$args[1].ID].ID>>
-			<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${$args[1].ID} does not match global ID ${$globalFluffies[$args[1].ID].ID}.`)>>
+		<<if _args[1].ID != $globalFluffies[_args[1].ID].ID>>
+			<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${_args[1].ID} does not match global ID ${$globalFluffies[_args[1].ID].ID}.`)>>
 
-			<<set $args[1].ID = Number($globalFluffies[$args[1].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[1].ID] = $args[1]>>
+			<<set _args[1].ID = Number($globalFluffies[_args[1].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[1].ID] = _args[1]>>
 		<</if>>
 
-		<<set _fluffy = $args[1]>>
-		<<set _trait = $args[0]>>
+		<<set _fluffy = _args[1]>>
+		<<set _trait = _args[0]>>
 
 		<<if _fluffy.traits.includes(_trait)>>
 			<<run console.log(`ERROR: <<addTrait>>: Did not add ${_trait} to ${_fluffy}. Reason: Duplicate trait`)>>
@@ -390,12 +390,12 @@ button {
  *	Fixes traits[0] being personality
  *** */
 <<widget "personalityFix">>
-	<<fluffyError $args[0]>>
+	<<fluffyError _args[0]>>
 	<<if $fluffyError>>
 		<<run console.log(`ERROR: <<personalityFix>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
-		<<set _fluffy = $args[0]>>
+		<<set _fluffy = _args[0]>>
 		<<if ndef _fluffy.personality>>
 			<<set _fluffy.personality = _fluffy.traits[0]>>
 			<<set _fluffy.traits.shift()>>
@@ -520,7 +520,7 @@ button {
  *** */
 <<widget "shortDesc">>
 	<<capture _children>>
-		<<set _fluffy = $args[0]>>
+		<<set _fluffy = _args[0]>>
 		<<set _children = "">>
 		<<for _i = 0; _i < _fluffy.children.length; _i++>>
 			<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@">> 
@@ -579,7 +579,7 @@ button {
 					<span class="stat-entry info-toggle" data-info="stat_charm">Charm <<displayStat _fluffy.charm>></span>
 					<span class="stat-entry info-toggle" data-info="stat_thinking">Thinking <<displayStat _fluffy.thinking>></span>
 					<span class="stat-entry info-toggle" data-info="stat_learning">Learning <<displayStat _fluffy.learning>></span>
-					<span class="stat-entry info-toggle" data-info="stat_strength">Fertility <<displayStat _fluffy.fertility>></span>
+					<span class="stat-entry info-toggle" data-info="stat_fertility">Fertility <<displayStat _fluffy.fertility>></span>
 				</div>
 				<div class="fluffy-attributes">
 					<span class="attribute-entry info-toggle" data-info="attribute_trust">Trust <<displayAttribute _fluffy.trust>></span>
