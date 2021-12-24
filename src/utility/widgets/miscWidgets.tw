@@ -144,22 +144,22 @@
  *	Error handler for fluffies.
  *** */
 <<widget "fluffyError">>
-	<<run console.log($args.full)>>
-	<<if ndef $args[0]>>
-		<<run console.log(`ERROR: <<fluffyError $args>>: called with no Fluffy.`)>>
+	<<run console.log(_args.full)>>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: called with no Fluffy.`)>>
 		<<set $fluffyError = true>>
-	<<elseif ndef $args[0].ID>>
-		<<run console.log(`ERROR: <<fluffyError $args>>: ID is not defined.`)>>
+	<<elseif ndef _args[0].ID>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: ID is not defined.`)>>
 		<<set $fluffyError = true>>
-	<<elseif ndef $globalFluffies[$args[0].ID]>>
-		<<run console.log(`ERROR: <<fluffyError $args>>: Fluffy ID ${$args[0].ID} is not defined in globalFluffies.`)>>
+	<<elseif ndef $globalFluffies[_args[0].ID]>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: Fluffy ID ${_args[0].ID} is not defined in globalFluffies.`)>>
 		<<set $fluffyError = true>>
 	<<else>>
-		<<if $args[0].ID != $globalFluffies[$args[0].ID].ID>>
-			<<run console.log(`ERROR: <<fluffyError $args>>: Fluffy ID ${$args[0].ID} does not match global ID ${$globalFluffies[$args[0].ID].ID}.`)>>
+		<<if _args[0].ID != $globalFluffies[_args[0].ID].ID>>
+			<<run console.log(`ERROR: <<fluffyError _args>>: Fluffy ID ${_args[0].ID} does not match global ID ${$globalFluffies[_args[0].ID].ID}.`)>>
 
-			<<set $args[0].ID = Number($globalFluffies[$args[0].ID].ID).toFixed(0)>>
-			<<set $globalFluffies[$args[0].ID] = $args[0]>>
+			<<set _args[0].ID = Number($globalFluffies[_args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[0].ID] = _args[0]>>
 		<</if>>
 		<<set $fluffyError = false>>
 	<</if>>
@@ -204,7 +204,7 @@
 
 
 <<widget flipCase>>
-	<<if $args[0] == $args[0].toUpperCase()>><<set $args[0] = $args[0].toLowerCase()>><<else>><<set $args[0] = $args[0].toUpperCase()>><</if>>
+	<<if _args[0] == _args[0].toUpperCase()>><<set _args[0] = _args[0].toLowerCase()>><<else>><<set _args[0] = _args[0].toUpperCase()>><</if>>
 <</widget>>
 
 
@@ -431,11 +431,11 @@
 			@@#sortbutton;<<button 'Breed <i class="fa fa-sort"></i>'>>
 				<<if _breedUp == false>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].breed < $globalFluffies[a].breed) ? 1 : ($globalFluffies[b].breed > $globalFluffies[a].breed) ? -1 : 0;}) >>
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _breedUp = true>>				
 				<<else>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].breed < $globalFluffies[b].breed) ? 1 : ($globalFluffies[a].breed > $globalFluffies[b].breed) ? -1 : 0;}) >>
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _breedUp = false>>
 				<</if>>
 			<</button>>@@
@@ -443,24 +443,24 @@
 			@@#sortbutton;<<button 'Age <i class="fa fa-sort"></i>'>>
 				<<if _ageUp == false>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52)) - ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52));}) >>
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _ageUp = true>>				
 				<<else>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].ageWeeks + ($globalFluffies[b].age * 52)) - ($globalFluffies[a].ageWeeks + ($globalFluffies[a].age * 52));}) >> 
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _ageUp = false>>
 				<</if>>
 			<</button>>@@
 		
-		<<if $args[0] != "breeding">>
+		<<if _args[0] != "breeding">>
 			@@#sortbutton;<<button 'Gender <i class="fa fa-sort"></i>'>>
 				<<if _genderUp == false>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[a].gender < $globalFluffies[b].gender) ? 1 : ($globalFluffies[a].gender > $globalFluffies[b].gender) ? -1 : 0;}) >> 
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _genderUp = true>>				
 				<<else>>
 					<<run $ourStore.fluffies.sort(function(a,b){return ($globalFluffies[b].gender < $globalFluffies[a].gender) ? 1 : ($globalFluffies[b].gender > $globalFluffies[a].gender) ? -1 : 0;}) >>
-					<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+					<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 					<<set _genderUp = false>>
 				<</if>>
 			<</button>>@@
@@ -472,11 +472,11 @@
 					@@#sortbutton;<<button 'Strength <i class="fa fa-sort"></i>'>>
 						<<if _strUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].strength - $globalFluffies[b].strength);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _strUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].strength - $globalFluffies[a].strength);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _strUp = false>>
 						<</if>>
 					<</button>>@@
@@ -484,11 +484,11 @@
 					@@#sortbutton;<<button 'Energy <i class="fa fa-sort"></i>'>>
 						<<if _engUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].energy - $globalFluffies[b].energy);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _engUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].energy - $globalFluffies[a].energy);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _engUp = false>>
 						<</if>>
 					<</button>>@@
@@ -496,11 +496,11 @@
 					@@#sortbutton;<<button 'Charm <i class="fa fa-sort"></i>'>>
 						<<if _chaUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].charm - $globalFluffies[b].charm);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _chaUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].charm - $globalFluffies[a].charm);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _chaUp = false>>
 						<</if>>
 					<</button>>@@
@@ -508,11 +508,11 @@
 					@@#sortbutton;<<button 'Thinking <i class="fa fa-sort"></i>'>>
 						<<if _thiUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].thinking - $globalFluffies[b].thinking);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _thiUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].thinking - $globalFluffies[a].thinking);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _thiUp = false>>
 						<</if>>
 					<</button>>@@
@@ -520,11 +520,11 @@
 					@@#sortbutton;<<button 'Learning <i class="fa fa-sort"></i>'>>
 						<<if _leaUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].learning - $globalFluffies[b].learning);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _leaUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].learning - $globalFluffies[a].learning);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _leaUp = false>>
 						<</if>>
 					<</button>>@@
@@ -532,11 +532,11 @@
 					@@#sortbutton;<<button 'Fertility <i class="fa fa-sort"></i>'>>
 						<<if _ferUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].fertility - $globalFluffies[b].fertility);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _ferUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].fertility - $globalFluffies[a].fertility);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _ferUp = false>>
 						<</if>>
 					<</button>>@@
@@ -549,11 +549,11 @@
 					@@#sortbutton;<<button 'Trust <i class="fa fa-sort"></i>'>>
 						<<if _trustUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trust - $globalFluffies[b].trust);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _trustUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trust - $globalFluffies[a].trust);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _trustUp = false>>
 						<</if>>
 					<</button>>@@
@@ -561,11 +561,11 @@
 					@@#sortbutton;<<button 'Training <i class="fa fa-sort"></i>'>>
 						<<if _trainingUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].training - $globalFluffies[b].training);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _trainingUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].training - $globalFluffies[a].training);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _trainingUp = false>>
 						<</if>>
 					<</button>>@@
@@ -573,11 +573,11 @@
 					@@#sortbutton;<<button 'Temperament <i class="fa fa-sort"></i>'>>
 						<<if _temperamentUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].temperament - $globalFluffies[b].temperament);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _temperamentUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].temperament - $globalFluffies[a].temperament);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _temperamentUp = false>>
 						<</if>>
 					<</button>>@@
@@ -585,11 +585,11 @@
 					@@#sortbutton;<<button 'Happiness <i class="fa fa-sort"></i>'>>
 						<<if _happyUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].happy - $globalFluffies[b].happy);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _happyUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].happy - $globalFluffies[a].happy);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _happyUp = false>>
 						<</if>>
 					<</button>>@@
@@ -597,11 +597,11 @@
 					@@#sortbutton;<<button 'Stress <i class="fa fa-sort"></i>'>>
 						<<if _stressUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].stress - $globalFluffies[b].stress);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _stressUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].stress - $globalFluffies[a].stress);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _stressUp = false>>
 						<</if>>
 					<</button>>@@
@@ -609,11 +609,11 @@
 					@@#sortbutton;<<button 'Trauma <i class="fa fa-sort"></i>'>>
 						<<if _traumaUp == false>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[a].trauma - $globalFluffies[b].trauma);}) >>
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _traumaUp = true>>				
 						<<else>>
 							<<run $ourStore.fluffies.sort(function(a,b) {return ($globalFluffies[b].trauma - $globalFluffies[a].trauma);}) >> 
-							<<replace "#fluffy-list">><<FluffyList $args>><</replace>>
+							<<replace "#fluffy-list">><<FluffyList _args>><</replace>>
 							<<set _traumaUp = false>>
 						<</if>>
 					<</button>>@@

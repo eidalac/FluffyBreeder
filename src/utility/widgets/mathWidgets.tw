@@ -17,13 +17,13 @@
  *** */
 <<widget "cashAdd">>
 	
-	<<if ndef $args[0]>>
+	<<if ndef _args[0]>>
 		/* Ignore if there are no args. */
 		<<run console.log(`WARNING: <<cashAdd>>: called with no arguments.`)>>
 	
-	<<elseif isNaN($args[0])>>
+	<<elseif isNaN(_args[0])>>
 		/* Ignore if the arg can't be processed as a number. */
-		<<run console.log(`WARNING: <<cashAdd>>: called with a non number ${$args[0]}.`)>>
+		<<run console.log(`WARNING: <<cashAdd>>: called with a non number ${_args[0]}.`)>>
 	
 	/* Process the math in java script. */
 	<<else>>
@@ -32,10 +32,10 @@
 			const maxCash = 180000000000000000000000000000000000000000000000000;
 
 			/* Cast the arg as a number: */
-			State.variables.args[0] = Number(State.variables.args[0]).toFixed(2);
+			State.temporary.args[0] = Number(State.temporary.args[0]).toFixed(2);
 
 			/* Add the value: */
-			State.variables.cash = Number(Number(State.variables.cash) + Number(State.variables.args[0])).toFixed(2);
+			State.variables.cash = Number(Number(State.variables.cash) + Number(State.temporary.args[0])).toFixed(2);
 
 			/* Clamp the value from 0 to maxCash: */
 			State.variables.cash = Math.clamp(State.variables.cash, 0, maxCash);
@@ -57,22 +57,22 @@
  *	Subract a possitive value from the $cash value.
  *** */
 <<widget "cashMinus">>
-	<<if ndef $args[0]>>
+	<<if ndef _args[0]>>
 		/* Ignore if there are no args. */
 		<<run console.log(`WARNING: <<cashMinus>>: called with no arguments.`)>>
-	<<elseif isNaN($args[0])>>
+	<<elseif isNaN(_args[0])>>
 		/* Ignore if the arg can't be processed as a number. */
-		<<run console.log(`WARNING: <<cashMinus>>: called with a non number ${$args[0]}.`)>>
-	<<elseif Number($args[0]) <= 0>>
+		<<run console.log(`WARNING: <<cashMinus>>: called with a non number ${_args[0]}.`)>>
+	<<elseif Number(_args[0]) <= 0>>
 		/* Ignore if the arg is set negative: */
-		<<run console.log(`WARNING: <<cashMinus>>: called with a negative number ${$args[0]}.`)>>
+		<<run console.log(`WARNING: <<cashMinus>>: called with a negative number ${_args[0]}.`)>>
 	<<else>>
 		<<script>>
-			State.variables.args[0] = Number(Number(0) - Number(State.variables.args[0])).toFixed(2);
+			State.temporary.args[0] = Number(Number(0) - Number(State.temporary.args[0])).toFixed(2);
 		<</script>>
 	<</if>>
 
-	<<cashAdd $args[0]>>
+	<<cashAdd _args[0]>>
 <</widget>>
 
 
@@ -108,14 +108,14 @@
  *	Clamps fluffy stats
  *** */
 <<widget "clampValues">>
-	<<fluffyError $args[0]>>
+	<<fluffyError _args[0]>>
 	<<if $fluffyError>>
 		<<run console.log(`ERROR: <<clampValues>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
 		/* Doing via script because I can't trust TWINE to do math */
 		<<script>>
-			const ID = State.variables.args[0].ID;
+			const ID = State.temporary.args[0].ID;
 
 			/* Clamp These 0-10: */
 			State.variables.globalFluffies[ID].strength = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].strength, 0, 10));

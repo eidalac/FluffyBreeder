@@ -112,24 +112,24 @@
  *	Used to limit the colors you can get from different sources.
  *** */
 <<widget "limitColor">>
-	<<if ndef($args)>>
+	<<if ndef(_args)>>
 		<<run console.log(`ERROR: <<limitColor>>: Called with no arguments.`)>>
-	<<elseif $args.length > 2>>
+	<<elseif _args.length > 2>>
 		<<run console.log(`ERROR: <<limitColor>>: Called with too many arguments.`)>>
 	<<else>>
 		<<set _wGene = [ "W/w;", "W/W;", "w/W;" ]>>
 
 		/* Some logic/sanity checking: */ 
 		<<script>>
-			if (State.variables.args.length == 1)
+			if (state.temporary.args.length == 1)
 			{
-				State.temporary.high = Number(Math.max(State.variables.args[0], 6));
-				State.temporary.low = Number(Math.min(State.variables.args[0], 1));
+				State.temporary.high = Number(Math.max(state.temporary.args[0], 6));
+				State.temporary.low = Number(Math.min(state.temporary.args[0], 1));
 			}
 			else
 			{
-				State.temporary.high = Number(Math.max(State.variables.args[0], State.variables.args[1], 6));
-				State.temporary.low = Number(Math.min(State.variables.args[0], State.variables.args[1], 1));
+				State.temporary.high = Number(Math.max(state.temporary.args[0], state.temporary.args[1], 6));
+				State.temporary.low = Number(Math.min(state.temporary.args[0], state.temporary.args[1], 1));
 			}
 		<</script>>
 
