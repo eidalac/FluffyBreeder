@@ -25,29 +25,52 @@ window.renderInfo = function(e) {
 }
 
 window.getInfo = function(info_id) {
-  switch(info_id) {
-    case 'attribute_trust':
-      return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'attribute_happiness':
-      return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'attribute_trauma':
-      return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
-    case 'attribute_stress':
-      return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
-    case 'attribute_training':
-      return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
-    case 'attribute_temperament':
-      return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'trait_feral':
-      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
-    case 'trait_nearsighted':
-      return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
-    case 'trait_colourblind':
-      return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
-    case 'trait_feeble':
-      return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.`
-    default:
-      return `${info_id} has no info yet.`
+    switch(info_id) {
+      case 'stat_strength':
+        return '<b class="info-highlight">Strength</b> indicate general physical ability and coordination.'
+      case 'stat_energy':
+        return '<b class="info-highlight">Energy</b> indicate physical energy and endurance.'
+      case 'stat_charm':
+        return '<b class="info-highlight">Charm</b> is the general disposition and demeanor of a fluffy.'
+      case 'stat_thinking':
+        return '<b class="info-highlight">Thinking</b> is the general mental and reasoning ability.'
+      case 'stat_learning':
+        return '<b class="info-highlight">Learning</b> indicates how well a fluffy can learn new things.'
+      case 'stat_fertility':
+        return '<b class="info-highlight">Fertliity</b> indicates how many foals a fluffy may have as well as how much milk a mare can produce, and is averaged between the father and mother.'
+
+      case 'attribute_trust':
+        return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
+      case 'attribute_happiness':
+        return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
+      case 'attribute_trauma':
+        return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
+      case 'attribute_stress':
+        return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
+      case 'attribute_training':
+        return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
+      case 'attribute_temperament':
+        return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
+
+      case 'trait_feral':
+        return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`  
+      case 'trait_slow':
+        return `<b class="info-highlight">Slow</b> fluffies unable to move quite as fast as others.`  
+      case 'trait_limp':
+        return `<b class="info-highlight">Limp</b> fluffies have a perminate limp in one leg, limiting mobility.`
+      case 'trait_lame':
+        return `<b class="info-highlight">Lame</b> fluffies have at least one non functional leg and have a hard time getting around`
+      case 'trait_cripple':
+        return `<b class="info-highlight">Cripple</b> fluffies are barely able to move without assistance.`
+
+        case 'trait_nearsighted':
+        return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
+      case 'trait_colourblind':
+        return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
+      case 'trait_feeble':
+        return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.`
+      default:
+        return `${info_id} has no info yet.`
   }
 }
 

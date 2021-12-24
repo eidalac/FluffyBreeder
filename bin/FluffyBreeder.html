@@ -7142,29 +7142,52 @@ window.renderInfo = function(e) {
 }
 
 window.getInfo = function(info_id) {
-  switch(info_id) {
-    case 'attribute_trust':
-      return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'attribute_happiness':
-      return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'attribute_trauma':
-      return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
-    case 'attribute_stress':
-      return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
-    case 'attribute_training':
-      return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
-    case 'attribute_temperament':
-      return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
-    case 'trait_feral':
-      return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`
-    case 'trait_nearsighted':
-      return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
-    case 'trait_colourblind':
-      return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
-    case 'trait_feeble':
-      return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.`
-    default:
-      return `${info_id} has no info yet.`
+    switch(info_id) {
+      case 'stat_strength':
+        return '<b class="info-highlight">Strength</b> indicate general physical ability and coordination.'
+      case 'stat_energy':
+        return '<b class="info-highlight">Energy</b> indicate physical energy and endurance.'
+      case 'stat_charm':
+        return '<b class="info-highlight">Charm</b> is the general disposition and demeanor of a fluffy.'
+      case 'stat_thinking':
+        return '<b class="info-highlight">Thinking</b> is the general mental and reasoning ability.'
+      case 'stat_learning':
+        return '<b class="info-highlight">Learning</b> indicates how well a fluffy can learn new things.'
+      case 'stat_fertility':
+        return '<b class="info-highlight">Fertliity</b> indicates how many foals a fluffy may have as well as how much milk a mare can produce, and is averaged between the father and mother.'
+
+      case 'attribute_trust':
+        return `<b class="info-highlight">Trust</b> indicates how much the fluffy has bonded with you.<br> It increases by being fed well, and playing with the fluffy.`
+      case 'attribute_happiness':
+        return `<b class="info-highlight">Happiness</b> indicates the current mood of the fluffy.<br> It increases by being fed well, and playing with the fluffy.`
+      case 'attribute_trauma':
+        return `<b class="info-highlight">Trauma</b> indicates how much abuse the fluffy has endured.<br> It increases by not being fed, or abusing the fluffy.`
+      case 'attribute_stress':
+        return `<b class="info-highlight">Stress</b> indicates how well the fluffy can cope currently.<br> It increases by birthing or through training.`
+      case 'attribute_training':
+        return `<b class="info-highlight">Training</b> indicates how much influence you have over the fluffy.<br> It increases through training.`
+      case 'attribute_temperament':
+        return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
+
+      case 'trait_feral':
+        return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`  
+      case 'trait_slow':
+        return `<b class="info-highlight">Slow</b> fluffies unable to move quite as fast as others.`  
+      case 'trait_limp':
+        return `<b class="info-highlight">Limp</b> fluffies have a perminate limp in one leg, limiting mobility.`
+      case 'trait_lame':
+        return `<b class="info-highlight">Lame</b> fluffies have at least one non functional leg and have a hard time getting around`
+      case 'trait_cripple':
+        return `<b class="info-highlight">Cripple</b> fluffies are barely able to move without assistance.`
+
+        case 'trait_nearsighted':
+        return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
+      case 'trait_colourblind':
+        return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
+      case 'trait_feeble':
+        return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.`
+      default:
+        return `${info_id} has no info yet.`
   }
 }
 
@@ -11757,55 +11780,7 @@ Genes       Height multiplier
 &lt;br&gt;
 &lt;br&gt;
 &lt;&lt;button &#39;&lt;i class=&quot;fa fa-save&quot;&gt;&lt;/i&gt; Saves&#39;&gt;&gt;&lt;&lt;script&gt;&gt;UI.saves()&lt;&lt;/script&gt;&gt;&lt;&lt;/button&gt;&gt;
-&lt;/div&gt;
-/* 
-&lt;br&gt;&lt;br&gt;
-
-&lt;br&gt;
-just for testing colors
-&lt;br&gt;
-&lt;&lt;set _cList = []&gt;&gt;
-
-&lt;&lt;for _c range $Colors&gt;&gt;
-	&lt;&lt;run _cList.push(_c.Name)&gt;&gt;
-&lt;&lt;/for&gt;&gt;
-
-Body:
-&lt;&lt;listbox &quot;_ccolor&quot;&gt;&gt;
-	&lt;&lt;optionsfrom _cList&gt;&gt;
-&lt;&lt;/listbox&gt;&gt;
- Mane: 
-&lt;&lt;listbox &quot;_mcolor&quot;&gt;&gt;
-	&lt;&lt;optionsfrom _cList&gt;&gt;
-&lt;&lt;/listbox&gt;&gt;
- Eyes: 
-&lt;&lt;listbox &quot;_ecolor&quot;&gt;&gt;
-	&lt;&lt;optionsfrom _cList&gt;&gt;
-&lt;&lt;/listbox&gt;&gt;
-
-&lt;&lt;button Set&gt;&gt;
-	&lt;&lt;timed 10ms&gt;&gt;
-	&lt;&lt;replace &quot;#fluffy-image&quot;&gt;&gt;
-	&lt;&lt;= &#39;&lt;img src=&quot;https://i.imgur.com/z2TkLN5.png&quot; style=&quot;position: absolute; left: 0; top: 0; width: 140px; height: 140px&quot; class=&quot;&#39; + _ccolor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
-	
-	&lt;&lt;= &#39;&lt;img src=&quot;https://i.imgur.com/FzE4WVq.png&quot; style=&quot;position: absolute; left: 0; top: 0; width: 140px; height: 140px&quot; class=&quot;&#39; + _ecolor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
-	
-	&lt;img src=&quot;https://i.imgur.com/YSwMWtu.png&quot; style=&quot;position: absolute; left: 0; top: 0; width: 140px; height: 140px&quot;&gt;
-	
-	&lt;&lt;= &#39;&lt;img src=&quot;https://i.imgur.com/9Kt78il.png&quot; style=&quot;position: absolute; left: 0; top: 0; width: 140px; height: 140px&quot; class=&quot;&#39; + _mcolor.toLowerCase() + &#39;filter&#39; + &#39;&quot;&gt;&#39;&gt;&gt;
-	
-	&lt;img src=&quot;https://i.imgur.com/ZE9xCKk.png&quot; style=&quot;position: absolute; left: 0; top: 0; width: 140px; height: 140px&quot;&gt;
-	&lt;&lt;/replace&gt;&gt;
-		&lt;&lt;/timed&gt;&gt;
-&lt;&lt;/button&gt;&gt;
-
-&lt;br&gt;&lt;br&gt;
-&lt;div
-	id = &quot;fluffy-image&quot;
-	style=&quot;position: relative; width: 140px; height: 140x; padding: 5px; border: 0px solid grey&quot;&gt;
-
-&lt;/div&gt;
-*/</tw-passagedata><tw-passagedata pid="14" name="Gene Test" tags="" position="475,225" size="100,100">/* **********
+&lt;/div&gt;</tw-passagedata><tw-passagedata pid="14" name="Gene Test" tags="" position="475,225" size="100,100">/* **********
  * geneTest.tw
  *
  * Package: FluffyBreeder
@@ -17498,7 +17473,7 @@ button {
 					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_charm&quot;&gt;Charm &lt;&lt;displayStat _fluffy.charm&gt;&gt;&lt;/span&gt;
 					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_thinking&quot;&gt;Thinking &lt;&lt;displayStat _fluffy.thinking&gt;&gt;&lt;/span&gt;
 					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_learning&quot;&gt;Learning &lt;&lt;displayStat _fluffy.learning&gt;&gt;&lt;/span&gt;
-					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_strength&quot;&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
+					&lt;span class=&quot;stat-entry info-toggle&quot; data-info=&quot;stat_fertility&quot;&gt;Fertility &lt;&lt;displayStat _fluffy.fertility&gt;&gt;&lt;/span&gt;
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-attributes&quot;&gt;
 					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_trust&quot;&gt;Trust &lt;&lt;displayAttribute _fluffy.trust&gt;&gt;&lt;/span&gt;
