@@ -75,6 +75,16 @@ window.getInfo = function(info_id) {
       case 'trait_lungcancer':
         return `<b class="info-highlight">Lung Cancer</b> This fluffy has long term cancer in it's lungs.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
+      /* Weight Defects */
+      case 'trait_chubby':
+        return `<b class="info-highlight">Chubby</b> fluffies have a bit more fat under the fluff.<p>Energy: <span style="color:darkred">-1</span><p>`
+      case 'trait_overweight':
+        return `<b class="info-highlight">Overweight</b> fluffies have an unhealthy bulk to them.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-1</span><p>`
+      case 'trait_fat':
+        return `<b class="info-highlight">Fat</b> fluffies could be mistaken for a pregnant dame.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-1</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_obese':
+        return `<b class="info-highlight">Obese</b> fluffies are in dire need of a diet.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
+
       case 'trait_nearsighted':
         return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
       case 'trait_colourblind':
