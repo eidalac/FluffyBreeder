@@ -53,17 +53,29 @@ window.getInfo = function(info_id) {
         return `<b class="info-highlight">Temperament</b> indicates how much energy the fluffy has.<br> It increases by being fed well, and playing with the fluffy.`
 
       case 'trait_feral':
-        return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.`  
-      case 'trait_slow':
-        return `<b class="info-highlight">Slow</b> fluffies unable to move quite as fast as others.<p style="color:darkred">energy-<p>`
-      case 'trait_limp':
-        return `<b class="info-highlight">Limp</b> fluffies have a perminate limp in one leg, limiting mobility.<p style="color:darkred">energy-; strength-<p>`
-      case 'trait_lame':
-        return `<b class="info-highlight">Lame</b> fluffies have at least one non functional leg and have a hard time getting around.<p style="color:darkred">energy--; strength-; charm-<p>`
-      case 'trait_crippled':
-        return `<b class="info-highlight">Crippled</b> fluffies are barely able to move without assistance.<p style="color:darkred">energy---; strength--; charm--<p><p style="color:green">lolz++<p>`
+        return `<b class="info-highlight">Feral</b> fluffies are fluffies that are not domesticated, or that have otherwise escaped or been released from care/captivity.<p>price <span style="color:darkred">-25%</span><p>`  
 
-        case 'trait_nearsighted':
+      /* Leg Defects */
+      case 'trait_slow':
+        return `<b class="info-highlight">Slow</b> fluffies unable to move quite as fast as others.<p>Energy: <span style="color:darkred">-1</span><p>`
+      case 'trait_limp':
+        return `<b class="info-highlight">Limp</b> fluffies have a perminate limp in one leg, limiting mobility.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-1</span><p>`
+      case 'trait_lame':
+        return `<b class="info-highlight">Lame</b> fluffies have at least one non functional leg and have a hard time getting around.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-1</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_crippled':
+        return `<b class="info-highlight">Crippled</b> fluffies are barely able to move without assistance.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
+
+      /* Lung Defects */
+      case 'trait_breathless':
+        return `<b class="info-highlight">Breathless</b> fluffies have a slightly harder time breathing.<p>Energy: <span style="color:darkred">-1</span>, Strength: <span style="color:darkred">-1</span><p>`
+      case 'trait_bronchitis':
+        return `<b class="info-highlight">Bronchitis</b> This fluffy has frequent coughing and wheezing.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_asthmatic':
+        return `<b class="info-highlight">Asthmatic</b> fluffies have difficulty breathing, chest pains, cough, and wheezing.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
+      case 'trait_lungcancer':
+        return `<b class="info-highlight">Lung Cancer</b> This fluffy has long term cancer in it's lungs.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
+
+      case 'trait_nearsighted':
         return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
       case 'trait_colourblind':
         return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
