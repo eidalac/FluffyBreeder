@@ -109,10 +109,25 @@ window.getInfo = function(info_id) {
       case 'trait_appendicitis':
         return `<b class="info-highlight">Appendicitis</b> This fluffy has a swollen appendix and is in constant pain.<p>Thinking: <span style="color:darkred">-4</span>, Learning: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
+      /* Mental defect */
+      case 'trait_silly':
+        return `<b class="info-highlight">Silly</b> fluffies easily ammused, even when they shouldn't be.<p>Learning: <span style="color:darkred">-1</span>, Thinking: <span style="color:darkred">-1</span><p>`
+      case 'trait_simple':
+        return `<b class="info-highlight">Simple</b> fluffies are dull minded, even by fluffy standards.<p>Learning: <span style="color:darkred">-2</span>, Thinking: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_moron':
+        return `<b class="info-highlight">Moronic</b> fluffies are amazingly stupid.<p>Learning: <span style="color:darkred">-3</span>, Thinking: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_imbecile':
+        return `<b class="info-highlight">Imbecilic</b> fluffies have never been troubled by a single thought.<p>Learning: <span style="color:darkred">-4</span>, Thinking: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
+
+      /* Eye defect */
       case 'trait_nearsighted':
-        return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
+        return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.<p>Learning: <span style="color:darkred">-1</span><p>`
       case 'trait_colourblind':
-        return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.`
+        return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.<p>Learning: <span style="color:darkred">-2</span>, Energy: <span style="color:darkred">-1</span><p>`
+      case 'trait_nearblind':
+        return `<b class="info-highlight">Near blind</b> fluffies have very limited vision and mostly see light and shadows.<p>Learning: <span style="color:darkred">-3</span>, Energy: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_blind':
+        return `<b class="info-highlight">Blind</b> fluffies do not see.  At all.<p>Learning: <span style="color:darkred">-4</span>, Energy: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       default:
         return `${info_id} has no info yet.`
