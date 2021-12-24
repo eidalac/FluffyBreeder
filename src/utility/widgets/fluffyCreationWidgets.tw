@@ -21,7 +21,7 @@
  *	Creates a male or female fluffy from the baseline genome.
  *** */
 <<widget "BaseFluffy">>
-	<<if ($args[0].toUpperCase() == "MALE")>>
+	<<if (_args[0].toUpperCase() == "MALE")>>
 		<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 	<<else>>
 		<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
@@ -106,8 +106,8 @@
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 <<widget "newFromGene">>
-	<<if def $args.length>>
-		<<set _subspecies = $args[1] ? $args[1] : $args[0].getSubSpecies()>>
+	<<if def _args.length>>
+		<<set _subspecies = _args[1] ? _args[1] : _args[0].getSubSpecies()>>
 		<<run console.log(_subspecies)>>
 		<<set _l = random(0, 1)>>
 		<<set _f = random(0, 1)>>
@@ -116,61 +116,61 @@
 		<<set _cl = random(0, 2)>>
 		<<set _cd = random(0,30)>>
 
-		<<set _L = Number($args[0].getLength() + _l).toFixed(2)>>
-		<<set _H = Number(($args[0].getHeight() + _h) * _L).toFixed(2)>>
-		<<set _W = Number($args[0].getWeight() * _L).toFixed(2)>>
+		<<set _L = Number(_args[0].getLength() + _l).toFixed(2)>>
+		<<set _H = Number((_args[0].getHeight() + _h) * _L).toFixed(2)>>
+		<<set _W = Number(_args[0].getWeight() * _L).toFixed(2)>>
 
 		<<set $activeFluffy = {
 			name: "Fluffy",
 			hasName: false,
-			geneString: $args[0].toString(),
-			genes: $args[0],
+			geneString: _args[0].toString(),
+			genes: _args[0],
 			personality: "",
 			weekAcquired: 0,
 			origin: 0,
 			ID: -1,
 			sID: -1,
-			gender: $args[0].getGenderString().toLowerCase(),
+			gender: _args[0].getGenderString().toLowerCase(),
 			length: Number(randomFloat(_L * 0.85, _L)).toFixed(2),
 			maxLength: _L,
 			lengthAdd: _l, 
 			maxHeight: _H,
 			height: Number(randomFloat(_H*0.95,_H)).toFixed(2),
-			heightMulti: $args[0].getHeight() + _h,
+			heightMulti: _args[0].getHeight() + _h,
 			heightAdd: _h,
 			weight: Number(randomFloat(_W * .79, _W)).toFixed(2),
 			maxWeight: _W,
-			weightMulti: $args[0].getWeight(),
-			maxAge: $args[0].getMaxAge(),
+			weightMulti: _args[0].getWeight(),
+			maxAge: _args[0].getMaxAge(),
 			age: 0,
 			ageWeeks: 0,  
-			maxFertility: $args[0].getFertility() + _f,
-			fertility: $args[0].getFertility() + _f,
+			maxFertility: _args[0].getFertility() + _f,
+			fertility: _args[0].getFertility() + _f,
 			fertilityAdd: _f,
-			maxMaturity: $args[0].getMaturity() + _m,
-			maturity: $args[0].getMaturity() + _m,
+			maxMaturity: _args[0].getMaturity() + _m,
+			maturity: _args[0].getMaturity() + _m,
 			maturityAdd: _m,
-			breed: $args[0].getBreedString().toLowerCase(),
-			cColor: $args[0].getCoatColorString(),
-			mColor: $args[0].getManeColorString(),
-			eColor: $args[0].getEyeColorString(),
+			breed: _args[0].getBreedString().toLowerCase(),
+			cColor: _args[0].getCoatColorString(),
+			mColor: _args[0].getManeColorString(),
+			eColor: _args[0].getEyeColorString(),
 			colorGroup: [],
 			mother: -1,
 			father: -1,
 			trust: 0,
 			training: 0,
-			strength: $args[0].getStrong(),
-			energy: $args[0].getEnergy(),
-			charm: $args[0].getCharm(),
-			thinking: $args[0].getThinking(),
-			learning: $args[0].getLearning(),
+			strength: _args[0].getStrong(),
+			energy: _args[0].getEnergy(),
+			charm: _args[0].getCharm(),
+			thinking: _args[0].getThinking(),
+			learning: _args[0].getLearning(),
 			coatLengthAdd: _cl,
-			coatLength: $args[0].getCoatLength() + _cl,
+			coatLength: _args[0].getCoatLength() + _cl,
 			coatDensityAdd: _cd,
-			coatDensity: $args[0].getCoatDensity() + _cd,
-			coatCurl: $args[0].getCoatCurl(),
+			coatDensity: _args[0].getCoatDensity() + _cd,
+			coatCurl: _args[0].getCoatCurl(),
 			subSpecies: _subspecies,
-			subSpeciesString: $args[0].getSubSpeciesDesc(_subspecies),
+			subSpeciesString: _args[0].getSubSpeciesDesc(_subspecies),
 			health: 10,
 			children: [],
 			specialFriend: -1,
@@ -237,7 +237,7 @@
  *	Set genetic traits on $activeFluffy
  *** */
 <<widget "setGeneTraits">>
-<<run console.log($args.full)>>
+<<run console.log(_args.full)>>
 
 /* 3 possible 'misc' defects (used to rate general defect severity)*/
 <<set _defectLevel = 1>>
@@ -265,6 +265,7 @@
 	<<set $activeFluffy.learning -= _defectLevel>>
 	<<set _defectLevel++>>
 <</if>>
+
 
 /* Leg defect */
 <<if $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase()>>
@@ -341,7 +342,6 @@
 			<<set $activeFluffy.charm -= 2>>
 	<</switch>>
 <</if>>
-
 
 /* Heart defect */
 <<if $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase()>>
@@ -480,8 +480,8 @@
  *	Sets the target as $activefluffy.
  *** */
 <<widget "Focus">>
-	<<if def $args.length>>
-		<<set $activeFluffy = $args[0]>>
+	<<if def _args.length>>
+		<<set $activeFluffy = _args[0]>>
 	<</if>>
 <</widget>>
 
@@ -493,12 +493,12 @@
  *	Sets the resulting child to $activeFluffy
  *** */
 <<widget "breedFluffies">>
-	<<if $args.length != 2>>
+	<<if _args.length != 2>>
 		<br><br>@@.red; breedFluffies called without 2 parents.@@<br><br>
 	<</if>>
 	
-	<<set _mom = $args[0]>>
-	<<set _dad = $args[1]>>
+	<<set _mom = _args[0]>>
+	<<set _dad = _args[1]>>
 	<<set _mom.genes = Genome.fromString(_mom.geneString)>>
 	<<set _dad.genes = Genome.fromString(_dad.geneString)>>
 
@@ -580,12 +580,12 @@
  *	Set a fluffy as dead and remove it, but does not affect the store list
  *** */
 <<widget "deadFluffy">>
-	<<fluffyError $args[0]>>
+	<<fluffyError _args[0]>>
 	<<if $fluffyError>>
 		<<run console.log(`ERROR: <<deadFluffy>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
-		<<set _ID = $args[0].ID>>
+		<<set _ID = _args[0].ID>>
 
 		<<set $globalFluffies[_ID].dead = true>>
 		<<set $globalFluffies[_ID].onDisplay = false>>
@@ -627,14 +627,14 @@
  *	Removes a fluffy from the store.
  *** */
 <<widget "removeFluffy">>
-	<<fluffyError $args[0]>>
+	<<fluffyError _args[0]>>
 	<<if $fluffyError>>
 		<<run console.log(`ERROR: <<removeFluffy>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
-		<<set _ID = $args[0].ID>>
+		<<set _ID = _args[0].ID>>
 
-		<<deadFluffy $args[0]>>
+		<<deadFluffy _args[0]>>
 		
 		<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
 
