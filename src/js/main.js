@@ -85,6 +85,16 @@ window.getInfo = function(info_id) {
       case 'trait_obese':
         return `<b class="info-highlight">Obese</b> fluffies are in dire need of a diet.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
 
+      /* Heart Defects */
+      case 'trait_weak':
+        return `<b class="info-highlight">Weak</b> fluffies have little vigour.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-1</span><p>`
+      case 'trait_feeble':
+        return `<b class="info-highlight">Feeble</b> fluffies have an unhealthy consitution.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-2</span><p>`
+      case 'trait_sickly':
+        return `<b class="info-highlight">Sickly</b> fluffies are almsot always ill.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_anemic':
+        return `<b class="info-highlight">Anemic</b> fluffies struggle to even eat, let alone play..<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
+
       case 'trait_nearsighted':
         return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.`
       case 'trait_colourblind':
