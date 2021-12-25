@@ -28,12 +28,18 @@
 			<<set _starve = 0>>
 			<<colorizeText _fluffy.cColor _fluffy.name>> has died of starvation.
 		<<else>>
-			<<set _starve = 1>>
-			<<colorizeText _fluffy.cColor _fluffy.name>> is starving.
-			<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
+			<<if _fluffy.traits.includes('Obese') || _fluffy.traits.includes('Fat') || _fluffy.traits.includes('Overweight') || _fluffy.traits.includes('Chubby')>>
+				<<set _starve = 1>>
+				<<colorizeText _fluffy.cColor _fluffy.name>> has lost some weight due to starvation.
+				<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
+			<<else>>
+				<<set _starve = 2>>
+				<<colorizeText _fluffy.cColor _fluffy.name>> is starving.
+				<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
+			<</if>>
 		<</if>>
 	<<else>>
-		<<set _starve = 2>>
+		<<set _starve = 3>>
 		<<colorizeText _fluffy.cColor _fluffy.name>> is no longer starving.
 		<br><<fluffSpeech  "tank \'ou fow nummies, <title>..." _fluffy.cColor>>
 	<</if>>
@@ -44,14 +50,24 @@
 	<br><br>
 	<<button [[CONTINUE|Event Main]]>>
 		<<set $encyclopedia = 0>>
-		<<run console.log(_starve)>>
 		<<switch _starve>>
 			<<case 0>>
 				<<removeFluffy _fluffy>>
 			<<case 1>>
-				<<addTrait "Starving" _fluffy>>
+			<<for _trait range _fluffy.traits>>
+				<<run console.log(_trait)>>
+				<<switch _trait>>
+					<<case 'Chubby'>><<removeTrait 'Chubby' _fluffy>>
+					<<case 'Overweight'>><<removeTrait 'Overweight' _fluffy>>
+					<<case 'Fat'>><<removeTrait 'Fat' _fluffy>>
+					<<case 'Obese'>><<removeTrait 'Obese' _fluffy>>
+					<<default>>
+				<</switch>>
+			<</for>>
 			<<case 2>>
-				<<run _fluffy.traits.filter(e => e !== 'Starving')>>
+				<<addTrait "Starving" _fluffy>>
+			<<case 3>>
+				<<removeTrait 'Starving' _fluffy>>
 		<</switch>>
 	<</button>>
 

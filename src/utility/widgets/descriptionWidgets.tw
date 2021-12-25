@@ -150,17 +150,18 @@ button {
 								<<else>>
 									[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
 								<</if>>
-								[[Food|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
 								<<set _foodType = $globalFluffies[_fl].foodType>>
+								<<set _foodTitle = "Food: ">>
 								<<switch $globalFluffies[_fl].foodQuality>>
-									<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">> <span><<print `${_foodType} (trash)`>></span> <<else>><</if>>
-									<<case 1>> <span><<print `${_foodType} (cheap)`>></span>
-									<<case 2>> <span><<print `${_foodType} (basic)`>></span>
-									<<case 3>> <span><<print `${_foodType} (good)`>></span>
-									<<case 4>> <span><<print `${_foodType} (premium)`>></span>
-									<<case -1>>
+									<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">><<set _foodTitle += `${_foodType} (trash)`>> <<else>><<set _foodTitle += `${_foodType}`>> <</if>>
+									<<case 1>> <<set _foodTitle += `${_foodType} (cheap)`>>
+									<<case 2>> <<set _foodTitle += `${_foodType} (basic)`>>
+									<<case 3>> <<set _foodTitle += `${_foodType} (good)`>>
+									<<case 4>> <<set _foodTitle += `${_foodType} (premium)`>>
+									<<case -1>> <<set _foodTitle += ``>>
 									
 								<</switch>>
+								[[_foodTitle|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
 							<</if>>
 							</div>
 						</div>
@@ -385,6 +386,39 @@ button {
 <</widget>>
 
 /* ***
+ *	Called as <<removeTrait $trait $fluffy>>
+ *
+ *	Removes trait from fluffy.
+ *** */
+ <<widget "removeTrait">>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<removeTrait>>: called with no trait.`)>>
+	<<elseif ndef _args[1]>>
+		<<run console.log(`ERROR: <<removeTrait>>: called with no Fluffy.`)>>
+	<<elseif ndef _args[1].ID>>
+		<<run console.log(`ERROR: <<removeTrait>>: ID not defined.`)>>
+	<<elseif ndef $globalFluffies[_args[1].ID]>>
+		<<run console.log(`ERROR: <<removeTrait>>: Fluffy ID ${_args[1].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if _args[1].ID != $globalFluffies[_args[1].ID].ID>>
+			<<run console.log(`ERROR: <<removeTrait>>: Fluffy ID ${_args[1].ID} does not match global ID ${$globalFluffies[_args[1].ID].ID}.`)>>
+
+			<<set _args[1].ID = Number($globalFluffies[_args[1].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[1].ID] = _args[1]>>
+		<</if>>
+
+		<<set _fluffy = _args[1]>>
+		<<set _trait = _args[0]>>
+
+		<<if !_fluffy.traits.includes(_trait)>>
+			<<run console.log(`ERROR: <<removeTrait>>: Could not remove ${_trait} from ${_fluffy}. Reason: No such trait.`)>>
+		<<else>>
+			<<set _fluffy.traits = _fluffy.traits.filter(e => e !== _trait)>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
  *	Called as <<pruneTraits $fluffy>>
  *
  *	Prunes deprecated or duplicate traits from fluffy.
@@ -406,11 +440,10 @@ button {
 
 		<<for _trait range _fluffy.traits>>
 			<<if _countOccurrences(_fluffy.traits, _trait) > 1>>
-				<<run _fluffy.traits.filter(e => e !== _trait)>>
+				<<removeTrait _trait _fluffy>>
 			<</if>>
-
 			<<if _deprecated.includes(_trait)>>
-				<<run _fluffy.traits.filter(e => e !== _trait)>>
+				<<removeTrait _trait _fluffy>>
 			<</if>>
 		<</for>>
 	<</if>>
