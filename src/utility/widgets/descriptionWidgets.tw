@@ -385,6 +385,38 @@ button {
 <</widget>>
 
 /* ***
+ *	Called as <<pruneTraits $fluffy>>
+ *
+ *	Prunes deprecated or duplicate traits from fluffy.
+ *** */
+<<widget "pruneTraits">>
+	<<fluffyError $args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<pruneTraits>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<set _fluffy = $args[0]>>
+		<<personalityFix _fluffy>>
+
+		/* Count occurrences, remove if duplicate */
+		<<set _countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0)>>
+
+		/* List of deprecated traits */
+		<<set _deprecated = ["Infertile", "feeble1", "feeble2", "Runt 1", "Runt 2"]>>
+
+		<<for _trait range _fluffy.traits>>
+			<<if _countOccurrences(_fluffy.traits, _trait) > 1>>
+				<<run _fluffy.traits.filter(e => e !== _trait)>>
+			<</if>>
+
+			<<if _deprecated.includes(_trait)>>
+				<<run _fluffy.traits.filter(e => e !== _trait)>>
+			<</if>>
+		<</for>>
+	<</if>>
+<</widget>>
+
+/* ***
  *	Called as <<personalityFix $fluffy>>
  *
  *	Fixes traits[0] being personality

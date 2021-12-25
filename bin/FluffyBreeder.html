@@ -17051,7 +17051,7 @@ Subspecies:
 
 
 &lt;&lt;script&gt;&gt;
- 	importScripts(&quot;../external-js/globals.js&quot;,);
+ 	importScripts(&quot;./external-js/globals.js&quot;,);
 &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="37" name="description widgets" tags="widget nobr" position="850,475" size="100,100">/* **********
  * descriptionWidgets.tw
  *
@@ -17433,6 +17433,38 @@ button {
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;run _fluffy.traits.push(_trait)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Called as &lt;&lt;pruneTraits $fluffy&gt;&gt;
+ *
+ *	Prunes deprecated or duplicate traits from fluffy.
+ *** */
+&lt;&lt;widget &quot;pruneTraits&quot;&gt;&gt;
+	&lt;&lt;fluffyError $args[0]&gt;&gt;
+	&lt;&lt;if $fluffyError&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;pruneTraits&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;set $fluffyError = false&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _fluffy = $args[0]&gt;&gt;
+		&lt;&lt;personalityFix _fluffy&gt;&gt;
+
+		/* Count occurrences, remove if duplicate */
+		&lt;&lt;set _countOccurrences = (arr, val) =&gt; arr.reduce((a, v) =&gt; (v === val ? a + 1 : a), 0)&gt;&gt;
+
+		/* List of deprecated traits */
+		&lt;&lt;set _deprecated = [&quot;Infertile&quot;, &quot;feeble1&quot;, &quot;feeble2&quot;, &quot;Runt 1&quot;, &quot;Runt 2&quot;]&gt;&gt;
+
+		&lt;&lt;for _trait range _fluffy.traits&gt;&gt;
+			&lt;&lt;if _countOccurrences(_fluffy.traits, _trait) &gt; 1&gt;&gt;
+				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;if _deprecated.includes(_trait)&gt;&gt;
+				&lt;&lt;run _fluffy.traits.filter(e =&gt; e !== _trait)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/for&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
