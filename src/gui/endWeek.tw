@@ -397,6 +397,8 @@
 	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
 	<<set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))>>
 
+	<<run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)>>
+
 	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
 	/* This may be from -200 up to 200 */
 	/* Divide by 2 to normalize to -100 to 100 (aka 0-100)*/
@@ -404,6 +406,8 @@
 	<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
 	<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
 	<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))>>
+
+	<<run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)>>
 
 	<<set _smartyChance = 0>>
 
@@ -423,6 +427,8 @@
 			/* 10% chance at max threshold: */			
 			<<set _smartyChance = Number(90)>>
 	<</switch>>
+
+	<<run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyChance = ${_smartyChance}.`)>>
 
 	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
 	/* An existing smarty has a 1/4 chance of fireing an event. */
