@@ -6,6 +6,18 @@ importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font
 /* --- JavaScript --- */
 /*importScripts("../bin/globals.js",);*/
 
+/* -- Save Functions - */
+Save.onLoad.add(function (save)
+{
+  for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
+  {
+    // Force set a default value to furStage if it's missing:
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
+    }
+  }
+});
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {

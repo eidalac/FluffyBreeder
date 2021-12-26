@@ -7200,6 +7200,18 @@ importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font
 /* --- JavaScript --- */
 /*importScripts("../bin/globals.js",);*/
 
+/* -- Save Functions - */
+Save.onLoad.add(function (save)
+{
+  for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
+  {
+    // Force set a default value to furStage if it's missing:
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
+    }
+  }
+});
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {
@@ -13535,7 +13547,7 @@ profitsTotal: 0
 /* HACKY EVENT WORKAROUNDS */
 &lt;&lt;set $eventID = -1&gt;&gt;
 
-&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="36" name="Buy Fluffies" tags="nobr" position="725,475" size="100,100">/* **********
+&lt;&lt;goto &quot;Disclaimer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="36" name="Buy Flu`ff`ies" tags="nobr" position="725,475" size="100,100">/* **********
  * Buy Fluffies.tw
  *
  * Package: FluffyBreeder
@@ -14772,6 +14784,7 @@ Upgrades:
 	&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
 	&lt;br&gt;
 
+&lt;&lt;run console.log(`DEBUG: [fluffy Interact]: Fur Stage ${$activeFluffy.furStage}.`)&gt;&gt;
 	&lt;div id=&quot;product-form&quot;&gt;
 		&lt;&lt;if $activeFluffy.furStage &gt; 67&gt;&gt;
 			&lt;&lt;set _shear = true&gt;&gt;
@@ -16851,6 +16864,7 @@ Subspecies:
             &lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
             &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
             &lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
+            &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60)&gt;&gt;
 
             &lt;&lt;limitColor 1 2&gt;&gt;
         &lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
@@ -16882,6 +16896,7 @@ Subspecies:
             &lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
             &lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
             &lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+            &lt;&lt;set $activeFluffy.furStage = Number(random(1, 10)&gt;&gt;
         &lt;&lt;else&gt;&gt;
             &lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
                 /* shelter sells pre-owned, older, named fluffies */
@@ -16889,10 +16904,12 @@ Subspecies:
                 &lt;&lt;fetchName&gt;&gt;
                 &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
                 &lt;&lt;limitColor 1 2 3 4&gt;&gt;
+                &lt;&lt;set $activeFluffy.furStage = Number(random(60, 120))&gt;&gt;
             &lt;&lt;elseif $shop == &quot;breeder&quot; || $shop == &quot;angora&quot;&gt;&gt;
                 /* breeder fluffies always have a name */
                 &lt;&lt;fetchName&gt;&gt;
                 &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                &lt;&lt;set $activeFluffy.furStage = Number(random(90, 180)&gt;&gt;
             &lt;&lt;/if&gt;&gt;
             /* generate adult traits */
             &lt;&lt;switch random(0,4)&gt;&gt;
@@ -18138,7 +18155,8 @@ button {
 		temperament: 100,
 		happy: 0,
 		trauma: 0,
-		stress: 0
+		stress: 0,
+		furStage: 0
 	} &gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -18230,7 +18248,8 @@ button {
 			temperament: 100,
 			happy: 0,
 			trauma: 0,
-			stress: 0
+			stress: 0,
+			furStage: 100
 		} &gt;&gt;
 
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
