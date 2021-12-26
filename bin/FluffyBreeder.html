@@ -17176,11 +17176,11 @@ button {
 	&lt;&lt;set _msg = _args[0] ? _args[0] : &quot;&quot;&gt;&gt;
 	&lt;&lt;if _args[0] != &quot;Black&quot;&gt;&gt;
 		&lt;&lt;- `@@color:${_args[1]};`+&#39;&quot;&#39;+`
-			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
 		`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;- `@@background:${_args[1]}; color:white;`+&#39;&quot;&#39;+`
-			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;)}
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
 		`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
@@ -18001,45 +18001,43 @@ button {
 	&lt;&lt;switch $globalFluffies[$activeFluffy.ID].personality&gt;&gt;
 		/* These would be the worst personalities*/
 		&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &#39;am smarty now! Will make bestest herd fwom dummy&#39;&gt;&gt;&lt;&lt;fluffSpeech $ourStore.name $activeFluffy.cColor &gt;&gt; &lt;&lt;colorizeText $activeFluffy.cColor &#39;fluffies!&#39;&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; am smarty now! Will make bestest herd fwom dummy &lt;store&gt; fluffies!&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt; &lt;&lt;colorizeText $activeFluffy.cColor &#39;is best smawty now, dummys do what best smawty say!&#39;&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is best smawty now, dummys do what best smawty say!&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-			&lt;&lt;colorizeText $activeFluffy.cColor &#39;Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!&#39;&gt;&gt;
-		
+			&lt;&lt;fluffSpeech &quot;Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!&quot; $activeFluffy.cColor&gt;&gt;
+
 		/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
 		&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-			&lt;&lt;colorizeText $activeFluffy.cColor &quot;Wet smawty ous&#39;side!&quot;&gt;&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor &quot;wan have hewd, dummeh fewal fwuffies do what smawty wan\&#39;!&quot;&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Wet smawty ous&#39;side! &lt;fluffy&gt; wan have hewd, dummeh fewal fwuffies do what smawty wan\&#39;!&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;Smawty think dummeh hiddest bested nummies, smawty gonna find all da nummies and best enfing mares.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-			&lt;&lt;colorizeText $activeFluffy.cColor &quot;Dummeh poopie&quot;&gt;&gt;&lt;&lt;- $title&gt;&gt;!&lt;&lt;colorizeText $activeFluffy.cColor &quot;Smawty am bestest! Gib bestest toysies NAO!&quot;&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Dummeh poopie &lt;title&gt; Smawty am bestest! Gib bestest toysies NAO!&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Dull&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Dull turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;Swilly &lt;title&gt; nu knows &lt;fluffy&gt; is smawtest smawty, neba find out.  Dummeh.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Timid turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;Smawty &lt;fluffy&gt; be cawefuw. Nu wet hooman find out till ready for sowwry hoffies.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Pensive turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; need get out of &lt;store&gt;. Wun away, make bestest herd.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-			&lt;&lt;colorizeText $activeFluffy.cColor &quot;Dis am DUMMEH! Fwuffy wan\&#39; speshaw\&#39; wub! FWUFFY am SMAWTY!&quot;&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;is am DUMMEH! Fwuffy wan\&#39; speshaw\&#39; wub! FWUFFY am SMAWTY!&quot; $activeFluffy.cColor&gt;&gt;
 
 		/* Foal traits, so these would be &#39;best babies&#39;*/
 		
 		/* Worst combo */
 		&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Curious turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;GIVE BESTES\&#39; TOYS AN\&#39; NUMMIES TO BESTES\&#39; BABBEH WITE NOA!&quot; $activeFluffy.cColor&gt;&gt;
 		
 		/* Progressivly less nasty results */
 		&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Peppy turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;Bestes\&#39; babbeh need bestes\&#39; toys, no give to dummeh babbehs.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Lazy turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;Babbeh have nappies.  Give sowwy poopies if \&#39;ou wake babbeh.&quot; $activeFluffy.cColor&gt;&gt;
 		&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Cute turns smarty.@@
-		&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - Shy turns smarty.@@
-		&lt;&lt;default&gt;&gt;
-			@@.cyan;Placeholder - &lt;&lt;- $activeFluffy.name&gt;&gt; - turns smarty.@@
+			&lt;&lt;fluffSpeech &quot;tehehehe. &lt;fluffy&gt; is bestes\&#39;, pretties\&#39; in whole &lt;store&gt;.&quot; $activeFluffy.cColor&gt;&gt;
+		&lt;&lt;default&gt;&gt; /* shy */
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is bestes\&#39;, dummehs to dummeh to undastan.&quot; $activeFluffy.cColor&gt;&gt;
 			
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="47" name="fluffy creation widgets" tags="widget nobr" position="850,600" size="100,100">/* **********
