@@ -34,6 +34,10 @@ button {
 
 <<run console.log(`DEBUG:[eventCustomer]: Customer test deck ${_customerDeck} (wants = ${_customerWants}).`)>>
 
+/*<<set _customerDeck = [ "Female" ]>>
+<<set _customerWants = 1>>
+<<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${_customerDeck}`)>>*/
+
 <div class="w3-mobile">
 
 	<div class="w3-top w3-col l11 s11">
@@ -357,9 +361,6 @@ button {
 
 	<<run console.log(`DEBUG: [eventCustomer]: Wants = ${_customerWants}`)>>
 
-	<<set _customerWants = "Male">>
-	<<run console.log(`DEBUG: [eventCustomer]: Need forced to ${_customerWants}`)>>
-
 	<<if _customerWants != 0>>
 		<<for _card range _customerDeck>>
 			<<run console.log(`DEBUG: [eventCustomer]: Need ${_card}`)>>
@@ -380,8 +381,8 @@ button {
 				<<set _needsMatch += 2>>
 
 			/* Gender, +2 points if it matches, 0 otherwise */
-			<<elseif _card === $globalFluffies[_fl].gender>>
-				<<run console.log(`DEBUG: [eventCustomer]: Gender match (${$globalFluffies[_fl].gender} === ${_card}`)>>
+			<<elseif _card.toLowerCase() == $globalFluffies[_fl].gender.toLowerCase()>>
+				<<run console.log(`DEBUG: [eventCustomer]: Gender match (${$globalFluffies[_fl].gender} == ${_card})`)>>
 				<<set _needsMatch += 2>>
 
 			/* Breed, value depends on what is offered*/

@@ -108,10 +108,10 @@
 		<<set $globalFluffies[_ef].name = "Fluffy">>
 	<</if>>
 	<<if ndef $globalFluffies[_ef].gender>>
-		<<set $globalFluffies[_ef].gender = "female">>
+		<<set $globalFluffies[_ef].gender = "Female">>
 	<</if>>
 	<<if ndef $globalFluffies[_ef].geneString>>
-		<<if $globalFluffies[_ef].gender == "male">>
+		<<if $globalFluffies[_ef].gender == "Male">>
 			<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 		<<else>>
 			<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
@@ -394,74 +394,77 @@
 	
 
 
-	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
+	/* Lowest Temperament a smarty can generate - 110-130 depending on difficulty settings: */
 
-	<<set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))>>
+	<<set _smartyBase = Number(Number(130) - Number(Number($smartySyndrom) * Number(10)))>>
 
 	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
 
 		<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)>>
 
-		/* An existing smarty has a 1/4 chance of fireing an event. */
-		<<if $globalFluffies[_ef].personality.includes("Smarty")>>
-			<<if random(0,3) == 0>>
-				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
-			<</if>>
+		/* Random chance to not fire at all: */
+		<<if $smartySyndrom > random(0, 10)>>
+			/* An existing smarty has a 1/4 chance of fireing an event. */
+			<<if $globalFluffies[_ef].personality.includes("Smarty")>>
+				<<if random(0,3) == 0>>
+					<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+				<</if>>
 
-		/* Check if this fluffy may become a smarty: */
-		<<else>>
-			/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
-			/* This may be from -200 up to 200 */
-			/* Divide by 2 and normalize to 0 to 100 */
-			<<set _smartyThreshold = Number($globalFluffies[_ef].temperament)>>
-			<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
-			<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
-			<<set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))>>
+			/* Check if this fluffy may become a smarty: */
+			<<else>>
+				/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
+				/* This may be from -200 up to 200 */
+				/* Divide by 2 and normalize to 0 to 100 */
+				<<set _smartyThreshold = Number($globalFluffies[_ef].temperament)>>
+				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
+				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
+				<<set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))>>
 
-			<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)>>
+				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)>>
 
-			<<set _smartyChance = 0>>
+				<<set _smartyChance = 0>>
 
-			/* Odds are based on personality: */
-			<<personalityFix $globalFluffies[_ef]>>
+				/* Odds are based on personality: */
+				<<personalityFix $globalFluffies[_ef]>>
 
-			<<switch $globalFluffies[_ef].personality>>
-				<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
-					/* 80% chance at max threshold: */
-					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.80)))>>
-				<<case "Diligent", "Curious", "Peppy", "Playful">>
-					/* 40% chance at max threshold: */
-					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.40)))>>
-				<<case "Lazy", "Cute", "Dull">>
-					/* 20% chance at max threshold: */
-					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.40)))>>
-				<<case "Shy", "Timid", "Pensive", "Sweet">>
-					/* 10% chance at max threshold: */
-					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.10)))>>
-				<<default>>
-					<<run console.log(`DEBUG: [endWeek]: Defaulted personality, maybe personality is empty string?`)>>
-					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.10)))>>
-			<</switch>>
+				<<switch $globalFluffies[_ef].personality>>
+					<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
+						/* 70% chance at max threshold: */
+						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.70)))>>
+					<<case "Diligent", "Curious", "Peppy", "Playful">>
+						/* 30% chance at max threshold: */
+						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.30)))>>
+					<<case "Lazy", "Cute", "Dull">>
+						/* 20% chance at max threshold: */
+						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.20)))>>
+					<<case "Shy", "Timid", "Pensive", "Sweet">>
+						/* 05% chance at max threshold: */
+						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))>>
+					<<default>>
+						<<run console.log(`ERROR: [endWeek]: Defaulted personality, maybe ${$globalFluffies[_ef].personality} is empty string?`)>>
+						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))>>
+				<</switch>>
 
-			/*** ***********************************************
-			 * Check if this fluffy may become a smarty:
-			 *
-			 * _smartyThreshold (temp-(training+trust)) vs personalty 0-(50/100/150/200)
-			 *
-			 * So 0-100 > random (0, 90|80|60|20) we get a smarty.
-			 *
-			 * If threshold is 0 or less, this will always fail.
-			 * 
-			*** **********************************************/
+				/*** ***********************************************
+				* Check if this fluffy may become a smarty:
+				*
+				* _smartyThreshold (temp-(training+trust)) vs personalty 0-(50/100/150/200)
+				*
+				* So 0-100 > random (0, 90|80|60|20) we get a smarty.
+				*
+				* If threshold is 0 or less, this will always fail.
+				* 
+				*** **********************************************/
 
-			<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}.`)>>
+				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}.`)>>
 
-			<<set _ran = Number(random(0, 100))>>
-			<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(0, 100) = ${_ran}.`)>>
+				<<set _ran = Number(random(1, 100))>>
+				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(1, 100) = ${_ran}.`)>>
 
-			<<if _smartyThreshold > _ran>>
-				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(0, 100): ${_smartyThreshold} > ${_ran}.`)>>
-				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+				<<if _smartyThreshold > _ran>>
+					<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(1, 100): ${_smartyThreshold} > ${_ran}.`)>>
+					<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
+				<</if>>
 			<</if>>
 		<</if>>
 	<</if>>
