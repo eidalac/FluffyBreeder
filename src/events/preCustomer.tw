@@ -1,0 +1,47 @@
+:: Pre Customer [nobr]
+
+/* **********
+ * preCustomer.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * pre-process calls for eventCustomer.
+ *
+ *********** */
+<<run console.log(`DEBUG:[preCustomer]: Customer test cards ${$customerCards}.`)>>
+
+/* Each customer is 'generated' per fluffy on display.  Don't do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
+<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
+
+/* First, we build a customer, starting with how many wants it has, up to 6 */
+<<set $customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)>>
+
+/* How picky the customer is and how many fails they will put up with */
+<<set $customerTolerance = random(0, 3)>>
+
+<<set $customerDeck = []>>
+
+/* For each "want" pluck a random card from our deck and assign it to this customer: */
+<<run $customerDeck = $customerCards.pluckMany($customerWants)>>
+
+<<run console.log(`DEBUG:[preCustomer]: Customer test deck ${$customerDeck} (wants = ${$customerWants}).`)>>
+
+/*<<set $customerDeck = [ "Female" ]>>
+<<set $customerWants = 1>>
+<<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)>>*/
+
+/* pre run random numbers for the event: */
+<<set $rand = []>>
+<<run $rand.push(random(70,110))>>
+<<run $rand.push(random(0,80))>>
+<<run $rand.push(random(15,20))>>
+<<run $rand.push(random(0,90))>>
+<<run $rand.push(random(10,15))>>
+<<run $rand.push(random(0,94))>>
+<<run $rand.push(random(5,10))>>
+
+<<run console.log(`DEBUG:[preCustomer]: going to event passage.`)>>
+
+/* Once all the caculations are done we display the event: */
+<<goto "Event Customer">>

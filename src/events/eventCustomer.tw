@@ -16,28 +16,6 @@ button {
  }
 </style>
 
-<<run console.log(`DEBUG:[eventCustomer]: Customer test cards ${$customerCards}.`)>>
-
-/* Each customer is 'generated' per fluffy on display.  Don't do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
-<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
-
-/* First, we build a customer, starting with how many wants it has, up to 6 */
-<<set _customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)>>
-
-/* How picky the customer is and how many fails they will put up with */
-<<set _customerTolerance = random(0, 3)>>
-
-<<set _customerDeck = []>>
-
-/* For each "want" pluck a random card from our deck and assign it to this customer: */
-<<run _customerDeck = $customerCards.pluckMany(_customerWants)>>
-
-<<run console.log(`DEBUG:[eventCustomer]: Customer test deck ${_customerDeck} (wants = ${_customerWants}).`)>>
-
-/*<<set _customerDeck = [ "Female" ]>>
-<<set _customerWants = 1>>
-<<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${_customerDeck}`)>>*/
-
 <div class="w3-mobile">
 
 	<div class="w3-top w3-col l11 s11">
@@ -316,14 +294,14 @@ button {
 		<br>A customer comes into <<- $ourStore.name>>. 
 		<br>They are looking for 
 
-		<<if _customerWants == 0>>
+		<<if $customerWants == 0>>
 			/* This customer will accept any fluffy */
 			@@.coral; Any Fluffy.@@
 		<<else>>
 			/* This customer has specific needs */
 			@@.coral; 
-			<<for _need range _customerDeck>>
-				<<if _need == _customerDeck.last()>>
+			<<for _need range $customerDeck>>
+				<<if _need == $customerDeck.last()>>
 					<<- _need>>.
 				<<else>>
 					<<- _need>>, 
@@ -331,7 +309,7 @@ button {
 			<</for>>
 			@@
 
-			<br>if you meet all <<- _customerWants>> of these requests, you may get a <<- Number(1 + Number(_customerWants / 5))>>x price bonus.
+			<br>if you meet all <<- $customerWants>> of these requests, you may get a <<- Number(1 + Number($customerWants / 5))>>x price bonus.
 		<</if>>
 
 		<span id="result-msg"></span>
@@ -359,10 +337,10 @@ button {
 
 	<<set _needsMatch = 0>>
 
-	<<run console.log(`DEBUG: [eventCustomer]: Wants = ${_customerWants}`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: Wants = ${$customerWants}`)>>
 
-	<<if _customerWants != 0>>
-		<<for _card range _customerDeck>>
+	<<if $customerWants != 0>>
+		<<for _card range $customerDeck>>
 			<<run console.log(`DEBUG: [eventCustomer]: Need ${_card}`)>>
 
 			/* Make sure the color groups are set: */
@@ -731,12 +709,12 @@ button {
 		<</for>>
 	<</if>>
 
-	<<run console.log(`DEBUG: [eventCustomer]: matches: (${_needsMatch} vs ${_customerWants})`)>>
+	<<run console.log(`DEBUG: [eventCustomer]: matches: (${_needsMatch} vs ${$customerWants})`)>>
 
 	<<set _msgString = "">>
 	<<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
-	<<set _msgString += "<br>@@.orange;Possible points = " + Number(_customerWants * 2) + ".@@">>
-	<<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number(_customerWants * 2)).toFixed(2)) + ".@@">>
+	<<set _msgString += "<br>@@.orange;Possible points = " + Number($customerWants * 2) + ".@@">>
+	<<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + ".@@">>
 		
 	<<set _price = Number($globalFluffies[_fl].training)>>
 	<<set _price = Number(_price) + Number(Number($globalFluffies[_fl].trust/10))>>
@@ -797,8 +775,8 @@ button {
 	<br>@@.orange;Base price = <<- _price>>.@@
 
 	/* They want any fluffy */
-	<<if __customerWants == 0>>
-		<<set _priceBonus = Number(Number(random(70,110)/100).toFixed(2))>> 
+	<<if _$customerWants == 0>>
+		<<set _priceBonus = Number(Number($rand[0]/100).toFixed(2))>> 
 	<<else>>
 		<<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
 	<</if>>
@@ -810,7 +788,7 @@ button {
 	<<run console.log(`DEBUG: [eventCustomer]: Price 4: ${_price}`)>>
 
 	/* Check if they will accept the offer */
-	<<if _customerWants > 0 && Number(100 * Number(_needsMatch / Number(_customerWants * 2)).toFixed(2)) <= 33>>
+	<<if $customerWants > 0 && Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) <= 33>>
 
 			<<run console.log(`DEBUG: [eventCustomer]: Match Fail.`)>>
 
@@ -874,18 +852,18 @@ button {
 		/* Random chance to 'upsell'*/
 		<<set _chance = Number(($training + $reputation) / 4).toFixed(2)>>
 	
-		<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > random(0, 80)>>
+		<<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > $rand[1]>>
 			<br>You add some deluxe toys to the sale.
 			<br> 				
-			<<set _price = Number(Number(_price) + Number(random(15,20)))>>
-		<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > random(0, 90)>>
+			<<set _price = Number(Number(_price) + Number($rand[2]))>>
+		<<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > $rand[3]>>
 			<br>You add some fancy toys to the sale.
 			<br> 				
-			<<set _price = Number(Number(_price) + Number(random(10,15)))>>
-		<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > random(0, 94)>>
+			<<set _price = Number(Number(_price) + Number($rand[4]))>>
+		<<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > $rand[5]>>
 			<br>You add some basic toys to the sale.
 			<br> 				
-			<<set _price = Number(Number(_price) + Number(random(5,10)))>>
+			<<set _price = Number(Number(_price) + Number($rand[6]))>>
 		<</if>>
 
 		<<cashMinus _price>>
