@@ -9133,6 +9133,9 @@ button {
 
 	&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Wants = ${_customerWants}`)&gt;&gt;
 
+	&lt;&lt;set _customerWants = &quot;Male&quot;&gt;&gt;
+	&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Need forced to ${_customerWants}`)&gt;&gt;
+
 	&lt;&lt;if _customerWants != 0&gt;&gt;
 		&lt;&lt;for _card range _customerDeck&gt;&gt;
 			&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Need ${_card}`)&gt;&gt;
@@ -9141,6 +9144,8 @@ button {
 			&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
 			&lt;&lt;colorGroup&gt;&gt;
 			&lt;&lt;set $globalFluffies[_fl] = $activeFluffy&gt;&gt;
+
+			&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Fluffy ${_fl} gender = ${$globalFluffies[_fl].gender}`)&gt;&gt;
 
 			/* Caculate the age values */
 			&lt;&lt;set _cat = Number(Number($globalFluffies[_fl].age * 52) + $globalFluffies[_fl].ageWeeks)&gt;&gt;
@@ -11333,41 +11338,11 @@ Genes       Height multiplier
 	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
 	&lt;&lt;set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)&gt;&gt;
-
-	/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
-	/* This may be from -200 up to 200 */
-	/* Divide by 2 to normalize to -100 to 100 (aka 0-100)*/
-	&lt;&lt;set _smartyThreshold = Number($globalFluffies[_ef].temperament)&gt;&gt;
-	&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))&gt;&gt;
-	&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))&gt;&gt;
-	&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)&gt;&gt;
-
-	&lt;&lt;set _smartyChance = 0&gt;&gt;
-
-	/* Odds are based on personality: */
-	&lt;&lt;personalityFix $globalFluffies[_ef]&gt;&gt;
-	&lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
-		&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
-			/* 80% chance at max threshold: */
-			&lt;&lt;set _smartyChance = Number(20)&gt;&gt;
-		&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
-			/* 40% chance at max threshold: */
-			&lt;&lt;set _smartyChance = Number(60)&gt;&gt;
-		&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
-			/* 20% chance at max threshold: */
-			&lt;&lt;set _smartyChance = Number(80)&gt;&gt;
-		&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
-			/* 10% chance at max threshold: */			
-			&lt;&lt;set _smartyChance = Number(90)&gt;&gt;
-	&lt;&lt;/switch&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${$_ef}: _smartyChance = ${_smartyChance}.`)&gt;&gt;
-
 	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase&gt;&gt;
-	/* An existing smarty has a 1/4 chance of fireing an event. */
+
+		&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)&gt;&gt;
+
+		/* An existing smarty has a 1/4 chance of fireing an event. */
 		&lt;&lt;if $globalFluffies[_ef].personality.includes(&quot;Smarty&quot;)&gt;&gt;
 			&lt;&lt;if random(0,4) == 0&gt;&gt;
 				&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
@@ -11375,6 +11350,35 @@ Genes       Height multiplier
 
 		/* Check if this fluffy may become a smarty: */
 		&lt;&lt;else&gt;&gt;
+			/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
+			/* This may be from -200 up to 200 */
+			/* Divide by 2 and normalize to 0 to 100 */
+			&lt;&lt;set _smartyThreshold = Number($globalFluffies[_ef].temperament)&gt;&gt;
+			&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))&gt;&gt;
+			&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))&gt;&gt;
+			&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))&gt;&gt;
+
+			&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)&gt;&gt;
+
+			&lt;&lt;set _smartyChance = 0&gt;&gt;
+
+			/* Odds are based on personality: */
+			&lt;&lt;personalityFix $globalFluffies[_ef]&gt;&gt;
+			&lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
+				&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
+					/* 80% chance at max threshold: */
+					&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.80)))&gt;&gt;
+				&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
+					/* 40% chance at max threshold: */
+					&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.40)))&gt;&gt;
+				&lt;&lt;case &quot;Lazy&quot;, &quot;Cute&quot;, &quot;Dull&quot;&gt;&gt;
+					/* 20% chance at max threshold: */
+					&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.40)))&gt;&gt;
+				&lt;&lt;case &quot;Shy&quot;, &quot;Timid&quot;, &quot;Pensive&quot;, &quot;Sweet&quot;&gt;&gt;
+					/* 10% chance at max threshold: */
+					&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.10)))&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
+
 			/*** ***********************************************
 			 * Check if this fluffy may become a smarty:
 			 *
@@ -11385,7 +11389,14 @@ Genes       Height multiplier
 			 * If threshold is 0 or less, this will always fail.
 			 * 
 			*** **********************************************/
-			&lt;&lt;if _smartyThreshold &gt; random(0, _smartyChance)&gt;&gt;
+
+			&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}.`)&gt;&gt;
+
+			&lt;&lt;set _ran = Number(random(0, 100))&gt;&gt;
+			&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(0, 100) = ${_ran}.`)&gt;&gt;
+
+			&lt;&lt;if _smartyThreshold &gt; _ran &gt;&gt;
+				&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(0, 100): ${_smartyThreshold} &gt; ${_ran}.`)&gt;&gt;
 				&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
