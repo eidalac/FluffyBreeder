@@ -38,45 +38,51 @@
 <</if>>
 
 /* Difficulty */
-<<set $rejectionDifficulty = 0>>
+<<set $eventDifficulty = 0>>
 
 <<if $activeFluffy.colorGroup[0] == "Brown">>
     <<if $pooBaby == 0>>
-        <<set $rejectionDifficulty = Number(2 * $training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number(2 * $training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<elseif $pooBaby == 1>>
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<else>>
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) + Number($globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number($rejectionDifficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
     <</if>>
 <<elseif $activeFluffy.breed == "Alicorn">>
     <<switch Number(Number($alicornRarity) + Number($alicornMonster)>>
     <<case 0>>
-        <<set $rejectionDifficulty = Number(Number(2) * Number($training))>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number(Number(2) * Number($training))>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<case 1>>
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<case 2>>
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<case 3>>
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
     <<default>> /* 4 */
-        <<set $rejectionDifficulty = Number($training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
-        <<set $rejectionDifficulty = Number(Number($rejectionDifficulty)) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
     <</switch>>
+<</if>>
+
+<<if $activeFluffy.ID != $globalFluffies[$activeFluffy.ID].ID>> 
+    <<run console.log(`ERROR: [Pre Rejection]: invalid $activeFluffy ID ${$activeFluffy.ID} should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
+    <<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+    <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 <</if>>
 
 /* pre run random numbers for the event: */

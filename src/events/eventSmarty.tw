@@ -10,122 +10,62 @@
  *
  *********** */
 
-<<set $nextButton = " ">>
+<<script>>UIBar.destroy();<</script>>
 
-/* Each rejection event is the foal being rejected */
-<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
-
-
-<<if ndef $activeFluffy>>
-	/* Shouldn't happen, but just in case*/
-	<<run console.log(`ERROR: [eventSmarty.tw]: fluffy undefined.`)>>
-	<<goto "Event Main">>
+<h1>Smarty Event</h1>
 	
-<<elseif $ourStore.fluffies.includes($activeFluffy.ID) == false>>
-	/* Removed in a prior event. */
-	<<run console.log(`ERROR: [eventSmarty.tw]: fluffy not in store.`)>>
-	<<goto "Event Main">>
+<<- $activeFluffy.name>> is acting up...
+<br>
+<<personalityFix $activeFluffy>>
+<<if $globalFluffies[$activeFluffy.ID].personality.includes("Smarty")>>
+	<<switch $globalFluffies[$activeFluffy.ID].personality>>
+		/* These would be the worst personalities*/
+		<<case "Bossy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Bossy acts a smarty.@@
+		<<case "Haughty">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Haughty acts a smarty.@@
+		<<case "Rowdy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Rowdy acts a smarty.@@
+		
+		/* These are progressivly less 'hellgremlin' (and rare) */
+		<<case "Diligent">>
+			Placeholder - <<- $activeFluffy.name>> - Diligent acts a smarty
+			<<colorizeText $activeFluffy.cColor "Smawty wan nyu homesies! Gib nyu dummeh mummah an' daddeh!">>
+		<<case "Curious">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious acts a smarty.@@
+		<<case "Playful">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Playful acts a smarty.@@
+		<<case "Dull">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Dull acts a smarty.@@
+		<<case "Timid">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid acts asmarty.@@
+		<<case "Pensive">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive acts a smarty.@@
+		<<case "Sweet">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Sweet acts a smarty.@@
 
+		/* Foal traits, so these would be 'best babies'*/
+		
+		/* Worst combo */
+		<<case "Fussy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Fussy acts a smarty.@@
+		
+		/* Progressivly less nasty results */
+		<<case "Peppy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy acts a smarty.@@
+		<<case "Lazy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy acts a smarty.@@
+		<<case "Cute">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute acts a smarty.@@
+		<<case "Shy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy acts a smarty.@@
+		<<default>>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - acts a smarty.@@
+	<</switch>>
 <<else>>
+	<<turnSmarty>>
 	
-	<h1>Smarty Event</h1>
-	
-	<<- $activeFluffy.name>> is acting up...
-	<br>
-	<<personalityFix $activeFluffy>>
-	<<if $globalFluffies[$activeFluffy.ID].personality.includes("Smarty")>>
-		<<switch $globalFluffies[$activeFluffy.ID].personality>>
-			/* These would be the worst personalities*/
-			<<case "Bossy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Bossy acts a smarty.@@
-			<<case "Haughty">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Haughty acts a smarty.@@
-			<<case "Rowdy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Rowdy acts a smarty.@@
-			
-			/* These are progressivly less 'hellgremlin' (and rare) */
-			<<case "Diligent">>
-				Placeholder - <<- $activeFluffy.name>> - Diligent acts a smarty
-				<<colorizeText $activeFluffy.cColor "Smawty wan nyu homesies! Gib nyu dummeh mummah an' daddeh!">>
-			<<case "Curious">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious acts a smarty.@@
-			<<case "Playful">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Playful acts a smarty.@@
-			<<case "Dull">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Dull acts a smarty.@@
-			<<case "Timid">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid acts asmarty.@@
-			<<case "Pensive">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive acts a smarty.@@
-			<<case "Sweet">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Sweet acts a smarty.@@
-	
-			/* Foal traits, so these would be 'best babies'*/
-			
-			/* Worst combo */
-			<<case "Fussy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Fussy acts a smarty.@@
-			
-			/* Progressivly less nasty results */
-			<<case "Peppy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy acts a smarty.@@
-			<<case "Lazy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy acts a smarty.@@
-			<<case "Cute">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute acts a smarty.@@
-			<<case "Shy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy acts a smarty.@@
-			<<default>>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - acts a smarty.@@
-		<</switch>>
-	<<else>>
-		
-		<<switch $globalFluffies[$activeFluffy.ID].personality>>
-			/* These would be the worst personalities*/
-			<<case "Bossy">>
-				<<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor 'am smarty now! Will make bestest herd fwom dummy'>><<fluffSpeech $ourStore.name $activeFluffy.cColor >> <<colorizeText $activeFluffy.cColor 'fluffies!'>>
-			<<case "Haughty">>
-				<<fluffSpeech $activeFluffy.name $activeFluffy.cColor>> <<colorizeText $activeFluffy.cColor 'is best smawty now, dummys do what best smawty say!'>>
-			<<case "Rowdy">>
-				<<colorizeText $activeFluffy.cColor 'Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!'>>
-			
-			/* These are progressivly less 'hellgremlin' (and rare) */
-			<<case "Diligent">>
-				<<colorizeText $activeFluffy.cColor "Wet smawty ous'side!">><<fluffSpeech $activeFluffy.name $activeFluffy.cColor>><<colorizeText $activeFluffy.cColor "wan have hewd, dummeh fewal fwuffies do what smawty wan\'!">>
-			<<case "Curious">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious turns smarty.@@
-			<<case "Playful">>
-				<<colorizeText $activeFluffy.cColor "Dummeh poopie">><<- $title>>!<<colorizeText $activeFluffy.cColor "Smawty am bestest! Gib bestest toysies NAO!">>
-			<<case "Dull">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Dull turns smarty.@@
-			<<case "Timid">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid turns smarty.@@
-			<<case "Pensive">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive turns smarty.@@
-			<<case "Sweet">>
-				<<colorizeText $activeFluffy.cColor "Dis am DUMMEH! Fwuffy wan\' speshaw\' wub! FWUFFY am SMAWTY!">>
-	
-			/* Foal traits, so these would be 'best babies'*/
-			
-			/* Worst combo */
-			<<case "Fussy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious turns smarty.@@
-			
-			/* Progressivly less nasty results */
-			<<case "Peppy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy turns smarty.@@
-			<<case "Lazy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy turns smarty.@@
-			<<case "Cute">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute turns smarty.@@
-			<<case "Shy">>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy turns smarty.@@
-			<<default>>
-				@@.cyan;Placeholder - <<- $activeFluffy.name>> - turns smarty.@@
-				
-		<</switch>>
-		
-	<</if>> /* Smarty trait check */
+<</if>> /* Smarty trait check */
 	
 	<br>
 	<br>You need to do something about this.
@@ -145,25 +85,8 @@
 		<<set $globalFluffies[$activeFluffy.ID].trust-->>
 		<<set $globalFluffies[$activeFluffy.ID].training++>>
 		<<set $globalFluffies[$activeFluffy.ID].temperament -= 2>>
-		
-		<<set _difficulty = 0>>
-				
-				
-		<<if $smartySyndrom == 0>>
-			<<set _difficulty = Number(2 * $training)>>
-			<<set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
-		<<elseif $smartySyndrom == 1>>
-			<<set _difficulty = Number($training)>>
-			<<set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
-		<<else>>
-			<<set _difficulty = Number($training)>>
-			<<set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
-		<</if>>
-		
-		<<if _difficulty >= random(0, 199)>>
+			
+		<<if $eventDifficulty >= $rand[0]>>
 			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
 			<<set _reactionString = "@@.cyan;Otay, " + $title + "." + $globalFluffies[$activeFluffy.ID].name + " sowwy. Won’ be smawty no mowe. Wiww wet " + $title + " be weadew of " + $ourStore.name + " hewd…@@">>
 		
@@ -186,23 +109,23 @@
 		<<set $globalFluffies[$activeFluffy.ID].happy-->>
 		<<set $globalFluffies[$activeFluffy.ID].trust-->>
 		
-		<<set _difficulty = 0>>
+		<<set $eventDifficulty = 0>>
 				
 		<<if $smartySyndrom == 0>>
-			<<set _difficulty = Number(2 * $training)>>
-			<<set _difficulty = Number(_difficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+			<<set $eventDifficulty = Number(2 * $training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
 		<<elseif $smartySyndrom == 1>>
-			<<set _difficulty = Number($training)>>
-			<<set _difficulty = Number(_difficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+			<<set $eventDifficulty = Number($training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
 		<<else>>
-			<<set _difficulty = Number($training)>>
-			<<set _difficulty = Number(_difficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
-			<<set _difficulty = Number(_difficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
+			<<set $eventDifficulty = Number($training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
 		<</if>>
 		
-		<<if _difficulty >= random(0, 199)>>
+		<<if $eventDifficulty >= random(0, 199)>>
 			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
 			<<set _reactionString = "@@.cyan;Place holder - " + $globalFluffies[$activeFluffy.ID].name + " is no longer a smarty.@@">>
 		<<else>>
@@ -258,16 +181,3 @@
 	<</button>>
 	@@.orange;Hugbox option?@@
 </span>
-
-<</if>> /* Close validation checks */
-
-
-
- 	
-
-/*
-<<set $nextButton = "Continue">>
-<<set $nextLink = "Event Main">>
-
-<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
-*/

@@ -9,67 +9,37 @@
  * Event for fluffy starving.
  *
  *********** */
- 
- 
-/* Set fluffy and whether or not it is starving */
-<<set _fluffy = $globalFluffies[$currentEvent.target]>>
-<<set _enable = $currentEvent.enable>>
+<<script>>UIBar.destroy();<</script>>
 
-<<if ndef _fluffy || $ourStore.fluffies.includes(_fluffy.ID) == false>>
-	/* Fluffy was removed in a prior event. */
-	<<run console.log(`ERROR: [eventStarvation]: _fluffy not defined.`)>>
-	<<goto "Event Main">>
-<<else>>
+<h1>Starvation</h1>
+<br>
 
-    <h1>Starvation</h1>
-    <br>
-    <<if _enable == true>>
-		<<if _fluffy.traits.includes('Starving')>>
-			<<set _starve = 0>>
-			<<colorizeText _fluffy.cColor _fluffy.name>> has died of starvation.
-		<<else>>
-			<<if _fluffy.traits.includes('Obese') || _fluffy.traits.includes('Fat') || _fluffy.traits.includes('Overweight') || _fluffy.traits.includes('Chubby')>>
-				<<set _starve = 1>>
-				<<colorizeText _fluffy.cColor _fluffy.name>> has lost some weight due to starvation.
-				<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
-			<<else>>
-				<<set _starve = 2>>
-				<<colorizeText _fluffy.cColor _fluffy.name>> is starving.
-				<br><<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." _fluffy.cColor>>
-			<</if>>
-		<</if>>
-	<<else>>
-		<<set _starve = 3>>
-		<<colorizeText _fluffy.cColor _fluffy.name>> is no longer starving.
-		<br><<fluffSpeech  "tank \'ou fow nummies, <title>..." _fluffy.cColor>>
+<<switch $eventStarve>>
+	<<case 0>>
+		<<colorizeText $actFluffy.cColor $actFluffy.name>> has died of starvation.
+	<<case 1>>
+		<<colorizeText $actFluffy.cColor $actFluffy.name>> has lost some weight due to starvation.
+		<br>
+		<<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." $actFluffy.cColor>>
+	<<case 2>>
+		<<colorizeText $actFluffy.cColor $actFluffy.name>> is starving.
+		<br>
+		<<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." $actFluffy.cColor>>
+	<<default>> /* 3 */
+		<<colorizeText $actFluffy.cColor $actFluffy.name>> is no longer starving.
+		<br>
+		<<fluffSpeech  "tank \'ou fow nummies, <title>..." $actFluffy.cColor>>
+<</switch>>
+
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>
+<<button [[CONTINUE|Event Main]]>>
+	<<set $encyclopedia = 0>>
+
+	/* Doing this as a post step to ensure no weirdness referecing a removed fluffy: */
+	<<if $eventStarve == 0>>
+		<<removeFluffy $actFluffy>>
 	<</if>>
-
-	<<set $nextButton = "Continue">>
-	<<set $nextLink = "Event Main">>
-
-	<br><br>
-	<<button [[CONTINUE|Event Main]]>>
-		<<set $encyclopedia = 0>>
-		<<switch _starve>>
-			<<case 0>>
-				<<removeFluffy _fluffy>>
-			<<case 1>>
-			<<for _trait range _fluffy.traits>>
-				<<run console.log(_trait)>>
-				<<switch _trait>>
-					<<case 'Chubby'>><<removeTrait 'Chubby' _fluffy>>
-					<<case 'Overweight'>><<removeTrait 'Overweight' _fluffy>>
-					<<case 'Fat'>><<removeTrait 'Fat' _fluffy>>
-					<<case 'Obese'>><<removeTrait 'Obese' _fluffy>>
-					<<default>>
-				<</switch>>
-			<</for>>
-			<<case 2>>
-				<<addTrait "Starving" _fluffy>>
-			<<case 3>>
-				<<removeTrait 'Starving' _fluffy>>
-		<</switch>>
-	<</button>>
-
-<</if>>
-
+<</button>>

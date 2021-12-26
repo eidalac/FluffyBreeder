@@ -1,0 +1,57 @@
+:: Pre Starvation [nobr]
+
+/* **********
+ * preStarvation.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Pre processing for starvation events.
+ *
+ *********** */
+
+/* Set fluffy and whether or not it is starving */
+<<set $actFluffy = $globalFluffies[$currentEvent.target]>>
+<<set $eventStarve = 0>>
+
+<<if ndef $actFluffy || $ourStore.fluffies.includes($actFluffy.ID) == false>>
+	/* Fluffy was removed in a prior event. */
+	<<run console.log(`ERROR: [eventStarvation]: $actFluffy not defined.`)>>
+	<<goto "Event Main">>
+<</if>>
+
+<<if $currentEvent.enable == true>>
+	<<if $actFluffy.traits.includes('Starving')>>
+		<<set $eventStarve = 0>>
+	<<else>>
+		<<if $actFluffy.traits.includes('Obese') || $actFluffy.traits.includes('Fat') || $actFluffy.traits.includes('Overweight') || $actFluffy.traits.includes('Chubby')>>
+			<<set $eventStarve = 1>>
+                <<for _trait range $actFluffy.traits>>
+                    <<run console.log(_trait)>>
+                    <<switch _trait>>
+                        <<case 'Chubby'>><<removeTrait 'Chubby' $actFluffy>>
+                        <<case 'Overweight'>><<removeTrait 'Overweight' $actFluffy>>
+                        <<case 'Fat'>><<removeTrait 'Fat' $actFluffy>>
+                        <<case 'Obese'>><<removeTrait 'Obese' $actFluffy>>
+                        <<default>>
+                    <</switch>>
+                <</for>>
+		<<else>>
+			<<set $eventStarve = 2>>
+            <<addTrait "Starving" $actFluffy>>
+		<</if>>
+	<</if>>
+<<else>>
+	<<set $eventStarve = 3>>
+    <<removeTrait 'Starving' $actFluffy>>
+<</if>>
+
+/* No random results to check for on this one so far. */
+<<set $rand = []>>
+
+/* Goto the event: */
+<<goto "Event Starvation">>
+
+
+
+ 

@@ -57,7 +57,7 @@
             <<set $globalFluffies[$activeFluffy.mother].training++>>
             <<set $globalFluffies[$activeFluffy.mother].temperament -= 5>>
 
-            <<if Number($rejectionDifficulty) >= Number($rand[0])>>
+            <<if Number($eventDifficulty) >= Number($rand[0])>>
                 <<set $globalFluffies[$activeFluffy.mother].traits.push("Good Mama")>>
                 <<set _reactionString = "Am be gud mummah!  Wuv all Babhe!  Pomis!">>
             <<else>>
@@ -96,13 +96,7 @@
             <<set $activeFluffy.foodType = "Formula">>
             <<set $activeFluffy.foodQuality = 2>>
 
-            <<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
-                <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-            <<else>>
-                <<run console.log(`ERROR: [eventBirthRejection]: invalid $activeFluffy ID ${$activeFluffy.ID} should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
-                <<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
-                <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-            <</if>>
+            <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 
             <<set _reactionString = "Take bad babbehs for trashies?">>
             
