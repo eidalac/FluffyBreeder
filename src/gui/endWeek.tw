@@ -405,7 +405,7 @@
 		/* Random chance to not fire at all: */
 		<<if $smartySyndrom > random(0, 10)>>
 			/* An existing smarty has a 1/4 chance of fireing an event. */
-			<<if $globalFluffies[_ef].personality.includes("Smarty")>>
+			<<if $globalFluffies[_ef].traits.includes("Smarty")>>
 				<<if random(0,3) == 0>>
 					<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 				<</if>>
@@ -764,18 +764,6 @@
 						<<set $globalFluffies[_ef].personality = "Dull">>
 						<<set $globalFluffies[_ef].energy-->>
 					<</if>>
-				<<case "Cute">>
-					<<if random(0, 1) == 0>>
-						<<set $globalFluffies[_ef].personality = "Sweet">>
-						<<set $globalFluffies[_ef].learning++>>
-						<<set $globalFluffies[_ef].temperament -= 10>>
-						<<set $globalFluffies[_ef].happy += 10>>
-					<<else>>
-						<<set $globalFluffies[_ef].personality = "Haughty">>
-						<<set $globalFluffies[_ef].learning-->>
-						<<set $globalFluffies[_ef].temperament += 20>>
-						<<set $globalFluffies[_ef].happy -= 10>>
-					<</if>>
 				<<case "Peppy">>
 					<<if random(0, 1) == 0>>
 						<<set $globalFluffies[_ef].personality = "Playful">>
@@ -787,6 +775,18 @@
 						<<set $globalFluffies[_ef].charm-->>
 						<<set $globalFluffies[_ef].temperament += 10>>
 						<<set $globalFluffies[_ef].happy += 10>>
+					<</if>>
+				<<default>> /* "Cute" */
+					<<if random(0, 1) == 0>>
+						<<set $globalFluffies[_ef].personality = "Sweet">>
+						<<set $globalFluffies[_ef].learning++>>
+						<<set $globalFluffies[_ef].temperament -= 10>>
+						<<set $globalFluffies[_ef].happy += 10>>
+					<<else>>
+						<<set $globalFluffies[_ef].personality = "Haughty">>
+						<<set $globalFluffies[_ef].learning-->>
+						<<set $globalFluffies[_ef].temperament += 20>>
+						<<set $globalFluffies[_ef].happy -= 10>>
 					<</if>>
 			<</switch>>
 		<</if>>

@@ -11423,7 +11423,7 @@ Genes       Height multiplier
 		/* Random chance to not fire at all: */
 		&lt;&lt;if $smartySyndrom &gt; random(0, 10)&gt;&gt;
 			/* An existing smarty has a 1/4 chance of fireing an event. */
-			&lt;&lt;if $globalFluffies[_ef].personality.includes(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;if $globalFluffies[_ef].traits.includes(&quot;Smarty&quot;)&gt;&gt;
 				&lt;&lt;if random(0,3) == 0&gt;&gt;
 					&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -11782,18 +11782,6 @@ Genes       Height multiplier
 						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Dull&quot;&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].energy--&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-					&lt;&lt;if random(0, 1) == 0&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Sweet&quot;&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].temperament -= 10&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Haughty&quot;&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].learning--&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].temperament += 20&gt;&gt;
-						&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Playful&quot;&gt;&gt;
@@ -11805,6 +11793,18 @@ Genes       Height multiplier
 						&lt;&lt;set $globalFluffies[_ef].charm--&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
 						&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;default&gt;&gt; /* &quot;Cute&quot; */
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Sweet&quot;&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].temperament -= 10&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].personality = &quot;Haughty&quot;&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].learning--&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].temperament += 20&gt;&gt;
+						&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -13827,14 +13827,14 @@ profitsTotal: 0
 						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this may fluffies.&quot; + _listCheck)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;cashMinus _price&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${_listCheck}.`)&gt;&gt;
+
 						/* More than 1 fluffy present and selected */
 						&lt;&lt;if _listCheck &gt; 0&gt;&gt;
 							&lt;&lt;set $actions -= _listCheck&gt;&gt;
 						
 							&lt;&lt;set _rID = 0&gt;&gt;
 							&lt;&lt;for _rID range $randomFluffies&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking grab multi: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
+
 								&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
 									&lt;&lt;run $ourStore.fluffies.push($globalFluffies[_rID].ID)&gt;&gt;
 				
@@ -13863,7 +13863,7 @@ profitsTotal: 0
 							&lt;&lt;set $actions--&gt;&gt;
 							
 							&lt;&lt;for _rFluffy range $randomFluffies&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking grab solo: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
+
 								&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
 									&lt;&lt;run $ourStore.fluffies.push($globalFluffies[_rID].ID)&gt;&gt;
 									/* only rename unnamed fluffies */
@@ -16975,12 +16975,12 @@ Subspecies:
 
                 /* Cull parrents at 25% */
                 &lt;&lt;if random(0,3) == 3&gt;&gt;
-                    &lt;&lt;run _culledParent = $randomFluffies.delete($mom.ID)&gt;&gt;
+                    &lt;&lt;run $randomFluffies.delete($mom.ID)&gt;&gt;
                     &lt;&lt;deadFluffy $mom&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;if random(0,3) == 2&gt;&gt;
-                    &lt;&lt;run _culledParent = $randomFluffies.delete($dad.ID)&gt;&gt;
+                    &lt;&lt;run $randomFluffies.delete($dad.ID)&gt;&gt;
                     &lt;&lt;deadFluffy $dad&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
             
@@ -17007,6 +17007,9 @@ Subspecies:
 
         &lt;&lt;set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()&gt;&gt;
         &lt;&lt;set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()&gt;&gt;
+
+        &lt;&lt;fetchName&gt;&gt;
+        &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
 
     &lt;&lt;else&gt;&gt;
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -17114,7 +17117,7 @@ Subspecies:
                 &lt;&lt;fetchName&gt;&gt;
                 &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
                 &lt;&lt;limitColor 1 2 3 4&gt;&gt;
-            &lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+            &lt;&lt;elseif $shop == &quot;breeder&quot; || $shop == &quot;angora&quot;&gt;&gt;
                 /* breeder fluffies always have a name */
                 &lt;&lt;fetchName&gt;&gt;
                 &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
@@ -17150,16 +17153,6 @@ Subspecies:
                     &lt;&lt;/if&gt;&gt;
                 &lt;&lt;case 3&gt;&gt;
                     &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning--&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                &lt;&lt;case 4&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.charm++&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
@@ -17167,6 +17160,16 @@ Subspecies:
                         &lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.charm--&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+              &lt;&lt;default&gt;&gt; /* &quot;Cute&quot; */
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning--&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
             &lt;&lt;/switch&gt;&gt;
         &lt;&lt;/if&gt;&gt;
@@ -17978,7 +17981,7 @@ button {
 		hasName: false,
 		geneString: _geneSTR,
 		genes: Genome.fromString(_geneSTR),
-		personality: &quot;&quot;,
+		personality: &quot;Cute&quot;,
 		weekAcquired: 0,
 		origin: 0,
 		ID: 0,
@@ -18071,7 +18074,7 @@ button {
 			hasName: false,
 			geneString: _args[0].toString(),
 			genes: _args[0],
-			personality: &quot;&quot;,
+			personality: &quot;Cute&quot;,
 			weekAcquired: 0,
 			origin: 0,
 			ID: -1,
@@ -18484,34 +18487,34 @@ button {
 	&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
 
 	/* Pick a random child trait:*/
-	&lt;&lt;switch random(0,4)&gt;&gt;
+	&lt;&lt;switch random(0,5)&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;addTrait &quot;Fussy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity = &quot;Fussy&quot; &gt;&gt;
 			&lt;&lt;set $activeFluffy.strength++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;addTrait &quot;Shy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity =  &quot;Shy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;addTrait &quot;Lazy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity = &quot;Lazy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity = &quot;Cute&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
 		&lt;&lt;case 4&gt;&gt;
-			&lt;&lt;addTrait &quot;Peppy&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity = &quot;Peppy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;addTrait &quot;Cute&quot; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.personaity = &quot;Cute&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;

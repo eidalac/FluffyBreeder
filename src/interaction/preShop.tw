@@ -158,12 +158,12 @@
 
                 /* Cull parrents at 25% */
                 <<if random(0,3) == 3>>
-                    <<run _culledParent = $randomFluffies.delete($mom.ID)>>
+                    <<run $randomFluffies.delete($mom.ID)>>
                     <<deadFluffy $mom>>
                 <</if>>
 
                 <<if random(0,3) == 2>>
-                    <<run _culledParent = $randomFluffies.delete($dad.ID)>>
+                    <<run $randomFluffies.delete($dad.ID)>>
                     <<deadFluffy $dad>>
                 <</if>>
             
@@ -190,6 +190,9 @@
 
         <<set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()>>
         <<set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()>>
+
+        <<fetchName>>
+        <<set $activeFluffy.hasName = true>>
 
     <<else>>
         <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
@@ -297,7 +300,7 @@
                 <<fetchName>>
                 <<set $activeFluffy.hasName = true>>
                 <<limitColor 1 2 3 4>>
-            <<elseif $shop == "breeder">>
+            <<elseif $shop == "breeder" || $shop == "angora">>
                 /* breeder fluffies always have a name */
                 <<fetchName>>
                 <<set $activeFluffy.hasName = true>>
@@ -333,16 +336,6 @@
                     <</if>>
                 <<case 3>>
                     <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Sweet">>
-                        <<set $activeFluffy.learning++>>
-                        <<set $activeFluffy.temperament += 10>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Haughty">>
-                        <<set $activeFluffy.learning-->>
-                        <<set $activeFluffy.temperament += 20>>
-                    <</if>>
-                <<case 4>>
-                    <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Playful">>
                         <<set $activeFluffy.charm++>>
                         <<set $activeFluffy.temperament += 10>>
@@ -350,6 +343,16 @@
                         <<set $activeFluffy.personality = "Rowdy">>
                         <<set $activeFluffy.charm-->>
                         <<set $activeFluffy.temperament += 10>>
+                    <</if>>
+              <<default>> /* "Cute" */
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Sweet">>
+                        <<set $activeFluffy.learning++>>
+                        <<set $activeFluffy.temperament += 10>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Haughty">>
+                        <<set $activeFluffy.learning-->>
+                        <<set $activeFluffy.temperament += 20>>
                     <</if>>
             <</switch>>
         <</if>>
