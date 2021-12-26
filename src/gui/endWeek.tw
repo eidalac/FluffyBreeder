@@ -395,6 +395,7 @@
 
 
 	/* Lowest Temperament a smarty can generate - 100-120 depending on difficulty settings: */
+
 	<<set _smartyBase = Number(Number(120) - Number(Number($smartySyndrom) * Number(10)))>>
 
 	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
@@ -403,7 +404,7 @@
 
 		/* An existing smarty has a 1/4 chance of fireing an event. */
 		<<if $globalFluffies[_ef].personality.includes("Smarty")>>
-			<<if random(0,4) == 0>>
+			<<if random(0,3) == 0>>
 				<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 			<</if>>
 
@@ -415,7 +416,7 @@
 			<<set _smartyThreshold = Number($globalFluffies[_ef].temperament)>>
 			<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
 			<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
-			<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) / Number(2)))>>
+			<<set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))>>
 
 			<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)>>
 
@@ -436,6 +437,9 @@
 					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.40)))>>
 				<<case "Shy", "Timid", "Pensive", "Sweet">>
 					/* 10% chance at max threshold: */
+					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.10)))>>
+				<<default>>
+					<<run console.log(`DEBUG: [endWeek]: Defaulted personality, maybe personality is empty string?`)>>
 					<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.10)))>>
 			<</switch>>
 
