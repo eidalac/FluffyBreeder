@@ -12711,27 +12711,27 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Get Fluffies&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
 			&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
 			
-				@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Fluffy Mart|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
-				@@#sortbutton;&lt;&lt;button [[Fluffy Shelter|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Fluffy Shelter|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
-				@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Fluffy Mill|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
-				@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Fluffy Breeder|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
-				@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Hunt Ferals|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
-				@@#sortbutton;&lt;&lt;button [[Angora Shop|Buy Fluffies]]&gt;&gt;
+				@@#sortbutton;&lt;&lt;button [[Angora Shop|Pre Shop]]&gt;&gt;
 					&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
 					&lt;&lt;set $actions--&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
@@ -13778,19 +13778,13 @@ profitsTotal: 0
 &lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
 
 &lt;&lt;set $nextButton to &quot;End Shopping&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
+&lt;&lt;set _rID = 0&gt;&gt;
 
-/* ***
- *	Setup our base mother and father - all fluffies will ultimatly stem from these two
- *	
- *	They have preset genes with one each Domiante and Recesive trait, so have the highest diversity and can spawn any possible combination.
- *** */
-&lt;&lt;BaseFluffy &quot;MALE&quot;&gt;&gt;
-&lt;&lt;set _Granddad = clone($activeFluffy)&gt;&gt;
-&lt;&lt;BaseFluffy &quot;FEMALE&quot;&gt;&gt;
-&lt;&lt;set _Grandmom = clone($activeFluffy)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Enter Event: ${$randomFluffies}.`)&gt;&gt;
 
-&lt;&lt;set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
-&lt;&lt;set _randomFluffies = []&gt;&gt;
+&lt;&lt;for _rID range $randomFluffies&gt;&gt;
+	&lt;&lt;set $globalFluffies[_rID].isChecked = false&gt;&gt;
+&lt;&lt;/for&gt;&gt;
 
 &lt;div class=&quot;w3-row w3-container w3-mobile&quot;&gt;
 	&lt;div class=&quot;w3-top w3-col l11 s11&quot;&gt;
@@ -13802,117 +13796,121 @@ profitsTotal: 0
 			&lt;/div&gt;
 
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			  	@@#shopbutton;&lt;&lt;button [[Keep Looking|Buy Fluffies]] &gt;&gt;
+			  	@@#shopbutton;&lt;&lt;button [[Keep Looking|Pre Shop]] &gt;&gt;
 			  		&lt;&lt;set $actions--&gt;&gt;
-
-					&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
-						&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
-					&lt;&lt;/for&gt;&gt;
 			  	&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
 
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-				&lt;&lt;if  _randomFluffies.length == 1&gt;&gt;
+				&lt;&lt;if $randomFluffies.length == 1&gt;&gt;
 					&lt;&lt;set _buyText = &quot;Take this Fluffy&quot;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set _buyText = &quot;Take Fluffies&quot;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			  	@@#buybutton;&lt;&lt;button _buyText&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$randomFluffies.length}.`)&gt;&gt;
 
-					&lt;&lt;set _c = 0&gt;&gt;
-					&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
-						&lt;&lt;if $activeFluffy.isChecked&gt;&gt;
-							&lt;&lt;run _c++&gt;&gt;
+					&lt;&lt;set _listCheck = 0&gt;&gt;
+					&lt;&lt;set _rID = 0&gt;&gt;
+					&lt;&lt;for _rID range $randomFluffies&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
+						&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
+							&lt;&lt;run _listCheck++&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/for&gt;&gt;
 
-				  	&lt;&lt;if Number(_randomFluffies.length) &lt;= 1 &amp;&amp; $actions &lt; 1&gt;&gt;
+				  	&lt;&lt;if Number($randomFluffies.length) &lt;= 1 &amp;&amp; $actions &lt; 1&gt;&gt;
 					  	&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this fluffy.&quot;)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
-					&lt;&lt;elseif Number(_randomFluffies.length) &gt; 1 &amp;&amp; _c &lt; 1&gt;&gt;
-						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;No fluffies are selected. &quot; +_c)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
-					&lt;&lt;elseif Number(_randomFluffies.length) &gt; 1 &amp;&amp; _c &gt; $actions&gt;&gt;
-						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this may fluffies.&quot; + _c)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
+					&lt;&lt;elseif Number($randomFluffies.length) &gt; 1 &amp;&amp; _listCheck &lt; 1&gt;&gt;
+						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;No fluffies are selected. &quot; + _listCheck)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
+					&lt;&lt;elseif Number($randomFluffies.length) &gt; 1 &amp;&amp; _listCheck &gt; $actions&gt;&gt;
+						&lt;&lt;run Dialog.setup(&quot;Dialog title&quot;)&gt;&gt;&lt;&lt;run Dialog.wiki(&quot;You don&#39;t have enough energy to take this may fluffies.&quot; + _listCheck)&gt;&gt;&lt;&lt;run Dialog.open()&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						&lt;&lt;cashMinus _price&gt;&gt;
-	
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${_listCheck}.`)&gt;&gt;
 						/* More than 1 fluffy present and selected */
-						&lt;&lt;if _c &gt; 0&gt;&gt;
-							&lt;&lt;set $actions -= _c&gt;&gt;
-
-							&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
-								&lt;&lt;if $activeFluffy.isChecked&gt;&gt;
-									&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+						&lt;&lt;if _listCheck &gt; 0&gt;&gt;
+							&lt;&lt;set $actions -= _listCheck&gt;&gt;
+						
+							&lt;&lt;set _rID = 0&gt;&gt;
+							&lt;&lt;for _rID range $randomFluffies&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking grab multi: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
+								&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
+									&lt;&lt;run $ourStore.fluffies.push($globalFluffies[_rID].ID)&gt;&gt;
 				
 									/* only rename unnamed fluffies */
-									&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $activeFluffy.hasName == false&gt;&gt;
-										&lt;&lt;set $activeFluffy.name = ($ordinalString + &quot; &quot; + $activeFluffy.ID)&gt;&gt;
+									&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $globalFluffies[_rID].hasName == false&gt;&gt;
+										&lt;&lt;set $globalFluffies[_rID].name = ($ordinalString + &quot; &quot; + $globalFluffies[_rID].ID)&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 						
-									&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+									&lt;&lt;if ($globalFluffies[_rID].ageWeeks + ($globalFluffies[_rID].age * 52) &lt; $globalFluffies[_rID].maturity)&gt;&gt;
 										&lt;&lt;set $ourStore.foals++&gt;&gt;
-									&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
+									&lt;&lt;elseif $globalFluffies[_rID].gender == &quot;male&quot;&gt;&gt;
 										&lt;&lt;set $ourStore.stallions++&gt;&gt;
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;set $ourStore.mares++&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 
 									/* clear the checkmark */
-									&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
+									&lt;&lt;set $globalFluffies[_rID].isChecked = false&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;deadFluffy $globalFluffies[$activeFluffy.ID]&gt;&gt;
+									&lt;&lt;deadFluffy $globalFluffies[_rID]&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
 
 						/* More than 1 fluffy present, only 1 selected */
-						&lt;&lt;elseif Number(_randomFluffies.length) &gt; 1 &amp;&amp; _c == 1&gt;&gt;
+						&lt;&lt;elseif Number($randomFluffies.length) &gt; 1 &amp;&amp; _listCheck == 1&gt;&gt;
 							&lt;&lt;set $actions--&gt;&gt;
 							
-							&lt;&lt;for $activeFluffy range _randomFluffies&gt;&gt;
-								&lt;&lt;if $activeFluffy.isChecked&gt;&gt;
-									&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
+							&lt;&lt;for _rFluffy range $randomFluffies&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking grab solo: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
+								&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
+									&lt;&lt;run $ourStore.fluffies.push($globalFluffies[_rID].ID)&gt;&gt;
 									/* only rename unnamed fluffies */
-									&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $activeFluffy.hasName == false&gt;&gt;
-										&lt;&lt;set $activeFluffy.name = ($ordinalString + &quot; &quot; + $activeFluffy.ID)&gt;&gt;
+									&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $globalFluffies[_rID].hasName == false&gt;&gt;
+										&lt;&lt;set $globalFluffies[_rID].name = ($ordinalString + &quot; &quot; + $globalFluffies[_rID].ID)&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 						
-									&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+									&lt;&lt;if ($globalFluffies[_rID].ageWeeks + ($globalFluffies[_rID].age * 52) &lt; $globalFluffies[_rID].maturity)&gt;&gt;
 										&lt;&lt;set $ourStore.foals++&gt;&gt;
-									&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
+									&lt;&lt;elseif $globalFluffies[_rID].gender == &quot;male&quot;&gt;&gt;
 										&lt;&lt;set $ourStore.stallions++&gt;&gt;
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;set $ourStore.mares++&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 
 									/* clear the checkmark */
-									&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
+									&lt;&lt;set $globalFluffies[_rID].isChecked = false&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;deadFluffy $globalFluffies[$activeFluffy.ID]&gt;&gt;
+									&lt;&lt;deadFluffy $globalFluffies[_rID]&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
 
 						/* Only 1 fluffy present, selected or not */
 						&lt;&lt;else&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 0: ${$randomFluffies}.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 1: ${$randomFluffies[0]}.`)&gt;&gt;
 							&lt;&lt;set $actions--&gt;&gt;
-							&lt;&lt;set $activeFluffy = _randomFluffies[0]&gt;&gt;
-							&lt;&lt;run $ourStore.fluffies.push($activeFluffy.ID)&gt;&gt;
 
+							&lt;&lt;run $ourStore.fluffies.push($randomFluffies[0])&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 2: ${$randomFluffies}.`)&gt;&gt;
 							/* only rename unnamed fluffies */
-							&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $activeFluffy.hasName == false&gt;&gt;
-								&lt;&lt;set $activeFluffy.name = ($ordinalString + &quot; &quot; + $activeFluffy.ID)&gt;&gt;
+							&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $globalFluffies[$randomFluffies[0]].hasName == false&gt;&gt;
+								&lt;&lt;set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + &quot; &quot; + $randomFluffies[0])&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 				
-							&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+							&lt;&lt;if ($globalFluffies[$randomFluffies[0]].ageWeeks + ($globalFluffies[$randomFluffies[0]].age * 52) &lt; $globalFluffies[$randomFluffies[0]].maturity)&gt;&gt;
 								&lt;&lt;set $ourStore.foals++&gt;&gt;
-							&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
+							&lt;&lt;elseif $globalFluffies[$randomFluffies[0]].gender == &quot;male&quot;&gt;&gt;
 								&lt;&lt;set $ourStore.stallions++&gt;&gt;
 							&lt;&lt;else&gt;&gt;
 								&lt;&lt;set $ourStore.mares++&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
-
-							&lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 3: ${$globalFluffies[$randomFluffies[0]]}, ${$globalFluffies[$randomFluffies[0]].ID}, ${$globalFluffies[$randomFluffies[0]].isChecked}.`)&gt;&gt;
+							&lt;&lt;set $globalFluffies[$randomFluffies[0]].isChecked = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 
-						&lt;&lt;goto [[Buy Fluffies]]&gt;&gt;
+						&lt;&lt;goto &quot;Pre Shop&quot;&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 
 			  	&lt;&lt;/button&gt;&gt;@@
@@ -13942,7 +13940,7 @@ profitsTotal: 0
 			&lt;br&gt;//You lack the necessary funds to buy this fluffy//.
 			&lt;br&gt;
 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _count &gt;= $ourStore.shelter&gt;&gt;
+		&lt;&lt;if $count &gt;= $ourStore.shelter&gt;&gt;
 			&lt;&lt;run $(&quot;#buybutton button&quot;).addClass(&quot;w3-disabled&quot;)&gt;&gt;
 			&lt;&lt;run $(&quot;#buybutton button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
 			&lt;br&gt;//You don&#39;t have enough room to take this fluffy//.			 
@@ -13973,376 +13971,27 @@ profitsTotal: 0
 
 	&lt;br&gt;&lt;span id=&quot;cash-line&quot;&gt;You have ¤$cash to spend.&lt;/span&gt;
 	&lt;br&gt;
-	&lt;&lt;if _count == 1&gt;&gt;
+	&lt;&lt;if $count == 1&gt;&gt;
 		You have one fluffy already.
-	&lt;&lt;elseif _count&gt; 1&gt;&gt;
-		You have _count fluffies.
-	&lt;&lt;/if&gt;&gt;
-
-	/* ***
-	*	Generate fluffies, may be a full family of 10+, may be just one
-	*** */
-	&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 0&gt;&gt;
-		&lt;br&gt;
-		/* TODO: add a repuation check here */
-	&lt;&lt;else&gt;&gt;
-
-		&lt;&lt;set _randomFluffies = []&gt;&gt;
-	
-		&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-			&lt;&lt;switch random(0, 10)&gt;&gt;
-
-				/* solo foal */
-				&lt;&lt;case 0&gt;&gt;
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-					&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-					&lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
-
-					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-				/* mated pair */
-				&lt;&lt;case 1 2 3&gt;&gt;
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-
-					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-
-					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-					/* log the parents, even if we don&#39;t collect them need the parent tracking */
-					&lt;&lt;set $mom = _randomFluffies[0]&gt;&gt;
-					&lt;&lt;set $dad = _randomFluffies[1]&gt;&gt;
-
-					&lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
-
-					&lt;&lt;set $dad.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
-
-					&lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
-					&lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
-
-					/* 25% chance the female is pregnate */
-					&lt;&lt;if random(0,3) == 3&gt;&gt;
-						&lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
-							
-						&lt;&lt;set $mom.pregnant = true&gt;&gt;
-						&lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
-						&lt;&lt;set $mom.dueDate = random(0, 6)&gt;&gt;
-						&lt;&lt;set $mom.litter = _litter&gt;&gt;
-						&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					/* Cull at 25% */
-					&lt;&lt;if random(0,3) == 0&gt;&gt;
-						&lt;&lt;run _culledParent = _randomFluffies.pluck()&gt;&gt;
-						&lt;&lt;deadFluffy $globalFluffies[_culledParent.ID]&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				
-				/* family group*/
-				&lt;&lt;case 5 6 7 8&gt;&gt;
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-
-					&lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-
-					&lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-					&lt;&lt;set _litter = Math.clamp(Math.round((_randomFluffies[0].fertility + _randomFluffies[1].fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
-
-					/* log the parents, even if we don&#39;t collect them need the parent tracking */
-					&lt;&lt;set $mom = _randomFluffies[0]&gt;&gt;
-					&lt;&lt;set $dad = _randomFluffies[1]&gt;&gt;
-
-					&lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
-					
-					&lt;&lt;set $dad.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
-
-					&lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
-					&lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
-
-					&lt;&lt;for _ls = 0; _ls &lt; _litter; _ls++&gt;&gt;
-						/* Cull children at 25% */
-						&lt;&lt;if random(0,3) != 0&gt;&gt;
-							&lt;&lt;breedFluffies $mom $dad&gt;&gt;
-							&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
-
-							&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-
-							&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
-
-							&lt;&lt;run $mom.children.push($activeFluffy.ID)&gt;&gt;
-							&lt;&lt;run $dad.children.push($activeFluffy.ID)&gt;&gt;
-
-							/* Check if this foal should be weaned or nursing */
-							&lt;&lt;if ($activeFluffy.weight / $activeFluffy.maxWeight) &lt;= 0.14&gt;&gt;
-								/* nursing */
-								&lt;&lt;set $globalFluffies[$activeFluffy.ID].weaned = false&gt;&gt;
-								&lt;&lt;set $globalFluffies[$mom.ID].nursing++&gt;&gt;
-								&lt;&lt;set $globalFluffies[$activeFluffy.ID].foodType = &quot;Nursing&quot;&gt;&gt;
-							&lt;&lt;else&gt;&gt;
-								/* weaned */
-								&lt;&lt;set $globalFluffies[$activeFluffy.ID].weaned = true&gt;&gt;
-							&lt;&lt;/if&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					
-					&lt;&lt;/for&gt;&gt;
-
-					/* Set max nursing so milk is generated */
-					&lt;&lt;if $globalFluffies[$mom.ID].nursing &gt; 0&gt;&gt;
-						&lt;&lt;set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing&gt;&gt;
-						&lt;&lt;set $globalFluffies[$mom.ID].nursingMax -= random(0,1)&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					/* Cull parrents at 25% */
-					&lt;&lt;if random(0,3) == 3&gt;&gt;
-						&lt;&lt;run _culledParent = _randomFluffies.deleteAt($mom)&gt;&gt;
-						&lt;&lt;deadFluffy $mom&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					&lt;&lt;if random(0,3) == 2&gt;&gt;
-						&lt;&lt;run _culledParent = _randomFluffies.deleteAt($dad)&gt;&gt;
-						&lt;&lt;deadFluffy $dad&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				
-				/* Single fluffy */
-				&lt;&lt;default&gt;&gt;
-					&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-					&lt;&lt;newFromGene $testChild&gt;&gt;
-
-					&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-					&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-					&lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
-
-					&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-			&lt;&lt;/switch&gt;&gt;
-		&lt;&lt;elseif $shop == &quot;angora&quot;&gt;&gt;
-			/* Force generate angora */
-			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-			&lt;&lt;newFromGene $testChild 2&gt;&gt;
-			&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-
-			&lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
-			/* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
-			&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-
-			&lt;&lt;set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()&gt;&gt;
-			&lt;&lt;set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()&gt;&gt;
-
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-			&lt;&lt;newFromGene $testChild&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-
-		/* Don&#39;t generate alicorns at a shop or mill*/
-		&lt;&lt;if $shop == &quot;mill&quot; || $shop == &quot;mart&quot;&gt;&gt;
-			&lt;&lt;for $activeFluffy.breed == &quot;alicorn&quot;&gt;&gt;
-				&lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
-				&lt;&lt;newFromGene $testChild&gt;&gt;
-			&lt;&lt;/for&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-			&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-			&lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-			&lt;&lt;run _randomFluffies.push($activeFluffy)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* We may have generated one or a family, so run the checks on all of them in turn. */
-		&lt;&lt;for _rf = 0; _rf &lt; _randomFluffies.length; _rf++&gt;&gt;
-			&lt;&lt;set $activeFluffy = _randomFluffies[_rf]&gt;&gt;
-
-			/* ***
-			* count gene defects
-			*** */
-			&lt;&lt;set _defectCount = 0&gt;&gt;
-			&lt;&lt;set $defenctIndex = [12, 20, 28, 36, 44, 52, 80, 100, 120, 84, 104, 124]&gt;&gt;
-
-			/* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
-			&lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
-				&lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
-
-				&lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
-					
-					/* Max of 3 gene defects at fluffy mart, 4 in a shelter, 5 in a mill, one from a breeder */
-					&lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= Number(2 + random(0,1))&gt;&gt;
-						&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-						&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;shelter&quot; &amp;&amp; _defectCount &gt;= Number(3 + random(0,1))&gt;&gt;
-						&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-						&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= Number(4 + random(0,1))&gt;&gt;
-						&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-						&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-					&lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= Number(0 + random(0,1))&gt;&gt;
-						&lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
-						&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _defectCount++&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					&lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
-						&lt;&lt;break&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/for&gt;&gt;
-
-
-			&lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
-				&lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
-				&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
-				&lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
-
-				&lt;&lt;limitColor 1 2&gt;&gt;
-			&lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
-				/* fluffies have a 50% chance to be named */
-				&lt;&lt;switch random(0, 1)&gt;&gt;
-					&lt;&lt;case 0&gt;&gt;
-						&lt;&lt;fetchName&gt;&gt;
-						&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-					&lt;&lt;case 1&gt;&gt;
-						&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
-					&lt;&lt;default&gt;&gt;
-						&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
-				&lt;&lt;/switch&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-
-			/* Adjust things based on age for children/foals */
-			&lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
-				&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
-				&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
-				&lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
-				&lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
-				&lt;&lt;set _newW =  Number($activeFluffy.maxWeight * _newWMulti)&gt;&gt;
-				&lt;&lt;set _newL = _newW / $activeFluffy.weightMulti&gt;&gt;
-				&lt;&lt;set _newH = _newL * ($activeFluffy.heightMulti)&gt;&gt;
-				
-				&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
-				&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
-
-				&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
-				&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-				&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
-					/* shelter sells pre-owned, older, named fluffies */
-					&lt;&lt;set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)&gt;&gt;
-					&lt;&lt;fetchName&gt;&gt;
-					&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-					&lt;&lt;limitColor 1 2 3 4&gt;&gt;
-				&lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
-					/* breeder fluffies always have a name */
-					&lt;&lt;fetchName&gt;&gt;
-					&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				/* generate adult traits */
-				&lt;&lt;switch random(0,4)&gt;&gt;
-					&lt;&lt;case 0&gt;&gt;
-						&lt;&lt;if random(0, 1) == 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.charm--&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case 1&gt;&gt;
-						&lt;&lt;if random(0, 1) == 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.energy++&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.strength--&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case 2&gt;&gt;
-						&lt;&lt;if random(0, 1) == 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.energy--&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case 3&gt;&gt;
-						&lt;&lt;if random(0, 1) == 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.learning++&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.learning--&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;case 4&gt;&gt;
-						&lt;&lt;if random(0, 1) == 0&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.charm++&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-						&lt;&lt;else&gt;&gt;
-							&lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
-							&lt;&lt;set $activeFluffy.charm--&gt;&gt;
-							&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-				&lt;&lt;/switch&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			
-			/* Set any traits from bad genes: */
-			&lt;&lt;setGeneTraits&gt;&gt;
-
-			&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-				&lt;&lt;limitColor 4 6&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-
-			&lt;&lt;set _inbreed = String(random(0,50) + &quot;/&quot; + random(50,99)) + &quot;;&quot;&gt;&gt;
-			&lt;&lt;run $activeFluffy.genes.setInbreeding(_inbreed)&gt;&gt;
-			&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-			
-			&lt;&lt;colorValue&gt;&gt;
-			&lt;&lt;colorGroup&gt;&gt;
-			&lt;&lt;statValue&gt;&gt;
-
-			&lt;&lt;set _randomFluffies[_rf].isChecked = false&gt;&gt;
-			&lt;&lt;set _randomFluffies[_rf] = $activeFluffy&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;elseif $count&gt; 1&gt;&gt;
+		You have $count fluffies.
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;br&gt;
-	&lt;&lt;if  _randomFluffies.length == 1&gt;&gt;
+	&lt;&lt;if $randomFluffies.length == 1&gt;&gt;
 		&lt;br&gt;You find this fluffy:
 	&lt;&lt;else&gt;&gt;
 		&lt;br&gt;You find these fluffies:
 	&lt;&lt;/if&gt;&gt;
 	&lt;hr&gt;
+
+
 	
 	/* ***
 	*	Display the fluffies we have found (1 or more)
 	*** */
-	&lt;&lt;for _c, $activeFluffy range _randomFluffies&gt;&gt;
-		
-		&lt;&lt;set _id = $activeFluffy.ID&gt;&gt;
+	&lt;&lt;for _c, _id range $randomFluffies&gt;&gt;
+
 		&lt;&lt;capture _id&gt;&gt;
 			&lt;label&gt;
 				&lt;div style=&quot;position: relative; left: -22px; top: 22px; z-index: -1; height:20px&quot;&gt;
@@ -14361,15 +14010,15 @@ profitsTotal: 0
 				&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
 				
 				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set $activeFluffy.training = 50&gt;&gt;
-					&lt;&lt;set $activeFluffy.trust = 50&gt;&gt;
+					&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
+					&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
-				&lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
+				&lt;&lt;set _price = Number($globalFluffies[_id].training)&gt;&gt;
 
-				&lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
+				&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))&gt;&gt;
 
-				&lt;&lt;switch $activeFluffy.breed&gt;&gt;
+				&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
 					&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
 						&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 					&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
@@ -14386,10 +14035,10 @@ profitsTotal: 0
 					&lt;&lt;set _ageMulti = 1&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				
-				&lt;&lt;set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)&gt;&gt;
-				&lt;&lt;set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)&gt;&gt;
-				&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
-					&lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+				&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
+				&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
+				&lt;&lt;if $globalFluffies[_id].age == 0 &amp;&amp; $globalFluffies[_id].ageWeeks &lt; 45&gt;&gt;
+					&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
 				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
@@ -14407,101 +14056,101 @@ profitsTotal: 0
 		&lt;&lt;if _c == 0&gt;&gt;
 			&lt;div class=&quot;w3-container&quot;&gt;
 				&lt;&lt;timed 5ms&gt;&gt;
-					&lt;&lt;set $activeFluffy = _randomFluffies[0]&gt;&gt;
-					&lt;&lt;if $activeFluffy.age &gt; 0 || $activeFluffy.ageWeeks &gt; 2&gt;&gt;
-						&lt;&lt;personalityFix $activeFluffy&gt;&gt;
-						&lt;&lt;switch $activeFluffy.personality&gt;&gt;
+
+					&lt;&lt;if $globalFluffies[_id].age &gt; 0 || $globalFluffies[_id].ageWeeks &gt; 2&gt;&gt;
+						&lt;&lt;personalityFix $globalFluffies[_id]&gt;&gt;
+						&lt;&lt;switch $globalFluffies[_id].personality&gt;&gt;
 							&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt; an\ babbehs&#39;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt; an\ babbehs&#39;?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\&#39; babbehs.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\&#39; babbehs.&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties... hab\&#39; babbehs...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties... hab\&#39; babbehs...&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?  babbehs am hungwy&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?  babbehs am hungwy&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Dull&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; an\&#39; babbehs awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; an\&#39; babbehs awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $activeFluffy.cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id].cColor &gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; an\&#39; babbehs need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; an\&#39; babbehs need nyu homesie fow wawmsies!&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; an\&#39; bestest babbehs nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; an\&#39; bestest babbehs nyu homesie?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-								&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt; an\&#39; babbehs?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 								&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies fow babbehs?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies fow babbehs?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;if  _randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy, hab gud&#39; babbehs.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy, hab gud&#39; babbehs.&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;default&gt;&gt;
-								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;else&gt;&gt;
-						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $activeFluffy.cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
+						&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $globalFluffies[_id].cColor&gt;&gt;&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/timed&gt;&gt;
 				&lt;span id=&quot;greet-msg&quot;&gt;&lt;/span&gt;
@@ -14511,9 +14160,10 @@ profitsTotal: 0
 
 &lt;/div&gt;
 
- &lt;&lt;script&gt;&gt;
- 	importScripts(&quot;./external-js/globals.js&quot;,);
- &lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Buy Upgrades" tags="nobr" position="475,475" size="100,100">/* **********
+
+&lt;&lt;script&gt;&gt;
+	importScripts(&quot;./external-js/globals.js&quot;,);
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="34" name="Buy Upgrades" tags="nobr" position="475,475" size="100,100">/* **********
  * shopIntro.tw
  *
  * Package: FluffyBreeder
@@ -17167,7 +16817,385 @@ Subspecies:
 
 &lt;&lt;script&gt;&gt;
  	importScripts(&quot;./external-js/globals.js&quot;,);
-&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="description widgets" tags="widget nobr" position="100,600" size="100,100">/* **********
+&lt;&lt;/script&gt;&gt;</tw-passagedata><tw-passagedata pid="41" name="Pre Shop" tags="nobr" position="100,600" size="100,100">/* **********
+ * Pre Shop.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Pre processing for generating random fluffies (shop, feral hunting, etc)
+ *
+ *********** */
+
+&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
+
+/* ***
+ *	Setup our base mother and father - all fluffies will ultimatly stem from these two
+ *	
+ *	They have preset genes with one each Domiante and Recesive trait, so have the highest diversity and can spawn any possible combination.
+ *** */
+&lt;&lt;BaseFluffy &quot;MALE&quot;&gt;&gt;
+&lt;&lt;set _Granddad = clone($activeFluffy)&gt;&gt;
+&lt;&lt;BaseFluffy &quot;FEMALE&quot;&gt;&gt;
+&lt;&lt;set _Grandmom = clone($activeFluffy)&gt;&gt;
+
+&lt;&lt;set $count = $ourStore.mares + $ourStore.foals + $ourStore.stallions&gt;&gt;
+
+&lt;&lt;set $randomFluffies = []&gt;&gt;
+
+&lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
+    &lt;&lt;set $globalFluffies[_ef].isChecked = false&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 0: ${$globalFluffies.length}.`)&gt;&gt;
+
+/* ***
+*	Generate fluffies, may be a full family of 10+, may be just one
+*** */
+&lt;&lt;if $shop == &quot;breeder&quot; &amp;&amp; $reputation &lt; 0&gt;&gt;
+    &lt;&lt;set $randomFluffies = []&gt;&gt;
+&lt;&lt;else&gt;&gt;
+
+    &lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+        &lt;&lt;switch random(0, 10)&gt;&gt;
+
+            /* solo foal */
+            &lt;&lt;case 0&gt;&gt;
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+                &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+                &lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
+
+                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 1: ${$globalFluffies.length}.`)&gt;&gt;
+
+                &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+                &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 2: ${$globalFluffies.length}.`)&gt;&gt;
+            /* mated pair */
+            &lt;&lt;case 1 2 3&gt;&gt;
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)&gt;&gt;
+                &lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
+                &lt;&lt;set $mom = $activeFluffy&gt;&gt;
+                &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
+                &lt;&lt;run $randomFluffies.push($mom.ID)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
+                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)&gt;&gt;
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+
+                &lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
+                &lt;&lt;set $dad = $activeFluffy&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
+                &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
+                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)&gt;&gt;
+                &lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
+                &lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
+
+                /* 25% chance the female is pregnate */
+                &lt;&lt;if random(0,3) == 3&gt;&gt;
+                    &lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+                        
+                    &lt;&lt;set $mom.pregnant = true&gt;&gt;
+                    &lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
+                    &lt;&lt;set $mom.dueDate = random(0, 6)&gt;&gt;
+                    &lt;&lt;set $mom.litter = _litter&gt;&gt;
+                    &lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+
+                /* Cull at 25% */
+                &lt;&lt;if random(0,3) == 0&gt;&gt;
+                    &lt;&lt;deadFluffy $globalFluffies[$randomFluffies.pluck()]&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+            
+            /* family group*/
+            &lt;&lt;case 5 6 7 8&gt;&gt;
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+
+                &lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
+                &lt;&lt;set $mom = $activeFluffy&gt;&gt;
+                &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
+                &lt;&lt;run $randomFluffies.push($mom.ID)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
+
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+
+                &lt;&lt;run $activeFluffy.genes.setGender(&quot;male&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;male&quot;&gt;&gt;
+                &lt;&lt;set $dad = $activeFluffy&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
+                &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
+
+                &lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
+                &lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
+
+                &lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+
+                &lt;&lt;for _ls = 0; _ls &lt; _litter; _ls++&gt;&gt;
+                    /* Cull children at 25% */
+                    &lt;&lt;if random(0,3) != 0&gt;&gt;
+                        &lt;&lt;breedFluffies $mom $dad&gt;&gt;
+                        &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
+
+                        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+
+                        &lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+
+                        &lt;&lt;run $mom.children.push($activeFluffy.ID)&gt;&gt;
+                        &lt;&lt;run $dad.children.push($activeFluffy.ID)&gt;&gt;
+
+                        /* Check if this foal should be weaned or nursing */
+                        &lt;&lt;if ($activeFluffy.weight / $activeFluffy.maxWeight) &lt;= 0.14&gt;&gt;
+                            /* nursing */
+                            &lt;&lt;set $globalFluffies[$activeFluffy.ID].weaned = false&gt;&gt;
+                            &lt;&lt;set $globalFluffies[$mom.ID].nursing++&gt;&gt;
+                            &lt;&lt;set $globalFluffies[$activeFluffy.ID].foodType = &quot;Nursing&quot;&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            /* weaned */
+                            &lt;&lt;set $globalFluffies[$activeFluffy.ID].weaned = true&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                
+                &lt;&lt;/for&gt;&gt;
+
+                /* Set max nursing so milk is generated */
+                &lt;&lt;if $globalFluffies[$mom.ID].nursing &gt; 0&gt;&gt;
+                    &lt;&lt;set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing&gt;&gt;
+                    &lt;&lt;set $globalFluffies[$mom.ID].nursingMax -= random(0,1)&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+
+                /* Cull parrents at 25% */
+                &lt;&lt;if random(0,3) == 3&gt;&gt;
+                    &lt;&lt;run _culledParent = $randomFluffies.delete($mom.ID)&gt;&gt;
+                    &lt;&lt;deadFluffy $mom&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+
+                &lt;&lt;if random(0,3) == 2&gt;&gt;
+                    &lt;&lt;run _culledParent = $randomFluffies.delete($dad.ID)&gt;&gt;
+                    &lt;&lt;deadFluffy $dad&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+            
+            /* Single fluffy */
+            &lt;&lt;default&gt;&gt;
+                &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+                &lt;&lt;newFromGene $testChild&gt;&gt;
+
+                &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+                &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+                &lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
+
+                &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;/switch&gt;&gt;
+    &lt;&lt;elseif $shop == &quot;angora&quot;&gt;&gt;
+        /* Force generate angora */
+        &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+        &lt;&lt;newFromGene $testChild 2&gt;&gt;
+        &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+
+        &lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
+        /* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
+        &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+
+        &lt;&lt;set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()&gt;&gt;
+        &lt;&lt;set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()&gt;&gt;
+
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+        &lt;&lt;newFromGene $testChild&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+
+    /* Don&#39;t generate alicorns at a shop or mill*/
+    &lt;&lt;if $shop == &quot;mill&quot; || $shop == &quot;mart&quot;&gt;&gt;
+        &lt;&lt;for $activeFluffy.breed == &quot;alicorn&quot;&gt;&gt;
+            &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
+            &lt;&lt;newFromGene $testChild&gt;&gt;
+        &lt;&lt;/for&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+    
+    &lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
+        &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$globalFluffies.length}.`)&gt;&gt;
+        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$activeFluffy.ID}.`)&gt;&gt;
+        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral Post: ${$globalFluffies.length}.`)&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+    /* We may have generated one or a family, so run the checks on all of them in turn. */
+    &lt;&lt;for _rID range $randomFluffies&gt;&gt;
+
+        &lt;&lt;set $activeFluffy = $globalFluffies[_rID]&gt;&gt;
+
+        /* ***
+        * count gene defects
+        *** */
+        &lt;&lt;set _defectCount = 0&gt;&gt;
+        &lt;&lt;set $defenctIndex = [12, 20, 28, 36, 44, 52, 80, 100, 120, 84, 104, 124]&gt;&gt;
+
+        /* Pick a random defect gene, remove it from the list, check if it&#39;s defective and if it is, up the defect cont*/
+        &lt;&lt;for $defenctIndex.length &gt; 0&gt;&gt;
+            &lt;&lt;set _ri = $defenctIndex.pluck()&gt;&gt;
+
+            &lt;&lt;if $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri+2,_ri+3) &amp;&amp; $activeFluffy.geneString.substring(_ri,_ri+1) === $activeFluffy.geneString.substring(_ri,_ri+1).toLowerCase()&gt;&gt;
+                
+                /* Max of 3 gene defects at fluffy mart, 4 in a shelter, 5 in a mill, one from a breeder */
+                &lt;&lt;if $shop == &quot;mart&quot; &amp;&amp; _defectCount &gt;= Number(2 + random(0,1))&gt;&gt;
+                    &lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+                    &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+                &lt;&lt;elseif $shop == &quot;shelter&quot; &amp;&amp; _defectCount &gt;= Number(3 + random(0,1))&gt;&gt;
+                    &lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+                    &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+                &lt;&lt;elseif $shop == &quot;mill&quot; &amp;&amp; _defectCount &gt;= Number(4 + random(0,1))&gt;&gt;
+                    &lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+                    &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+                &lt;&lt;elseif $shop == &quot;breeder&quot; &amp;&amp; _defectCount &gt;= Number(0 + random(0,1))&gt;&gt;
+                    &lt;&lt;run $activeFluffy.genes.clearDefect(_ri)&gt;&gt;
+                    &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+                &lt;&lt;else&gt;&gt;
+                    &lt;&lt;set _defectCount++&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+
+                &lt;&lt;if $defenctIndex.length &lt; 1&gt;&gt;
+                    &lt;&lt;break&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;/for&gt;&gt;
+
+
+        &lt;&lt;if $shop == &quot;mill&quot;&gt;&gt;
+            &lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
+            &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+            &lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
+
+            &lt;&lt;limitColor 1 2&gt;&gt;
+        &lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
+            /* fluffies have a 50% chance to be named */
+            &lt;&lt;switch random(0, 1)&gt;&gt;
+                &lt;&lt;case 0&gt;&gt;
+                    &lt;&lt;fetchName&gt;&gt;
+                    &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                &lt;&lt;case 1&gt;&gt;
+                    &lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+                &lt;&lt;default&gt;&gt;
+                    &lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+            &lt;&lt;/switch&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+
+        /* Adjust things based on age for children/foals */
+        &lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+            &lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
+            &lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
+            &lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+            &lt;&lt;set _newWMulti = Number(_newWMulti) + Number(_wMultiBase)&gt;&gt;
+            &lt;&lt;set _newW =  Number($activeFluffy.maxWeight * _newWMulti)&gt;&gt;
+            &lt;&lt;set _newL = _newW / $activeFluffy.weightMulti&gt;&gt;
+            &lt;&lt;set _newH = _newL * ($activeFluffy.heightMulti)&gt;&gt;
+            
+            &lt;&lt;set _lMultiBase = 0.22&gt;&gt;
+            &lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
+
+            &lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
+            &lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+            &lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)&gt;&gt;
+        &lt;&lt;else&gt;&gt;
+            &lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
+                /* shelter sells pre-owned, older, named fluffies */
+                &lt;&lt;set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)&gt;&gt;
+                &lt;&lt;fetchName&gt;&gt;
+                &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                &lt;&lt;limitColor 1 2 3 4&gt;&gt;
+            &lt;&lt;elseif $shop == &quot;breeder&quot;&gt;&gt;
+                /* breeder fluffies always have a name */
+                &lt;&lt;fetchName&gt;&gt;
+                &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+            /* generate adult traits */
+            &lt;&lt;switch random(0,4)&gt;&gt;
+                &lt;&lt;case 0&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm--&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case 1&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.energy++&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.strength--&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case 2&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.energy--&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case 3&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning--&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case 4&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm++&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm--&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+            &lt;&lt;/switch&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+        
+        /* Set any traits from bad genes: */
+        &lt;&lt;setGeneTraits&gt;&gt;
+
+        &lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+            &lt;&lt;limitColor 4 6&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+
+        &lt;&lt;set _inbreed = String(random(0,50) + &quot;/&quot; + random(50,99)) + &quot;;&quot;&gt;&gt;
+        &lt;&lt;run $activeFluffy.genes.setInbreeding(_inbreed)&gt;&gt;
+        &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
+        
+        &lt;&lt;colorValue&gt;&gt;
+        &lt;&lt;colorGroup&gt;&gt;
+        &lt;&lt;statValue&gt;&gt;
+
+        &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Random List Size: ${$randomFluffies.length}.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Random List: ${$randomFluffies}.`)&gt;&gt;
+
+&lt;br&gt;
+
+&lt;&lt;goto &quot;Buy Fluffies&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="42" name="description widgets" tags="widget nobr" position="225,600" size="100,100">/* **********
  * descriptionWidgets.tw
  *
  * Package: FluffyBreeder
@@ -17918,7 +17946,7 @@ button {
 		&lt;&lt;drawSprite $activeFluffy&gt;&gt;
 		&lt;&lt;shortDesc $activeFluffy&gt;&gt;
 	&lt;/div&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="42" name="fluffy creation widgets" tags="widget nobr" position="225,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="43" name="fluffy creation widgets" tags="widget nobr" position="350,600" size="100,100">/* **********
  * fluffyCreationWidgets.tw
  *
  * Package: FluffyBreeder
@@ -18564,7 +18592,7 @@ button {
 			&lt;&lt;set $ourStore.mares--&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="43" name="image widgets" tags="nobr widget" position="350,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="44" name="image widgets" tags="nobr widget" position="475,600" size="100,100">/* **********
  * imageWidgets.tw
  *
  * Package: FluffyBreeder
@@ -19199,7 +19227,7 @@ button {
 			&lt;&lt;/switch&gt;&gt;
 		&lt;/div&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="44" name="math widgets" tags="nobr widget" position="475,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="45" name="math widgets" tags="nobr widget" position="600,600" size="100,100">/* **********
  * mathWidgets.tw
  *
  * Package: FluffyBreeder
@@ -19333,7 +19361,7 @@ button {
 			State.variables.globalFluffies[ID].trauma = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trauma, 0, 200));
 		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="45" name="misc widgets" tags="nobr widget" position="600,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="46" name="misc widgets" tags="nobr widget" position="725,600" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -19954,7 +19982,7 @@ button {
 			&lt;/div&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="46" name="pronoun widgets" tags="widget nobr" position="725,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="47" name="pronoun widgets" tags="widget nobr" position="850,600" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder
