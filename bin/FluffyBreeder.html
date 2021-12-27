@@ -993,10 +993,11 @@ button:disabled{
 }
 .dropdown-inner-container .dropdown-inner-container .dropdown-btn > span,
 .dropdown-inner-container .dropdown-inner-container span button {
-  padding-left: 1.5em !important;
+  margin-left: 1.5em !important;
 }
-.dropdown-inner-container .dropdown-inner-container .dropdown-inner-container .dropdown-btn > span, .dropdown-inner-container .dropdown-inner-container .dropdown-inner-container span button {
-  padding-left: 3em !important;
+.dropdown-inner-container .dropdown-inner-container .dropdown-inner-container .dropdown-btn > span,
+.dropdown-inner-container .dropdown-inner-container .dropdown-inner-container span button {
+  margin-left: 3em !important;
 }
 
 .dropdown-btn {
@@ -5959,12 +5960,12 @@ window.NameList = {
  *	Color Group
  *	Call as &lt;&lt;colorGroup $fluffy&gt;&gt;
  *
- *	finds the color group of ($activeFluffy)
+ *	Finds the color group of $fluffy)
  *** */
 &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
 	&lt;&lt;fluffyError _args[0]&gt;&gt;
 	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;clampValues&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: $fluffyError`)&gt;&gt;
 		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;if _args[0] != 0&gt;&gt;
@@ -17823,9 +17824,9 @@ button {
 
 &lt;&lt;widget &quot;filterButtons&quot;&gt;&gt;
 	&lt;&lt;set _type = _args[0] || &quot;None&quot;&gt;&gt;
-	&lt;&lt;set _filterFluffies = []&gt;&gt;
+	&lt;&lt;set $filterFluffies = []&gt;&gt;
 	&lt;&lt;for _id range $ourStore.fluffies&gt;&gt;
-		&lt;&lt;set _filterFluffies.push($globalFluffies[_id])&gt;&gt;
+		&lt;&lt;set $filterFluffies.push($globalFluffies[_id])&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 	&lt;&lt;set $fluffyFilters = {
 		breed: false,
@@ -17996,35 +17997,31 @@ button {
 
 &lt;&lt;widget &quot;sortButtons&quot;&gt;&gt;
 	&lt;&lt;set _type = _args[0] || &quot;None&quot;&gt;&gt;
-	&lt;&lt;set _sortFluffies = []&gt;&gt;
-	&lt;&lt;for _id range $ourStore.fluffies&gt;&gt;
-		&lt;&lt;set _sortFluffies.push($globalFluffies[_id])&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
 
 	&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
 		&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Sort&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
 		&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
 			@@#sort-reset-btn;.sortbutton;&lt;&lt;button &#39;Remove Sort &lt;i class=&quot;fa fa-window-close&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 				/* Reset sorted filters */
-				&lt;&lt;set _sortFluffies = []&gt;&gt;
+				&lt;&lt;set $filterFluffies = []&gt;&gt;
 				&lt;&lt;run console.log($activeFluffy.name)&gt;&gt;
 				&lt;&lt;for _id range $ourStore.fluffies&gt;&gt;
 					&lt;&lt;if _type != &quot;breeding&quot;&gt;&gt;
-						&lt;&lt;set _sortFluffies.push($globalFluffies[_id])&gt;&gt;
+						&lt;&lt;set $filterFluffies.push($globalFluffies[_id])&gt;&gt;
 					&lt;&lt;else&gt;&gt;
-						&lt;&lt;run $globalFluffies[_id].gender != $activeFluffy.gender ? _sortFluffies.push($globalFluffies[_id]) : console.log()&gt;&gt;
+						&lt;&lt;run $globalFluffies[_id].gender != $activeFluffy.gender ? $filterFluffies.push($globalFluffies[_id]) : console.log()&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/for&gt;&gt;
-				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@
 			@@.sortbutton;&lt;&lt;button &#39;Age &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 				&lt;&lt;if _ageUp == false&gt;&gt;
-					&lt;&lt;run _sortFluffies.sort((a, b) =&gt; (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52))) &gt;&gt;
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;run $filterFluffies.sort((a, b) =&gt; (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52))) &gt;&gt;
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;set _ageUp = true&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;run _sortFluffies.sort((a, b) =&gt; (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52))) &gt;&gt; 
-					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+					&lt;&lt;run $filterFluffies.sort((a, b) =&gt; (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52))) &gt;&gt; 
+					&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;set _ageUp = false&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@
@@ -18034,72 +18031,72 @@ button {
 				&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
 					@@.sortbutton;&lt;&lt;button &#39;Strength &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _strUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.strength - b.strength))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.strength - b.strength))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _strUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.strength - a.strength))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.strength - a.strength))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _strUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 					
 					@@.sortbutton;&lt;&lt;button &#39;Energy &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _engUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.energy - b.energy))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.energy - b.energy))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _engUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.energy - a.energy))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.energy - a.energy))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _engUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Charm &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _chaUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.charm - b.charm))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.charm - b.charm))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _chaUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.charm - a.charm))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.charm - a.charm))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _chaUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Thinking &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _thiUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.thinking - b.thinking))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.thinking - b.thinking))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _thiUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.thinking - a.thinking))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.thinking - a.thinking))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _thiUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Learning &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _leaUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.learning - b.learning))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.learning - b.learning))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _leaUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.learning - a.learning))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.learning - a.learning))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _leaUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 					
 					@@.sortbutton;&lt;&lt;button &#39;Fertility &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _ferUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.fertility - b.fertility))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.fertility - b.fertility))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _ferUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.fertility - a.fertility))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.fertility - a.fertility))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _ferUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
@@ -18111,72 +18108,72 @@ button {
 				&lt;div class=&quot;dropdown-inner-container w3-hide w3-white w3-card&quot;&gt;
 					@@.sortbutton;&lt;&lt;button &#39;Trust &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _trustUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.trust - b.trust))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.trust - b.trust))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _trustUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.trust - a.trust))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.trust - a.trust))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _trustUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 					
 					@@.sortbutton;&lt;&lt;button &#39;Training &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _trainingUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.training - b.training))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.training - b.training))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _trainingUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.training - a.training))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.training - a.training))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _trainingUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Temperament &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _temperamentUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.temperament - b.temperament))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.temperament - b.temperament))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _temperamentUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.temperament - a.temperament))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.temperament - a.temperament))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _temperamentUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Happiness &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _happyUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.happy - b.happy))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.happy - b.happy))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _happyUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.happy - a.happy))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.happy - a.happy))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _happyUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 
 					@@.sortbutton;&lt;&lt;button &#39;Stress &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _stressUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.stress - b.stress))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.stress - b.stress))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _stressUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.stress - a.stress))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.stress - a.stress))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _stressUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
 					
 					@@.sortbutton;&lt;&lt;button &#39;Trauma &lt;i class=&quot;fa fa-sort&quot;&gt;&lt;/i&gt;&#39;&gt;&gt;
 						&lt;&lt;if _traumaUp == false&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((a.trauma - b.trauma))) &gt;&gt;
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((a.trauma - b.trauma))) &gt;&gt;
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _traumaUp = true&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;run _sortFluffies.sort((a, b) =&gt; ((b.trauma - a.trauma))) &gt;&gt; 
-							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _sortFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;run $filterFluffies.sort((a, b) =&gt; ((b.trauma - a.trauma))) &gt;&gt; 
+							&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;set _traumaUp = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/button&gt;&gt;@@
@@ -18188,13 +18185,13 @@ button {
 
 &lt;&lt;widget &quot;resetList&quot;&gt;&gt;
 	/* Get fresh list of fluffies */
-	&lt;&lt;set _filterFluffies = []&gt;&gt;
+	&lt;&lt;set $filterFluffies = []&gt;&gt;
 	&lt;&lt;for _id range $ourStore.fluffies&gt;&gt;
 		&lt;&lt;colorGroup $globalFluffies[_id]&gt;&gt;
 		&lt;&lt;if _type != &quot;breeding&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies.push($globalFluffies[_id])&gt;&gt;
+			&lt;&lt;set $filterFluffies.push($globalFluffies[_id])&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;run $globalFluffies[_id].gender != $activeFluffy.gender ? _filterFluffies.push($globalFluffies[_id]) : console.log()&gt;&gt;
+			&lt;&lt;run $globalFluffies[_id].gender != $activeFluffy.gender ? $filterFluffies.push($globalFluffies[_id]) : console.log()&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
 	&lt;&lt;run console.log($fluffyFilters)&gt;&gt;
@@ -18202,44 +18199,44 @@ button {
 	/* Check for filters */
 	&lt;&lt;if $fluffyFilters.breed != false&gt;&gt;
 		&lt;&lt;if _type != &quot;breeding&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed)&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed &amp;&amp; fluffy.gender != $activeFluffy.gender)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed &amp;&amp; fluffy.gender != $activeFluffy.gender)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;switch $fluffyFilters.maturity&gt;&gt;
 		&lt;&lt;case &quot;newborn&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 0)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 0)&gt;&gt;
 		&lt;&lt;case &quot;baby&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 1)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 1)&gt;&gt;
 		&lt;&lt;case &quot;talky&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt; 1 &amp;&amp; fluffy.weaned == false)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt; 1 &amp;&amp; fluffy.weaned == false)&gt;&gt;
 		&lt;&lt;case &quot;foal&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 5 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; (fluffy.maturity/2))&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 5 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; (fluffy.maturity/2))&gt;&gt;
 		&lt;&lt;case &quot;youth&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 20 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maturity)&gt;&gt;	
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 20 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maturity)&gt;&gt;	
 		&lt;&lt;case &quot;adult&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maturity &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maxAge * 52 * 0.75)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maturity &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maxAge * 52 * 0.75)&gt;&gt;
 		&lt;&lt;case &quot;elder&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maxAge * 52 * 0.75)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maxAge * 52 * 0.75)&gt;&gt;
 		&lt;&lt;default&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;if $fluffyFilters.gender != false&gt;&gt;
 		&lt;&lt;if _type != &quot;breeding&quot;&gt;&gt;
-			&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.gender == $fluffyFilters.gender)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.gender == $fluffyFilters.gender)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.coat != false&gt;&gt;
-		&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[0] == $fluffyFilters.coat)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[0] == $fluffyFilters.coat)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.mane != false&gt;&gt;
-		&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[1] == $fluffyFilters.mane)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[1] == $fluffyFilters.mane)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.eyes != false&gt;&gt;
-		&lt;&lt;set _filterFluffies = _filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[2] == $fluffyFilters.eyes)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[2] == $fluffyFilters.eyes)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;run console.log(_filterFluffies)&gt;&gt;
-	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
+	&lt;&lt;run console.log($filterFluffies)&gt;&gt;
+	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type $filterFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="51" name="pronoun widgets" tags="widget nobr" position="100,725" size="100,100">/* **********
  * pronounWidgets.tw
  *
