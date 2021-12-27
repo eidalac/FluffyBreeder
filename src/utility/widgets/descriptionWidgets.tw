@@ -38,7 +38,11 @@ button {
 
 
 
-
+/* ***
+ *	Called as <<FluffyList $type $list>>
+ *
+ *	Displays a list of fluffies, defaults to store
+ *** */
 <<widget "FluffyList">>
 	<<if _args[0] === "breeding">>
 		<<if $activeFluffy.gender === 'female'>>
@@ -49,9 +53,15 @@ button {
 		
 		<<set _breeder = $activeFluffy.ID>>
 	<</if>>
-		
-	<<for _fl range $ourStore.fluffies>>
-		
+	<<set _fluffies = []>>
+	<<if def _args[1]>>
+		<<for _fluffy range _args[1]>>
+			<<run _fluffies.push(_fluffy.ID)>>
+		<</for>>
+	<<else>>
+		<<set _fluffies = $ourStore.fluffies>>
+	<</if>>
+	<<for _fl range _fluffies>>
 		<<if _args[0] === "breeding">>
 			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
 				<<continue>>
@@ -167,7 +177,6 @@ button {
 						</div>
 
 						<div class="fluffy-desc-bottom w3-row w3-dark-grey">
-							<<set $activeFluffy = $globalFluffies[_fl]>>
 							<<drawSprite $globalFluffies[_fl]>>
 							<<shortDesc $globalFluffies[_fl]>>
 						</div>
@@ -702,9 +711,9 @@ button {
 					</div>
 				</div>
 				<div class="fluffy-family">
-					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: @@.cyan;<<print $globalFluffies[_fluffy.mother].name>>@@</span><</if>>
-					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: @@.cyan;<<print $globalFluffies[_fluffy.father].name>>@@</span><</if>> 
-					<<if _fluffy.specialFriend != -1>><span>Special Friend: @@.cyan;<<print $globalFluffies[_fluffy.specialFriend].name>>@@</span><</if>>
+					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor $globalFluffies[_fluffy.mother].name>></span><</if>>
+					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor $globalFluffies[_fluffy.father].name>></span><</if>>
+					<<if _fluffy.specialFriend != -1>><span>Special Friend: <<colorizeText $globalFluffies[_fluffy.specialFriend].cColor $globalFluffies[_fluffy.specialFriend].name>></span><</if>>
 					<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
 					<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>
 					<<if _fluffy.nursing > 0>><span>Is nursing <<print _fluffy.nursing >> foals</span><</if>>
@@ -744,7 +753,7 @@ button {
 
 
 
-<<widget "intractDetails">>
+<<widget "interactDetails">>
 	<<PlayerStatus>><hr>
 	
 	<div class="fluffy-desc-bottom w3-row w3-dark-grey">

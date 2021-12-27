@@ -14,7 +14,7 @@
 
  	/* ***
  	 *  Some weight based scalling.
- 	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.  
+ 	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.
  	 *** */
  	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks < $activeFluffy.maturity>>
 
@@ -37,15 +37,6 @@
  		/* Adults have a genetic set max size, which we average with 4.5 to weight the results and keep them in a limted range */
  		<<set _weightRatio = Number(Number($activeFluffy.weight).toFixed(3) / Number(Number(Number($activeFluffy.maxWeight) + Number(4.5)).toFixed(3) / Number(2)).toFixed(3)).toFixed(3)>>
  	<</if>>
- 		
-	/* Scale based on the ratio above */
-	<<set _scale = Number(_weightRatio * 160)>>
-	
-	/* Now we average that with 3x the normal size to act as a cap */
-	<<set _scale = Number(Number(_scale + 320)/3)>>
-	
-	/* get the padding to keep the images centered 	*/
-	<<set _pad = Number(Number(160 - _scale)/2)>>	
 
 	/* Get the total age, in weeks: */
 	<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
@@ -618,6 +609,7 @@
 		<<set _ID = _args[0].ID>>
 
 		<div class="fluffy-image">
+			<<set _activeFluffy = $activeFluffy>>
 			<<set $activeFluffy = $globalFluffies[_ID]>>
 
 			<<switch $globalFluffies[_ID].breed>>
@@ -633,6 +625,7 @@
 				<<default>>
 					<<fluffyImage "alicorn">>		
 			<</switch>>
+			<<set $activeFluffy = _activeFluffy>>
 		</div>
 	<</if>>
 <</widget>>
