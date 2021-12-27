@@ -7,8 +7,15 @@ $( document ).ready(function() {
 		$('#openNav').on("click", window.openSidebar);
 		$('#close-dropdown-btn').on("click", window.closeSidebar);
 
-    /* Sort/Show */
+    /* Show/Sort/Filter */
 		$('.dropdown-btn').on("click", window.toggleButton);
+
+    /* Close Subsort */
+    $('.subsort-btn .sortbutton').on("click", window.closeSubsort);
+
+    /* Remove titles */
+    $('#filter-reset-btn').on("click", window.removeTitle)
+    $('#sort-reset-btn').on("click", window.removeTitle)
 
     /* Prepare html for info container */
     $('body').append('<div class="info-container"></div>');

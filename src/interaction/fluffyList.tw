@@ -33,7 +33,7 @@
 	<div class="w3-teal">
 
 		<div class="w3-dropdown-hover">
-		  	@@#sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		  	@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
 		</div>
 	
 		<div class="w3-dropdown-hover">
@@ -59,43 +59,14 @@
 					<button class="dropdown-btn w3-button"><span>Show</span><i class="fa fa-caret-down"></i></button>
 					<div class="dropdown-inner-container w3-hide w3-grey w3-card">
 					
-						@@#sortbutton;<<button "All">><<set $listType = "All">>
+						@@.sortbutton;<<button "Show Store">><<set $listType = "All">>
 							<<run $("#sellbutton button").removeClass("w3-hide")>>
 							<<run $("#sellbutton button").addClass("w3-show")>>
 							<<run $("#unsellbutton button").removeClass("w3-show")>>
 							<<run $("#unsellbutton button").addClass("w3-hide")>>
 							<<replace "#fluffy-list">><<FluffyList>><</replace>>
 						<</button>>@@
-						@@#sortbutton;<<button "Only Babies">><<set $listType = "Babies">>
-							<<run $("#sellbutton button").removeClass("w3-hide")>>
-							<<run $("#sellbutton button").addClass("w3-show")>>
-							<<run $("#unsellbutton button").removeClass("w3-show")>>
-							<<run $("#unsellbutton button").addClass("w3-hide")>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
-						<</button>>@@
-						@@#sortbutton;<<button "Only Foals">><<set $listType = "Foals">>
-							<<run $("#sellbutton button").removeClass("w3-hide")>>
-							<<run $("#sellbutton button").addClass("w3-show")>>
-							<<run $("#unsellbutton button").removeClass("w3-show")>>
-							<<run $("#unsellbutton button").addClass("w3-hide")>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
-						<</button>>@@
-						@@#sortbutton;<<button "Only Stallions">><<set $listType = "Stallions">>
-							<<run $("#sellbutton button").removeClass("w3-hide")>>
-							<<run $("#sellbutton button").addClass("w3-show")>>
-							<<run $("#unsellbutton button").removeClass("w3-show")>>
-							<<run $("#unsellbutton button").addClass("w3-hide")>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
-						<</button>>@@
-						@@#sortbutton;<<button "Only Mares">><<set $listType = "Mares">>
-							<<run $("#sellbutton button").removeClass("w3-hide")>>
-							<<run $("#sellbutton button").addClass("w3-show")>>
-							<<run $("#unsellbutton button").removeClass("w3-show")>>
-							<<run $("#unsellbutton button").addClass("w3-hide")>>
-							<<replace "#fluffy-list">><<FluffyList>>
-							<</replace>>
-						<</button>>@@
-						@@#sortbutton;<<button "Only Display">><<set $listType = "Display">>
+						@@.sortbutton;<<button "Show Display">><<set $listType = "Display">>
 							<<run $("#sellbutton button").removeClass("w3-show")>>
 							<<run $("#sellbutton button").addClass("w3-hide")>>
 							<<run $("#unsellbutton button").removeClass("w3-hide")>>
@@ -108,6 +79,7 @@
 	
 			<div class="w3-dropdown-hover">
 	        	<<sortButtons>>
+				<<filterButtons>>
 			</div>
 
 	        <div class="w3-dropdown-hover">
@@ -148,7 +120,7 @@
 						<div class="dropdown-container w3-left-align w3-grey">
 							<button class="dropdown-btn w3-button"><span>Remove/Kill</span><i class="fa fa-caret-down"></i></button>
 							<div class="dropdown-inner-container w3-hide w3-white w3-card" data-type="kill">
-								@@#sortbutton;<<button "Euthanize">>
+								@@.sortbutton;<<button "Euthanize">>
 									<<for _bf range $ourStore.fluffies>>
 										<<if $globalFluffies[_bf].isChecked == true>>
 											<<set $hugbox++>>
@@ -159,7 +131,7 @@
 									<<replace "#fluffy-list">><<FluffyList>><</replace>>
 									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 								<</button>>@@
-								@@#sortbutton;<<button "Release">>
+								@@.sortbutton;<<button "Release">>
 									<<for _bf range $ourStore.fluffies>>
 										<<if $globalFluffies[_bf].isChecked == true>>
 										<<removeFluffy $globalFluffies[_bf]>>
@@ -168,7 +140,7 @@
 									<<replace "#fluffy-list">><<FluffyList>><</replace>>
 									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 								<</button>>@@
-								@@#sortbutton;<<button "Murder">>
+								@@.sortbutton;<<button "Murder">>
 									<<for _bf range $ourStore.fluffies>>
 										<<if $globalFluffies[_bf].isChecked == true>>
 											<<set $abuse++>>
@@ -188,7 +160,7 @@
 								<div class="dropdown-container w3-left-align w3-grey">
 								<button class="dropdown-btn w3-button"><span>Kibble</span><i class="fa fa-caret-down"></i></button>
 									<div class="dropdown-inner-container w3-hide w3-white w3-card">
-										@@#sortbutton;<<button "Trash">>
+										@@.sortbutton;<<button "Trash">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>> 
 														<<set $globalFluffies[_bf].foodType = "Kibble">>
@@ -197,7 +169,7 @@
 												<</for>> 
 												<<replace "#fluffy-list">><<FluffyList>><</replace>>
 											<</button>>@@
-										@@#sortbutton;<<button "Cheap">>
+										@@.sortbutton;<<button "Cheap">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>>
 														<<set $globalFluffies[_bf].foodType = "Kibble">>
@@ -206,7 +178,7 @@
 												<</for>> 
 												<<replace "#fluffy-list">><<FluffyList>><</replace>>
 											<</button>>@@
-										@@#sortbutton;<<button "Basic">>
+										@@.sortbutton;<<button "Basic">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>>
 														<<set $globalFluffies[_bf].foodType = "Kibble">>
@@ -215,7 +187,7 @@
 												<</for>> 
 												<<replace "#fluffy-list">><<FluffyList>><</replace>>
 											<</button>>@@
-										@@#sortbutton;<<button "Good">>
+										@@.sortbutton;<<button "Good">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>>
 														<<set $globalFluffies[_bf].foodType = "Kibble">>
@@ -224,7 +196,7 @@
 												<</for>> 
 												<<replace "#fluffy-list">><<FluffyList>><</replace>>
 											<</button>>@@
-										@@#sortbutton;<<button "Quality">>
+										@@.sortbutton;<<button "Quality">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>>
 														<<set $globalFluffies[_bf].foodType = "Kibble">>
@@ -239,7 +211,7 @@
 								<div class="dropdown-container w3-left-align w3-grey">
 									<button class="dropdown-btn w3-button"><span>Greens</span><i class="fa fa-caret-down"></i></button>
 									<div class="dropdown-inner-container w3-hide w3-white w3-card">
-										@@#sortbutton;<<button "Trash">>
+										@@.sortbutton;<<button "Trash">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>> 
 													<<set $globalFluffies[_bf].foodType = "Greens">>
@@ -248,7 +220,7 @@
 											<</for>> 
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Cheap">>
+										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Greens">>
@@ -257,7 +229,7 @@
 											<</for>> 
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Basic">>
+										@@.sortbutton;<<button "Basic">>
 												<<for _bf range $ourStore.fluffies>>
 													<<if $globalFluffies[_bf].isChecked == true>>
 														<<set $globalFluffies[_bf].foodType = "Greens">>
@@ -266,7 +238,7 @@
 												<</for>> 
 												<<replace "#fluffy-list">><<FluffyList>><</replace>>
 											<</button>>@@
-										@@#sortbutton;<<button "Good">>
+										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Greens">>
@@ -275,7 +247,7 @@
 											<</for>> 
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Quality">>
+										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Greens">>
@@ -291,7 +263,7 @@
 								<div class="dropdown-container w3-left-align w3-grey">
 									<button class="dropdown-btn w3-button"><span>Sketti</span><i class="fa fa-caret-down"></i></button>
 									<div class="dropdown-inner-container w3-hide w3-white w3-card">
-										@@#sortbutton;<<button "Trash">>
+										@@.sortbutton;<<button "Trash">>
 											<<for _bf range $ourStore.fluffies>>
 											<<if $globalFluffies[_bf].isChecked == true>> 
 											<<set $globalFluffies[_bf].foodType = "Sketti">>
@@ -300,7 +272,7 @@
 											<</for>> 
 										<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Cheap">>
+										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Sketti">>
@@ -309,7 +281,7 @@
 											<</for>> 
 										<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Basic">>
+										@@.sortbutton;<<button "Basic">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Sketti">>
@@ -318,7 +290,7 @@
 											<</for>> 
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Good">>
+										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Sketti">>
@@ -327,7 +299,7 @@
 											<</for>> 
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Quality">>
+										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<set $globalFluffies[_bf].foodType = "Sketti">>
@@ -343,7 +315,7 @@
 								<div class="dropdown-container w3-left-align w3-grey">
 									<button class="dropdown-btn w3-button"><span>Formula</span><i class="fa fa-caret-down"></i></button>
 									<div class="dropdown-inner-container w3-hide w3-white w3-card">
-										@@#sortbutton;<<button "Trash">>
+										@@.sortbutton;<<button "Trash">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<if $globalFluffies[_bf].weaned == false>> 
@@ -355,7 +327,7 @@
 											<</for>>
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Cheap">>
+										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<if $globalFluffies[_bf].weaned == false>> 
@@ -367,7 +339,7 @@
 											<</for>>
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Basic">>
+										@@.sortbutton;<<button "Basic">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<if $globalFluffies[_bf].weaned == false>> 
@@ -379,7 +351,7 @@
 											<</for>>
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Good">>
+										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<if $globalFluffies[_bf].weaned == false>> 
@@ -391,7 +363,7 @@
 											<</for>>
 											<<replace "#fluffy-list">><<FluffyList>><</replace>>
 										<</button>>@@
-										@@#sortbutton;<<button "Quality">>
+										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
 												<<if $globalFluffies[_bf].isChecked == true>>
 													<<if $globalFluffies[_bf].weaned == false>> 
@@ -407,7 +379,7 @@
 									</div>
 								</div>
 								
-								@@#sortbutton;<<button "Nothing">>
+								@@.sortbutton;<<button "Nothing">>
 									<<for _bf range $ourStore.fluffies>>
 										<<if $globalFluffies[_bf].isChecked == true>>
 											<<set $globalFluffies[_bf].foodType = "Nothing">>
@@ -437,8 +409,8 @@
 
 	<div class="w3-container w3-col l12 s12">
 		<<timed 5ms>>
-		<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
-		<<run $("#sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
 		
 		<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
 		<<run $("#sellbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>

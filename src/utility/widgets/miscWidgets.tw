@@ -390,9 +390,9 @@
 
 
 <<widget "systemButtons">>
-	@@#sortbutton;<<button '<i class="fa fa-save"></i> Saves'>><<script>>UI.saves()<</script>><</button>>@@
+	@@.sortbutton;<<button '<i class="fa fa-save"></i> Saves'>><<script>>UI.saves()<</script>><</button>>@@
 	
-	@@#sortbutton;<<button '<i class="fa fa-power-off"></i> Restart'>><<script>>UI.restart()<</script>><</button>>@@
+	@@.sortbutton;<<button '<i class="fa fa-power-off"></i> Restart'>><<script>>UI.restart()<</script>><</button>>@@
 
 
 	<div class="w3-dropdown-hover">
@@ -422,16 +422,190 @@
 
 
 
+<<widget "filterButtons">>
+	<<set _type = _args[0] || "None">>
+	<<set _filterFluffies = []>>
+	<<for _id range $ourStore.fluffies>>
+		<<set _filterFluffies.push($globalFluffies[_id])>>
+	<</for>>
+	<<set $fluffyFilters = {
+		breed: false,
+		maturity: false,
+		gender: false,
+		coat: false,
+		mane: false,
+		eyes: false
+	}>>
+	
+	<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
+		<button class="dropdown-btn w3-button"><span>Filter</span><i class="fa fa-caret-down"></i></button>
+		<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+			@@#filter-reset-btn;.sortbutton;<<button 'Remove Filter <i class="fa fa-window-close"></i>'>>
+				/* Reset sorted filters */
+				<<set $fluffyFilters = {
+					breed: false,
+					maturity: false,
+					gender: false,
+					coat: false,
+					mane: false,
+					eyes: false
+				}>>
+				<<resetList>>
+			<</button>>@@
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Breed</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					@@.sortbutton;<<button 'Alicorn <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "alicorn">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Earthy <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "earthy">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Pegasus <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "pegasus">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Unicorn <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "unicorn">>
+						<<resetList>>
+					<</button>>@@
+				</div>
+			</div>
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Maturity</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Newborn <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "newborn">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Baby <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "baby">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Talky <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "talky">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Foal <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "foal">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					@@.sortbutton;<<button 'Youth <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "youth">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Adult <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "adult">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Elder <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "elder">>
+						<<resetList>>
+					<</button>>@@
+				</div>
+			</div>
+			<<if _type != "breeding">>
+				<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+					<button class="dropdown-btn w3-button"><span>Gender</span><i class="fa fa-caret-down"></i></button>
+					<div class="dropdown-inner-container w3-hide w3-white w3-card">
+						@@.sortbutton;<<button 'Male <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.gender = "male">>
+							<<resetList>>
+						<</button>>@@
+						@@.sortbutton;<<button 'Female <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.gender = "female">>
+							<<resetList>>
+						<</button>>@@
+					</div>
+				</div>
+			<</if>>
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Color</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Coat</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.coat = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _colorGroup = $colorGroups[_i]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.coat = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Mane</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.mane = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _colorGroup = $colorGroups[_i]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.mane = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Eyes</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.eyes = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _colorGroup = $colorGroups[_i]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.eyes = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<</widget>>
+
 <<widget "sortButtons">>
 	<<set _type = _args[0] || "None">>
 	<<set _sortFluffies = []>>
 	<<for _id range $ourStore.fluffies>>
 		<<set _sortFluffies.push($globalFluffies[_id])>>
 	<</for>>
+
 	<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
 		<button class="dropdown-btn w3-button"><span>Sort</span><i class="fa fa-caret-down"></i></button>
 		<div class="dropdown-inner-container w3-hide w3-grey w3-card">
-			@@#sortbutton;<<button 'Remove Sort <i class="fa fa-window-close"></i>'>>
+			@@#sort-reset-btn;.sortbutton;<<button 'Remove Sort <i class="fa fa-window-close"></i>'>>
 				/* Reset sorted filters */
 				<<set _sortFluffies = []>>
 				<<run console.log($activeFluffy.name)>>
@@ -444,109 +618,7 @@
 				<</for>>
 				<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
 			<</button>>@@
-			<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-				<button class="dropdown-btn w3-button"><span>Breed</span><i class="fa fa-caret-down"></i></button>
-				<div class="dropdown-inner-container w3-hide w3-white w3-card">
-					@@#sortbutton;<<button 'Alicorn <i class="fa fa-sort"></i>'>>
-						<<if _type != "breeding">>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "alicorn")>>
-						<<else>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "alicorn" && fluffy.gender != $activeFluffy.gender)>>
-						<</if>>
-						<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-					<</button>>@@
-					@@#sortbutton;<<button 'Earthy <i class="fa fa-sort"></i>'>>
-						<<if _type != "breeding">>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "earthy")>>
-						<<else>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "earthy" && fluffy.gender != $activeFluffy.gender)>>
-						<</if>>
-						<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-					<</button>>@@
-					@@#sortbutton;<<button 'Pegasus <i class="fa fa-sort"></i>'>>
-						<<if _type != "breeding">>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "pegasus")>>
-						<<else>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "pegasus" && fluffy.gender != $activeFluffy.gender)>>
-						<</if>>
-						<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-					<</button>>@@
-					@@#sortbutton;<<button 'Unicorn <i class="fa fa-sort"></i>'>>
-						<<if _type != "breeding">>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "unicorn")>>
-						<<else>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.breed == "unicorn" && fluffy.gender != $activeFluffy.gender)>>
-						<</if>>
-						<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-					<</button>>@@
-				</div>
-			</div>
-			<<if _type != "breeding">>
-				<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-					<button class="dropdown-btn w3-button"><span>Gender</span><i class="fa fa-caret-down"></i></button>
-					<div class="dropdown-inner-container w3-hide w3-white w3-card">
-						@@#sortbutton;<<button 'Male <i class="fa fa-sort"></i>'>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.gender == "male")>>
-							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-						<</button>>@@
-						@@#sortbutton;<<button 'Female <i class="fa fa-sort"></i>'>>
-							<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.gender == "female")>>
-							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-						<</button>>@@
-					</div>
-				</div>
-			<</if>>
-			<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-				<button class="dropdown-btn w3-button"><span>Color</span><i class="fa fa-caret-down"></i></button>
-				<div class="dropdown-inner-container w3-hide w3-white w3-card">
-					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-						<button class="dropdown-btn w3-button"><span>Coat</span><i class="fa fa-caret-down"></i></button>
-						<div class="dropdown-inner-container w3-hide w3-white w3-card">
-							<<for _i = 0; _i < $colorGroups.length; _i++>>
-								<<set _color = $colorGroups[_i]>>
-								<<capture _color>>
-									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
-									@@#sortbutton;<<button _btnTitle>>
-										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[0] == _color)>>
-										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-									<</button>>@@
-								<</capture>>
-							<</for>>
-						</div>
-					</div>
-					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-						<button class="dropdown-btn w3-button"><span>Mane</span><i class="fa fa-caret-down"></i></button>
-						<div class="dropdown-inner-container w3-hide w3-white w3-card">
-							<<for _i = 0; _i < $colorGroups.length; _i++>>
-								<<set _color = $colorGroups[_i]>>
-								<<capture _color>>
-									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
-									@@#sortbutton;<<button _btnTitle>>
-										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[1] == _color)>>
-										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-									<</button>>@@
-								<</capture>>
-							<</for>>
-						</div>
-					</div>
-					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
-						<button class="dropdown-btn w3-button"><span>Eyes</span><i class="fa fa-caret-down"></i></button>
-						<div class="dropdown-inner-container w3-hide w3-white w3-card">
-							<<for _i = 0; _i < $colorGroups.length; _i++>>
-								<<set _color = $colorGroups[_i]>>
-								<<capture _color>>
-									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
-									@@#sortbutton;<<button _btnTitle>>
-										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[2] == _color)>>
-										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
-									<</button>>@@
-								<</capture>>
-							<</for>>
-						</div>
-					</div>
-				</div>
-			</div>
-			@@#sortbutton;<<button 'Age <i class="fa fa-sort"></i>'>>
+			@@.sortbutton;<<button 'Age <i class="fa fa-sort"></i>'>>
 				<<if _ageUp == false>>
 					<<run _sortFluffies.sort((a, b) => (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52))) >>
 					<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -561,7 +633,7 @@
 			<div class="dropdown-container w3-left-align w3-grey">
 				<button class="dropdown-btn w3-button"><span>Stats</span><i class="fa fa-caret-down"></i></button>
 				<div class="dropdown-inner-container w3-hide w3-white w3-card">
-					@@#sortbutton;<<button 'Strength <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Strength <i class="fa fa-sort"></i>'>>
 						<<if _strUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.strength - b.strength))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -573,7 +645,7 @@
 						<</if>>
 					<</button>>@@
 					
-					@@#sortbutton;<<button 'Energy <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Energy <i class="fa fa-sort"></i>'>>
 						<<if _engUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.energy - b.energy))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -585,7 +657,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Charm <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Charm <i class="fa fa-sort"></i>'>>
 						<<if _chaUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.charm - b.charm))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -597,7 +669,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Thinking <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Thinking <i class="fa fa-sort"></i>'>>
 						<<if _thiUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.thinking - b.thinking))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -609,7 +681,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Learning <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Learning <i class="fa fa-sort"></i>'>>
 						<<if _leaUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.learning - b.learning))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -621,7 +693,7 @@
 						<</if>>
 					<</button>>@@
 					
-					@@#sortbutton;<<button 'Fertility <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Fertility <i class="fa fa-sort"></i>'>>
 						<<if _ferUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.fertility - b.fertility))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -635,10 +707,10 @@
 				</div>
 			</div>
 
-			<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
 				<button class="dropdown-btn w3-button"><span>Attributes</span><i class="fa fa-caret-down"></i></button>
 				<div class="dropdown-inner-container w3-hide w3-white w3-card">
-					@@#sortbutton;<<button 'Trust <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Trust <i class="fa fa-sort"></i>'>>
 						<<if _trustUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.trust - b.trust))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -650,7 +722,7 @@
 						<</if>>
 					<</button>>@@
 					
-					@@#sortbutton;<<button 'Training <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Training <i class="fa fa-sort"></i>'>>
 						<<if _trainingUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.training - b.training))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -662,7 +734,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Temperament <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Temperament <i class="fa fa-sort"></i>'>>
 						<<if _temperamentUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.temperament - b.temperament))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -674,7 +746,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Happiness <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Happiness <i class="fa fa-sort"></i>'>>
 						<<if _happyUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.happy - b.happy))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -686,7 +758,7 @@
 						<</if>>
 					<</button>>@@
 
-					@@#sortbutton;<<button 'Stress <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Stress <i class="fa fa-sort"></i>'>>
 						<<if _stressUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.stress - b.stress))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -698,7 +770,7 @@
 						<</if>>
 					<</button>>@@
 					
-					@@#sortbutton;<<button 'Trauma <i class="fa fa-sort"></i>'>>
+					@@.sortbutton;<<button 'Trauma <i class="fa fa-sort"></i>'>>
 						<<if _traumaUp == false>>
 							<<run _sortFluffies.sort((a, b) => ((a.trauma - b.trauma))) >>
 							<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
@@ -713,4 +785,60 @@
 			</div>
 		</div>
 	</div>
+<</widget>>
+
+<<widget "resetList">>
+	/* Get fresh list of fluffies */
+	<<set _filterFluffies = []>>
+	<<for _id range $ourStore.fluffies>>
+		<<colorGroup $globalFluffies[_id]>>
+		<<if _type != "breeding">>
+			<<set _filterFluffies.push($globalFluffies[_id])>>
+		<<else>>
+			<<run $globalFluffies[_id].gender != $activeFluffy.gender ? _filterFluffies.push($globalFluffies[_id]) : console.log()>>
+		<</if>>
+	<</for>>
+	<<run console.log($fluffyFilters)>>
+
+	/* Check for filters */
+	<<if $fluffyFilters.breed != false>>
+		<<if _type != "breeding">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed)>>
+		<<else>>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed && fluffy.gender != $activeFluffy.gender)>>
+		<</if>>
+	<</if>>
+	<<switch $fluffyFilters.maturity>>
+		<<case "newborn">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks == 0)>>
+		<<case "baby">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks == 1)>>
+		<<case "talky">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks > 1 && fluffy.weaned == false)>>
+		<<case "foal">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= 5 && fluffy.age * 52 + fluffy.ageWeeks < (fluffy.maturity/2))>>
+		<<case "youth">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= 20 && fluffy.age * 52 + fluffy.ageWeeks < fluffy.maturity)>>	
+		<<case "adult">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= fluffy.maturity && fluffy.age * 52 + fluffy.ageWeeks < fluffy.maxAge * 52 * 0.75)>>
+		<<case "elder">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= fluffy.maxAge * 52 * 0.75)>>
+		<<default>>
+	<</switch>>
+	<<if $fluffyFilters.gender != false>>
+		<<if _type != "breeding">>
+			<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.gender == $fluffyFilters.gender)>>
+		<</if>>
+	<</if>>
+	<<if $fluffyFilters.coat != false>>
+		<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.colorGroup[0] == $fluffyFilters.coat)>>
+	<</if>>
+	<<if $fluffyFilters.mane != false>>
+		<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.colorGroup[1] == $fluffyFilters.mane)>>
+	<</if>>
+	<<if $fluffyFilters.eyes != false>>
+		<<set _filterFluffies = _filterFluffies.filter(fluffy => fluffy.colorGroup[2] == $fluffyFilters.eyes)>>
+	<</if>>
+	<<run console.log(_filterFluffies)>>
+	<<replace "#fluffy-list">><<FluffyList _type _filterFluffies>><</replace>>
 <</widget>>

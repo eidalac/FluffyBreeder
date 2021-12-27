@@ -208,8 +208,8 @@ window.sortAccFunc = function () {
   }
 };
 
-window.toggleButton = function () {
-  const $dropdown = $(this).siblings('div');
+window.toggleButton = function (event, $dropdown = undefined) {
+  $dropdown = !$dropdown ? $(this).siblings('div') : $dropdown
   if($dropdown.hasClass('w3-show')) {
     $dropdown.removeClass('w3-show w3-grey');
     $dropdown.addClass('w3-hide');
@@ -219,4 +219,24 @@ window.toggleButton = function () {
   } else {
     $dropdown.removeClass('w3-hide');
   }
+}
+
+window.closeSubsort = function (event) {
+  const title = $(this).find('button').html().replace(' <i class="fa fa-sort"></i>', '');
+  const $parent = $(this).parent();
+  const $parent_button = $parent.parent().find('button span');
+  let parent_title = $parent_button.attr('data-title')
+  parent_title = parent_title && parent_title != 0 ? $parent_button.attr('data-title') : $parent_button.html();
+
+  toggleButton(event, $parent);
+  $parent.parent().find('> button').html(`<span data-title="${parent_title}">${parent_title} - ${title}</span> <i class="fa fa-caret-down"></i>`)
+}
+
+window.removeTitle = function (event) {
+  const icon = ' <i class="fa fa-caret-down"></i>'
+  $('.dropdown-btn').each(function(i) {
+    let title = $(this).find('span').attr('data-title')
+    title = title && title != 0 ? title : $(this).find('span').html().replace(icon, '');
+    $(this).html(`<span data-title="${title}">${title}</span> <i class="fa fa-caret-down"></i>`)
+  })
 }

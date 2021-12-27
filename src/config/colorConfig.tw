@@ -161,40 +161,48 @@
 
 /* ***
  *	Color Group
- *	Call as <<colorGroup>>
+ *	Call as <<colorGroup $fluffy>>
  *
- *	finds the color group of ($activeFluffy)
+ *	Finds the color group of $fluffy)
  *** */
 <<widget "colorGroup">>
+	<<fluffyError _args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<colorGroup>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<if _args[0] != 0>>
+			<<set _fluffy = _args[0]>>
+		<<else>>
+			<<set _fluffy = $activeFluffy>>
+		<</if>>
+		<<set _coatGroup = "">>
+		<<set _maneGroup = "">>
+		<<set _eyeGroup = "">>
+		
+		/* Interate through the list of colors, if they match, remember the tier and group.*/
+		<<for _i = 0; _i < $colors.length; _i++>>
+			<<if _fluffy.cColor == $colors[_i].Name>>
+				<<set _coatGroup = $colors[_i].Group>>
+			<</if>>
+			<<if _fluffy.mColor == $colors[_i].Name>>
+				<<set _maneGroup = $colors[_i].Group>>
+			<</if>>
+			<<if _fluffy.eColor == $colors[_i].Name>>
+				<<set _eyeGroup = $colors[_i].Group>>
+			<</if>>
+		<</for>>
 
-	<<set _coatGroup = "">>
-	<<set _maneGroup = "">>
-	<<set _eyeGroup = "">>
-	
-	/* Interate through the list of colors, if they match, remember the tier and group.*/
-	<<for _i = 0; _i < $colors.length; _i++>>
-		<<if $activeFluffy.cColor == $colors[_i].Name>>
-			<<set _coatGroup = $colors[_i].Group>>
+		/* No matches found, bad*/
+		<<if _coatGroup == "">>
+			<br>@@.red;No color match found for coat: <<print _fluffy.ID>>.
 		<</if>>
-		<<if $activeFluffy.mColor == $colors[_i].Name>>
-			<<set _maneGroup = $colors[_i].Group>>
+		<<if _maneGroup == "">>
+			<br>@@.red;No color match found for mane: <<print _fluffy.ID>>.
 		<</if>>
-		<<if $activeFluffy.eColor == $colors[_i].Name>>
-			<<set _eyeGroup = $colors[_i].Group>>
-		<</if>>
-	<</for>>
-
-	/* No matches found, bad*/
-	<<if _coatGroup == "">>
-		<br>@@.red;No color match found for coat: <<print $activeFluffy.ID>>.
+		<<if _eyeGroup == "">>
+			<br>@@.red;No color match found for eye: <<print _fluffy.ID>>.
+		<</if>>	
+		<<set _fluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]>>
 	<</if>>
-	<<if _maneGroup == "">>
-		<br>@@.red;No color match found for mane: <<print $activeFluffy.ID>>.
-	<</if>>
-	<<if _eyeGroup == "">>
-		<br>@@.red;No color match found for eye: <<print $activeFluffy.ID>>.
-	<</if>>	
-
-	<<set $activeFluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]>>
-
 <</widget>>
