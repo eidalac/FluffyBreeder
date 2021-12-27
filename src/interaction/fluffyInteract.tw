@@ -250,32 +250,83 @@
 		<</if>>
 		<<if _shear>>
 			<<button _desc>>
-				<<if $actions > 0>>
+				<<if $actions <= 0>>
+					<<replace "#shear-msg">><br>You are too tired to shear right now.<</replace>>
+				<<elseif $activeFluffy.furStage <= 67>>
+					<<replace "#shear-msg">><br><<colorizeText $activeFluffy.cColor $activeFluffy.name>> cannot be sheared.<</replace>>
+				<<else>>
 					<<set $actions-->>
 					<<set $stress -= 10>>
 					<<if $stress < 0>><<set $stress = 0>><</if>>
 
+					<<set _woolYield = 0>>
+					<<set _coatTier = 0>>
+
+					/* Interate through the list of colors, if they match, remember the tier. */
+					<<for _i = 0; _i < $Colors.length; _i++>>
+						<<if $activeFluffy.cColor == $Colors[_i].Name>>
+							<<set _coatTier = $Colors[_i].Tier>>
+						<</if>>
+					<</for>>
+
 					<<if $activeFluffy.subSpecies == 2>>
 						<<if $activeFluffy.furStage > 167>>
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(97))>>
 							<<set $activeFluffy.furStage = 101>>
 						<<elseif $activeFluffy.furStage > 100>>
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(64))>>
 							<<set $activeFluffy.furStage = 68>>
 						<<else>> /* $activeFluffy.furStage > 67>>*/
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(0))>>
 							<<set $activeFluffy.furStage = 0>>
 						<</if>>
 					<<else>>
+						<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(0))>>
 						<<set $activeFluffy.furStage = 0>>
 					<</if>>
-					
+
+					/* .33-.99 */
+					<<set _woolYield = Number(Number(_woolYield) / Number(100)).toFixed(2)>>
+
+					/* .33-.99 * length (2-11) = 0.66 - 10.89 */
+					<<set _woolYield = Number(Number($activeFluffy.coatLength).toFixed(2) * Number(_woolYield).toFixed(2)).toFixed(2)>>
+
+					/* 0 - 10 */
+					<<set _woolYield = Number(_woolYield).toFixed(0)>>
+
+					/* 2 - 12 oz of wool */
+					<<set _woolYield = Number(Number(_woolYield) + Number(2)).toFixed(0)>>
+
+					<<set _woolQuality = 0>>
+
+<<run console.log(`DEBUG: [Shearing]: _coatTier = ${_coatTier}, curl = ${$activeFluffy.coatCurl}.`)>>
+					<<set _woolQuality = Number(Number(_coatTier) + Number($activeFluffy.coatCurl))>>
+<<run console.log(`DEBUG: [Shearing]: _woolQuality 1: ${_woolQuality}.`)>>
+					<<set _woolQuality = Number(Number(_woolQuality) / Number(2)).toFixed(2)>>
+<<run console.log(`DEBUG: [Shearing]: _woolQuality 2: ${_woolQuality}.`)>>
+					<<set _woolQuality = Number(Number(_woolQuality).toFixed(2) * Number(Number($activeFluffy.coatDensity).toFixed(2) / Number(100).toFixed(2))).toFixed(2)>>
+<<run console.log(`DEBUG: [Shearing]: _woolQuality 3: ${_woolQuality}.`)>>
+					<<set _woolQuality = Number(Number(_woolQuality).toFixed(2) / Number(6).toFixed(2)).toFixed(2)>>
+<<run console.log(`DEBUG: [Shearing]: _woolQuality 4: ${_woolQuality}.`)>>
+					<<set _woolQuality = Number(_woolQuality).toFixed(0)>>
+<<run console.log(`DEBUG: [Shearing]: _woolQuality 5: ${_woolQuality}.`)>>
+					<<set _item =
+					{
+						name: "Wool",
+						special: $activeFluffy.cColor,
+						type: $activeFluffy.subSpecies,
+						amount: _woolYield,
+						quality: _woolQuality
+					}
+					>>
+
+					<<set $ourStore.inventory.push(_item)>>
+
 					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 					<<replace "#shear-msg">>
 						<br><<fluffSpeech"huu huu... why taek pwetty fwuff fwom <fluffy>?" $activeFluffy.cColor>>
 					<</replace>>
 					<<replace "#fluffy-name">><<interactDetails>><</replace>>
-				<<elseif $activeFluffy.furStage <= 67>>
-					<<replace "#shear-msg">><br><<colorizeText $activeFluffy.cColor $activeFluffy.name>> cannot be sheared.<</replace>>
-				<<else>>
-					<<replace "#shear-msg">><br>You are too tired to shear right now.<</replace>>
 				<</if>>
 
 				<<replace "#train-msg">><</replace>>

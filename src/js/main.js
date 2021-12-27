@@ -16,6 +16,33 @@ Save.onLoad.add(function (save)
     {
       save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
     }
+
+    // Set coat information if missing:
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd = 0;
+    }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLength == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatLength = 2;
+    }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensity == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatDensity = 100;
+    }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd = 10;
+    }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatCurl == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatCurl = 2;
+    }
+
+    if (typeof save.state.history[save.state.index].variables.ourStore.inventory == 'undefined')
+    {
+      save.state.history[save.state.index].variables.ourStore.inventory = [];
+    }
   }
 });
 /* ----- Utility ----- */
