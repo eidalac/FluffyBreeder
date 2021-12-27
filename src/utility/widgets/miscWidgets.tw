@@ -496,6 +496,56 @@
 					</div>
 				</div>
 			<</if>>
+			<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
+				<button class="dropdown-btn w3-button"><span>Color</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
+						<button class="dropdown-btn w3-button"><span>Coat</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _color = $colorGroups[_i]>>
+								<<capture _color>>
+									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
+									@@#sortbutton;<<button _btnTitle>>
+										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[0] == _color)>>
+										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
+						<button class="dropdown-btn w3-button"><span>Mane</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _color = $colorGroups[_i]>>
+								<<capture _color>>
+									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
+									@@#sortbutton;<<button _btnTitle>>
+										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[1] == _color)>>
+										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey" id="subsort-attr-btn">
+						<button class="dropdown-btn w3-button"><span>Eyes</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							<<for _i = 0; _i < $colorGroups.length; _i++>>
+								<<set _color = $colorGroups[_i]>>
+								<<capture _color>>
+									<<set _btnTitle = `${_color} <i class="fa fa-sort"></i>`>>
+									@@#sortbutton;<<button _btnTitle>>
+										<<set _sortFluffies = _sortFluffies.filter(fluffy => fluffy.colorGroup[2] == _color)>>
+										<<replace "#fluffy-list">><<FluffyList _type _sortFluffies>><</replace>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+				</div>
+			</div>
 			@@#sortbutton;<<button 'Age <i class="fa fa-sort"></i>'>>
 				<<if _ageUp == false>>
 					<<run _sortFluffies.sort((a, b) => (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52))) >>
