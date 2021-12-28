@@ -186,12 +186,12 @@ window.getInfo = function(info_id) {
 /* ----- Sidebar ----- */
 
 window.openSidebar = function () {
-  $('#mySidebar').addClass('active');
+  $('#sidebar').addClass('active');
   $('#main').addClass('sidebar-active');
   $('#navHead').addClass('sidebar-active');
 };
 window.closeSidebar = function () {
-  $('#mySidebar').removeClass('active');
+  $('#sidebar').removeClass('active');
   $('#main').removeClass('sidebar-active');
   $('#navHead').removeClass('sidebar-active');
 };
