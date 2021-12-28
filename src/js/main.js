@@ -59,7 +59,7 @@ Save.onLoad.add(function (save)
 
 window.renderInfo = function(e) {
   var mq = window.matchMedia('(min-width: 767px)');
-  const offsetX = 250;
+  const offsetX = mq.matches ? 250 : 250;
   const offsetY = 250;
   const distanceX = (window.innerWidth - offsetX);
   const distanceY = (window.innerHeight - offsetY);
@@ -69,6 +69,7 @@ window.renderInfo = function(e) {
     $('.info-container').css('left', `${x-offsetX}px`);
     $('.info-container').css('top', `${e.pageY}px`);
   } else {
+    $('.info-container').css('left', `${x-offsetX}px`);
     $('.info-container').css('top', `${e.pageY}px`);
   }
 }

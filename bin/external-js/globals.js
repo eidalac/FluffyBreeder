@@ -1,5 +1,4 @@
 $( document ).ready(function() {
-
 		/* Sidebar */
 		/*  Check if mobile */
 		var mq = window.matchMedia('(min-width: 767px)');
@@ -49,4 +48,51 @@ $( document ).ready(function() {
         $('.info-active').removeClass('info-active');
       }
     });
+
+    /* ----- Load JS Color ----- */
+
+    /* Init saved theme */
+    let main_theme = localStorage.getItem('main-theme');
+    main_theme = main_theme ? main_theme : '#009688';
+    document.documentElement.style.setProperty('--main-theme', main_theme);
+    let main_theme_text = localStorage.getItem('text-color');
+    main_theme_text = main_theme_text ? main_theme_text : 'white';
+    document.documentElement.style.setProperty('--text-color', main_theme_text);
+
+    /* Prep jscolor */
+    $('#options-btn').on("click", function(event){
+      window.jscolor.install();
+      $('#modal-jscolor')[0].jscolor.fromString(main_theme);
+    });
+    $('#jscolor-save').on("click", function(event){
+
+      /* Save new color */
+      $('#jscolor-save-info').remove()
+      const color_value = $('#modal-jscolor')[0].value;
+      localStorage.setItem('main-theme', color_value);
+      main_theme = color_value;
+      document.documentElement.style.setProperty('--main-theme', color_value);
+      $('#jscolor-container').append('<span id="jscolor-save-info">Color saved.</span>');
+
+      /* Check perceived brightness */
+      const hexstr = color_value.replace('#','');
+      const [r, g, b] = [parseInt(hexstr.substring(0, 2), 16), parseInt(hexstr.substring(2, 4), 16), parseInt(hexstr.substring(4, 6), 16)];
+
+      const luminance = (0.2126*r + 0.7152*g + 0.0722*b);
+      let text_color;
+      let text_filter;
+
+      console.log(luminance)
+      if (luminance > 128) {
+        text_color = "black";
+        text_filter = 'invert(0%) sepia(0%) saturate(0%) hue-rotate(324deg) brightness(96%) contrast(104%)';
+      } else {
+        text_color = "white"
+        text_filter = 'invert(100%) sepia(0%) saturate(2%) hue-rotate(167deg) brightness(108%) contrast(101%)';
+      }
+      
+      /* Set text color */
+      localStorage.setItem('text-color', text_color);
+      document.documentElement.style.setProperty('--text-color', text_color);
+    })
   });

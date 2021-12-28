@@ -331,11 +331,11 @@
 
 <<widget "OptionsWidget">>
 	<div class="w3-modal-content">
-		<header class="w3-container w3-teal"> 
+		<header class="w3-bar w3-card" id="modal-header">
 			<span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
 			<h1>Settings</h1>
 		</header>
-		<div class="w3-container w3-dark-grey">
+		<div class="w3-container w3-dark-grey" id="modal-content">
 			<<if ndef $nameType>><<set $nameType = "ordinal">><</if>>
 			
 			<<if ndef $ordinalString>><<set $ordinalString = "Fluffy">><</if>>
@@ -365,26 +365,21 @@
 				<br>
 				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ Namelist</label>
 
-	        	</div>
-	        	
-	        	<<if ndef $inlineSprites>><<set $inlineSprites = "true">><</if>>
-	        	
-	        	<label><<checkbox "$inlineSprites" false true>>In-line Sprites.  Uncheck to use 'art\sprites3' folder</label>
+	        	</div>      	
         	</div>
 
 				<p><<button "Display Variables">><<checkvars>><</button>></p>
 				<p><<button "Bug Report">><<bugreport>><</button>></p>
-		
-				<p>Placholder..</p>
-	        	<p>WIP..</p>
+
+			<div id="jscolor-container">
+				<input id="modal-jscolor" data-jscolor="{}" value="#3399FF">
+				<button id="jscolor-save" type="button">Save</button>
+			</div>
         	
 			<<timed 5ms>>
 				<<run $("#radiobutton-nametype-1").prop( "disabled", true )>>
 			<</timed>>
         </div>
-        <footer class="w3-container w3-teal">
-        	<p>Modal Footer</p>
-        </footer>
 	</div>
 <</widget>>
 
@@ -395,7 +390,7 @@
 	@@.sortbutton;<<button '<i class="fa fa-power-off"></i> Restart'>><<script>>UI.restart()<</script>><</button>>@@
 
 
-	<div class="w3-dropdown-hover">
+	<div class="w3-dropdown-hover" id="options-btn">
 		<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i> Options</button>
 	</div>
 	<div id="id01" class="w3-modal">
@@ -407,11 +402,11 @@
 	
 	<<script>>UIBar.destroy();<</script>>
 	
-	<div class="w3-container w3-theme-d2">
+	<div class="w3-container">
 		<span id="close-dropdown-btn" class="w3-button w3-display-topright w3-large">X</span>
 		<br>
 		<div class="w3-padding w3-center">
-			<span>Fluffy Breeder</span>
+			<span id="app-name">Fluffy Breeder</span>
 			
 			<<iconSprite>>
 			
@@ -838,3 +833,7 @@
 	<<run console.log($filterFluffies)>>
 	<<replace "#fluffy-list">><<FluffyList _type $filterFluffies>><</replace>>
 <</widget>>
+
+<<script>>
+	JSColor.install();
+<</script>>
