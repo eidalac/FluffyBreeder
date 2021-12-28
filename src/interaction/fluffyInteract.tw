@@ -261,11 +261,14 @@
 
 					<<set _woolYield = 0>>
 					<<set _coatTier = 0>>
+					<<set _coatGroup = 0>>
 
 					/* Interate through the list of colors, if they match, remember the tier. */
 					<<for _i = 0; _i < $Colors.length; _i++>>
 						<<if $activeFluffy.cColor == $Colors[_i].Name>>
 							<<set _coatTier = $Colors[_i].Tier>>
+							<<set _coatGroup = $Colors[_i].Group>>
+							<<break>>
 						<</if>>
 					<</for>>
 
@@ -310,18 +313,27 @@
 <<run console.log(`DEBUG: [Shearing]: _woolQuality 4: ${_woolQuality}.`)>>
 					<<set _woolQuality = Number(_woolQuality).toFixed(0)>>
 <<run console.log(`DEBUG: [Shearing]: _woolQuality 5: ${_woolQuality}.`)>>
+
+/*
+					<<if UInv.CreateBag("Test")>>
+					<</if>>
+					<<if UInv.AddItem("Test", "wool", _woolYield, `${_coatGroup} wool`)>>
+						<<if UInv.SetItemPropertyValue("Test", `${_coatGroup} wool`, "quality", _woolQuality)>>
+						<</if>>
+					<</if>>
+
+
 					<<set _item =
 					{
 						name: "Wool",
-						special: $activeFluffy.cColor,
-						type: $activeFluffy.subSpecies,
+						color: $activeFluffy.cColor,
 						amount: _woolYield,
 						quality: _woolQuality
 					}
 					>>
 
 					<<set $ourStore.inventory.push(_item)>>
-
+*/
 					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 					<<replace "#shear-msg">>
 						<br><<fluffSpeech"huu huu... why taek pwetty fwuff fwom <fluffy>?" $activeFluffy.cColor>>

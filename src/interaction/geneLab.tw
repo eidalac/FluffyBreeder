@@ -29,8 +29,15 @@ You are editing the genes of:
  *** */
 <hr>Gender: 
 <span id="gender">
-	<<if String($globalFluffies[$activeFluffy.ID].genes.getGender()) === "XX">>XX (Female)
-	<<else>>XY (Male)
+	<<if String($globalFluffies[$activeFluffy.ID].genes.getGender()) === "XX">>
+		XX (Female)
+	<<elseif String($globalFluffies[$activeFluffy.ID].genes.getGender()) === "XY">>
+		XY (Male)
+	<<else>>
+		/* Male has been the default display, so if we have an invalid gene force it to male: */
+		<<run $globalFluffies[$activeFluffy.ID].genes.setGender("male")>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		XY (Male)
 	<</if>>
 </span>
 <<link "Female">><<run $globalFluffies[$activeFluffy.ID].genes.setGender("female")>><<set $globalFluffies[$activeFluffy.ID].gender = "female">><<replace "#gender">>XX (Female)<</replace>><<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>><</link>> |

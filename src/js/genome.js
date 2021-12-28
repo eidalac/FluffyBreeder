@@ -301,8 +301,8 @@ window.Genome.fromString  = function (str) {
  */
 Genome.prototype.breedWithGenome = function(other_genome) {
 	var child_genes = "";
-	var prototypeF = Genome.fromString("X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
-	var prototypeM = Genome.fromString("X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0");
+	var prototypeF = Genome.fromString(State.variables.grandfatherGene);
+	var prototypeM = Genome.fromString(State.variables.grandmotherGene);
 
 	//var gene_string_length = Math.min(string1.length, string2.length);
 
@@ -438,9 +438,15 @@ Genome.prototype.getGender = function() {
 Genome.prototype.getGenderString = function() {
 	if (this.getGender().toString() == "X/X") {
 		return "Female";
-	} else {
+	}
+	
+	if (this.getGender().toString() == "X/Y") {
 		return "Male";
 	}
+
+	/* If it's Y/Y or somethign else, just force it to male (male has been the default display if it's not X/X: */
+	this.setGender("Male");
+	return "Male";
 };
 
 /**

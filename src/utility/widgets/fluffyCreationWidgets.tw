@@ -11,8 +11,6 @@
  *********** */
 
 
-<<set $grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
-<<set $grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
 
 /* ***
  *	Base Fluffy Template.
@@ -21,10 +19,19 @@
  *	Creates a male or female fluffy from the baseline genome.
  *** */
 <<widget "BaseFluffy">>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<BaseFluffy>>: called with no gender.`)>>
+		<<set _args = []>>
+		<<set _args[0] = "Female">>
+		<<set _geneSTR = $grandmotherGene>>
+	<</if>>
+	
 	<<if (_args[0].toUpperCase() == "MALE")>>
-		<<set _geneSTR = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+		<<set _args[0] = "Male">>
+		<<set _geneSTR = $grandfatherGene>>
 	<<else>>
-		<<set _geneSTR = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+		<<set _args[0] = "Female">>
+		<<set _geneSTR = $grandmotherGene>>
 	<</if>>
 
 	<<set $activeFluffy = {
@@ -505,13 +512,13 @@
 
 	<<if ndef _mom.genes>>
 		<br><br>@@.red; breedFluffies: mother has no genes, loading default genes@@<br><br>
-		<<set _mom.geneString = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+		<<set _mom.geneString = $grandmotherGene>>
 		<<set _mom.genes = Genome.fromString(_mom.geneString)>>
 	<</if>>
 
 	<<if ndef _dad.genes>>
 		<br><br>@@.red; breedFluffies: father has no genes, loading default genes@@<br><br>
-		<<set _dad.geneString = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+		<<set _dad.geneString = $grandfatherGene>>
 		<<set _dad.genes = Genome.fromString(_dad.geneString)>>
 	<</if>>
 
