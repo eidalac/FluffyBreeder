@@ -7344,7 +7344,7 @@ window.getInfo = function(info_id) {
       case 'trait_feeble':
         return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-2</span><p>`
       case 'trait_sickly':
-        return `<b class="info-highlight">Sickly</b> fluffies are almsot always ill.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+        return `<b class="info-highlight">Sickly</b> fluffies are almost always ill.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_anemic':
         return `<b class="info-highlight">Anemic</b> fluffies struggle to even eat, let alone play.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
 
@@ -7364,7 +7364,7 @@ window.getInfo = function(info_id) {
 
       /* Mental defect */
       case 'trait_silly':
-        return `<b class="info-highlight">Silly</b> fluffies easily ammused, even when they shouldn't be.<p>Learning: <span style="color:darkred">-1</span>, Thinking: <span style="color:darkred">-1</span><p>`
+        return `<b class="info-highlight">Silly</b> fluffies easily amused, even when they shouldn't be.<p>Learning: <span style="color:darkred">-1</span>, Thinking: <span style="color:darkred">-1</span><p>`
       case 'trait_simple':
         return `<b class="info-highlight">Simple</b> fluffies are dull minded, even by fluffy standards.<p>Learning: <span style="color:darkred">-2</span>, Thinking: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_moron':
@@ -9288,7 +9288,7 @@ button {
 	&lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
 
 	/* They want any fluffy */
-	&lt;&lt;if _$customerWants == 0&gt;&gt;
+	&lt;&lt;if $customerWants == 0&gt;&gt;
 		&lt;&lt;set _priceBonus = Number(Number($rand[0]/100).toFixed(2))&gt;&gt; 
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
@@ -9826,7 +9826,7 @@ button {
 		&lt;&lt;/for&gt;&gt;
 		&lt;br&gt;
 
-		&lt;&lt;if $stressCount &gt;= $rand[0] &amp;&amp; $stressCount &gt;= $rand[1])&gt;&gt;
+		&lt;&lt;if $stressCount &gt;= $rand[0] &amp;&amp; $stressCount &gt;= $rand[1]&gt;&gt;
 			&lt;br&gt;You feel @@.mediumorchid;very good@@ about the results.
 			&lt;&lt;set $stress -= Number($rand[2] * $stressCount)&gt;&gt;
 			&lt;&lt;set $stress -= 6&gt;&gt;
@@ -10227,7 +10227,7 @@ button {
 
 /* pre run random numbers for the event: */
 &lt;&lt;set $rand = []&gt;&gt;
-&lt;&lt;set $rand.push(random(0, 199))&gt;&gt;  /* sucess rate; if rejectionDifficulty is higher than this, we can train the mother to accept the foal */
+&lt;&lt;set $rand.push(random(0, 199))&gt;&gt;  /* success rate; if rejectionDifficulty is higher than this, we can train the mother to accept the foal */
 
 /* Run the event: */
 &lt;&lt;goto &quot;Event Birth Rejection&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="15" name="Pre Smarty" tags="nobr" position="600,225" size="100,100">/* **********
@@ -15028,8 +15028,7 @@ Upgrades:
 						color: $activeFluffy.cColor,
 						amount: _woolYield,
 						quality: _woolQuality
-					}
-					&gt;&gt;
+					} &gt;&gt;
 
 					&lt;&lt;set $ourStore.inventory.push(_item)&gt;&gt;
 */
@@ -19571,7 +19570,7 @@ button {
 
 
 /* ***
- *	Call as &lt;&lt;cashAdd &lt;number&gt;&gt;&gt;
+ *	Call as &lt;&lt;cashAdd number&gt;&gt;
  *	Adds a value (or subtract if negative) to the $cash value.
  *** */
 &lt;&lt;widget &quot;cashAdd&quot;&gt;&gt;
@@ -19612,7 +19611,7 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Call as &lt;&lt;cashMinus &lt;nubmer&gt;&gt;&gt;
+ *	Call as &lt;&lt;cashMinus nubmer&gt;&gt;
  *	Subract a possitive value from the $cash value.
  *** */
 &lt;&lt;widget &quot;cashMinus&quot;&gt;&gt;
@@ -19622,7 +19621,7 @@ button {
 	&lt;&lt;elseif isNaN(_args[0])&gt;&gt;
 		/* Ignore if the arg can&#39;t be processed as a number. */
 		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashMinus&gt;&gt;: called with a non number ${_args[0]}.`)&gt;&gt;
-	&lt;&lt;elseif Number(_args[0]) &lt;= 0&gt;&gt;
+	&lt;&lt;elseif Number(_args[0]) &lt; 0&gt;&gt;
 		/* Ignore if the arg is set negative: */
 		&lt;&lt;run console.log(`WARNING: &lt;&lt;cashMinus&gt;&gt;: called with a negative number ${_args[0]}.`)&gt;&gt;
 	&lt;&lt;else&gt;&gt;

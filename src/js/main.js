@@ -140,7 +140,7 @@ window.getInfo = function(info_id) {
       case 'trait_feeble':
         return `<b class="info-highlight">Feeble</b> fluffies have a slight build and can't run and play as well as others.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-2</span><p>`
       case 'trait_sickly':
-        return `<b class="info-highlight">Sickly</b> fluffies are almsot always ill.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+        return `<b class="info-highlight">Sickly</b> fluffies are almost always ill.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_anemic':
         return `<b class="info-highlight">Anemic</b> fluffies struggle to even eat, let alone play.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
 
@@ -160,7 +160,7 @@ window.getInfo = function(info_id) {
 
       /* Mental defect */
       case 'trait_silly':
-        return `<b class="info-highlight">Silly</b> fluffies easily ammused, even when they shouldn't be.<p>Learning: <span style="color:darkred">-1</span>, Thinking: <span style="color:darkred">-1</span><p>`
+        return `<b class="info-highlight">Silly</b> fluffies easily amused, even when they shouldn't be.<p>Learning: <span style="color:darkred">-1</span>, Thinking: <span style="color:darkred">-1</span><p>`
       case 'trait_simple':
         return `<b class="info-highlight">Simple</b> fluffies are dull minded, even by fluffy standards.<p>Learning: <span style="color:darkred">-2</span>, Thinking: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_moron':
