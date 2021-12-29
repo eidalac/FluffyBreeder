@@ -591,14 +591,6 @@ html[data-init="loading"] #ui-bar, html[data-init="loading"] #passages {
   --text-color: var(--text-light);
 }
 
-/* main.css */
-:root {
-  --main-theme: #383838;
-  --text-dark: black;
-  --text-light: white;
-  --text-color: var(--text-light);
-}
-
 .w3-dropdown-content {min-width: 100px; width:140px;}
 .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
 .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
@@ -9468,27 +9460,27 @@ Genome.prototype.setBreed = function(new_gene) {
 /**
  * Retrieves returns a string name for the coat color gene
  *
- * @return String
+ * @return Object
  */
- Genome.prototype.newCoatColorString = function() {
+ Genome.prototype.newCoatColorObject = function() {
 	return this.getNewGeneColor(17);
 }
 
 /**
  * Retrieves returns a string name for the mane color gene
  *
- * @return String
+ * @return Object
  */
-Genome.prototype.newManeColorString = function() {
+Genome.prototype.newManeColorObject = function() {
 	return this.getNewGeneColor(22);
 }
 
 /**
  * Retrieves returns a string name for the eye color gene
  *
- * @return String
+ * @return Object
  */
-Genome.prototype.newEyeColorString = function() {
+Genome.prototype.newEyeColorObject = function() {
 	return this.getNewGeneColor(27);
 }
 
@@ -9618,10 +9610,25 @@ Genome.prototype.getNewGeneColor = function(index) {
 	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
 	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexThree}.`);
 	
-	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16); 
+	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
 	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 
-	return hexString;
+	const colors = window.colorList
+	let geneObject;
+	hexString = '#577597'
+	const colorFilter = hexToFilter(hexString)
+	let deltaArr = []
+
+	// Iterate through all colors and compare geneString
+	for (let color in colors) {
+		deltaArr.push(hexColorDelta(hexString, colors[color].hex))
+	}
+
+	// Check which existing color most matches generated color
+	const closest = closestIndex(1, deltaArr);
+	geneObject = { name: colors[closest].name, hex: colors[closest].hex, filter:  colorFilter}
+
+	return geneObject;
 }
 
 /**
@@ -10064,7 +10071,7 @@ Genome.prototype.getEyeColor = function() {
 /**
  * Retrieves returns a string name for the coat color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getCoatColorObject = function() {
 	return this.getGeneColor(17);
@@ -10073,7 +10080,7 @@ Genome.prototype.getCoatColorObject = function() {
 /**
  * Retrieves returns a string name for the mane color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getManeColorObject = function() {
 	return this.getGeneColor(22);
@@ -10082,7 +10089,7 @@ Genome.prototype.getManeColorObject = function() {
 /**
  * Retrieves returns a string name for the eye color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getEyeColorObject = function() {
 	return this.getGeneColor(27);
@@ -14282,6 +14289,39 @@ window.hexToHSL = function (hex) {
   ];
 };
 
+window.hexColorDelta = function(hex1, hex2) {
+  // get red/green/blue int values of hex1
+  const rgb1 = hexToRgb(hex1);
+  let [r1, g1, b1] = [rgb1[0], rgb1[1], rgb1[2]]
+  // get red/green/blue int values of hex2
+  const rgb2 = hexToRgb(hex2);
+  let [r2, g2, b2] = [rgb2[0], rgb2[1], rgb2[2]]
+  // calculate differences between reds, greens and blues
+  var r = 255 - Math.abs(r1 - r2);
+  var g = 255 - Math.abs(g1 - g2);
+  var b = 255 - Math.abs(b1 - b2);
+  // limit differences between 0 and 1
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  // 0 means opposite colors, 1 means same colors
+  return (r + g + b) / 3;
+}
+
+window.closestIndex = (num, arr) => {
+  let curr = arr[0], diff = Math.abs(num - curr);
+  let index = 0;
+  for (let val = 0; val < arr.length; val++) {
+     let newdiff = Math.abs(num - arr[val]);
+     if (newdiff < diff) {
+      diff = newdiff;
+      curr = arr[val];
+      index = val;
+     };
+  };
+  return index;
+ };
+
 window.inRange = function(x, min, max) {
   return ((x-min)*(x-max) <= 0);
 }
@@ -15059,40 +15099,59 @@ window.nameList = {
 		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: $fluffyError`)&gt;&gt;
 		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if _args[0] != 0&gt;&gt;
-			&lt;&lt;set _fluffy = _args[0]&gt;&gt;
+		&lt;&lt;if _args[0]&gt;&gt;
+			&lt;&lt;set _hslFluffy = _args[0]&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _fluffy = $activeFluffy&gt;&gt;
+			&lt;&lt;set _hslFluffy = $activeFluffy&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
-		&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
-		&lt;&lt;set _eyeGroup = &quot;&quot;&gt;&gt;
 		
-		/* Interate through the list of colors, if they match, remember the tier and group.*/
-		&lt;&lt;for _i = 0; _i &lt; $colors.length; _i++&gt;&gt;
-			&lt;&lt;if _fluffy.cColor == $colors[_i].name&gt;&gt;
-				&lt;&lt;set _coatGroup = $colors[_i].group&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if _fluffy.mColor == $colors[_i].name&gt;&gt;
-				&lt;&lt;set _maneGroup = $colors[_i].group&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if _fluffy.eColor == $colors[_i].name&gt;&gt;
-				&lt;&lt;set _eyeGroup = $colors[_i].group&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)&gt;&gt;
+		&lt;&lt;set _hslMane = hexToHSL(_hslFluffy.mColor.hex)&gt;&gt;
+		&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
+		&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
+
+		&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
+			&lt;&lt;capture _i&gt;&gt;
+				&lt;&lt;if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) &gt;= 330&gt;&gt;
+					&lt;&lt;run console.log(groupList[_i].name)&gt;&gt;
+					&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[_i].name&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) &gt;= 330&gt;&gt;
+					&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[_i].name&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) &gt;= 330&gt;&gt;
+					&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[_i].name&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/capture&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
 
 		/* No matches found, bad*/
-		&lt;&lt;if _coatGroup == &quot;&quot;&gt;&gt;
+		&lt;&lt;if _hslFluffy.colorGroup[0] == &quot;&quot;&gt;&gt;
 			&lt;br&gt;@@.red;No color match found for coat: &lt;&lt;print _fluffy.ID&gt;&gt;.
 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _maneGroup == &quot;&quot;&gt;&gt;
+		&lt;&lt;if _hslFluffy.colorGroup[1] == &quot;&quot;&gt;&gt;
 			&lt;br&gt;@@.red;No color match found for mane: &lt;&lt;print _fluffy.ID&gt;&gt;.
 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _eyeGroup == &quot;&quot;&gt;&gt;
+		&lt;&lt;if _hslFluffy.colorGroup[2] == &quot;&quot;&gt;&gt;
 			&lt;br&gt;@@.red;No color match found for eye: &lt;&lt;print _fluffy.ID&gt;&gt;.
 		&lt;&lt;/if&gt;&gt;	
-		&lt;&lt;set _fluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Call as &lt;&lt;setFilters $fluffy&gt;&gt;
+ *	Set new filter values
+ *** */
+&lt;&lt;widget &quot;setFilters&quot;&gt;&gt;
+	&lt;&lt;if _args[0]&gt;&gt;
+		&lt;&lt;set _fluffy = _args[0]&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set _fluffy = $activeFluffy&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+	
+	&lt;&lt;set _fluffy.cColor.filter = hexToFilter(_hslFluffy.cColor.hex)&gt;&gt;
+	&lt;&lt;set _fluffy.mColor.filter = hexToFilter(_hslFluffy.mColor.hex)&gt;&gt;
+	&lt;&lt;set _fluffy.eColor.filter = hexToFilter(_hslFluffy.eColor.hex)&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -15129,39 +15188,8 @@ window.nameList = {
 		&lt;&lt;/for&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;fixGroups _fixFluffy&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-
-/* ***
- *	Call as &lt;&lt;fixGroups $hex&gt;&gt;
- *	Fixes deprecated group values
- *** */
-&lt;&lt;widget &quot;fixGroups&quot;&gt;&gt;
-	&lt;&lt;if _args[0]&gt;&gt;
-		&lt;&lt;set _hslFluffy = _args[0]&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _hslFluffy = $activeFluffy&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-	
-	&lt;&lt;set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)&gt;&gt;
-	&lt;&lt;set _hslMane = hexToHSL(_hslFluffy.mColor.hex)&gt;&gt;
-	&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
-	&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
-
-	&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
-		&lt;&lt;capture _i&gt;&gt;
-			&lt;&lt;if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) &gt;= 330&gt;&gt;
-				&lt;&lt;run console.log(groupList[_i].name)&gt;&gt;
-				&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[_i].name&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) &gt;= 330&gt;&gt;
-				&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[_i].name&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) &gt;= 330&gt;&gt;
-				&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[_i].name&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/capture&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
+	&lt;&lt;colorGroup _fixFluffy&gt;&gt;
+	&lt;&lt;setFilters _fixFluffy&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Event Birth" tags="nobr" position="350,100" size="100,100">/* **********
  * eventBirth.tw
  *
@@ -25051,9 +25079,9 @@ button {
 		maturity: 40,
 		maturityAdd: 0,
 		breed: &quot;Earthy&quot;,
-		cColor: &quot;Violet&quot;,
-		mColor: &quot;Violet&quot;,
-		eColor: &quot;Violet&quot;,
+		cColor: { name:&quot;Violet&quot;, hex: &quot;#8F00FF&quot;, filter: &quot;filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)&quot; },
+		mColor: { name:&quot;Violet&quot;, hex: &quot;#8F00FF&quot;, filter: &quot;filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)&quot; },
+		eColor: { name:&quot;Violet&quot;, hex: &quot;#8F00FF&quot;, filter: &quot;filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)&quot; },
 		colorGroup: [],
 		mother: -1,
 		father: -1,
@@ -25143,9 +25171,9 @@ button {
 			maturity: _args[0].getMaturity() + _m,
 			maturityAdd: _m,
 			breed: _args[0].getBreedString().toLowerCase(),
-			cColor: _args[0].getCoatColorObject(),
-			mColor: _args[0].getManeColorObject(),
-			eColor: _args[0].getEyeColorObject(),
+			cColor: _args[0].newCoatColorObject(),
+			mColor: _args[0].newManeColorObject(),
+			eColor: _args[0].newEyeColorObject(),
 			colorGroup: [],
 			mother: -1,
 			father: -1,
@@ -25510,7 +25538,7 @@ button {
 
 	&lt;&lt;newFromGene $childGene&gt;&gt;
 	
-	&lt;&lt;colorValue&gt;&gt;
+	&lt;&lt;colorValue&gt;&gt; 
 	&lt;&lt;colorGroup&gt;&gt;
 	&lt;&lt;statValue&gt;&gt;
 
@@ -25679,9 +25707,9 @@ button {
 	/* Get the total age, in weeks: */
 	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
 
-	&lt;&lt;set _coatFilter = hexToFilter($activeFluffy.cColor.hex)&gt;&gt;
-	&lt;&lt;set _maneFilter = hexToFilter($activeFluffy.mColor.hex)&gt;&gt;
-	&lt;&lt;set _eyeFilter = hexToFilter($activeFluffy.eColor.hex)&gt;&gt;
+	&lt;&lt;set _coatFilter = $activeFluffy.cColor.filter&gt;&gt;
+	&lt;&lt;set _maneFilter = $activeFluffy.mColor.filter&gt;&gt;
+	&lt;&lt;set _eyeFilter = $activeFluffy.eColor.filter&gt;&gt;
 
  	/* ***
  	 *  1. newborn 
@@ -25691,7 +25719,7 @@ button {
 	
 		&lt;&lt;newbornSprite $activeFluffy&gt;&gt;
 		
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _oneColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _oneColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		
 		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _oneColorHorn  + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
@@ -25714,7 +25742,7 @@ button {
 	
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		
 		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
 			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _twoColorHorn  + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
@@ -25738,7 +25766,7 @@ button {
 
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _threeColorMane + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
 
@@ -25766,9 +25794,9 @@ button {
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 
 		&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fourColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -25798,9 +25826,9 @@ button {
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 
 		&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -25847,21 +25875,21 @@ button {
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
@@ -25879,9 +25907,9 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -26038,21 +26066,21 @@ button {
 		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatTrimmed + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
@@ -26070,9 +26098,9 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot; data-hex=&quot;&#39; + $activeFluffy.cColor.hex + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;

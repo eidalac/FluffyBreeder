@@ -171,40 +171,59 @@
 		<<run console.log(`ERROR: <<colorGroup>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
-		<<if _args[0] != 0>>
-			<<set _fluffy = _args[0]>>
+		<<if _args[0]>>
+			<<set _hslFluffy = _args[0]>>
 		<<else>>
-			<<set _fluffy = $activeFluffy>>
+			<<set _hslFluffy = $activeFluffy>>
 		<</if>>
-		<<set _coatGroup = "">>
-		<<set _maneGroup = "">>
-		<<set _eyeGroup = "">>
 		
-		/* Interate through the list of colors, if they match, remember the tier and group.*/
-		<<for _i = 0; _i < $colors.length; _i++>>
-			<<if _fluffy.cColor == $colors[_i].name>>
-				<<set _coatGroup = $colors[_i].group>>
-			<</if>>
-			<<if _fluffy.mColor == $colors[_i].name>>
-				<<set _maneGroup = $colors[_i].group>>
-			<</if>>
-			<<if _fluffy.eColor == $colors[_i].name>>
-				<<set _eyeGroup = $colors[_i].group>>
-			<</if>>
+		<<set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)>>
+		<<set _hslMane = hexToHSL(_hslFluffy.mColor.hex)>>
+		<<set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)>>
+		<<set _hslFluffy.colorGroup = ["", "", ""]>>
+
+		<<for _i = 0; _i < groupList.length-2; _i++>>
+			<<capture _i>>
+				<<if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) >= 330>>
+					<<run console.log(groupList[_i].name)>>
+					<<set _hslFluffy.colorGroup[0] = groupList[_i].name>>
+				<</if>>
+				<<if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) >= 330>>
+					<<set _hslFluffy.colorGroup[1] = groupList[_i].name>>
+				<</if>>
+				<<if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) >= 330>>
+					<<set _hslFluffy.colorGroup[2] = groupList[_i].name>>
+				<</if>>
+			<</capture>>
 		<</for>>
 
 		/* No matches found, bad*/
-		<<if _coatGroup == "">>
+		<<if _hslFluffy.colorGroup[0] == "">>
 			<br>@@.red;No color match found for coat: <<print _fluffy.ID>>.
 		<</if>>
-		<<if _maneGroup == "">>
+		<<if _hslFluffy.colorGroup[1] == "">>
 			<br>@@.red;No color match found for mane: <<print _fluffy.ID>>.
 		<</if>>
-		<<if _eyeGroup == "">>
+		<<if _hslFluffy.colorGroup[2] == "">>
 			<br>@@.red;No color match found for eye: <<print _fluffy.ID>>.
 		<</if>>	
-		<<set _fluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]>>
 	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<setFilters $fluffy>>
+ *	Set new filter values
+ *** */
+<<widget "setFilters">>
+	<<if _args[0]>>
+		<<set _fluffy = _args[0]>>
+	<<else>>
+		<<set _fluffy = $activeFluffy>>
+	<</if>>
+	
+	<<set _fluffy.cColor.filter = hexToFilter(_hslFluffy.cColor.hex)>>
+	<<set _fluffy.mColor.filter = hexToFilter(_hslFluffy.mColor.hex)>>
+	<<set _fluffy.eColor.filter = hexToFilter(_hslFluffy.eColor.hex)>>
 <</widget>>
 
 /* ***
@@ -241,37 +260,6 @@
 		<</for>>
 	<</if>>
 
-	<<fixGroups _fixFluffy>>
-<</widget>>
-
-/* ***
- *	Call as <<fixGroups $hex>>
- *	Fixes deprecated group values
- *** */
-<<widget "fixGroups">>
-	<<if _args[0]>>
-		<<set _hslFluffy = _args[0]>>
-	<<else>>
-		<<set _hslFluffy = $activeFluffy>>
-	<</if>>
-	
-	<<set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)>>
-	<<set _hslMane = hexToHSL(_hslFluffy.mColor.hex)>>
-	<<set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)>>
-	<<set _hslFluffy.colorGroup = ["", "", ""]>>
-
-	<<for _i = 0; _i < groupList.length-2; _i++>>
-		<<capture _i>>
-			<<if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) >= 330>>
-				<<run console.log(groupList[_i].name)>>
-				<<set _hslFluffy.colorGroup[0] = groupList[_i].name>>
-			<</if>>
-			<<if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) >= 330>>
-				<<set _hslFluffy.colorGroup[1] = groupList[_i].name>>
-			<</if>>
-			<<if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) >= 330>>
-				<<set _hslFluffy.colorGroup[2] = groupList[_i].name>>
-			<</if>>
-		<</capture>>
-	<</for>>
+	<<colorGroup _fixFluffy>>
+	<<setFilters _fixFluffy>>
 <</widget>>

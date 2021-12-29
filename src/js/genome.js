@@ -1437,27 +1437,27 @@ Genome.prototype.setBreed = function(new_gene) {
 /**
  * Retrieves returns a string name for the coat color gene
  *
- * @return String
+ * @return Object
  */
- Genome.prototype.newCoatColorString = function() {
+ Genome.prototype.newCoatColorObject = function() {
 	return this.getNewGeneColor(17);
 }
 
 /**
  * Retrieves returns a string name for the mane color gene
  *
- * @return String
+ * @return Object
  */
-Genome.prototype.newManeColorString = function() {
+Genome.prototype.newManeColorObject = function() {
 	return this.getNewGeneColor(22);
 }
 
 /**
  * Retrieves returns a string name for the eye color gene
  *
- * @return String
+ * @return Object
  */
-Genome.prototype.newEyeColorString = function() {
+Genome.prototype.newEyeColorObject = function() {
 	return this.getNewGeneColor(27);
 }
 
@@ -1587,10 +1587,25 @@ Genome.prototype.getNewGeneColor = function(index) {
 	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
 	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexThree}.`);
 	
-	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16); 
+	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
 	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 
-	return hexString;
+	const colors = window.colorList
+	let geneObject;
+	hexString = '#577597'
+	const colorFilter = hexToFilter(hexString)
+	let deltaArr = []
+
+	// Iterate through all colors and compare geneString
+	for (let color in colors) {
+		deltaArr.push(hexColorDelta(hexString, colors[color].hex))
+	}
+
+	// Check which existing color most matches generated color
+	const closest = closestIndex(1, deltaArr);
+	geneObject = { name: colors[closest].name, hex: colors[closest].hex, filter:  colorFilter}
+
+	return geneObject;
 }
 
 /**
@@ -2033,7 +2048,7 @@ Genome.prototype.getEyeColor = function() {
 /**
  * Retrieves returns a string name for the coat color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getCoatColorObject = function() {
 	return this.getGeneColor(17);
@@ -2042,7 +2057,7 @@ Genome.prototype.getCoatColorObject = function() {
 /**
  * Retrieves returns a string name for the mane color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getManeColorObject = function() {
 	return this.getGeneColor(22);
@@ -2051,7 +2066,7 @@ Genome.prototype.getManeColorObject = function() {
 /**
  * Retrieves returns a string name for the eye color gene
  *
- * @return String
+ * @return Object
  */
 Genome.prototype.getEyeColorObject = function() {
 	return this.getGeneColor(27);

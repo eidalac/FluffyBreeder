@@ -41,9 +41,9 @@
 	/* Get the total age, in weeks: */
 	<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
 
-	<<set _coatFilter = hexToFilter($activeFluffy.cColor.hex)>>
-	<<set _maneFilter = hexToFilter($activeFluffy.mColor.hex)>>
-	<<set _eyeFilter = hexToFilter($activeFluffy.eColor.hex)>>
+	<<set _coatFilter = $activeFluffy.cColor.filter>>
+	<<set _maneFilter = $activeFluffy.mColor.filter>>
+	<<set _eyeFilter = $activeFluffy.eColor.filter>>
 
  	/* ***
  	 *  1. newborn 
@@ -53,7 +53,7 @@
 	
 		<<newbornSprite $activeFluffy>>
 		
-		<<= '<img src="' + _oneColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+		<<= '<img src="' + _oneColorCoat + '" style="' + _coatFilter + '">'>>
 		
 		<<if _args[0] === "unicorn" || _args[0] === "alicorn">>
 			<<= '<img src="' + _oneColorHorn  + '" class="whitefilter">'>>
@@ -76,7 +76,7 @@
 	
 		<<= '<img src="' + _twoColorEyes + '" style="' + _eyeFilter + '">'>>
 		
-		<<= '<img src="' + _twoColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+		<<= '<img src="' + _twoColorCoat + '" style="' + _coatFilter + '">'>>
 		
 		<<if _args[0] === "unicorn" || _args[0] === "alicorn">>
 			<<= '<img src="' + _twoColorHorn  + '" class="whitefilter">'>>
@@ -100,7 +100,7 @@
 
 		<<= '<img src="' + _threeColorEyes + '" style="' + _eyeFilter + '">'>>
 
-		<<= '<img src="' + _threeColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+		<<= '<img src="' + _threeColorCoat + '" style="' + _coatFilter + '">'>>
 		<<= '<img src="' + _threeColorMane + '" style="' + _maneFilter + '">'>>
 		<<= '<img src="' + _threeColorMane + '" class="manefilter">'>>
 
@@ -128,9 +128,9 @@
 		<<= '<img src="' + _fourColorEyes + '" style="' + _eyeFilter + '">'>>
 
 		<<if _args[0] === "pegasus" || _args[0] === "alicorn">>
-			<<= '<img src="' + _fourColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+			<<= '<img src="' + _fourColorCoatWing + '" style="' + _coatFilter + '">'>>
 		<<else>>
-			<<= '<img src="' + _fourColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+			<<= '<img src="' + _fourColorCoat + '" style="' + _coatFilter + '">'>>
 		<</if>>
 		
 		<<= '<img src="' + _fourColorMane + '" style="' + _maneFilter + '">'>>
@@ -160,9 +160,9 @@
 		<<= '<img src="' + _fiveColorEyes + '" style="' + _eyeFilter + '">'>>
 
 		<<if _args[0] === "pegasus" || _args[0] === "alicorn">>
-			<<= '<img src="' + _fiveColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+			<<= '<img src="' + _fiveColorCoatWing + '" style="' + _coatFilter + '">'>>
 		<<else>>
-			<<= '<img src="' + _fiveColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+			<<= '<img src="' + _fiveColorCoat + '" style="' + _coatFilter + '">'>>
 		<</if>>
 		
 		<<= '<img src="' + _fiveColorMane + '" style="' + _maneFilter + '">'>>
@@ -209,21 +209,21 @@
 		<<if $activeFluffy.subSpecies == 2>>
 			<<if $activeFluffy.furStage > 167>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWingOvergrown + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatWingOvergrown + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoatOvergrown + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatOvergrown + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<elseif $activeFluffy.furStage > 100>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatWing + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoat + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<elseif $activeFluffy.furStage > 67>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWingTrimmed + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatWingTrimmed + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoatTrimmed + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatTrimmed + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<else>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
@@ -241,9 +241,9 @@
 				<</if>>
 			<<else>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoatWing + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sixColorCoat + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<</if>>
 		<</if>>
@@ -400,21 +400,21 @@
 		<<if $activeFluffy.subSpecies == 2>>
 			<<if $activeFluffy.furStage > 167>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sevenColorCoatWingOvergrown + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatWingOvergrown + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sevenColorCoatOvergrown + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatOvergrown + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<elseif $activeFluffy.furStage > 100>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sevenColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatWing + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sevenColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoat + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<elseif $activeFluffy.furStage > 67>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sevenColorCoatWingTrimmed + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatWingTrimmed + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sevenColorCoatTrimmed + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatTrimmed + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<<else>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
@@ -432,9 +432,9 @@
 				<</if>>
 			<<else>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sevenColorCoatWing + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoatWing + '" style="' + _coatFilter + '">'>>
 				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sevenColorCoat + '" style="' + _coatFilter + '" data-hex="' + $activeFluffy.cColor.hex + '">'>>
+					<<= '<img src="' + _sevenColorCoat + '" style="' + _coatFilter + '">'>>
 				<</if>>
 			<</if>>
 		<</if>>

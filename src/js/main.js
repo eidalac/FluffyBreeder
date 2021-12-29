@@ -291,6 +291,39 @@ window.hexToHSL = function (hex) {
   ];
 };
 
+window.hexColorDelta = function(hex1, hex2) {
+  // get red/green/blue int values of hex1
+  const rgb1 = hexToRgb(hex1);
+  let [r1, g1, b1] = [rgb1[0], rgb1[1], rgb1[2]]
+  // get red/green/blue int values of hex2
+  const rgb2 = hexToRgb(hex2);
+  let [r2, g2, b2] = [rgb2[0], rgb2[1], rgb2[2]]
+  // calculate differences between reds, greens and blues
+  var r = 255 - Math.abs(r1 - r2);
+  var g = 255 - Math.abs(g1 - g2);
+  var b = 255 - Math.abs(b1 - b2);
+  // limit differences between 0 and 1
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  // 0 means opposite colors, 1 means same colors
+  return (r + g + b) / 3;
+}
+
+window.closestIndex = (num, arr) => {
+  let curr = arr[0], diff = Math.abs(num - curr);
+  let index = 0;
+  for (let val = 0; val < arr.length; val++) {
+     let newdiff = Math.abs(num - arr[val]);
+     if (newdiff < diff) {
+      diff = newdiff;
+      curr = arr[val];
+      index = val;
+     };
+  };
+  return index;
+ };
+
 window.inRange = function(x, min, max) {
   return ((x-min)*(x-max) <= 0);
 }
