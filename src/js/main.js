@@ -49,10 +49,24 @@ Save.onLoad.add(function (save)
       save.state.history[save.state.index].variables.globalFluffies[i].coatCurl = 2;
     }
 
-    if (typeof save.state.history[save.state.index].variables.ourStore.inventory == 'undefined')
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatModifer == 'undefined')
     {
-      save.state.history[save.state.index].variables.ourStore.inventory = [];
+      save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = 0;
     }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].maneModifer == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = 0;
+    }
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer == 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = 0;
+    }
+  
+  }
+
+  if (typeof save.state.history[save.state.index].variables.ourStore.inventory == 'undefined')
+  {
+    save.state.history[save.state.index].variables.ourStore.inventory = [];
   }
 });
 

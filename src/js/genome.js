@@ -1437,28 +1437,44 @@ Genome.prototype.setBreed = function(new_gene) {
 /**
  * Retrieves returns a string name for the coat color gene
  *
+ * @param int addition modifer to the base color (0-28)
+ * 
  * @return Object
  */
- Genome.prototype.newCoatColorObject = function() {
-	return this.getNewGeneColor(17);
+Genome.prototype.newCoatColorObject = function(addition) {
+	return this.getNewGeneColor(17, addition);
+}
+
+Genome.prototype.newCoatColorObject = function() {
+	return this.getNewGeneColor(17, 0);
 }
 
 /**
  * Retrieves returns a string name for the mane color gene
- *
+ * 
+ * @param int addition modifer to the base color (0-28)
+ * 
  * @return Object
  */
+ Genome.prototype.newManeColorObject = function(addition) {
+	return this.getNewGeneColor(22, addition);
+}
 Genome.prototype.newManeColorObject = function() {
-	return this.getNewGeneColor(22);
+	return this.getNewGeneColor(22, 0);
 }
 
 /**
  * Retrieves returns a string name for the eye color gene
- *
+ * 
+ * @param int addition modifer to the base color (0-28)
+ * 
  * @return Object
  */
+ Genome.prototype.newEyeColorObject = function(addition) {
+	return this.getNewGeneColor(27, addition);
+}
 Genome.prototype.newEyeColorObject = function() {
-	return this.getNewGeneColor(27);
+	return this.getNewGeneColor(27, 0);
 }
 
 
@@ -1467,10 +1483,13 @@ Genome.prototype.newEyeColorObject = function() {
  * Gene pattern is (B/b;Y/y;R/r;O/o;W/w).
  * 
  * @param int index index of the first gene in the sequence
+ * @param int addition modifer to the base color (0-28)
  *
  * @return String
  */
-Genome.prototype.getNewGeneColor = function(index) {
+Genome.prototype.getNewGeneColor = function(index, addition) {
+	addition = Math.clamp(addition, 0, 28);
+
 	// clear up the string
 	var geneOne = this.elementAt(index).toString().split('/');		// {[B], [b]}
 	var geneTwo = this.elementAt(index+1).toString().split('/');	// {[Y], [y]}
@@ -1523,88 +1542,72 @@ Genome.prototype.getNewGeneColor = function(index) {
         let rIndex = valueIndex[i].string.replaceAll(/c/g, 'r');
 		rIndex = rIndex.replaceAll(/C/g, 'R');
 
-	/*	console.log(`DEBUG: getNewGeneColor(): bIndex =  ${bIndex}.`);
-
-		console.log(`DEBUG: getNewGeneColor(): yIndex =  ${yIndex}.`);
-	
-		console.log(`DEBUG: getNewGeneColor(): rIndex =  ${rIndex}.`);
-	*/	
-
 		if (bFactor === bIndex)
 		{
-			hexOne = valueIndex[i].value;
-	//		console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}.`);
+			hexOne = valueIndex[i].value + addition;
 		}
 		if (yFactor === yIndex)
 		{
-			hexTwo = valueIndex[i].value;
-	//		console.log(`DEBUG: getNewGeneColor(): hexTwo =  ${hexTwo}.`);
+			hexTwo = valueIndex[i].value + addition;
 		}
 		if (rFactor === rIndex)
 		{
-			hexThree = valueIndex[i].value;
-	//		console.log(`DEBUG: getNewGeneColor(): hexThree =  ${hexThree}.`);
+			hexThree = valueIndex[i].value + addition;
 		}
 
-		if (hexOne + hexTwo + hexThree >= 0)
+		if (hexOne >= 0 && hexTwo >= 0 && hexThree >= 0)
 		{
 			break;
 		}
 	}
 
+	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
+
 	if (oFactor === "oO")
 	{
-		hexOne -= 10;
-		hexTwo -= 20;
-		hexThree -= 20;
+		hexOne = Number(Number(hexOne) - Number(Number(Number(hexOne) - Number(102)) / Number(3)).toFixed(0));
+		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(0)) / Number(3)).toFixed(0));
+		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(48)) / Number(3)).toFixed(0));
 	}
 	else if (oFactor === "oo")
 	{
-		hexOne -= 20;
-		hexTwo -= 40;
-		hexThree -= 40;
+		hexOne = Number(Number(hexOne) - Number(Number(Number(hexOne) - Number(102)) / Number(4.5)).toFixed(0));
+		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(0)) / Number(4.5)).toFixed(0));
+		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(48)) / Number(4.5)).toFixed(0));
 	}
-
-	if (hexOne < 0)
-	{
-		hexOne = 0;
-	}
-	if (hexTwo < 0)
-	{
-		hexTwo = 0;
-	}
-	if (hexThree < 0)
-	{
-		hexThree = 0;
-	}
-
-	var hexString = "";
-	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexOne}.`);
-	hexString = hexOne.toString(16).length === 1 ? '0' + hexOne.toString(16) : hexOne.toString(16);
-
-	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexTwo}.`);
-
-	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
-	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexThree}.`);
 	
-	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
-	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
 
-	const colors = window.colorList
-	let geneObject;
-	hexString = '#577597'
-	const colorFilter = hexToFilter(hexString)
-	let deltaArr = []
+	hexOne = Math.clamp(hexOne, 0, 255);
+	hexTwo = Math.clamp(hexTwo, 0, 255);
+	hexThree = Math.clamp(hexThree, 0, 255);
+
+	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
+
+	var hexString = '#';
+	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+	hexString += hexOne.toString(16).length === 1 ? '0' + hexOne.toString(16) : hexOne.toString(16);
+	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
+	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
+	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+
+	const colors = window.colorList;
+	var geneObject;
+	//hexString = '#577597';
+	const colorFilter = hexToFilter(hexString);
+	let deltaArr = [];
 
 	// Iterate through all colors and compare geneString
 	for (let color in colors) {
-		deltaArr.push(hexColorDelta(hexString, colors[color].hex))
+		deltaArr.push(hexColorDelta(hexString, colors[color].hex));
 	}
 
 	// Check which existing color most matches generated color
 	const closest = closestIndex(1, deltaArr);
-	geneObject = { name: colors[closest].name, hex: colors[closest].hex, filter:  colorFilter}
-
+	geneObject = { name: colors[closest].name, hex: colors[closest].hex, filter:  colorFilter};
+	console.log(`DEBUG: getNewGeneColor(): geneObject =  ${geneObject.name}.`);
 	return geneObject;
 }
 

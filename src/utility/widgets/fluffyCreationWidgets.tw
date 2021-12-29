@@ -66,6 +66,9 @@
 		maturity: 40,
 		maturityAdd: 0,
 		breed: "Earthy",
+		coatModifer: 0,
+		maneModifer: 0,
+		eyeModifer: 0,
 		cColor: { name:"Violet", hex: "#8F00FF", filter: "filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)" },
 		mColor: { name:"Violet", hex: "#8F00FF", filter: "filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)" },
 		eColor: { name:"Violet", hex: "#8F00FF", filter: "filter: invert(16%) sepia(78%) saturate(5967%) hue-rotate(273deg) brightness(92%) contrast(132%)" },
@@ -122,6 +125,9 @@
 		<<set _m = random(0, 2)>>
 		<<set _cl = random(0, 2)>>
 		<<set _cd = random(0,30)>>
+		<<set _cm = random(0,28)>>
+		<<set _mm = random(0,28)>>
+		<<set _em = random(0,28)>>
 
 		<<set _L = Number(_args[0].getLength() + _l).toFixed(2)>>
 		<<set _H = Number((_args[0].getHeight() + _h) * _L).toFixed(2)>>
@@ -158,9 +164,12 @@
 			maturity: _args[0].getMaturity() + _m,
 			maturityAdd: _m,
 			breed: _args[0].getBreedString().toLowerCase(),
-			cColor: _args[0].newCoatColorObject(),
-			mColor: _args[0].newManeColorObject(),
-			eColor: _args[0].newEyeColorObject(),
+			coatModifer: _cm,
+			maneModifer: _mm,
+			eyeModifer: _em,
+			cColor: _args[0].newCoatColorObject(_cm),
+			mColor: _args[0].newManeColorObject(_mm),
+			eColor: _args[0].newEyeColorObject(_em),
 			colorGroup: [],
 			mother: -1,
 			father: -1,
@@ -525,6 +534,7 @@
 
 	<<newFromGene $childGene>>
 	
+	<<fixColors $activeFluffy>>
 	<<colorValue>> 
 	<<colorGroup>>
 	<<statValue>>
