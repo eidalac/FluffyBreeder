@@ -583,6 +583,13 @@ html[data-init="loading"] #ui-bar, html[data-init="loading"] #passages {
 }
 
 /* main.css */
+:root {
+  --main-theme: #383838;
+  --text-dark: black;
+  --text-light: white;
+  --text-color: var(--text-light);
+}
+
 .w3-dropdown-content {min-width: 100px; width:140px;}
 .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
 .w3-dropdown-hover:hover .w3-dropdown-hover:hover .w3-dropdown-content .w3-dropdown-content {display:none}
@@ -954,6 +961,25 @@ button:disabled{
   display: flex;
 }
 
+/* Header */
+
+#header,
+#modal-header {
+  background: var(--main-theme);
+  padding-left: 1em;
+  color: var(--text-color);
+}
+#modal-content {
+  background: var(--main-theme);
+  padding: 1em;
+}
+#app-name {
+  color: var(--text-color);
+}
+#close-dropdown-btn {
+  color: var(--text-color);
+}
+
 /* Sidebar */
 
 #sidebar {
@@ -963,6 +989,7 @@ button:disabled{
   margin: 0;
   z-index: 2;
   overflow: scroll;
+  background: var(--main-theme);
 }
 #sidebar.active {
   width: 20%;
@@ -18886,6 +18913,7 @@ You are editing the genes of:
 		XY (Male)
 	&lt;&lt;else&gt;&gt;
 		/* Male has been the default display, so if we have an invalid gene force it to male: */
+		&lt;&lt;run console.log(`ERROR: [geneLab]: invalid gender: ${$globalFluffies[$activeFluffy.ID].genes.getGender()}.`)&gt;&gt;
 		&lt;&lt;run $globalFluffies[$activeFluffy.ID].genes.setGender(&quot;male&quot;)&gt;&gt;
 		&lt;&lt;timed 10ms&gt;&gt;
 		&lt;&lt;replace &quot;#desc&quot;&gt;&gt;&lt;&lt;FluffyDesc&gt;&gt;&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.ID].genes.toString()&gt;&gt;&lt;&lt;/replace&gt;&gt;
