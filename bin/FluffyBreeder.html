@@ -17512,7 +17512,7 @@ window.nameList = {
 &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
 	&lt;&lt;fluffyError _args[0]&gt;&gt;
 	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: $fluffyError`)&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: ${$fluffyError}.`)&gt;&gt;
 		&lt;&lt;set $fluffyError = false&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;if _args[0]&gt;&gt;
@@ -17525,6 +17525,8 @@ window.nameList = {
 		&lt;&lt;set _hslMane = hexToHSL(_hslFluffy.mColor.hex)&gt;&gt;
 		&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
 		&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
+
+		&lt;&lt;run console.log(`DEBUG: colorGroup: _hslCoat = ${_hslCoat}, _hslMane = ${_hslMane}, _hslEyes = ${_hslEyes}.`)&gt;&gt;
 
 		&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
 			&lt;&lt;capture _i&gt;&gt;
@@ -18207,7 +18209,7 @@ button {
 
 			/* Make sure the color groups are set: */
 			&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
-			&lt;&lt;colorGroup&gt;&gt;
+			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
 			&lt;&lt;set $globalFluffies[_fl] = $activeFluffy&gt;&gt;
 
 			&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Fluffy ${_fl} gender = ${$globalFluffies[_fl].gender}`)&gt;&gt;
@@ -20740,7 +20742,7 @@ Genes       Height multiplier
 						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;default&gt;&gt;
 						/* Pick a visible trait */
-						&lt;&lt;colorGroup&gt;&gt;
+						&lt;&lt;colorGroup $globalFluffies[_ef]&gt;&gt;
 
 						&lt;&lt;switch _visibleCards.random()&gt;&gt;
 							&lt;&lt;case &quot;Species&quot;&gt;&gt;
@@ -25353,7 +25355,7 @@ Coat Color:
 
 			/* Update the color groups and value bonus */
 			&lt;&lt;colorValue&gt;&gt;
-			&lt;&lt;colorGroup&gt;&gt;
+			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
 
 			/* And update the pbreed */
 			&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;Gene set.  Coat = &lt;&lt;print $globalFluffies[$activeFluffy.ID].cColor.name&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -25403,7 +25405,7 @@ Mane Color:
 
 			/* Update the color groups and value bonus */
 			&lt;&lt;colorValue&gt;&gt;
-			&lt;&lt;colorGroup&gt;&gt;
+			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
 
 			/* And update the pbreed */
 			&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;Gene set.  Mane Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].mColor&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -26344,7 +26346,7 @@ Subspecies:
         &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
         
         &lt;&lt;colorValue&gt;&gt;
-        &lt;&lt;colorGroup&gt;&gt;
+        &lt;&lt;colorGroup $activeFluffy&gt;&gt;
         &lt;&lt;statValue&gt;&gt;
 
         &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
@@ -26591,7 +26593,7 @@ button {
  *** */
 
 &lt;&lt;widget &quot;fetchName&quot;&gt;&gt;
-	&lt;&lt;colorGroup&gt;&gt;
+	&lt;&lt;colorGroup $activeFluffy&gt;&gt;
 	&lt;&lt;set _colorList = window.nameList[&quot;colors&quot;]&gt;&gt;
 	&lt;&lt;set _genderList = window.nameList[&quot;gender&quot;]&gt;&gt;
 	&lt;&lt;set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()&gt;&gt;
@@ -26600,12 +26602,21 @@ button {
 
 	&lt;&lt;set _coat = $activeFluffy.colorGroup[0]&gt;&gt;
 	&lt;&lt;set _mane = $activeFluffy.colorGroup[1]&gt;&gt;
-	&lt;&lt;set _posCoat = random(0, _colorList[_coat].length-1)&gt;&gt;
-
+	&lt;&lt;run console.log(`DEBUG: fetchName: _coat = ${_coat}, _mane = ${_mane}.`)&gt;&gt;
+	
 	&lt;&lt;switch random(0, 4)&gt;&gt;
 		&lt;&lt;case 0 1 2&gt;&gt;
 		/* Get name relating to color*/
-			&lt;&lt;set $activeFluffy.name = _colorList[_coat][_posCoat]&gt;&gt;
+			&lt;&lt;if ndef _colorList[_coat] || ndef _coat&gt;&gt;
+				&lt;&lt;run console.log(`DEBUG: fetchName: _coat = ${_coat} not a valid name index.`)&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = _genderList[&quot;Neutral&quot;][_posNeutral]&gt;&gt;
+			&lt;&lt;elseif _coat.length != 0&gt;&gt;
+				&lt;&lt;set _posCoat = random(0, _colorList[_coat].length-1)&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = _colorList[_coat][_posCoat]&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;run console.log(`DEBUG: fetchName: _coat = ${_coat} is empty.`)&gt;&gt;
+				&lt;&lt;set $activeFluffy.name = _genderList[&quot;Neutral&quot;][_posNeutral]&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case 4&gt;&gt;
 		/* Get name relating to gender, 50% gendered, 50% neutral */
 			&lt;&lt;switch random(0, 1)&gt;&gt;
@@ -27976,7 +27987,7 @@ button {
 	
 	/*&lt;&lt;fixColors $activeFluffy&gt;&gt;*/
 	&lt;&lt;colorValue&gt;&gt; 
-	&lt;&lt;colorGroup&gt;&gt;
+	&lt;&lt;colorGroup $activeFluffy&gt;&gt;
 	&lt;&lt;statValue&gt;&gt;
 
 	&lt;&lt;set $activeFluffy.mother = _mom.ID&gt;&gt;

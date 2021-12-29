@@ -235,7 +235,7 @@ button {
  *** */
 
 <<widget "fetchName">>
-	<<colorGroup>>
+	<<colorGroup $activeFluffy>>
 	<<set _colorList = window.nameList["colors"]>>
 	<<set _genderList = window.nameList["gender"]>>
 	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
@@ -244,12 +244,21 @@ button {
 
 	<<set _coat = $activeFluffy.colorGroup[0]>>
 	<<set _mane = $activeFluffy.colorGroup[1]>>
-	<<set _posCoat = random(0, _colorList[_coat].length-1)>>
-
+	<<run console.log(`DEBUG: fetchName: _coat = ${_coat}, _mane = ${_mane}.`)>>
+	
 	<<switch random(0, 4)>>
 		<<case 0 1 2>>
 		/* Get name relating to color*/
-			<<set $activeFluffy.name = _colorList[_coat][_posCoat]>>
+			<<if ndef _colorList[_coat] || ndef _coat>>
+				<<run console.log(`DEBUG: fetchName: _coat = ${_coat} not a valid name index.`)>>
+				<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+			<<elseif _coat.length != 0>>
+				<<set _posCoat = random(0, _colorList[_coat].length-1)>>
+				<<set $activeFluffy.name = _colorList[_coat][_posCoat]>>
+			<<else>>
+				<<run console.log(`DEBUG: fetchName: _coat = ${_coat} is empty.`)>>
+				<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+			<</if>>
 		<<case 4>>
 		/* Get name relating to gender, 50% gendered, 50% neutral */
 			<<switch random(0, 1)>>
