@@ -1599,11 +1599,10 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 
 	const colors = window.colorList;
 	var geneObject;
-	//hexString = '#577597';
 	const colorFilter = hexToFilter(hexString);
 	let deltaArr = [];
 
-	// Iterate through all colors and compare geneString
+	// Iterate through all colors and compare hexString
 	for (let color in colors) {
 		deltaArr.push(hexColorDelta(hexString, colors[color].hex));
 	}
