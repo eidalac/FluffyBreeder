@@ -20,7 +20,63 @@ Save.onLoad.add(function (save)
   }
 
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
-  {
+  {         
+    // Set color info if we are using old style data
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].cColor === 'string' ||
+    typeof save.state.history[save.state.index].variables.globalFluffies[i].mColor === 'string' ||
+    typeof save.state.history[save.state.index].variables.globalFluffies[i].eColor === 'string')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = Math.floor(Math.random() * (28 - 0) + 0);
+      save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = Math.floor(Math.random() * (28 - 0) + 0);
+      save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = Math.floor(Math.random() * (28 - 0) + 0);
+      
+      save.state.history[save.state.index].variables.globalFluffies[i].genes = Genome.fromString(save.state.history[save.state.index].variables.globalFluffies[i].geneString);
+
+      save.state.history[save.state.index].variables.globalFluffies[i].cColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newCoatColorObject(save.state.history[save.state.index].variables.globalFluffies[i].coatModifer);
+      save.state.history[save.state.index].variables.globalFluffies[i].mColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newManeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].maneModifer);
+      save.state.history[save.state.index].variables.globalFluffies[i].eColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newEyeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer);
+
+      var hslCoat = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
+      var hslMane = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
+      var hslEyes = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
+      
+      save.state.history[save.state.index].variables.globalFluffies[i].colorGroup = ["", "", ""];
+  
+      for (let k = 0; k < window.groupList.length-2; k++)
+      {
+          if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[k].name
+          }
+          else if (hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue)
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[groupList.length-1].name;
+          }
+
+          if (inRange(hslMane[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[k].name;
+          }
+          else if (hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue)
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[groupList.length-1].name;
+          }
+
+          if (inRange(hslEyes[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[k].name;
+          }
+          else if (hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue)
+          {
+            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[groupList.length-1].name;
+          }
+      }
+
+      save.state.history[save.state.index].variables.globalFluffies[i].cColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
+      save.state.history[save.state.index].variables.globalFluffies[i].mColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
+      save.state.history[save.state.index].variables.globalFluffies[i].eColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
+    }
+
     // Force set a default value to furStage if it's missing:
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
     {
@@ -89,8 +145,8 @@ window.renderInfo = function(e) {
   }
 }
 
-window.getInfo = function(info_id) {
-    switch(info_id) {
+window.getInfo = function(infokd) {
+    switch(infokd) {
       case 'stat_strength':
         return '<b class="info-highlight">Strength</b> indicate general physical ability and coordination.'
       case 'stat_energy':
@@ -181,7 +237,7 @@ window.getInfo = function(info_id) {
         return `<b class="info-highlight">Simple</b> fluffies are dull minded, even by fluffy standards.<p>Learning: <span style="color:darkred">-2</span>, Thinking: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_moron':
         return `<b class="info-highlight">Moronic</b> fluffies are amazingly stupid.<p>Learning: <span style="color:darkred">-3</span>, Thinking: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-1</span><p>`
-      case 'trait_imbecile':
+      case 'traitkmbecile':
         return `<b class="info-highlight">Imbecilic</b> fluffies have never been troubled by a single thought.<p>Learning: <span style="color:darkred">-4</span>, Thinking: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       /* Eye defect */
@@ -195,7 +251,7 @@ window.getInfo = function(info_id) {
         return `<b class="info-highlight">Blind</b> fluffies do not see.  At all.<p>Learning: <span style="color:darkred">-4</span>, Energy: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       default:
-        return `${info_id} has no info yet.`
+        return `${infokd} has no info yet.`
   }
 }
 
