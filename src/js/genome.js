@@ -1421,6 +1421,178 @@ Genome.prototype.setBreed = function(new_gene) {
  * COLOR SHIT THIS IS GOING TO BE LARGE 
  *******************************************************/
 
+ const valueIndex = [
+	{	string: 'ccww', value: 0  },
+	{	string: 'ccwW', value: 28 },
+	{	string: 'ccWW', value: 58 },
+	{	string: 'cCww', value: 87 },
+	{	string: 'cCwW', value: 116 },
+	{	string: 'cCWW', value: 145 },
+	{	string: 'CCww', value: 174 },
+	{	string: 'CCwW', value: 203 },
+	{	string: 'CCWW', value: 232 }
+];
+
+
+/**
+ * Retrieves returns a string name for the coat color gene
+ *
+ * @return String
+ */
+ Genome.prototype.newCoatColorString = function() {
+	return this.getNewGeneColor(17);
+}
+
+/**
+ * Retrieves returns a string name for the mane color gene
+ *
+ * @return String
+ */
+Genome.prototype.newManeColorString = function() {
+	return this.getNewGeneColor(22);
+}
+
+/**
+ * Retrieves returns a string name for the eye color gene
+ *
+ * @return String
+ */
+Genome.prototype.newEyeColorString = function() {
+	return this.getNewGeneColor(27);
+}
+
+
+/**
+ * Retrieves the color code from this gene set with a new system.
+ * Gene pattern is (B/b;Y/y;R/r;O/o;W/w).
+ * 
+ * @param int index index of the first gene in the sequence
+ *
+ * @return String
+ */
+Genome.prototype.getNewGeneColor = function(index) {
+	// clear up the string
+	var geneOne = this.elementAt(index).toString().split('/');		// {[B], [b]}
+	var geneTwo = this.elementAt(index+1).toString().split('/');	// {[Y], [y]}
+	var geneThree = this.elementAt(index+2).toString().split('/');	// {[R], [r]}
+	var geneFour = this.elementAt(index+3).toString().split('/');	// {[O], [o]}
+	var geneFive = this.elementAt(index+4).toString().split('/');	// {[W], [w]}
+	
+	var geneString = "";
+	
+	// Sort it so we can get an exact match to the combination, not the order, of each pair:
+	geneOne = geneOne.sort().reverse();
+	geneTwo = geneTwo.sort().reverse();
+	geneThree = geneThree.sort().reverse();
+	geneFour = geneFour.sort().reverse();
+	geneFive = geneFive.sort().reverse();
+	
+	// build a clean string with no seperators:
+	geneString += geneOne[0];
+	geneString += geneOne[1];
+	geneString += geneTwo[0];
+	geneString += geneTwo[1];
+	geneString += geneThree[0];
+	geneString += geneThree[1];
+	geneString += geneFour[0];
+	geneString += geneFour[1];
+	
+	var wFactor = "";
+	
+	wFactor += geneFive[0];
+	wFactor += geneFive[1];
+
+	var bFactor = geneOne[0] + geneOne[1] + wFactor;
+	var yFactor = geneTwo[0] + geneTwo[1] + wFactor;
+	var rFactor = geneThree[0] + geneThree[1] + wFactor;
+	var oFactor = geneFour[0] + geneFour[1];
+
+	var hexOne = -1;
+	var hexTwo = -1;
+	var hexThree = -1;
+
+	console.log(`DEBUG: getNewGeneColor(): bFactor =  ${bFactor}.`);
+	console.log(`DEBUG: getNewGeneColor(): yFactor =  ${yFactor}.`);
+	console.log(`DEBUG: getNewGeneColor(): rFactor =  ${rFactor}.`);
+
+    for (let i in valueIndex) {
+        let bIndex = valueIndex[i].string.replaceAll(/c/g, 'b');
+		bIndex = bIndex.replaceAll(/C/g, 'B');
+        let yIndex = valueIndex[i].string.replaceAll(/c/g, 'y');
+		yIndex = yIndex.replaceAll(/C/g, 'Y');
+        let rIndex = valueIndex[i].string.replaceAll(/c/g, 'r');
+		rIndex = rIndex.replaceAll(/C/g, 'R');
+
+	/*	console.log(`DEBUG: getNewGeneColor(): bIndex =  ${bIndex}.`);
+
+		console.log(`DEBUG: getNewGeneColor(): yIndex =  ${yIndex}.`);
+	
+		console.log(`DEBUG: getNewGeneColor(): rIndex =  ${rIndex}.`);
+	*/	
+
+		if (bFactor === bIndex)
+		{
+			hexOne = valueIndex[i].value;
+	//		console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}.`);
+		}
+		if (yFactor === yIndex)
+		{
+			hexTwo = valueIndex[i].value;
+	//		console.log(`DEBUG: getNewGeneColor(): hexTwo =  ${hexTwo}.`);
+		}
+		if (rFactor === rIndex)
+		{
+			hexThree = valueIndex[i].value;
+	//		console.log(`DEBUG: getNewGeneColor(): hexThree =  ${hexThree}.`);
+		}
+
+		if (hexOne + hexTwo + hexThree >= 0)
+		{
+			break;
+		}
+	}
+
+	if (oFactor === "oO")
+	{
+		hexOne -= 10;
+		hexTwo -= 20;
+		hexThree -= 20;
+	}
+	else if (oFactor === "oo")
+	{
+		hexOne -= 20;
+		hexTwo -= 40;
+		hexThree -= 40;
+	}
+
+	if (hexOne < 0)
+	{
+		hexOne = 0;
+	}
+	if (hexTwo < 0)
+	{
+		hexTwo = 0;
+	}
+	if (hexThree < 0)
+	{
+		hexThree = 0;
+	}
+
+	var hexString = "";
+	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexOne}.`);
+	hexString = hexOne.toString(16).length === 1 ? '0' + hexOne.toString(16) : hexOne.toString(16);
+
+	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexTwo}.`);
+
+	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
+	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}, ${hexThree}.`);
+	
+	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16); 
+	//console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
+
+	return hexString;
+}
+
 /**
  * Retrieves the color code from this gene set.
  * Gene pattern is (B/b;Y/y;R/r;O/o;W/w).
