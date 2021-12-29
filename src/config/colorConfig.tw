@@ -184,15 +184,20 @@
 
 		<<for _i = 0; _i < groupList.length-2; _i++>>
 			<<capture _i>>
-				<<if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) >= 330>>
-					<<run console.log(groupList[_i].name)>>
+				<<if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)>>
 					<<set _hslFluffy.colorGroup[0] = groupList[_i].name>>
+				<<elseif _hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue>>
+					<<set _hslFluffy.colorGroup[0] = groupList[groupList.length-1].name>>
 				<</if>>
-				<<if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) >= 330>>
+				<<if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)>>
 					<<set _hslFluffy.colorGroup[1] = groupList[_i].name>>
+				<<elseif _hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue>>
+					<<set _hslFluffy.colorGroup[0] = groupList[groupList.length-1].name>>
 				<</if>>
-				<<if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) >= 330>>
+				<<if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)>>
 					<<set _hslFluffy.colorGroup[2] = groupList[_i].name>>
+				<<elseif _hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue>>
+					<<set _hslFluffy.colorGroup[0] = groupList[groupList.length-1].name>>
 				<</if>>
 			<</capture>>
 		<</for>>
