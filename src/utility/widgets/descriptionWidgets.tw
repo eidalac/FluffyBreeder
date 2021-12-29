@@ -62,6 +62,7 @@ button {
 		<<set _fluffies = $ourStore.fluffies>>
 	<</if>>
 	<<for _fl range _fluffies>>
+		<<fixColors $globalFluffies[_fl]>>
 		<<if _args[0] === "breeding">>
 			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
 				<<continue>>
@@ -235,8 +236,8 @@ button {
 
 <<widget "fetchName">>
 	<<colorGroup>>
-	<<set _colorList = window.NameList["colors"]>>
-	<<set _genderList = window.NameList["gender"]>>
+	<<set _colorList = window.nameList["colors"]>>
+	<<set _genderList = window.nameList["gender"]>>
 	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
 	<<set _posGendered = random(0, _genderList[_gender].length-1)>>
 	<<set _posNeutral = random(0, _genderList["Neutral"].length-1)>>
@@ -308,13 +309,13 @@ button {
 	<<set _color = "">>
 
 	<<if _args[0] < 67>>
-		<<set _color = `@@.stat-high.stat-value`>>
+		<<set _color = `@@.stat-low.stat-value`>>
 		<<set _value = `High`>>
 	<<elseif _args[0] < 101>>		
 		<<set _color = `@@.stat-average.stat-value`>>
 		<<set _value = `Average`>>
 	<<else>>
-		<<set _color = `@@.stat-low.stat-value`>>
+		<<set _color = `@@.stat-high.stat-value`>>
 		<<set _value = `Low`>>
 	<</if>>
 
@@ -323,7 +324,7 @@ button {
 	<<elseif $training >= 100>>
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 50>>
-		<<set _color = `@@.stat-high.stat-unknown`>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
 		<<set _value = `???`>>	
 	<</if>>
 
@@ -634,8 +635,8 @@ button {
 		<</if>>
 	<</if>>
 	
-	<<colorizeText $activeFluffy.cColor $activeFluffy.name>> is a <<print $activeFluffy.personality>> $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
-	<br><<They>> has a <<inlineColor $activeFluffy.cColor>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor>> eyes<</if>>. 
+	<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is a <<print $activeFluffy.personality>> $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
+	<br><<They>> has a <<inlineColor $activeFluffy.cColor.hex>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor.hex>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor.hex>> eyes<</if>>. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxWeight)" : "">> KG.  <<They>> is $activeFluffy.length cm long <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxLength)" : "">> and is $activeFluffy.height cm tall <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxHeight)" : "">>.  
 	<br><<They>> fluff is $activeFluffy.coatLength cm long, has a density of $activeFluffy.coatDensity and has a curl of $activeFluffy.coatCurl.
@@ -694,12 +695,12 @@ button {
 				<div class="fluffy-color">
 					<span><<- _fluffy.personality>> _fluffy.gender _fluffy.breed</span>
 					<span> Name: <<print _fluffy.name>></span>
-					<span>Coat: <<inlineColor _fluffy.cColor>></span>
+					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name>></span>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
-						<span>Mane: <<inlineColor _fluffy.mColor>></span>
+						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name>></span>
 					<</if>>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
-						<span>Eyes: <<inlineColor _fluffy.eColor>></span>
+						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name>></span>
 					<</if>>
 				</div>
 				<div class="fluffy-traits">
@@ -713,9 +714,9 @@ button {
 					</div>
 				</div>
 				<div class="fluffy-family">
-					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor $globalFluffies[_fluffy.mother].name>></span><</if>>
-					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor $globalFluffies[_fluffy.father].name>></span><</if>>
-					<<if _fluffy.specialFriend != -1>><span>Special Friend: <<colorizeText $globalFluffies[_fluffy.specialFriend].cColor $globalFluffies[_fluffy.specialFriend].name>></span><</if>>
+					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor.hex $globalFluffies[_fluffy.mother].name>></span><</if>>
+					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor.hex $globalFluffies[_fluffy.father].name>></span><</if>>
+					<<if _fluffy.specialFriend != -1>><span>Special Friend: <<colorizeText $globalFluffies[_fluffy.specialFriend].cColor.hex $globalFluffies[_fluffy.specialFriend].name>></span><</if>>
 					<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
 					<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>
 					<<if _fluffy.nursing > 0>><span>Is nursing <<print _fluffy.nursing >> foals</span><</if>>

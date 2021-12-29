@@ -31,17 +31,17 @@
 	/* Interate through the list of colors, if they match, remember the tier and group.*/
 	<<for _i = 0; _i < $colors.length; _i++>>
 
-		<<if $activeFluffy.cColor == $colors[_i].Name>>
-			<<set _coatTier = $colors[_i].Tier>>
-			<<set _coatGroup = $colors[_i].Group>>
+		<<if $activeFluffy.cColor.name== $colors[_i].name>>
+			<<set _coatTier = $colors[_i].tier>>
+			<<set _coatGroup = $colors[_i].group>>
 		<</if>>
-		<<if $activeFluffy.mColor == $colors[_i].Name>>
-			<<set _maneTier = $colors[_i].Tier>>
-			<<set _maneGroup = $colors[_i].Group>>
+		<<if $activeFluffy.mColor.name == $colors[_i].name>>
+			<<set _maneTier = $colors[_i].tier>>
+			<<set _maneGroup = $colors[_i].group>>
 		<</if>>
-		<<if $activeFluffy.eColor == $colors[_i].Name>>
-			<<set _eyeTier = $colors[_i].Tier>>
-			<<set _eyeGroup = $colors[_i].Group>>
+		<<if $activeFluffy.eColor.name == $colors[_i].name>>
+			<<set _eyeTier = $colors[_i].tier>>
+			<<set _eyeGroup = $colors[_i].group>>
 		<</if>>
 	<</for>>
 
@@ -137,8 +137,8 @@
 		<<set _nColors = clone($colors)>>
 
 		/* Interate through the list of colors, if they match, remember the tier and group.*/
-		<<run _nColors.deleteWith(function (val) { 	return val.Tier < _low; })>>
-		<<run _nColors.deleteWith(function (val) { 	return val.Tier > _high; })>>
+		<<run _nColors.deleteWith(function (val) { 	return val.tier < _low; })>>
+		<<run _nColors.deleteWith(function (val) { 	return val.tier > _high; })>>
 
 		/* Now we have an arry for colors that are within the specified ranges.*/
 	
@@ -146,15 +146,15 @@
 		<<set _randomCoat = _nColors.random()>>
 		<<set _randomMane = _nColors.random()>>
 
-		<<run $activeFluffy.genes.setManeColor(_randomMane.Gene + _wGene.random())>>
-		<<run $activeFluffy.genes.setCoatColor(_randomCoat.Gene + _wGene.random())>>
-		<<run $activeFluffy.genes.setEyeColor(_nColors.random().Gene + _wGene.random())>>
+		<<run $activeFluffy.genes.setManeColor(_randomMane.gene + _wGene.random())>>
+		<<run $activeFluffy.genes.setCoatColor(_randomCoat.gene + _wGene.random())>>
+		<<run $activeFluffy.genes.setEyeColor(_nColors.random().gene + _wGene.random())>>
 
 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 
-		<<set $activeFluffy.mColor = $activeFluffy.genes.getManeColorString()>>
-		<<set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorString()>>
-		<<set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorString()>>
+		<<set $activeFluffy.mColor.name = $activeFluffy.genes.getManeColorObject()>>
+		<<set $activeFluffy.cColor.name= $activeFluffy.genes.getCoatColorObject()>>
+		<<set $activeFluffy.eColor.name = $activeFluffy.genes.getEyeColorObject()>>
 	<</if>>
 	
 <</widget>>
@@ -182,14 +182,14 @@
 		
 		/* Interate through the list of colors, if they match, remember the tier and group.*/
 		<<for _i = 0; _i < $colors.length; _i++>>
-			<<if _fluffy.cColor == $colors[_i].Name>>
-				<<set _coatGroup = $colors[_i].Group>>
+			<<if _fluffy.cColor == $colors[_i].name>>
+				<<set _coatGroup = $colors[_i].group>>
 			<</if>>
-			<<if _fluffy.mColor == $colors[_i].Name>>
-				<<set _maneGroup = $colors[_i].Group>>
+			<<if _fluffy.mColor == $colors[_i].name>>
+				<<set _maneGroup = $colors[_i].group>>
 			<</if>>
-			<<if _fluffy.eColor == $colors[_i].Name>>
-				<<set _eyeGroup = $colors[_i].Group>>
+			<<if _fluffy.eColor == $colors[_i].name>>
+				<<set _eyeGroup = $colors[_i].group>>
 			<</if>>
 		<</for>>
 
@@ -205,4 +205,73 @@
 		<</if>>	
 		<<set _fluffy.colorGroup = [_coatGroup, _maneGroup, _eyeGroup]>>
 	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<fixColors $fluffy>>
+ *	Fixes deprecated color values
+ *** */
+<<widget "fixColors">>
+	<<if _args[0]>>
+		<<set _fixFluffy = _args[0]>>
+	<<else>>
+		<<set _fixFluffy = $activeFluffy>>
+	<</if>>
+
+	<<if def typeof _fixFluffy.cColor === 'string' || typeof _fixFluffy.mColor === 'string' || typeof _fixFluffy.eColor === 'string'>>
+		<<set _colorRegEx = /([\ \-#])|(\(.*\))|([0-9])/gi>>
+		<<set _nameRegEx = /([#])|(\ \(.*\))|([0-9])/gi>>
+
+		<<for _i = 0; _i < colorList.length; _i++>>
+			<<capture _i>>
+				<<set _name = colorList[_i].name>>
+				<<if typeof _fixFluffy.cColor === 'string' && _fixFluffy.cColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<run console.log("Match "+colorList[_i].name+" "+colorList[_i].hex)>>
+					<<set _fixFluffy.cColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+				<<if typeof _fixFluffy.mColor === 'string' && _fixFluffy.mColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<run console.log("Match "+colorList[_i].name+" "+colorList[_i].hex)>>
+					<<set _fixFluffy.mColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+				<<if  typeof _fixFluffy.eColor === 'string' && _fixFluffy.eColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<run console.log("Match "+colorList[_i].name+" "+colorList[_i].hex)>>
+					<<set _fixFluffy.eColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+			<</capture>>
+		<</for>>
+	<</if>>
+
+	<<fixGroups _fixFluffy>>
+<</widget>>
+
+/* ***
+ *	Call as <<fixGroups $hex>>
+ *	Fixes deprecated group values
+ *** */
+<<widget "fixGroups">>
+	<<if _args[0]>>
+		<<set _hslFluffy = _args[0]>>
+	<<else>>
+		<<set _hslFluffy = $activeFluffy>>
+	<</if>>
+	
+	<<set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)>>
+	<<set _hslMane = hexToHSL(_hslFluffy.mColor.hex)>>
+	<<set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)>>
+	<<set _hslFluffy.colorGroup = ["", "", ""]>>
+
+	<<for _i = 0; _i < groupList.length-2; _i++>>
+		<<capture _i>>
+			<<if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslCoat[0].toFixed(0) >= 330>>
+				<<run console.log(groupList[_i].name)>>
+				<<set _hslFluffy.colorGroup[0] = groupList[_i].name>>
+			<</if>>
+			<<if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslMane[0].toFixed(0) >= 330>>
+				<<set _hslFluffy.colorGroup[1] = groupList[_i].name>>
+			<</if>>
+			<<if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue) || _hslEyes[0].toFixed(0) >= 330>>
+				<<set _hslFluffy.colorGroup[2] = groupList[_i].name>>
+			<</if>>
+		<</capture>>
+	<</for>>
 <</widget>>

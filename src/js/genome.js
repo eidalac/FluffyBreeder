@@ -1476,257 +1476,279 @@ Genome.prototype.getGeneColor = function(index) {
 			return "White";
 	}
 	
+	const colors = State.variables.colors
+	let missing = false
+	let geneObject;
+
+	// Iterate through all colors and compare geneString
+	for (let color in colors) {
+		const colorGene = colors[color].gene.replaceAll(/[\/;]/g, '')
+
+		if (geneString === colorGene) {
+			geneObject = {name: colors[color].name, hex: "#FF9900"}
+			missing = false;
+		} else if (geneObject.name.toLowerCase() === colorGene.toLowerCase()) {
+			missing = true;
+		}
+	}
+
+	// If gene has no color, but is correct format
+	if (missing) {
+		const random = Math.floor(Math.random() * colors.length-1)
+		const random_color = colors[random].name;
+		geneObject = {name: random_color, hex: "#FF9900"}
+	}
 
 	// now the bastard monster switch
-	switch (geneString) {
-	case "bByyrRoO":
-		geneString = "Gold";
-		break;
-	case "bBYYrrOO":
-		geneString = "Lavender";
-		break;
-	case "bByyrroO":
-		geneString = "CornflowerBlue";
-		break;
-	case "BByYrROO":
-		geneString = "CornflowerBlue";
-		break;
-	case "bByYRROO":
-		geneString = "MidnightBlue";
-		break;
-	case "bBYYRRoo":
-		geneString = "Orchid";
-		break;
-	case "bbyyrROO":
-		geneString = "PeachPuff";
-		break;
-	case "bByyrROO":
-		geneString = "YellowGreen";
-		break;
-	case "BByYrRoO":
-		geneString = "GreenYellow";
-		break;
-	case "bbyyrroO":
-		geneString = "Chartreuse";
-		break;
-	case "bbyyrrOO":
-		geneString = "OliveDrab";
-		break;
-	case "bbyYrRoO":
-		geneString = "Moccasin";
-		break;
-	case "BByyrROO":
-		geneString = "Yellow";
-		break;
-	case "bbyYrroo":
-		geneString = "Khaki";
-		break;
-	case "bbYYrroo":
-		geneString = "PaleGoldenRod";
-		break;
-	case "bByyrRoo":
-		geneString = "Thistle";
-		break;
-	case "bByYrRoO":
-		geneString = "Violet";
-		break;
-	case "bBYYrROO":
-		geneString = "RebeccaPurple";
-		break;
-	case "bBYYrroO":
-		geneString = "Plum";
-		break;
-	case "bByYrRoo":
-		geneString = "Purple";
-		break;
-	case "bBYYRRoO":
-		geneString = "PaleVioletRed";
-		break;
-	case "bBYYRROO":
-		geneString = "Fuchsia";
-		break;
-	case "bBYYrRoO":
-		geneString = "OrangeRed";
-		break;
-	case "BBYYrRoO":
-		geneString = "Tomato";
-		break;
-	case "bbyyrroo":
-		geneString = "Chocolate";
-		break;
-	case "bBYYrRoo":
-		geneString = "Red";
-		break;
-	case "BByYrRoo":
-		geneString = "FireBrick";
-		break;
-	case "BBYYrRoo":
-		geneString = "Crimson";
-		break;
-	case "BByyrRoo":
-		geneString = "IndianRed";
-		break;
-	case "BByyrRoO":
-		geneString = "Salmon";
-		break;
-	case "BByYRRoO":
-		geneString = "LightCoral";
-		break;
-	case "BBYYRRoO":
-		geneString = "DarkSalmon";
-		break;
-	case "BByYRROO":
-		geneString = "Red";
-		break;
-	case "BByyRRoO":
-		geneString = "Maroon";
-		break;
-	case "BBYYRROO":
-		geneString = "MediumVioletRed";
-		break;
-	case "BBYYRRoo":
-		geneString = "DeepPink";
-		break;
-	case "BByyRROO":
-		geneString = "HotPink";
-		break;
-	case "BByyRRoo":
-		geneString = "Pink";
-		break;
-	case "bbyyrRoo":
-		geneString = "Tomato";
-		break;
-	case "bbyyrRoO":
-		geneString = "Coral";
-		break;
-	case "BByYRRoo":
-		geneString = "Orange";
-		break;
-	case "bbyyRRoO":
-		geneString = "Orange";
-		break;
-	case "bbyyRROO":
-		geneString = "Orange";
-		break;
-	case "bbyyRRoo":
-		geneString = "Orange";
-		break;
-	case "bByYrROO":
-		geneString = "SpringGreen";
-		break;
-	case "bbyYrroO":
-		geneString = "OliveDrab";
-		break;
-	case "bbYYrroO":
-		geneString = "SeaGreen";
-		break;
-	case "bbyYrrOO":
-		geneString = "ForestGreen";
-		break;
-	case "bbYYrrOO":
-		geneString = "Green";
-		break;
-	case "bByyrroo":
-		geneString = "SandyBrown";
-		break;
-	case "bbYYrRoo":
-		geneString = "Chocolate";
-		break;
-	case "bByYrroo":
-		geneString = "Brown";
-		break;
-	case "bbYYrRoO":
-		geneString = "Brown";
-		break;
-	case "bbyYrRoo":
-		geneString = "Brown";
-		break;
-	case "bbyYrROO":
-		geneString = "Brown";
-		break;
-	case "bBYYrroo":
-		geneString = "Sienna";
-		break;
-	case "bbYYrROO":
-		geneString = "Sienna";
-		break;
-	case "bbyYRRoO":
-		geneString = "Tan";
-		break;
-	case "BByYrroo":
-		geneString = "BurlyWood";
-		break;
-	case "bbYYRRoO":
-		geneString = "RosyBrown";
-		break;
-	case "bbyYRROO":
-		geneString = "SandyBrown";
-		break;
-	case "bbyYRRoo":
-		geneString = "DarkGoldenRod";
-		break;
-	case "BBYYrroo":
-		geneString = "Tan";
-		break;
-	case "BByyrroo":
-		geneString = "BurlyWood";
-		break;
-	case "bbYYRROO":
-		geneString = "BlanchedAlmond";
-		break;
-	case "bbYYRRoo":
-		geneString = "Cornsilk";
-		break;
-	case "bByyrrOO":
-		geneString = "BlueViolet";
-		break;
-	case "bByYrroO":
-		geneString = "SlateBlue";
-		break;
-	case "bByYrrOO":
-		geneString = "Indigo";
-		break;
-	case "BByYrroO":
-		geneString = "RoyalBlue";
-		break;
-	case "BBYYrroO":
-		geneString = "BlueViolet";
-		break;
-	case "BByYrrOO":
-		geneString = "BlueViolet";
-		break;
-	case "BByyrroO":
-		geneString = "BlueViolet";
-		break;
-	case "BBYYrrOO":
-		geneString = "BlueViolet";
-		break;
-	case "BByyrrOO":
-		geneString = "MediumPurple";
-		break;
-	case "bByyRRoO":
-		geneString = "SteelBlue";
-		break;
-	case "bByyRROO":
-		geneString = "SkyBlue";
-		break;
-	case "bByyRRoo":
-		geneString = "DodgerBlue";
-		break;
-	case "bByYRRoO":
-		geneString = "Blue";
-		break;
-	case "bByYRRoo":
-		geneString = "RoyalBlue";
-		break;
-	case "BBYYrROO":
-		geneString = "Navy";
-		break;
-	default:
-		return "INVALID COLOR";
-	}
+	// switch (geneString) {
+	// case "bByyrRoO":
+	// 	geneString = "Gold";
+	// 	break;
+	// case "bBYYrrOO":
+	// 	geneString = "Lavender";
+	// 	break;
+	// case "bByyrroO":
+	// 	geneString = "CornflowerBlue";
+	// 	break;
+	// case "BByYrROO":
+	// 	geneString = "CornflowerBlue";
+	// 	break;
+	// case "bByYRROO":
+	// 	geneString = "MidnightBlue";
+	// 	break;
+	// case "bBYYRRoo":
+	// 	geneString = "Orchid";
+	// 	break;
+	// case "bbyyrROO":
+	// 	geneString = "PeachPuff";
+	// 	break;
+	// case "bByyrROO":
+	// 	geneString = "YellowGreen";
+	// 	break;
+	// case "BByYrRoO":
+	// 	geneString = "GreenYellow";
+	// 	break;
+	// case "bbyyrroO":
+	// 	geneString = "Chartreuse";
+	// 	break;
+	// case "bbyyrrOO":
+	// 	geneString = "OliveDrab";
+	// 	break;
+	// case "bbyYrRoO":
+	// 	geneString = "Moccasin";
+	// 	break;
+	// case "BByyrROO":
+	// 	geneString = "Yellow";
+	// 	break;
+	// case "bbyYrroo":
+	// 	geneString = "Khaki";
+	// 	break;
+	// case "bbYYrroo":
+	// 	geneString = "PaleGoldenRod";
+	// 	break;
+	// case "bByyrRoo":
+	// 	geneString = "Thistle";
+	// 	break;
+	// case "bByYrRoO":
+	// 	geneString = "Violet";
+	// 	break;
+	// case "bBYYrROO":
+	// 	geneString = "RebeccaPurple";
+	// 	break;
+	// case "bBYYrroO":
+	// 	geneString = "Plum";
+	// 	break;
+	// case "bByYrRoo":
+	// 	geneString = "Purple";
+	// 	break;
+	// case "bBYYRRoO":
+	// 	geneString = "PaleVioletRed";
+	// 	break;
+	// case "bBYYRROO":
+	// 	geneString = "Fuchsia";
+	// 	break;
+	// case "bBYYrRoO":
+	// 	geneString = "OrangeRed";
+	// 	break;
+	// case "BBYYrRoO":
+	// 	geneString = "Tomato";
+	// 	break;
+	// case "bbyyrroo":
+	// 	geneString = "Chocolate";
+	// 	break;
+	// case "bBYYrRoo":
+	// 	geneString = "Red";
+	// 	break;
+	// case "BByYrRoo":
+	// 	geneString = "FireBrick";
+	// 	break;
+	// case "BBYYrRoo":
+	// 	geneString = "Crimson";
+	// 	break;
+	// case "BByyrRoo":
+	// 	geneString = "IndianRed";
+	// 	break;
+	// case "BByyrRoO":
+	// 	geneString = "Salmon";
+	// 	break;
+	// case "BByYRRoO":
+	// 	geneString = "LightCoral";
+	// 	break;
+	// case "BBYYRRoO":
+	// 	geneString = "DarkSalmon";
+	// 	break;
+	// case "BByYRROO":
+	// 	geneString = "Red";
+	// 	break;
+	// case "BByyRRoO":
+	// 	geneString = "Maroon";
+	// 	break;
+	// case "BBYYRROO":
+	// 	geneString = "MediumVioletRed";
+	// 	break;
+	// case "BBYYRRoo":
+	// 	geneString = "DeepPink";
+	// 	break;
+	// case "BByyRROO":
+	// 	geneString = "HotPink";
+	// 	break;
+	// case "BByyRRoo":
+	// 	geneString = "Pink";
+	// 	break;
+	// case "bbyyrRoo":
+	// 	geneString = "Tomato";
+	// 	break;
+	// case "bbyyrRoO":
+	// 	geneString = "Coral";
+	// 	break;
+	// case "BByYRRoo":
+	// 	geneString = "Orange";
+	// 	break;
+	// case "bbyyRRoO":
+	// 	geneString = "Orange";
+	// 	break;
+	// case "bbyyRROO":
+	// 	geneString = "Orange";
+	// 	break;
+	// case "bbyyRRoo":
+	// 	geneString = "Orange";
+	// 	break;
+	// case "bByYrROO":
+	// 	geneString = "SpringGreen";
+	// 	break;
+	// case "bbyYrroO":
+	// 	geneString = "OliveDrab";
+	// 	break;
+	// case "bbYYrroO":
+	// 	geneString = "SeaGreen";
+	// 	break;
+	// case "bbyYrrOO":
+	// 	geneString = "ForestGreen";
+	// 	break;
+	// case "bbYYrrOO":
+	// 	geneString = "Green";
+	// 	break;
+	// case "bByyrroo":
+	// 	geneString = "SandyBrown";
+	// 	break;
+	// case "bbYYrRoo":
+	// 	geneString = "Chocolate";
+	// 	break;
+	// case "bByYrroo":
+	// 	geneString = "Brown";
+	// 	break;
+	// case "bbYYrRoO":
+	// 	geneString = "Brown";
+	// 	break;
+	// case "bbyYrRoo":
+	// 	geneString = "Brown";
+	// 	break;
+	// case "bbyYrROO":
+	// 	geneString = "Brown";
+	// 	break;
+	// case "bBYYrroo":
+	// 	geneString = "Sienna";
+	// 	break;
+	// case "bbYYrROO":
+	// 	geneString = "Sienna";
+	// 	break;
+	// case "bbyYRRoO":
+	// 	geneString = "Tan";
+	// 	break;
+	// case "BByYrroo":
+	// 	geneString = "BurlyWood";
+	// 	break;
+	// case "bbYYRRoO":
+	// 	geneString = "RosyBrown";
+	// 	break;
+	// case "bbyYRROO":
+	// 	geneString = "SandyBrown";
+	// 	break;
+	// case "bbyYRRoo":
+	// 	geneString = "DarkGoldenRod";
+	// 	break;
+	// case "BBYYrroo":
+	// 	geneString = "Tan";
+	// 	break;
+	// case "BByyrroo":
+	// 	geneString = "BurlyWood";
+	// 	break;
+	// case "bbYYRROO":
+	// 	geneString = "BlanchedAlmond";
+	// 	break;
+	// case "bbYYRRoo":
+	// 	geneString = "Cornsilk";
+	// 	break;
+	// case "bByyrrOO":
+	// 	geneString = "BlueViolet";
+	// 	break;
+	// case "bByYrroO":
+	// 	geneString = "SlateBlue";
+	// 	break;
+	// case "bByYrrOO":
+	// 	geneString = "Indigo";
+	// 	break;
+	// case "BByYrroO":
+	// 	geneString = "RoyalBlue";
+	// 	break;
+	// case "BBYYrroO":
+	// 	geneString = "BlueViolet";
+	// 	break;
+	// case "BByYrrOO":
+	// 	geneString = "BlueViolet";
+	// 	break;
+	// case "BByyrroO":
+	// 	geneString = "BlueViolet";
+	// 	break;
+	// case "BBYYrrOO":
+	// 	geneString = "BlueViolet";
+	// 	break;
+	// case "BByyrrOO":
+	// 	geneString = "MediumPurple";
+	// 	break;
+	// case "bByyRRoO":
+	// 	geneString = "SteelBlue";
+	// 	break;
+	// case "bByyRROO":
+	// 	geneString = "SkyBlue";
+	// 	break;
+	// case "bByyRRoo":
+	// 	geneString = "DodgerBlue";
+	// 	break;
+	// case "bByYRRoO":
+	// 	geneString = "Blue";
+	// 	break;
+	// case "bByYRRoo":
+	// 	geneString = "RoyalBlue";
+	// 	break;
+	// case "BBYYrROO":
+	// 	geneString = "Navy";
+	// 	break;
+	// default:
+	// 	return "INVALID COLOR";
+	// }
 	
-	return geneString; 
+	return geneObject; 
 };
 
 /**
@@ -1841,7 +1863,7 @@ Genome.prototype.getEyeColor = function() {
  *
  * @return String
  */
-Genome.prototype.getCoatColorString = function() {
+Genome.prototype.getCoatColorObject = function() {
 	return this.getGeneColor(17);
 }
 
@@ -1850,7 +1872,7 @@ Genome.prototype.getCoatColorString = function() {
  *
  * @return String
  */
-Genome.prototype.getManeColorString = function() {
+Genome.prototype.getManeColorObject = function() {
 	return this.getGeneColor(22);
 }
 
@@ -1859,7 +1881,7 @@ Genome.prototype.getManeColorString = function() {
  *
  * @return String
  */
-Genome.prototype.getEyeColorString = function() {
+Genome.prototype.getEyeColorObject = function() {
 	return this.getGeneColor(27);
 }
 

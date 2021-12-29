@@ -1,4 +1,4 @@
-window.NameList = {
+window.nameList = {
 	"gender": {
 		"Neutral": [
 			"Monday",

@@ -22,7 +22,6 @@ $( document ).ready(function() {
     /* Render info for traits */
     $('.info-toggle').on("click", function (e) {
       let $target = $(e.target);
-      console.log($target);
       if(!$(this).hasClass('info-active')) {
         const $infoContainer = $('.info-container');
         $(this).addClass('info-active');
@@ -82,7 +81,6 @@ $( document ).ready(function() {
       let text_color;
       let text_filter;
 
-      console.log(luminance)
       if (luminance > 128) {
         text_color = "black";
         text_filter = 'invert(0%) sepia(0%) saturate(0%) hue-rotate(324deg) brightness(96%) contrast(104%)';

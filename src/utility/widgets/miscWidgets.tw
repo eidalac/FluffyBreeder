@@ -363,7 +363,7 @@
 				<</button>>
 				<span id="textbox-error"></span>
 				<br>
-				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ Namelist</label>
+				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ nameList</label>
 
 	        	</div>      	
         	</div>
@@ -789,7 +789,6 @@
 			<<run $globalFluffies[_id].gender != $activeFluffy.gender ? $filterFluffies.push($globalFluffies[_id]) : console.log()>>
 		<</if>>
 	<</for>>
-	<<run console.log($fluffyFilters)>>
 
 	/* Check for filters */
 	<<if $fluffyFilters.breed != false>>
@@ -830,10 +829,6 @@
 	<<if $fluffyFilters.eyes != false>>
 		<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.colorGroup[2] == $fluffyFilters.eyes)>>
 	<</if>>
-	<<run console.log($filterFluffies)>>
+
 	<<replace "#fluffy-list">><<FluffyList _type $filterFluffies>><</replace>>
 <</widget>>
-
-<<script>>
-	JSColor.install();
-<</script>>

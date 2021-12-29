@@ -55,6 +55,7 @@ Save.onLoad.add(function (save)
     }
   }
 });
+
 /* ----- Utility ----- */
 
 window.renderInfo = function(e) {
@@ -250,4 +251,46 @@ window.removeTitle = function (event) {
     title = title && title != 0 ? title : $(this).find('span').html().replace(icon, '');
     $(this).html(`<span data-title="${title}">${title}</span> <i class="fa fa-caret-down"></i>`)
   })
+}
+
+window.hexToFilter = function (hex) {
+  if(typeof hex === 'string') {
+    const rgb = hexToRgb(hex);
+    if (rgb.length !== 3) {
+      alert('Invalid format!');
+      return;
+    }
+    const color = new Color(rgb[0], rgb[1], rgb[2]);
+    const solver = new Solver(color);
+    const result = solver.solve();
+    return result.filter;
+  } else {
+    console.log("DEBUG: Hex is not a string:", hex)
+  }
+}
+
+window.hexToHSL = function (hex) {
+  const rgb = hexToRgb(hex);
+  let [r, g, b] = [rgb[0], rgb[1], rgb[2]]
+  r /= 255;
+  g /= 255;
+  b /= 255;
+  const l = Math.max(r, g, b);
+  const s = l - Math.min(r, g, b);
+  const h = s
+    ? l === r
+      ? (g - b) / s
+      : l === g
+      ? 2 + (b - r) / s
+      : 4 + (r - g) / s
+    : 0;
+  return [
+    60 * h < 0 ? 60 * h + 360 : 60 * h,
+    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+    (100 * (2 * l - s)) / 2,
+  ];
+};
+
+window.inRange = function(x, min, max) {
+  return ((x-min)*(x-max) <= 0);
 }
