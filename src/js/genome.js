@@ -308,12 +308,12 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 
 	if (prototypeF.length != this.length)
 	{
-		console.log("ERROR: Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
+		console.log(`ERROR: Genome breedWithGenome: mother gene length incorrect, reset to default gene. ${prototypeF.length} != ${this.length}`);
 		this.genes = prototypeF.genes;
 	}
 	else if (prototypeM.length != other_genome.length)
 	{
-		console.log("ERROR: Genome breedWithGenome: father gene length incorrect, reset to default gene.");
+		console.log(`ERROR: Genome breedWithGenome: father gene length incorrect, reset to default gene. ${prototypeM.length} != ${other_genome.length}`);
 		other_genome = prototypeM;
 	}
 

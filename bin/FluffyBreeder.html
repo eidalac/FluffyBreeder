@@ -10660,12 +10660,12 @@ Genome.prototype.breedWithGenome = function(other_genome) {
 
 	if (prototypeF.length != this.length)
 	{
-		console.log("ERROR: Genome breedWithGenome: mother gene length incorrect, reset to default gene.");
+		console.log(`ERROR: Genome breedWithGenome: mother gene length incorrect, reset to default gene. ${prototypeF.length} != ${this.length}`);
 		this.genes = prototypeF.genes;
 	}
 	else if (prototypeM.length != other_genome.length)
 	{
-		console.log("ERROR: Genome breedWithGenome: father gene length incorrect, reset to default gene.");
+		console.log(`ERROR: Genome breedWithGenome: father gene length incorrect, reset to default gene. ${prototypeM.length} != ${other_genome.length}`);
 		other_genome = prototypeM;
 	}
 
@@ -16415,6 +16415,16 @@ Save.onLoad.add(function (save)
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
     {
       save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
+    }
+
+    const expected_length = save.state.history[save.state.index].variables.grandfatherGene.length;
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].geneString.length < expected_length)
+    {
+      console.log(`DEBUG: onLoad: appending genenome ID ${save.state.history[save.state.index].variables.globalFluffies[i].ID}`);
+      var addStr = save.state.history[save.state.index].variables.grandfatherGene.subString(save.state.history[save.state.index].variables.globalFluffies[i].geneString.length);
+      console.log(`DEBUG: onLoad: appending genenome is ${addStr}`);
+
+      save.state.history[save.state.index].variables.globalFluffies[i].geneString += addStr;
     }
 
     // Set coat information if missing:
@@ -26223,7 +26233,7 @@ Subspecies:
             &lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
             &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
             &lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
-            &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60)&gt;&gt;
+            &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60))&gt;&gt;
 
             &lt;&lt;limitColor 1 2&gt;&gt;
         &lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
@@ -26268,7 +26278,7 @@ Subspecies:
                 /* breeder fluffies always have a name */
                 &lt;&lt;fetchName&gt;&gt;
                 &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-                &lt;&lt;set $activeFluffy.furStage = Number(random(90, 180)&gt;&gt;
+                &lt;&lt;set $activeFluffy.furStage = Number(random(90, 180))&gt;&gt;
             &lt;&lt;/if&gt;&gt;
             /* generate adult traits */
             &lt;&lt;switch random(0,4)&gt;&gt;
