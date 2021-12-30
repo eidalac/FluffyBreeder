@@ -330,10 +330,10 @@
 
 	/* Fertility, always add this */
 	<<if _defectStack.includes("Fertility")>>
-		<<set $activeFluffy.fertility -= _defectLevel>>
+		<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) - Number(random(1, _defectMaxLevel)))>>
 		<<run _defectStack.delete("Fertility")>>
 	<<elseif _traitStack.includes("Fertility")>>
-		<<set $activeFluffy.fertility += _traitLevel>>
+		<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) + Number(random(1, _traitMaxLevel)))
 		<<run _traitStack.delete("Fertility")>>
 	<</if>>
 
@@ -753,7 +753,8 @@
 				<</switch>>
 		<</switch>>
 	<</for>>
-
+	
+	<<clampValues>>
 
 <</widget>>
 

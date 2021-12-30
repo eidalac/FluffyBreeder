@@ -1563,25 +1563,85 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 
 	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
 
-	hexOne = Number(Number(hexOne) * 1.9).toFixed(0);
-	hexTwo = Number(Number(hexTwo) * 1.7).toFixed(0);
-	hexThree = Number(Number(hexThree) * 1.4).toFixed(0);
-/*
+	var dif = 0;
+
 	if (oFactor === "oO")
 	{
-		hexOne = Number(Number(hexOne) - Number(Number(Number(hexOne) - Number(102)) / Number(5)).toFixed(0));
-		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(0)) / Number(5)).toFixed(0));
-		hexThree = Number(Number(hexThree) - Number(Number(Number(hexThree) - Number(48)) / Number(5)).toFixed(0));
+		/*
+		if (hexOne < 102)
+		{
+			dif = Number(Number(102) - Number(hexOne));
+			dif = Number(Number(dif) / Number(2)).toFixed(2);
+			hexOne = Number(Number(hexOne) + Number(dif)).toFixed(0);
+		}
+		else
+		{
+			dif = Number(Number(hexOne) - Number(102));
+			dif = Number(Number(dif) / Number(2)).toFixed(2);
+			hexOne = Number(Number(hexOne) - Number(dif)).toFixed(0);
+		}
+
+		if (hexTwo > 0)
+		{
+			dif = Number(Number(hexTwo) / Number(2)).toFixed(2);
+			hexTwo = Number(Number(hexTwo) - Number(dif)).toFixed(0);
+		}
+
+		if (hexThree < 48)
+		{
+			dif = Number(Number(48) - Number(hexThree));
+			dif = Number(Number(dif) / Number(2)).toFixed(2);
+			hexThree = Number(Number(hexThree) + Number(dif)).toFixed(0);
+		}
+		else
+		{
+			dif = Number(Number(hexThree) - Number(48));
+			dif = Number(Number(dif) / Number(2)).toFixed(2);
+			hexThree = Number(Number(hexThree) - Number(dif)).toFixed(0);
+		}
+		*/
 	}
 	else if (oFactor === "oo")
 	{
-		hexOne = Number(Number(hexOne) - Number(Number(Number(hexOne) - Number(102)) / Number(3)).toFixed(0));
-		hexTwo = Number(Number(hexTwo) - Number(Number(Number(hexTwo) - Number(0)) / Number(3)).toFixed(0));
-		hexThree = Number(Number(hexThree) - Number(Number(Number(hexThree) - Number(48)) / Number(3)).toFixed(0));
+		if (hexOne < 102)
+		{
+			dif = Number(Number(102) - Number(hexOne));
+			dif = Number(Number(dif) / Number(6)).toFixed(2);
+			hexOne = Number(Number(hexOne) + Number(dif)).toFixed(0);
+		}
+		else
+		{
+			dif = Number(Number(hexOne) - Number(102));
+			dif = Number(Number(dif) / Number(6)).toFixed(2);
+			hexOne = Number(Number(hexOne) - Number(dif)).toFixed(0);
+		}
+
+		if (hexTwo > 0)
+		{
+			dif = Number(Number(hexTwo) / Number(6)).toFixed(2);
+			hexTwo = Number(Number(hexTwo) - Number(dif)).toFixed(0);
+		}
+
+		if (hexThree < 48)
+		{
+			dif = Number(Number(48) - Number(hexThree));
+			dif = Number(Number(dif) / Number(6)).toFixed(2);
+			hexThree = Number(Number(hexThree) + Number(dif)).toFixed(0);
+		}
+		else
+		{
+			dif = Number(Number(hexThree) - Number(48));
+			dif = Number(Number(dif) / Number(6)).toFixed(2);
+			hexThree = Number(Number(hexThree) - Number(dif)).toFixed(0);
+		}
 	}
 	
 	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
-*/
+
+	hexOne = Number(Number(hexOne) * 1.9).toFixed(0);
+	hexTwo = Number(Number(hexTwo) * 1.7).toFixed(0);
+	hexThree = Number(Number(hexThree) * 1.4).toFixed(0);
+
 	hexOne = Math.clamp(hexOne, 0, 255);
 	hexTwo = Math.clamp(hexTwo, 0, 255);
 	hexThree = Math.clamp(hexThree, 0, 255);
