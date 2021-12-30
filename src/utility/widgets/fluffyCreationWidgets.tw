@@ -243,7 +243,6 @@
 				<</switch>>
 			<</if>>
 		<</switch>>
-
 	<<else>>
 		<br><br>@@.red; newFromGene called with no gene.@@<br><br>
 	<</if>>
@@ -256,506 +255,511 @@
  *	Set genetic traits on $activeFluffy
  *** */
 <<widget "setGeneTraits">>
+	<<if ndef _args>>
+		<<run console.log(`ERROR: <<setGeneTraits>>: called with no args.`)>>
+	<<else>>
+		<<set $activeFluffy = $globalFluffies[_args[0].ID]>>
 
-	/* 3 possible 'misc' defects (used to rate general defect severity)*/
-	<<set _defectMaxLevel = 1>>
-	<<set _defectCount = 0>>
-	<<set _defectStack = []>>
+		/* 3 possible 'misc' defects (used to rate general defect severity)*/
+		<<set _defectMaxLevel = 1>>
+		<<set _defectCount = 0>>
+		<<set _defectStack = []>>
 
-	<<set _traitMaxLevel = 1>>
-	<<set _traitCount = 0>>
-	<<set _traitStack = []>>
+		<<set _traitMaxLevel = 1>>
+		<<set _traitCount = 0>>
+		<<set _traitStack = []>>
 
-	<<set _testGene = "">>
-	<<set _gene = 0>>
-
-	/* First count the "W/W" genes, which we use to check the trait levels */
-	<<for _gene = 84; _gene <= 124; _gene += 20>>
 		<<set _testGene = "">>
-		<<set _testGene += $activeFluffy.geneString.substring(_gene, _gene+1)>>
-		<<set _testGene += $activeFluffy.geneString.substring(_gene+2,_gene+3)>>
+		<<set _gene = 0>>
 
-		<<if _testGene === _testGene.toLowerCase()>>
-			<<set _defectMaxLevel++>>
-		<<elseif _testGene === _testGene.toUpperCase()>>
-			<<set _traitMaxLevel++>>
-		<</if>>
+		/* First count the "W/W" genes, which we use to check the trait levels */
+		<<for _gene = 84; _gene <= 124; _gene += 20>>
+			<<set _testGene = "">>
+			<<set _testGene += $activeFluffy.geneString.substring(_gene, _gene+1)>>
+			<<set _testGene += $activeFluffy.geneString.substring(_gene+2,_gene+3)>>
 
-		<<run console.log(`DEBUG: setGeneTraits: ${_gene} _defectMaxLevel = ${_defectMaxLevel}, _traitMaxLevel = ${_traitMaxLevel}.`)>>
-	<</for>>
+			<<if _testGene === _testGene.toLowerCase()>>
+				<<set _defectMaxLevel++>>
+			<<elseif _testGene === _testGene.toUpperCase()>>
+				<<set _traitMaxLevel++>>
+			<</if>>
 
-	<<set _traitIndex = [
-		{ gene: 12, name: "Leg" },
-		{ gene: 20, name: "Lung" },
-		{ gene: 28, name: "Weight" },
-		{ gene: 36, name: "Heart" },
-		{ gene: 44, name: "Fertility" },
-		{ gene: 52, name: "Growth" },
-		{ gene: 80, name: "Stomach" },
-		{ gene: 100, name: "Mental" },
-		{ gene: 120, name: "Eye" }
-	] >>
+			<<run console.log(`DEBUG: setGeneTraits: ${_gene} _defectMaxLevel = ${_defectMaxLevel}, _traitMaxLevel = ${_traitMaxLevel}.`)>>
+		<</for>>
 
-	<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex.length}.`)>>
-	<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex}.`)>>
+		<<set _traitIndex = [
+			{ gene: 12, name: "Leg" },
+			{ gene: 20, name: "Lung" },
+			{ gene: 28, name: "Weight" },
+			{ gene: 36, name: "Heart" },
+			{ gene: 44, name: "Fertility" },
+			{ gene: 52, name: "Growth" },
+			{ gene: 80, name: "Stomach" },
+			{ gene: 100, name: "Mental" },
+			{ gene: 120, name: "Eye" }
+		] >>
 
-	<<for _index range _traitIndex>>
+		<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex.length}.`)>>
+		<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex}.`)>>
 
-		<<run console.log(`DEBUG: setGeneTraits: _index ${_index}.`)>>
-	
-		<<set _gene = _index.gene>>
-		<<set _testGene = "">>
-		<<set _testGene += $activeFluffy.geneString.substring(_gene, _gene+1)>>
-		<<set _testGene += $activeFluffy.geneString.substring(_gene+2,_gene+3)>>
+		<<for _index range _traitIndex>>
 
-		<<if _testGene === _testGene.toLowerCase()>>
-			<<run _defectStack.push(_index.name)>>
-		<<elseif _testGene === _testGene.toUpperCase()>>
-			<<run _traitStack.push(_index.name)>>
-		<</if>>
-	<</for>>
-
-	/* Inbreeding; always add this */
-	<<set _inbreed = $activeFluffy.geneString.substring(168).split('/')>>
-	<<if Number(_inbreed[0]) == Number(_inbreed[1])>>
-		<<addTrait "Inbred" $activeFluffy>>
-		<<set $activeFluffy.strength -= _defectLevel>>
-		<<set $activeFluffy.energy -= _defectLevel>>
-		<<set $activeFluffy.charm -= _defectLevel>>
-		<<set $activeFluffy.thinking -= _defectLevel>>
-		<<set $activeFluffy.learning -= _defectLevel>>
-		<<set _defectLevel++>>
-		<<set _defectCount++>>
-	<</if>>
-
-	/* Fertility, always add this */
-	<<if _defectStack.includes("Fertility")>>
-		<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) - Number(random(1, _defectMaxLevel)))>>
-		<<run _defectStack.delete("Fertility")>>
-	<<elseif _traitStack.includes("Fertility")>>
-		<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) + Number(random(1, _traitMaxLevel)))
-		<<run _traitStack.delete("Fertility")>>
-	<</if>>
-
-	/* Now, pull random things from our stacks of traits and add them: */
-	<<for _defectStack.length > 0>>
-		/* Pluck a random one: */
-		<<run _thisDefect = _defectStack.pluck()>>
-
-		/* Randomize level: */
-		<<set _defectLevel = random(1, _defectMaxLevel)>>
-
-		/* reduce the odds for each existing defect: */
-		<<if _defectCount > 4 && random(0,100) <= 12>>
-			<<continue>>
-		<<elseif _defectCount > 3  && random(0,100) <= 25>>
-			<<continue>>
-		<<elseif _defectCount > 2 && random(0,100) <= 50>>
-			<<continue>>
-		<<elseif _defectCount > 1 && random(0,100) <= 75>>
-			<<continue>>
-		<</if>>
-
-		/* Increment the count: */
-		<<set _defectCount++>>
-
-		<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisDefect} defect at level ${_defectLevel}.`)>>
-
-		<<switch _thisDefect>>
-			<<case "Leg">>
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Slow" $activeFluffy>>
-						<<set $activeFluffy.energy-->>
-					<<case 2>>
-						<<addTrait "Limp" $activeFluffy>>
-						<<set $activeFluffy.energy -= 2>>
-						<<set $activeFluffy.strength -= 1>>
-					<<case 3>>
-						<<addTrait "Lame" $activeFluffy>>
-						<<set $activeFluffy.energy  -= 3>>
-						<<set $activeFluffy.strength -= 1>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Crippled" $activeFluffy>>
-						<<set $activeFluffy.energy -= 4>>
-						<<set $activeFluffy.strength -= 2>>
-						<<set $activeFluffy.charm -= 2>>
-					<</switch>>
-			<<case "Lung">>
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Breathless" $activeFluffy>>
-						<<set $activeFluffy.energy-->>
-						<<set $activeFluffy.strength-->>
-					<<case 2>>
-						<<addTrait "Bronchitis" $activeFluffy>>
-						<<set $activeFluffy.energy -= 2>>
-						<<set $activeFluffy.strength -= 2>>
-						<<set $activeFluffy.charm -= 1>>
-					<<case 3>>
-						<<addTrait "Asthmatic" $activeFluffy>>
-						<<set $activeFluffy.energy  -= 3>>
-						<<set $activeFluffy.strength -= 3>>
-						<<set $activeFluffy.charm -= 2>>
-					<<default>>
-						<<addTrait "Lung Cancer" $activeFluffy>>
-						<<set $activeFluffy.energy -= 4>>
-						<<set $activeFluffy.strength -= 4>>
-						<<set $activeFluffy.charm -= 3>>
-				<</switch>>
-
-			<<case "Weight">>
-				<<set _multiplier = Number(Number(10 + _defectLevel) / 10).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Chubby" $activeFluffy>>
-						<<set $activeFluffy.energy-->>
-					<<case 2>>
-						<<addTrait "Overweight" $activeFluffy>>
-						<<set $activeFluffy.energy -= 2>>
-						<<set $activeFluffy.strength -= 1>>
-					<<case 3>>
-						<<addTrait "Fat" $activeFluffy>>
-						<<set $activeFluffy.energy  -= 3>>
-						<<set $activeFluffy.strength -= 1>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Obese" $activeFluffy>>
-						<<set $activeFluffy.energy -= 4>>
-						<<set $activeFluffy.strength -= 2>>
-						<<set $activeFluffy.charm -= 2>>
-				<</switch>>
-
-			<<case "Heart">>
-				<<set _multiplier = Number(Number(10 + _defectLevel) / 8).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Weak" $activeFluffy>>
-						<<set $activeFluffy.energy -= 2>>
-						<<set $activeFluffy.strength -= 1>>
-					<<case 2>>
-						<<addTrait "Feeble" $activeFluffy>>
-						<<set $activeFluffy.energy -= 3>>
-						<<set $activeFluffy.strength -= 2>>
-					<<case 3>>
-						<<addTrait "Sickly" $activeFluffy>>
-						<<set $activeFluffy.energy -= 4>>
-						<<set $activeFluffy.strength -= 3>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Anemic" $activeFluffy>>
-						<<set $activeFluffy.energy -= 4>>
-						<<set $activeFluffy.strength -= 4>>
-						<<set $activeFluffy.charm -= 2>>
-				<</switch>>
-
-			<<case "Growth">>
-				<<addTrait "Runt" $activeFluffy>>
-				<<set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)>>
-				<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-
-				<<set $activeFluffy.energy -= Number(_defectLevel)>>
-				<<set $activeFluffy.strength -= Number(_defectLevel)>>
-				<<set $activeFluffy.charm -= Number(_defectLevel)>>
-
-			<<case "Stomach">>
-				<<set _multiplier = Number(Number(10 - _defectLevel) / 8).toFixed(2)>>
-	
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-				
-				<<set $activeFluffy.energy -= _defectLevel>>
-
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Delicate" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 1>>
-						<<set $activeFluffy.learning -= 1>>
-					<<case 2>>
-						<<addTrait "Nauseous" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 2>>
-						<<set $activeFluffy.learning -= 2>>
-						<<set $activeFluffy.charm -= 1>>
-					<<case 3>>
-						<<addTrait "Ulcers" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 3>>
-						<<set $activeFluffy.learning -= 3>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Appendicitis" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 4>>
-						<<set $activeFluffy.learning -= 4>>
-						<<set $activeFluffy.charm -= 2>>
-				<</switch>>
-
-			<<case "Mental">>
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Silly" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 1>>
-						<<set $activeFluffy.learning -= 1>>
-					<<case 2>>
-						<<addTrait "Simple" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 2>>
-						<<set $activeFluffy.learning -= 2>>
-						<<set $activeFluffy.charm -= 1>>
-					<<case 3>>
-						<<addTrait "Moron" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 3>>
-						<<set $activeFluffy.learning -= 3>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Imbecile" $activeFluffy>>
-						<<set $activeFluffy.thinking -= 4>>
-						<<set $activeFluffy.learning -= 4>>
-						<<set $activeFluffy.charm -= 2>>
-				<</switch>>
-
-			<<default>> /* eye */
-				<<switch _defectLevel>>
-					<<case 1>>
-						<<addTrait "Nearsighted" $activeFluffy>>
-						<<set $activeFluffy.learning -= 1>>
-					<<case 2>>
-						<<addTrait "Colourblind" $activeFluffy>>
-						<<set $activeFluffy.learning -= 2>>
-						<<set $activeFluffy.energy -= 1>>
-					<<case 3>>
-						<<addTrait "Near-Blind" $activeFluffy>>
-						<<set $activeFluffy.energy -= 2>>
-						<<set $activeFluffy.learning -= 3>>
-						<<set $activeFluffy.charm -= 1>>
-					<<default>>
-						<<addTrait "Blind" $activeFluffy>>
-						<<set $activeFluffy.energy -= 3>>
-						<<set $activeFluffy.learning -= 4>>
-						<<set $activeFluffy.charm -= 2>>
-				<</switch>>
-		<</switch>>
-	<</for>>
-
-	<<for _traitStack.length > 0>>
-		/* Pluck a random one: */
-		<<run _thisTrait = _traitStack.pluck()>>
-
-		/* Randomize level: */
-		<<set _traitLevel = random(1, _traitMaxLevel)>>
-
-		/* reduce the odds for each existing defect: */
-		<<if _traitCount > 4 && random(0,100) <= 12>>
-			<<continue>>
-		<<elseif _traitCount > 3  && random(0,100) <= 25>>
-			<<continue>>
-		<<elseif _traitCount > 2 && random(0,100) <= 50>>
-			<<continue>>
-		<<elseif _traitCount > 1 && random(0,100) <= 75>>
-			<<continue>>
-		<</if>>
-
-		/* Increment the count: */
-		<<set _traitCount++>>
-
-		<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisTrait} defect at level ${_traitCount}.`)>>
+			<<run console.log(`DEBUG: setGeneTraits: _index ${_index}.`)>>
 		
-		<<switch _thisTrait>>
-			<<case "Leg">>
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Fast1" $activeFluffy>>
-						<<set $activeFluffy.energy++>>
-					<<case 2>>
-						<<addTrait "Fast2" $activeFluffy>>
-						<<set $activeFluffy.energy += 2>>
-						<<set $activeFluffy.strength += 1>>
-					<<case 3>>
-						<<addTrait "Fast3" $activeFluffy>>
-						<<set $activeFluffy.energy  += 3>>
-						<<set $activeFluffy.strength += 1>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Fast4" $activeFluffy>>
-						<<set $activeFluffy.energy += 4>>
-						<<set $activeFluffy.strength += 2>>
-						<<set $activeFluffy.charm += 2>>
+			<<set _gene = _index.gene>>
+			<<set _testGene = "">>
+			<<set _testGene += $activeFluffy.geneString.substring(_gene, _gene+1)>>
+			<<set _testGene += $activeFluffy.geneString.substring(_gene+2,_gene+3)>>
+
+			<<if _testGene === _testGene.toLowerCase()>>
+				<<run _defectStack.pushUnique(_index.name)>>
+			<<elseif _testGene === _testGene.toUpperCase()>>
+				<<run _traitStack.pushUnique(_index.name)>>
+			<</if>>
+		<</for>>
+
+		/* Inbreeding; always add this */
+		<<set _inbreed = $activeFluffy.geneString.substring(168).split('/')>>
+		<<if Number(_inbreed[0]) == Number(_inbreed[1])>>
+			<<addTrait "Inbred" $activeFluffy>>
+			<<set $activeFluffy.strength -= _defectLevel>>
+			<<set $activeFluffy.energy -= _defectLevel>>
+			<<set $activeFluffy.charm -= _defectLevel>>
+			<<set $activeFluffy.thinking -= _defectLevel>>
+			<<set $activeFluffy.learning -= _defectLevel>>
+			<<set _defectLevel++>>
+			<<set _defectCount++>>
+		<</if>>
+
+		/* Fertility, always add this */
+		<<if _defectStack.includes("Fertility")>>
+			<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) - Number(random(1, _defectMaxLevel)))>>
+			<<run _defectStack.delete("Fertility")>>
+		<<elseif _traitStack.includes("Fertility")>>
+			<<set $activeFluffy.fertility = Number(Number($activeFluffy.fertility) + Number(random(1, _traitMaxLevel)))>>
+			<<run _traitStack.delete("Fertility")>>
+		<</if>>
+
+		/* Now, pull random things from our stacks of traits and add them: */
+		<<for _defectStack.length > 0>>
+			/* Pluck a random one: */
+			<<run _thisDefect = _defectStack.pluck()>>
+
+			/* Randomize level: */
+			<<set _defectLevel = random(1, _defectMaxLevel)>>
+
+			/* reduce the odds for each existing defect: */
+			<<if _defectCount > 4 && random(0,100) <= 12>>
+				<<continue>>
+			<<elseif _defectCount > 3  && random(0,100) <= 25>>
+				<<continue>>
+			<<elseif _defectCount > 2 && random(0,100) <= 50>>
+				<<continue>>
+			<<elseif _defectCount > 1 && random(0,100) <= 75>>
+				<<continue>>
+			<</if>>
+
+			/* Increment the count: */
+			<<set _defectCount++>>
+
+			<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisDefect} defect at level ${_defectLevel}.`)>>
+
+			<<switch _thisDefect>>
+				<<case "Leg">>
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Slow" $activeFluffy>>
+							<<set $activeFluffy.energy-->>
+						<<case 2>>
+							<<addTrait "Limp" $activeFluffy>>
+							<<set $activeFluffy.energy -= 2>>
+							<<set $activeFluffy.strength -= 1>>
+						<<case 3>>
+							<<addTrait "Lame" $activeFluffy>>
+							<<set $activeFluffy.energy  -= 3>>
+							<<set $activeFluffy.strength -= 1>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Crippled" $activeFluffy>>
+							<<set $activeFluffy.energy -= 4>>
+							<<set $activeFluffy.strength -= 2>>
+							<<set $activeFluffy.charm -= 2>>
+						<</switch>>
+				<<case "Lung">>
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Breathless" $activeFluffy>>
+							<<set $activeFluffy.energy-->>
+							<<set $activeFluffy.strength-->>
+						<<case 2>>
+							<<addTrait "Bronchitis" $activeFluffy>>
+							<<set $activeFluffy.energy -= 2>>
+							<<set $activeFluffy.strength -= 2>>
+							<<set $activeFluffy.charm -= 1>>
+						<<case 3>>
+							<<addTrait "Asthmatic" $activeFluffy>>
+							<<set $activeFluffy.energy  -= 3>>
+							<<set $activeFluffy.strength -= 3>>
+							<<set $activeFluffy.charm -= 2>>
+						<<default>>
+							<<addTrait "Lung Cancer" $activeFluffy>>
+							<<set $activeFluffy.energy -= 4>>
+							<<set $activeFluffy.strength -= 4>>
+							<<set $activeFluffy.charm -= 3>>
 					<</switch>>
-			<<case "Lung">>
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Lung1" $activeFluffy>>
-						<<set $activeFluffy.energy++>>
-						<<set $activeFluffy.strength++>>
-					<<case 2>>
-						<<addTrait "Lung2" $activeFluffy>>
-						<<set $activeFluffy.energy += 2>>
-						<<set $activeFluffy.strength += 2>>
-						<<set $activeFluffy.charm += 1>>
-					<<case 3>>
-						<<addTrait "Lung3" $activeFluffy>>
-						<<set $activeFluffy.energy  += 3>>
-						<<set $activeFluffy.strength += 3>>
-						<<set $activeFluffy.charm += 2>>
-					<<default>>
-						<<addTrait "Lung4" $activeFluffy>>
-						<<set $activeFluffy.energy += 4>>
-						<<set $activeFluffy.strength += 4>>
-						<<set $activeFluffy.charm += 3>>
-				<</switch>>
 
-			<<case "Weight">>
-				<<set _multiplier = Number(Number(10 - _traitLevel) / 10).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+				<<case "Weight">>
+					<<set _multiplier = Number(Number(10 + _defectLevel) / 10).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
 
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Weight1" $activeFluffy>>
-						<<set $activeFluffy.energy++>>
-					<<case 2>>
-						<<addTrait "Weight2" $activeFluffy>>
-						<<set $activeFluffy.energy += 2>>
-						<<set $activeFluffy.strength += 1>>
-					<<case 3>>
-						<<addTrait "Weight3" $activeFluffy>>
-						<<set $activeFluffy.energy  += 3>>
-						<<set $activeFluffy.strength += 1>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Weight4" $activeFluffy>>
-						<<set $activeFluffy.energy += 4>>
-						<<set $activeFluffy.strength += 2>>
-						<<set $activeFluffy.charm += 2>>
-				<</switch>>
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Chubby" $activeFluffy>>
+							<<set $activeFluffy.energy-->>
+						<<case 2>>
+							<<addTrait "Overweight" $activeFluffy>>
+							<<set $activeFluffy.energy -= 2>>
+							<<set $activeFluffy.strength -= 1>>
+						<<case 3>>
+							<<addTrait "Fat" $activeFluffy>>
+							<<set $activeFluffy.energy  -= 3>>
+							<<set $activeFluffy.strength -= 1>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Obese" $activeFluffy>>
+							<<set $activeFluffy.energy -= 4>>
+							<<set $activeFluffy.strength -= 2>>
+							<<set $activeFluffy.charm -= 2>>
+					<</switch>>
 
-			<<case "Heart">>
-				<<set _multiplier = Number(Number(10 + _traitLevel) / 8).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+				<<case "Heart">>
+					<<set _multiplier = Number(Number(10 + _defectLevel) / 8).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
 
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Heart1" $activeFluffy>>
-						<<set $activeFluffy.energy += 2>>
-						<<set $activeFluffy.strength += 1>>
-					<<case 2>>
-						<<addTrait "Heart2" $activeFluffy>>
-						<<set $activeFluffy.energy += 3>>
-						<<set $activeFluffy.strength += 2>>
-					<<case 3>>
-						<<addTrait "Heart3" $activeFluffy>>
-						<<set $activeFluffy.energy += 4>>
-						<<set $activeFluffy.strength += 3>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Heart4" $activeFluffy>>
-						<<set $activeFluffy.energy += 4>>
-						<<set $activeFluffy.strength += 4>>
-						<<set $activeFluffy.charm += 2>>
-				<</switch>>
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Weak" $activeFluffy>>
+							<<set $activeFluffy.energy -= 2>>
+							<<set $activeFluffy.strength -= 1>>
+						<<case 2>>
+							<<addTrait "Feeble" $activeFluffy>>
+							<<set $activeFluffy.energy -= 3>>
+							<<set $activeFluffy.strength -= 2>>
+						<<case 3>>
+							<<addTrait "Sickly" $activeFluffy>>
+							<<set $activeFluffy.energy -= 4>>
+							<<set $activeFluffy.strength -= 3>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Anemic" $activeFluffy>>
+							<<set $activeFluffy.energy -= 4>>
+							<<set $activeFluffy.strength -= 4>>
+							<<set $activeFluffy.charm -= 2>>
+					<</switch>>
 
-			<<case "Growth">>
-				<<addTrait "Growth1" $activeFluffy>>
-				<<set _multiplier = Number(Number(10 + _traitLevel) / 10).toFixed(2)>>
-				<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+				<<case "Growth">>
+					<<addTrait "Runt" $activeFluffy>>
+					<<set _multiplier = Number(Number(10 - _defectLevel) / 10).toFixed(2)>>
+					<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
 
-				<<set $activeFluffy.energy += Number(_traitLevel)>>
-				<<set $activeFluffy.strength += Number(_traitLevel)>>
-				<<set $activeFluffy.charm += Number(_traitLevel)>>
+					<<set $activeFluffy.energy -= Number(_defectLevel)>>
+					<<set $activeFluffy.strength -= Number(_defectLevel)>>
+					<<set $activeFluffy.charm -= Number(_defectLevel)>>
 
-			<<case "Stomach">>
-				<<set _multiplier = Number(Number(10 + _traitLevel) / 8).toFixed(2)>>
+				<<case "Stomach">>
+					<<set _multiplier = Number(Number(10 - _defectLevel) / 8).toFixed(2)>>
+		
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+					
+					<<set $activeFluffy.energy -= _defectLevel>>
+
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Delicate" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 1>>
+							<<set $activeFluffy.learning -= 1>>
+						<<case 2>>
+							<<addTrait "Nauseous" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 2>>
+							<<set $activeFluffy.learning -= 2>>
+							<<set $activeFluffy.charm -= 1>>
+						<<case 3>>
+							<<addTrait "Ulcers" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 3>>
+							<<set $activeFluffy.learning -= 3>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Appendicitis" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 4>>
+							<<set $activeFluffy.learning -= 4>>
+							<<set $activeFluffy.charm -= 2>>
+					<</switch>>
+
+				<<case "Mental">>
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Silly" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 1>>
+							<<set $activeFluffy.learning -= 1>>
+						<<case 2>>
+							<<addTrait "Simple" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 2>>
+							<<set $activeFluffy.learning -= 2>>
+							<<set $activeFluffy.charm -= 1>>
+						<<case 3>>
+							<<addTrait "Moron" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 3>>
+							<<set $activeFluffy.learning -= 3>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Imbecile" $activeFluffy>>
+							<<set $activeFluffy.thinking -= 4>>
+							<<set $activeFluffy.learning -= 4>>
+							<<set $activeFluffy.charm -= 2>>
+					<</switch>>
+
+				<<default>> /* eye */
+					<<switch _defectLevel>>
+						<<case 1>>
+							<<addTrait "Nearsighted" $activeFluffy>>
+							<<set $activeFluffy.learning -= 1>>
+						<<case 2>>
+							<<addTrait "Colourblind" $activeFluffy>>
+							<<set $activeFluffy.learning -= 2>>
+							<<set $activeFluffy.energy -= 1>>
+						<<case 3>>
+							<<addTrait "Near-Blind" $activeFluffy>>
+							<<set $activeFluffy.energy -= 2>>
+							<<set $activeFluffy.learning -= 3>>
+							<<set $activeFluffy.charm -= 1>>
+						<<default>>
+							<<addTrait "Blind" $activeFluffy>>
+							<<set $activeFluffy.energy -= 3>>
+							<<set $activeFluffy.learning -= 4>>
+							<<set $activeFluffy.charm -= 2>>
+					<</switch>>
+			<</switch>>
+		<</for>>
+
+		<<for _traitStack.length > 0>>
+			/* Pluck a random one: */
+			<<run _thisTrait = _traitStack.pluck()>>
+
+			/* Randomize level: */
+			<<set _traitLevel = random(1, _traitMaxLevel)>>
+
+			/* reduce the odds for each existing defect: */
+			<<if _traitCount > 4 && random(0,100) <= 12>>
+				<<continue>>
+			<<elseif _traitCount > 3  && random(0,100) <= 25>>
+				<<continue>>
+			<<elseif _traitCount > 2 && random(0,100) <= 50>>
+				<<continue>>
+			<<elseif _traitCount > 1 && random(0,100) <= 75>>
+				<<continue>>
+			<</if>>
+
+			/* Increment the count: */
+			<<set _traitCount++>>
+
+			<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisTrait} defect at level ${_traitCount}.`)>>
+			
+			<<switch _thisTrait>>
+				<<case "Leg">>
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Fast1" $activeFluffy>>
+							<<set $activeFluffy.energy++>>
+						<<case 2>>
+							<<addTrait "Fast2" $activeFluffy>>
+							<<set $activeFluffy.energy += 2>>
+							<<set $activeFluffy.strength += 1>>
+						<<case 3>>
+							<<addTrait "Fast3" $activeFluffy>>
+							<<set $activeFluffy.energy  += 3>>
+							<<set $activeFluffy.strength += 1>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Fast4" $activeFluffy>>
+							<<set $activeFluffy.energy += 4>>
+							<<set $activeFluffy.strength += 2>>
+							<<set $activeFluffy.charm += 2>>
+						<</switch>>
+				<<case "Lung">>
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Lung1" $activeFluffy>>
+							<<set $activeFluffy.energy++>>
+							<<set $activeFluffy.strength++>>
+						<<case 2>>
+							<<addTrait "Lung2" $activeFluffy>>
+							<<set $activeFluffy.energy += 2>>
+							<<set $activeFluffy.strength += 2>>
+							<<set $activeFluffy.charm += 1>>
+						<<case 3>>
+							<<addTrait "Lung3" $activeFluffy>>
+							<<set $activeFluffy.energy  += 3>>
+							<<set $activeFluffy.strength += 3>>
+							<<set $activeFluffy.charm += 2>>
+						<<default>>
+							<<addTrait "Lung4" $activeFluffy>>
+							<<set $activeFluffy.energy += 4>>
+							<<set $activeFluffy.strength += 4>>
+							<<set $activeFluffy.charm += 3>>
+					<</switch>>
+
+				<<case "Weight">>
+					<<set _multiplier = Number(Number(10 - _traitLevel) / 10).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Weight1" $activeFluffy>>
+							<<set $activeFluffy.energy++>>
+						<<case 2>>
+							<<addTrait "Weight2" $activeFluffy>>
+							<<set $activeFluffy.energy += 2>>
+							<<set $activeFluffy.strength += 1>>
+						<<case 3>>
+							<<addTrait "Weight3" $activeFluffy>>
+							<<set $activeFluffy.energy  += 3>>
+							<<set $activeFluffy.strength += 1>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Weight4" $activeFluffy>>
+							<<set $activeFluffy.energy += 4>>
+							<<set $activeFluffy.strength += 2>>
+							<<set $activeFluffy.charm += 2>>
+					<</switch>>
+
+				<<case "Heart">>
+					<<set _multiplier = Number(Number(10 + _traitLevel) / 8).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Heart1" $activeFluffy>>
+							<<set $activeFluffy.energy += 2>>
+							<<set $activeFluffy.strength += 1>>
+						<<case 2>>
+							<<addTrait "Heart2" $activeFluffy>>
+							<<set $activeFluffy.energy += 3>>
+							<<set $activeFluffy.strength += 2>>
+						<<case 3>>
+							<<addTrait "Heart3" $activeFluffy>>
+							<<set $activeFluffy.energy += 4>>
+							<<set $activeFluffy.strength += 3>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Heart4" $activeFluffy>>
+							<<set $activeFluffy.energy += 4>>
+							<<set $activeFluffy.strength += 4>>
+							<<set $activeFluffy.charm += 2>>
+					<</switch>>
+
+				<<case "Growth">>
+					<<addTrait "Growth1" $activeFluffy>>
+					<<set _multiplier = Number(Number(10 + _traitLevel) / 10).toFixed(2)>>
+					<<set $activeFluffy.maxLength = Number($activeFluffy.maxLength * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.length = Number($activeFluffy.length * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.maxHeight = Number($activeFluffy.maxHeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.height = Number($activeFluffy.height * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+
+					<<set $activeFluffy.energy += Number(_traitLevel)>>
+					<<set $activeFluffy.strength += Number(_traitLevel)>>
+					<<set $activeFluffy.charm += Number(_traitLevel)>>
+
+				<<case "Stomach">>
+					<<set _multiplier = Number(Number(10 + _traitLevel) / 8).toFixed(2)>>
+		
+					<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
+					<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
+					
+					<<set $activeFluffy.energy += _traitLevel>>
+
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Stomach1" $activeFluffy>>
+							<<set $activeFluffy.thinking += 1>>
+							<<set $activeFluffy.learning += 1>>
+						<<case 2>>
+							<<addTrait "Stomach2" $activeFluffy>>
+							<<set $activeFluffy.thinking += 2>>
+							<<set $activeFluffy.learning += 2>>
+							<<set $activeFluffy.charm += 1>>
+						<<case 3>>
+							<<addTrait "Stomach3" $activeFluffy>>
+							<<set $activeFluffy.thinking += 3>>
+							<<set $activeFluffy.learning += 3>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Stomach4" $activeFluffy>>
+							<<set $activeFluffy.thinking += 4>>
+							<<set $activeFluffy.learning += 4>>
+							<<set $activeFluffy.charm += 2>>
+					<</switch>>
+
+				<<case "Mental">>
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Mental1" $activeFluffy>>
+							<<set $activeFluffy.thinking += 1>>
+							<<set $activeFluffy.learning += 1>>
+						<<case 2>>
+							<<addTrait "Mental2" $activeFluffy>>
+							<<set $activeFluffy.thinking += 2>>
+							<<set $activeFluffy.learning += 2>>
+							<<set $activeFluffy.charm += 1>>
+						<<case 3>>
+							<<addTrait "Mental3" $activeFluffy>>
+							<<set $activeFluffy.thinking += 3>>
+							<<set $activeFluffy.learning += 3>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Mental4" $activeFluffy>>
+							<<set $activeFluffy.thinking += 4>>
+							<<set $activeFluffy.learning += 4>>
+							<<set $activeFluffy.charm += 2>>
+					<</switch>>
+
+				<<default>> /* eye */
+					<<switch _traitLevel>>
+						<<case 1>>
+							<<addTrait "Eye1" $activeFluffy>>
+							<<set $activeFluffy.learning += 1>>
+						<<case 2>>
+							<<addTrait "Eye2" $activeFluffy>>
+							<<set $activeFluffy.learning += 2>>
+							<<set $activeFluffy.energy += 1>>
+						<<case 3>>
+							<<addTrait "Eye3" $activeFluffy>>
+							<<set $activeFluffy.energy += 2>>
+							<<set $activeFluffy.learning += 3>>
+							<<set $activeFluffy.charm += 1>>
+						<<default>>
+							<<addTrait "Eye4" $activeFluffy>>
+							<<set $activeFluffy.energy += 3>>
+							<<set $activeFluffy.learning += 4>>
+							<<set $activeFluffy.charm += 2>>
+					<</switch>>
+			<</switch>>
+		<</for>>
 	
-				<<set $activeFluffy.maxWeight = Number($activeFluffy.maxWeight * _multiplier).toFixed(2)>>
-				<<set $activeFluffy.weight = Number($activeFluffy.weight * _multiplier).toFixed(2)>>
-				
-				<<set $activeFluffy.energy += _traitLevel>>
+		<<clampValues>>
 
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Stomach1" $activeFluffy>>
-						<<set $activeFluffy.thinking += 1>>
-						<<set $activeFluffy.learning += 1>>
-					<<case 2>>
-						<<addTrait "Stomach2" $activeFluffy>>
-						<<set $activeFluffy.thinking += 2>>
-						<<set $activeFluffy.learning += 2>>
-						<<set $activeFluffy.charm += 1>>
-					<<case 3>>
-						<<addTrait "Stomach3" $activeFluffy>>
-						<<set $activeFluffy.thinking += 3>>
-						<<set $activeFluffy.learning += 3>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Stomach4" $activeFluffy>>
-						<<set $activeFluffy.thinking += 4>>
-						<<set $activeFluffy.learning += 4>>
-						<<set $activeFluffy.charm += 2>>
-				<</switch>>
-
-			<<case "Mental">>
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Mental1" $activeFluffy>>
-						<<set $activeFluffy.thinking += 1>>
-						<<set $activeFluffy.learning += 1>>
-					<<case 2>>
-						<<addTrait "Mental2" $activeFluffy>>
-						<<set $activeFluffy.thinking += 2>>
-						<<set $activeFluffy.learning += 2>>
-						<<set $activeFluffy.charm += 1>>
-					<<case 3>>
-						<<addTrait "Mental3" $activeFluffy>>
-						<<set $activeFluffy.thinking += 3>>
-						<<set $activeFluffy.learning += 3>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Mental4" $activeFluffy>>
-						<<set $activeFluffy.thinking += 4>>
-						<<set $activeFluffy.learning += 4>>
-						<<set $activeFluffy.charm += 2>>
-				<</switch>>
-
-			<<default>> /* eye */
-				<<switch _traitLevel>>
-					<<case 1>>
-						<<addTrait "Eye1" $activeFluffy>>
-						<<set $activeFluffy.learning += 1>>
-					<<case 2>>
-						<<addTrait "Eye2" $activeFluffy>>
-						<<set $activeFluffy.learning += 2>>
-						<<set $activeFluffy.energy += 1>>
-					<<case 3>>
-						<<addTrait "Eye3" $activeFluffy>>
-						<<set $activeFluffy.energy += 2>>
-						<<set $activeFluffy.learning += 3>>
-						<<set $activeFluffy.charm += 1>>
-					<<default>>
-						<<addTrait "Eye4" $activeFluffy>>
-						<<set $activeFluffy.energy += 3>>
-						<<set $activeFluffy.learning += 4>>
-						<<set $activeFluffy.charm += 2>>
-				<</switch>>
-		<</switch>>
-	<</for>>
-	
-	<<clampValues>>
-
+	<</if>>
 <</widget>>
 
 /* ***
@@ -802,11 +806,6 @@
 
 	<<newFromGene $childGene>>
 	
-	/*<<fixColors $activeFluffy>>*/
-	<<colorValue>> 
-	<<colorGroup $activeFluffy>>
-	<<statValue>>
-
 	<<set $activeFluffy.mother = _mom.ID>>
 	<<set $activeFluffy.father = _dad.ID>>
 
@@ -821,6 +820,12 @@
 
 	<<set $activeFluffy.ID = $globalFluffies.length>>
 	<<run $globalFluffies.push($activeFluffy)>>
+
+	/*<<fixColors $activeFluffy>>*/
+	<<setGeneTraits $activeFluffy>>
+	<<colorValue>> 
+	<<colorGroup $activeFluffy>>
+	<<statValue>>
 
 	/* Pick a random child trait:*/
 	<<switch random(0,5)>>
