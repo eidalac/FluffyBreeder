@@ -26087,7 +26087,11 @@ Subspecies:
                 /* 25% chance that wild fluffy is pre-owned */
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; __youngFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                    /* if it&#39;s a previous fluffy, 25% chance to have new name */
+                    &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($activeFluffy)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26110,7 +26114,11 @@ Subspecies:
 
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _femaleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                    /* if it&#39;s a previous fluffy, 25% chance to have new name */
+                    &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $mom.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($mom)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26132,7 +26140,10 @@ Subspecies:
 
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _maleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                    &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $dad.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($dad)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26178,7 +26189,10 @@ Subspecies:
 
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _femaleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                   &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $mom.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($mom)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26200,7 +26214,10 @@ Subspecies:
 
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _maleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                   &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $dad.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($dad)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26272,7 +26289,10 @@ Subspecies:
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _wildFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set _wildFluffy = _wildFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
                     &lt;&lt;set $activeFluffy = _wildFluffy&gt;&gt;
-                    &lt;&lt;set _isWild = true&gt;&gt;
+                    &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($activeFluffy)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -26376,25 +26396,14 @@ Subspecies:
         &lt;&lt;elseif $shop == &quot;feral&quot; || $shop == &quot;mill&quot;&gt;&gt;
             /* young fluffies get no names */
             &lt;&lt;if $activeFluffy.age != 0&gt;&gt;
-                /* if it&#39;s a previous fluffy, 25% chance to have new name */
-                &lt;&lt;if _isWild === true&gt;&gt;
-                    &lt;&lt;switch random(0, 3)&gt;&gt;
-                        &lt;&lt;case 0&gt;&gt;
-                            &lt;&lt;fetchName&gt;&gt;
-                            &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-                        &lt;&lt;case 1 2 3&gt;&gt;
-                            /* nothing */
-                    &lt;&lt;/switch&gt;&gt;
-                &lt;&lt;else&gt;&gt;
                 /* fluffies have a 50% chance to be named */
-                    &lt;&lt;switch random(0, 1)&gt;&gt;
-                        &lt;&lt;case 0&gt;&gt;
-                            &lt;&lt;fetchName&gt;&gt;
-                            &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-                        &lt;&lt;case 1&gt;&gt;
-                            &lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
-                    &lt;&lt;/switch&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
+                &lt;&lt;switch random(0, 1)&gt;&gt;
+                    &lt;&lt;case 0&gt;&gt;
+                        &lt;&lt;fetchName&gt;&gt;
+                        &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                    &lt;&lt;case 1&gt;&gt;
+                        &lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
+                &lt;&lt;/switch&gt;&gt;
             &lt;&lt;/if&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
@@ -26419,16 +26428,15 @@ Subspecies:
             /* shelter sells pre-owned, older, named fluffies */
             &lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
                 /* 25% chance that wild fluffy is pre-owned */
-                &lt;&lt;switch random(0, 3)&gt;&gt;
-                    &lt;&lt;case 0&gt;&gt;
-                        &lt;&lt;set _oldFluffies = _wildFluffies.filter(fluffy =&gt; fluffy.age &gt;= $activeFluffy.maxAge*0.5)&gt;&gt;
-                        &lt;&lt;set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
-                    &lt;&lt;case 1 2 3&gt;&gt;
-                        &lt;&lt;set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)&gt;&gt;
-                        &lt;&lt;fetchName&gt;&gt;
-                        &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
-                        &lt;&lt;limitColor 1 2 3 4&gt;&gt;
-                &lt;&lt;/switch&gt;&gt;
+                &lt;&lt;if random(0, 3) == 0 &amp;&amp; _wildFluffies.length &gt; 0&gt;&gt;
+                    &lt;&lt;set _oldFluffies = _wildFluffies.filter(fluffy =&gt; fluffy.age &gt;= $activeFluffy.maxAge*0.5)&gt;&gt;
+                    &lt;&lt;set $activeFluffy = _oldFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]&gt;&gt;
+                &lt;&lt;else&gt;&gt;
+                    &lt;&lt;set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)&gt;&gt;
+                    &lt;&lt;fetchName&gt;&gt;
+                    &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
+                    &lt;&lt;limitColor 1 2 3 4&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;set $activeFluffy.furStage = Number(random(60, 120))&gt;&gt;
             &lt;&lt;elseif $shop == &quot;breeder&quot; || $shop == &quot;angora&quot;&gt;&gt;
