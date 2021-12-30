@@ -29,7 +29,6 @@
 /* Get wild fluffies */
 <<set _wildFluffies = $globalFluffies.filter(fluffy => !$ourStore.fluffies.includes(fluffy.ID));>>
 <<set _wildFluffies = _wildFluffies.filter(fluffy => !fluffy.dead)>>
-<<set _isWild = false>>
 
 <<for _ef range $ourStore.fluffies>>
     <<set $globalFluffies[_ef].isChecked = false>>
@@ -49,11 +48,10 @@
 
             /* solo foal */
             <<case 0>>
-                <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
-
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && __youngFluffies.length > 0>>
-                    <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                    <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
+                    <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _youngFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
                         <<fetchName>>
@@ -77,9 +75,8 @@
             /* mated pair */
             <<case 1 2 3>>
                 /* 25% chance that wild fluffy is pre-owned */
-                <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
-
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
+                    <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
                     <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
@@ -103,10 +100,9 @@
                 <<run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)>>
 
                 /* 25% chance that wild fluffy is pre-owned */
-                <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
-
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
-                    <<set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                    <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+                    <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $dad.hasName = true>>
@@ -152,11 +148,10 @@
             /* family group */
             <<case 5 6 7 8>>
                 /* 25% chance that wild fluffy is pre-owned */
-                <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
-
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
-                    <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
-                   <<if random(0, 3) == 0>>
+                <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
+                <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]>>
+                    <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $mom.hasName = true>>
                     <</if>>
@@ -177,10 +172,9 @@
                 <<run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)>>
                 
                 /* 25% chance that wild fluffy is pre-owned */
-                <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
-
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
-                    <<set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                    <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+                    <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
                    <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $dad.hasName = true>>
@@ -360,7 +354,7 @@
             <<set $activeFluffy.furStage = Number(random(20, 60))>>
 
             <<limitColor 1 2>>
-        <<elseif $shop == "feral" || $shop == "mill">>
+        <<elseif $shop == "feral">>
             /* young fluffies get no names */
             <<if $activeFluffy.age != 0>>
                 /* fluffies have a 50% chance to be named */
