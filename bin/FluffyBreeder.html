@@ -12022,8 +12022,6 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	const colorFilter = hexToFilter(hexString);
 	let deltaArr = [];
 
-	console.log(`DEBUG: getNewGeneColor(): color size =  ${colors.length}.`);
-
 	// Iterate through all colors and compare hexString
 	for (let color in colors) {
 		deltaArr.push(hexColorDelta(hexString, colors[color].hex));
@@ -12031,8 +12029,12 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 
 	// Check which existing color most matches generated color
 	const closest = closestIndex(1, deltaArr);
-	geneObject = { name: colors[closest].name, hex: colors[closest].hex, filter:  colorFilter};
-	console.log(`DEBUG: getNewGeneColor(): geneObject =  ${geneObject.name}.`);
+	var genName = colors[closest].name;
+	var genHex = colors[closest].hex;
+	var genFilter = colorFilter;
+	console.log(`DEBUG: getNewGeneColor(): geneObject = ${genName}, ${genHex}, ${genFilter}.`);
+	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter)};
+	console.log(`DEBUG: getNewGeneColor(): geneObject = ${geneObject.name}, ${geneObject.hex}.`);
 	return geneObject;
 }
 
