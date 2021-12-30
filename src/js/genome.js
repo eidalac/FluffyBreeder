@@ -1662,6 +1662,8 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	const colorFilter = hexToFilter(hexString);
 	let deltaArr = [];
 
+	console.log(`DEBUG: getNewGeneColor(): color size =  ${colors.length}.`);
+
 	// Iterate through all colors and compare hexString
 	for (let color in colors) {
 		deltaArr.push(hexColorDelta(hexString, colors[color].hex));

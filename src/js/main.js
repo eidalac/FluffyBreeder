@@ -1,4 +1,8 @@
 // Insert global js here
+/* ----- CONFIG ------ */
+
+// Allow only 5000 iterations
+Config.macros.maxLoopIterations = 5000;
 
 /* ------- CSS -------- */
 importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css');
