@@ -286,111 +286,114 @@
 				<hr>
 			<</if>>
 
+			<<if _c == 0>>
+				<div class="w3-container">
+					<<timed 5ms>>
+
+						<<if $globalFluffies[_id].age > 0 || $globalFluffies[_id].ageWeeks > 2>>
+							
+							<<personalityFix $globalFluffies[_id]>>
+							<<set $activeFluffy = $globalFluffies[_id]>>
+
+							<<run console.log(`DEBUT: <<talking>>: ${$activeFluffy.name}, ${$activeFluffy.personality}, ${_id}.`)>>
+							<<switch $globalFluffies[_id].personality>>
+								<<case "Fussy">>
+									<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' nyu housie fow bestest babbeh?" $globalFluffies[_id].cColor >><</replace>>
+								<<case "Shy">>
+									<<replace "#greet-msg">><<fluffSpeech "eep... h-hewwo... nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id].cColor >><</replace>>
+								<<case "Lazy">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo... <fluffy> get nyu housie?" $globalFluffies[_id].cColor >><</replace>>
+								<<case "Cute">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin, <fluffy> am gud babbeh, gib\' nyu housie pwease?" $globalFluffies[_id].cColor >><</replace>>
+								<<case "Peppy">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo hoomin! wan'\ pway wid fwuffy? an\' mebbeh be nyu daddeh ow mummah?" $globalFluffies[_id].cColor >><</replace>>
+								<<case "Diligent">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy> an\ babbehs'?" $globalFluffies[_id].cColor >><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id].cColor >><</replace>>
+									<</if>>
+								<<case "Bossy">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie to <fluffy> an\' babbehs." $globalFluffies[_id].cColor.hex>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie nao." $globalFluffies[_id].cColor.hex>><</replace>>
+									<</if>>
+								<<case "Curious">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy> an\' babbehs?" $globalFluffies[_id].cColor >><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy>?" $globalFluffies[_id].cColor >><</replace>>
+									<</if>>
+								<<case "Timid">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties... hab\' babbehs..." $globalFluffies[_id].cColor.hex>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties..." $globalFluffies[_id].cColor.hex>><</replace>>
+									<</if>>
+								<<case "Pensive">>
+									<<if $shop == "feral">>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?  babbehs am hungwy" $globalFluffies[_id].cColor.hex>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?" $globalFluffies[_id].cColor.hex>><</replace>>
+										<</if>>
+									<<else>>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy> an\' babbehs?" $globalFluffies[_id].cColor >><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy>?" $globalFluffies[_id].cColor >><</replace>>
+										<</if>>
+									<</if>>
+								<<case "Dull">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> an\' babbehs awone, nu wan\' any twouble..." $globalFluffies[_id].cColor >><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> awone, nu wan\' any twouble..." $globalFluffies[_id].cColor >><</replace>>
+									<</if>>
+								<<case "Sweet">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> an\' babbehs need nyu homesie fow wawmsies!" $globalFluffies[_id].cColor.hex>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> need nyu homesie fow wawmsies!" $globalFluffies[_id].cColor.hex>><</replace>>
+									<</if>>
+								<<case "Haughty">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> an\' bestest babbehs nyu homesie?" $globalFluffies[_id].cColor.hex>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> nyu homesie?" $globalFluffies[_id].cColor.hex>><</replace>>
+									<</if>>
+								<<case "Playful">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy> an\' babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
+									<</if>>
+								<<case "Rowdy">>
+									<<if $shop == "feral">>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies fow babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies?" $globalFluffies[_id].cColor.hex>><</replace>>
+										<</if>>
+									<<else>>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy, hab gud' babbehs." $globalFluffies[_id].cColor.hex>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy." $globalFluffies[_id].cColor.hex>><</replace>>
+										<</if>>
+									<</if>>
+								<<default>>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo... nyu daddeh ow mummah?" $globalFluffies[_id].cColor.hex>><</replace>>
+							<</switch>>
+						<<else>>
+							<<replace "#greet-msg">><<fluffSpeech "cheep... cheep..." $globalFluffies[_id].cColor.hex>><</replace>>
+						<</if>>
+					<</timed>>
+					<span id="greet-msg"></span>
+				</div>
+			<</if>>
 		<</capture>>
-
-		<<if _c == 0>>
-			<div class="w3-container">
-				<<timed 5ms>>
-
-					<<if $globalFluffies[_id].age > 0 || $globalFluffies[_id].ageWeeks > 2>>
-						<<personalityFix $globalFluffies[_id]>>
-						<<switch $globalFluffies[_id].personality>>
-							<<case "Fussy">>
-								<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' nyu housie fow bestest babbeh?" $globalFluffies[_id].cColor.hex>><</replace>>
-							<<case "Shy">>
-								<<replace "#greet-msg">><<fluffSpeech "eep... h-hewwo... nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
-							<<case "Lazy">>
-								<<replace "#greet-msg">><<fluffSpeech "hewwo... <fluffy> get nyu housie?" $globalFluffies[_id].cColor.hex>><</replace>>
-							<<case "Cute">>
-								<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin, <fluffy> am gud babbeh, gib\' nyu housie pwease?" $globalFluffies[_id].cColor.hex>><</replace>>
-							<<case "Peppy">>
-								<<replace "#greet-msg">><<fluffSpeech "hewwo hoomin! wan'\ pway wid fwuffy? an\' mebbeh be nyu daddeh ow mummah?" $globalFluffies[_id].cColor.hex>><</replace>>
-							<<case "Diligent">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy> an\ babbehs'?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Bossy">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie to <fluffy> an\' babbehs." $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie nao." $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Curious">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy> an\' babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Timid">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties... hab\' babbehs..." $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties..." $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Pensive">>
-								<<if $shop == "feral">>
-									<<if  $randomFluffies.length > 2>>
-										<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?  babbehs am hungwy" $globalFluffies[_id].cColor.hex>><</replace>>
-									<<else>>
-										<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?" $globalFluffies[_id].cColor.hex>><</replace>>
-									<</if>>
-								<<else>>
-									<<if  $randomFluffies.length > 2>>
-										<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy> an\' babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
-									<<else>>
-										<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
-									<</if>>
-								<</if>>
-							<<case "Dull">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> an\' babbehs awone, nu wan\' any twouble..." $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> awone, nu wan\' any twouble..." $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Sweet">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> an\' babbehs need nyu homesie fow wawmsies!" $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> need nyu homesie fow wawmsies!" $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Haughty">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> an\' bestest babbehs nyu homesie?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> nyu homesie?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Playful">>
-								<<if  $randomFluffies.length > 2>>
-									<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy> an\' babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<<else>>
-									<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy>?" $globalFluffies[_id].cColor.hex>><</replace>>
-								<</if>>
-							<<case "Rowdy">>
-								<<if $shop == "feral">>
-									<<if  $randomFluffies.length > 2>>
-										<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies fow babbehs?" $globalFluffies[_id].cColor.hex>><</replace>>
-									<<else>>
-										<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies?" $globalFluffies[_id].cColor.hex>><</replace>>
-									<</if>>
-								<<else>>
-									<<if  $randomFluffies.length > 2>>
-										<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy, hab gud' babbehs." $globalFluffies[_id].cColor.hex>><</replace>>
-									<<else>>
-										<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy." $globalFluffies[_id].cColor.hex>><</replace>>
-									<</if>>
-								<</if>>
-							<<default>>
-								<<replace "#greet-msg">><<fluffSpeech "hewwo... nyu daddeh ow mummah?" $globalFluffies[_id].cColor.hex>><</replace>>
-						<</switch>>
-					<<else>>
-						<<replace "#greet-msg">><<fluffSpeech "cheep... cheep..." $globalFluffies[_id].cColor.hex>><</replace>>
-					<</if>>
-				<</timed>>
-				<span id="greet-msg"></span>
-			</div>
-		<</if>>
 	<</for>>
 
 </div>

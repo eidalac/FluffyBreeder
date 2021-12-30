@@ -98,6 +98,7 @@
 		nursingMax: 0,
 		onDisplay: false,
 		sold: false,
+		preOwned: false,
 		dead: false,
 		weaned: true,
 		traits: [],
@@ -196,6 +197,7 @@
 			nursingMax: 0,
 			onDisplay: false,
 			sold: false,
+			preOwned: false,
 			dead: false,
 			weaned: true,
 			traits: [],
@@ -536,7 +538,7 @@
 	
 	/*<<fixColors $activeFluffy>>*/
 	<<colorValue>> 
-	<<colorGroup>>
+	<<colorGroup $activeFluffy>>
 	<<statValue>>
 
 	<<set $activeFluffy.mother = _mom.ID>>
@@ -605,9 +607,8 @@
 		<<set _ID = _args[0].ID>>
 
 		<<set $globalFluffies[_ID].dead = true>>
-		<<set $globalFluffies[_ID].onDisplay = false>>
-		<<set $globalFluffies[_ID].pregnant = false>>
 		
+		/* Trauma for children */
 		<<if $globalFluffies[_ID].nursing > 0>>
 			<<for _child range $globalFluffies[_ID].children>>
 				<<if $globalFluffies[_child].foodType == "Nursing">>
@@ -620,15 +621,19 @@
 			<</for>> /* Close child check*/
 		<</if>> /* Close Nursing check */
 		
+		/* Trauma for parent */
 		<<if $globalFluffies[_ID].foodType == "Nursing">>
 			<<set $globalFluffies[$globalFluffies[_ID].mother].nursing-->>
-			<<set $globalFluffies[$globalFluffies[_ID].mother].stress += 40>>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].stress += 10>>
 			<<set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5>>
-			<<set $globalFluffies[$globalFluffies[_ID].mother].happy -= 20>>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].happy -= 5>>
+			<<set $globalFluffies[$globalFluffies[_ID].father].stress += 10>>
+			<<set $globalFluffies[$globalFluffies[_ID].father].trauma += 5>>
+			<<set $globalFluffies[$globalFluffies[_ID].father].happy -= 5>>
 		<</if>> /* Close Nursing foal check */
-		
 		<<set $globalFluffies[_ID].nursing = 0>>
 		
+		/* Trauma for lovers */
 		<<if $globalFluffies[_ID].specialFriend != -1>>
 			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>
 			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
@@ -639,7 +644,7 @@
 <</widget>>
 
 /* ***
- *	Call as <<removeFluffy $fluffy>>
+ *	Call as <<removeFluffy $fluffy $action>>
  *
  *	Removes a fluffy from the store.
  *** */
@@ -650,9 +655,37 @@
 		<<set $fluffyError = false>>
 	<<else>>
 		<<set _ID = _args[0].ID>>
-
-		<<deadFluffy _args[0]>>
 		
+		<<if _args[1] === "kill">>
+			<<deadFluffy _args[0]>>
+		<<elseif _args[1] === "sell">>
+			<<set $globalFluffies[_ID].sold = true>>
+		<</if>>
+
+		<<set $globalFluffies[_ID].onDisplay = false>>
+
+		<<if $globalFluffies[_fl].foodType == "Nursing">>
+			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
+		<</if>> /* Close nursing check */
+
+		<<if $globalFluffies[_fl].nursing > 0>>
+			<<for _child range $globalFluffies[_fl].children>>
+				<<if $globalFluffies[_child].foodType == "Nursing">>
+					<<set $globalFluffies[_child].foodType = "Nothing">>
+					<<set $globalFluffies[_child].foodQuality = -1>>
+				<</if>> /* Close nursing check */
+			<</for>> /* Close child check*/
+		<</if>> /* Close Nursing check */
+
+		<<set $globalFluffies[_fl].nursing = 0>>
+
+		<<if $globalFluffies[_fl].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
+			<<set $globalFluffies[_fl].specialFriend = -1>>
+		<</if>> /* Close special friend check */
+
 		<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
 
 		<<if Number($globalFluffies[_ID].age) == 0 && Number($globalFluffies[_ID].ageWeeks) <= $globalFluffies[_ID].maturity>>

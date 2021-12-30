@@ -330,7 +330,6 @@ button {
 <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
 
-
 <<widget "OfferFluffy">>
 
 	<<set _fl = _args[0]>>
@@ -345,7 +344,7 @@ button {
 
 			/* Make sure the color groups are set: */
 			<<set $activeFluffy = $globalFluffies[_fl]>>
-			<<colorGroup>>
+			<<colorGroup $activeFluffy>>
 			<<set $globalFluffies[_fl] = $activeFluffy>>
 
 			<<run console.log(`DEBUG: [eventCustomer]: Fluffy ${_fl} gender = ${$globalFluffies[_fl].gender}`)>>
@@ -814,38 +813,6 @@ button {
 			<<run console.log(`ERROR: [eventCustomer]: Invalid ID found: ${$globalFluffies[_fl].ID}, Should be ${_fl}.`)>>
 			<<set $globalFluffies[_fl].ID = _fl>>
 		<</if>> 
-		
-		<<set $globalFluffies[_fl].sold = true>>
-		<<set $globalFluffies[_fl].onDisplay = false>>
-		<<set $globalFluffies[_fl].pregnant = false>>
-			
-		<<if $globalFluffies[_fl].nursing > 0>>
-			<<for _child range $globalFluffies[_fl].children>>
-				<<if $globalFluffies[_child].foodType == "Nursing">>
-					<<set $globalFluffies[_child].foodType = "Nothing">>
-					<<set $globalFluffies[_child].foodQuality = -1>>
-					<</if>> /* Close nursing check */
-			<</for>> /* Close child check*/
-		<</if>> /* Close Nursing check */
-
-		<<set $globalFluffies[_fl].nursing = 0>>
-		
-		<<if $globalFluffies[_fl].foodType == "Nursing">>
-			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
-		<</if>> /* Close nursing check */
-
-		<<if $globalFluffies[_fl].specialFriend != -1>>
-			<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
-			<<set $globalFluffies[_fl].specialFriend = -1>>
-		<</if>> /* Close special friend check */
-
-		<<if Number($globalFluffies[_fl].age) == 0 && Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
-			<<set $ourStore.foals-->>
-		<<elseif $globalFluffies[_fl].gender == "male">>
-			<<set $ourStore.stallions-->>
-		<<else>>
-			<<set $ourStore.mares-->>
-		<</if>> /* Close age check */
 
 		<<set $reputation += _priceBonus>>
 
@@ -875,6 +842,6 @@ button {
 		<<replace "#navbar">><</replace>>
 		<<timed 5ms>><<replace "#fluffy-list">><</replace>><</timed>>
 
-		<<run $ourStore.fluffies.delete(_fl)>>
+		<<removeFluffy $globalFluffies[_fl] "sell">>
 	<</if>> /* Close needs check */
 <</widget>>

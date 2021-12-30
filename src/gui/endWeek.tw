@@ -193,8 +193,7 @@
 		<<if random(0, 1) == 1>>
 			<br><<print $globalFluffies[_ef].name>> does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			
 			<<continue>>
 		<</if>>
@@ -208,8 +207,7 @@
 		/* Deaded */
 		<br><<print $globalFluffies[_ef].name>> has died due to injury. 
 		<br>
-		<<set $globalFluffies[_ef].dead = true>>
-		<<removeFluffy $globalFluffies[_ef]>>
+		<<removeFluffy $globalFluffies[_ef] "kill">>
 		<<continue>>
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
@@ -219,8 +217,7 @@
 			/* Deaded */
 			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
@@ -236,8 +233,7 @@
 		<<if random(0, 4) == 0>>
 			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
@@ -251,8 +247,7 @@
 		<<if random(0, 6) == 0>>
 			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Huhuhu <<- $globalFluffies[_ef].name>> haz tu many hurties.@@
@@ -299,8 +294,7 @@
 		/* Deaded */
 		<br><<print $globalFluffies[_ef].name>> has died from stress. 
 		<br>
-		<<set $globalFluffies[_ef].dead = true>>
-		<<removeFluffy $globalFluffies[_ef]>>
+		<<removeFluffy $globalFluffies[_ef] "kill">>
 		<<continue>>
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
@@ -310,8 +304,7 @@
 			/* Deaded */
 			<br><<print $globalFluffies[_ef].name>> has died from stress. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
@@ -327,8 +320,7 @@
 		<<if random(0, 4) == 0>>
 			<br><<print $globalFluffies[_ef].name>> has died from stress. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
@@ -342,8 +334,7 @@
 		<<if random(0, 6) == 0>>
 			<br><<print $globalFluffies[_ef].name>> has died from stress. 
 			<br>
-			<<set $globalFluffies[_ef].dead = true>>
-			<<removeFluffy $globalFluffies[_ef]>>
+			<<removeFluffy $globalFluffies[_ef] "kill">>
 			<<continue>>
 		<<else>>
 			<br>@@.cyan;Head hurties gu away. Weave gud fluffy <<- $globalFluffies[_ef].name>> alone!@@
@@ -519,7 +510,7 @@
 						<</switch>>
 					<<default>>
 						/* Pick a visible trait */
-						<<colorGroup>>
+						<<colorGroup $globalFluffies[_ef]>>
 
 						<<switch _visibleCards.random()>>
 							<<case "Species">>

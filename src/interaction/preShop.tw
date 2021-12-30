@@ -26,6 +26,11 @@
 
 <<set $randomFluffies = []>>
 
+/* Get wild fluffies */
+<<set _wildFluffies = $globalFluffies.filter(fluffy => !$ourStore.fluffies.includes(fluffy.ID));>>
+<<set _wildFluffies = _wildFluffies.filter(fluffy => !fluffy.dead)>>
+<<set _isWild = false>>
+
 <<for _ef range $ourStore.fluffies>>
     <<set $globalFluffies[_ef].isChecked = false>>
 <</for>>
@@ -44,80 +49,135 @@
 
             /* solo foal */
             <<case 0>>
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
-                <<set $activeFluffy.age = 0>>
-                <<set $activeFluffy.ageWeeks = random(2, 12)>>
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
 
-                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 1: ${$globalFluffies.length}.`)>>
+                        <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
+                        <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set _isWild = true>>
+                        <<run console.log($activeFluffy)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<set $activeFluffy.age = 0>>
+                        <<set $activeFluffy.ageWeeks = random(2, 12)>>
+                        <<set $activeFluffy.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($activeFluffy)>>
+                        <<run console.log(`DEBUG: [Pre Shop]: Push Validation 1: ${$globalFluffies.length}.`)>>
+                <</switch>>
 
-                <<set $activeFluffy.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($activeFluffy)>>
                 <<addTrait "Feral" $activeFluffy>>
                 <<run $randomFluffies.push($activeFluffy.ID)>>
-                    <<run console.log(`DEBUG: [Pre Shop]: Push Validation 2: ${$globalFluffies.length}.`)>>
+                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 2: ${$globalFluffies.length}.`)>>
             /* mated pair */
             <<case 1 2 3>>
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
-                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)>>
-                <<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
-                <<set $mom = $activeFluffy>>
-                <<set $mom.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($mom)>>
-                <<run $randomFluffies.push($mom.ID)>>
-                <<addTrait "Feral" $mom>>
-                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)>>
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
+                        <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
+                        <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set _isWild = true>>
+                        <<run console.log($mom)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)>>
+                        <<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
+                        <<set $mom = $activeFluffy>>
+                        <<set $mom.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($mom)>>
+                <</switch>>
 
-                <<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
-                <<set $dad = $activeFluffy>>
-                <<set $dad.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($dad)>>
-                <<run $randomFluffies.push($dad.ID)>>
+                <<addTrait "Feral" $mom>>
+                <<run $randomFluffies.push($mom.ID)>>
+                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)>>
+
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
+                        <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+                        <<set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set _isWild = true>>
+                        <<run console.log($dad)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
+                        <<set $dad = $activeFluffy>>
+                        <<set $dad.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($dad)>>
+                <</switch>>
+
                 <<addTrait "Feral" $dad>>
+                <<run $randomFluffies.push($dad.ID)>>
                 <<run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)>>
+
                 <<set $mom.specialFriend = $dad.ID>>
                 <<set $dad.specialFriend = $mom.ID>>
 
-                /* 25% chance the female is pregnate */
-                <<if random(0,3) == 3>>
-                    <<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
-                        
-                    <<set $mom.pregnant = true>>
-                    <<set $mom.pregnantBy = $dad.ID>>
-                    <<set $mom.dueDate = random(0, 6)>>
-                    <<set $mom.litter = _litter>>
-                    <<set $mom.preWeight = $mom.weight>>
+                <<if $mom.pregnant>>
+                    <<set $mom.dueDate = 0>>
+                <<else>>
+                    /* 25% chance the female is pregnant */
+                    <<if random(0,3) == 3>>
+                        <<set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)>>
+                            
+                        <<set $mom.pregnant = true>>
+                        <<set $mom.pregnantBy = $dad.ID>>
+                        <<set $mom.dueDate = random(0, 6)>>
+                        <<set $mom.litter = _litter>>
+                        <<set $mom.preWeight = $mom.weight>>
+                    <</if>>
                 <</if>>
 
                 /* Cull at 25% */
                 <<if random(0,3) == 0>>
-                    <<deadFluffy $globalFluffies[$randomFluffies.pluck()]>>
+                    <<deadFluffy $globalFluffies[$randomFluffies.pluck()] "kill">>
                 <</if>>
             
-            /* family group*/
+            /* family group */
             <<case 5 6 7 8>>
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
+                        <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
+                        <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set _isWild = true>>
+                        <<run console.log($mom)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)>>
+                        <<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
+                        <<set $mom = $activeFluffy>>
+                        <<set $mom.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($mom)>>
+                <</switch>>
 
-                <<run $activeFluffy.genes.setGender("female")>><<set $activeFluffy.gender = "female">>
-                <<set $mom = $activeFluffy>>
-                <<set $mom.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($mom)>>
-                <<run $randomFluffies.push($mom.ID)>>
                 <<addTrait "Feral" $mom>>
+                <<run $randomFluffies.push($mom.ID)>>
+                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)>>
+                
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0 >>
+                        <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+                        <<set $dad = _maleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set _isWild = true>>
+                        <<run console.log($dad)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
+                        <<set $dad = $activeFluffy>>
+                        <<set $dad.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($dad)>>
+                <</switch>>
 
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
-
-                <<run $activeFluffy.genes.setGender("male")>><<set $activeFluffy.gender = "male">>
-                <<set $dad = $activeFluffy>>
-                <<set $dad.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($dad)>>
-                <<run $randomFluffies.push($dad.ID)>>
                 <<addTrait "Feral" $dad>>
+                <<run $randomFluffies.push($dad.ID)>>
+                <<run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)>>
 
                 <<set $mom.specialFriend = $dad.ID>>
                 <<set $dad.specialFriend = $mom.ID>>
@@ -158,7 +218,7 @@
                     <<set $globalFluffies[$mom.ID].nursingMax -= random(0,1)>>
                 <</if>>
 
-                /* Cull parrents at 25% */
+                /* Cull parents at 25% */
                 <<if random(0,3) == 3>>
                     <<run $randomFluffies.delete($mom.ID)>>
                     <<deadFluffy $mom>>
@@ -168,16 +228,24 @@
                     <<run $randomFluffies.delete($dad.ID)>>
                     <<deadFluffy $dad>>
                 <</if>>
-            
+
             /* Single fluffy */
             <<default>>
-                <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
-                <<newFromGene $testChild>>
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
+                        <<set _wildFluffy = _wildFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                        <<set $activeFluffy = _wildFluffy>>
+                        <<set _isWild = true>>
+                        <<run console.log($activeFluffy)>>
+                    <<case 1 2 3>>
+                        <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
+                        <<newFromGene $testChild>>
+                        <<set $activeFluffy.ID = $globalFluffies.length>>
+                        <<run $globalFluffies.push($activeFluffy)>>
+                <</switch>>
 
-                <<set $activeFluffy.ID = $globalFluffies.length>>
-                <<run $globalFluffies.push($activeFluffy)>>
                 <<addTrait "Feral" $activeFluffy>>
-
                 <<run $randomFluffies.push($activeFluffy.ID)>>
         <</switch>>
     <<elseif $shop == "angora">>
@@ -213,7 +281,7 @@
     <<if $shop != "feral">>
         <<run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$globalFluffies.length}.`)>>
         <<set $activeFluffy.ID = $globalFluffies.length>>
-<<run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$activeFluffy.ID}.`)>>
+        <<run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$activeFluffy.ID}.`)>>
         <<run $globalFluffies.push($activeFluffy)>>
         <<run $randomFluffies.push($activeFluffy.ID)>>
         <<run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral Post: ${$globalFluffies.length}.`)>>
@@ -264,20 +332,32 @@
             <<set $activeFluffy.name = "Fluffy No. "+Number(random(1, 999))>>
             <<set $activeFluffy.age = 0>>
             <<set $activeFluffy.ageWeeks = random(6, 16)>>
-            <<set $activeFluffy.furStage = Number(random(20, 60)>>
+            <<set $activeFluffy.furStage = Number(random(20, 60))>>
 
             <<limitColor 1 2>>
         <<elseif $shop == "feral" || $shop == "mill">>
-            /* fluffies have a 50% chance to be named */
-            <<switch random(0, 1)>>
-                <<case 0>>
-                    <<fetchName>>
-                    <<set $activeFluffy.hasName = true>>
-                <<case 1>>
-                    <<set $activeFluffy.name = "Fluffy">>
-                <<default>>
-                    <<set $activeFluffy.name = "Fluffy">>
-            <</switch>>
+            /* young fluffies get no names */
+            <<if $activeFluffy.age != 0>>
+                /* if it's a previous fluffy, 25% chance to have new name */
+                <<if _isWild === true>>
+                    <<switch random(0, 3)>>
+                        <<case 0>>
+                            <<fetchName>>
+                            <<set $activeFluffy.hasName = true>>
+                        <<case 1 2 3>>
+                            /* nothing */
+                    <</switch>>
+                <<else>>
+                /* fluffies have a 50% chance to be named */
+                    <<switch random(0, 1)>>
+                        <<case 0>>
+                            <<fetchName>>
+                            <<set $activeFluffy.hasName = true>>
+                        <<case 1>>
+                            <<set $activeFluffy.name = "Fluffy">>
+                    <</switch>>
+                <</if>>
+            <</if>>
         <</if>>
 
         /* Adjust things based on age for children/foals */
@@ -298,18 +378,26 @@
             <<set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
             <<set $activeFluffy.furStage = Number(random(1, 10))>>
         <<else>>
+            /* shelter sells pre-owned, older, named fluffies */
             <<if $shop == "shelter">>
-                /* shelter sells pre-owned, older, named fluffies */
-                <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
-                <<fetchName>>
-                <<set $activeFluffy.hasName = true>>
-                <<limitColor 1 2 3 4>>
+                /* 25% chance that wild fluffy is pre-owned */
+                <<switch random(0, 3)>>
+                    <<case 0>>
+                        <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
+                        <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                    <<case 1 2 3>>
+                        <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
+                        <<fetchName>>
+                        <<set $activeFluffy.hasName = true>>
+                        <<limitColor 1 2 3 4>>
+                <</switch>>
+
                 <<set $activeFluffy.furStage = Number(random(60, 120))>>
             <<elseif $shop == "breeder" || $shop == "angora">>
                 /* breeder fluffies always have a name */
                 <<fetchName>>
                 <<set $activeFluffy.hasName = true>>
-                <<set $activeFluffy.furStage = Number(random(90, 180)>>
+                <<set $activeFluffy.furStage = Number(random(90, 180))>>
             <</if>>
             /* generate adult traits */
             <<switch random(0,4)>>
@@ -375,7 +463,7 @@
         <<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
         
         <<colorValue>>
-        <<colorGroup>>
+        <<colorGroup $activeFluffy>>
         <<statValue>>
 
         <<set $activeFluffy.isChecked = false>>

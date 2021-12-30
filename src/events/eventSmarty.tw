@@ -78,7 +78,7 @@
 			
 	<<button _punishString>>
 		<<set $training += 3>>
-		<<set $hugbox += 1>>
+		<<set $hugbox++>>
 		<<set $stress += 10>>
 		
 		<<set $globalFluffies[$activeFluffy.ID].stress += 5>>
@@ -100,9 +100,9 @@
 	@@.orange;Neutral option.@@
 			
 	<br><br>
-	<<button "Beat it">>	
+	<<button "Beat it">>
 		<<set $stress -= 50>>
-		<<set $abuse += 1>>
+		<<set $abuse-->>
 		<<set $globalFluffies[$activeFluffy.ID].trauma += 10>>
 		<<set $globalFluffies[$activeFluffy.ID].stress += 30>>
 		<<set $globalFluffies[$activeFluffy.ID].temperament -= 10>>
@@ -139,45 +139,19 @@
 			
 	<br><br>
 	<<button "Kill it">>
-		<<set $hugbox++>>
-
-		<<set $globalFluffies[$activeFluffy.ID].dead = true>>
-		<<set $globalFluffies[$activeFluffy.ID].onDisplay = false>>
-		<<set $globalFluffies[$activeFluffy.ID].pregnant = false>>
-
-		<<if $globalFluffies[$activeFluffy.ID].nursing > 0>>
-			<<for _child range $globalFluffies[$activeFluffy.ID].children>>
-				<<if $globalFluffies[_child].foodType == "Nursing">>
-					<<set $globalFluffies[_child].foodType = "Nothing">>
-					<<set $globalFluffies[_child].foodQuality = -1>>
-				<</if>> /* Close nursing check */
-			<</for>> /* Close child check*/
-		<</if>> /* Close Nursing check */
-	
-		<<set $globalFluffies[$activeFluffy.ID].nursing = 0>>
-						
-		<<if $globalFluffies[$activeFluffy.ID].foodType == "Nursing">>
-			<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].mother].nursing-->>
-		<</if>> /* Close nursing check */
-	
-		<<if $globalFluffies[$activeFluffy.ID].specialFriend != -1>>
-			<<set $globalFluffies[$globalFluffies[$activeFluffy.ID].specialFriend].specialFriend = -1>>
-			<<set $globalFluffies[$activeFluffy.ID].specialFriend = -1>>
-		<</if>> /* Close special friend check */
-	
-		<<if Number($globalFluffies[$activeFluffy.ID].age) == 0 && Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
-			<<set $ourStore.foals-->>
-		<<elseif $globalFluffies[$activeFluffy.ID].gender == "male">>
-			<<set $ourStore.stallions-->>
-		<<else>>
-			<<set $ourStore.mares-->>
-		<</if>> /* Close age check */
-		
-		<<run $ourStore.fluffies.delete($activeFluffy.ID)>>
-		
+		<<removeFluffy $globalFluffies[$activeFluffy.ID] true>>
 		<<set _reactionString = "You snap " + $globalFluffies[$activeFluffy.ID].name + "'s neck.">>
 		
 		<<replace "#reaction-msg">><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
 	<</button>>
-	@@.orange;Hugbox option?@@
+	@@.orange;Neutral option?@@
+
+	<<button "Release it">>
+		<<set $hugbox++>>
+		<<removeFluffy $globalFluffies[$activeFluffy.ID]>>
+		<<set _reactionString = "You release " + $globalFluffies[$activeFluffy.ID].name + " into the wild.">>
+		
+		<<replace "#reaction-msg">><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Hugbox option@@
 </span>
