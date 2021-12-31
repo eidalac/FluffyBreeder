@@ -76,8 +76,9 @@ $( document ).ready(function() {
       /* Check perceived brightness */
       const hexstr = color_value.replace('#','');
       const [r, g, b] = [parseInt(hexstr.substring(0, 2), 16), parseInt(hexstr.substring(2, 4), 16), parseInt(hexstr.substring(4, 6), 16)];
-
-      const luminance = (0.2126*r + 0.7152*g + 0.0722*b);
+      
+      /* Check perceived brightness */
+      const luminance = getLuminance(hexstr)
       let text_color;
       let text_filter;
 
@@ -93,4 +94,5 @@ $( document ).ready(function() {
       localStorage.setItem('text-color', text_color);
       document.documentElement.style.setProperty('--text-color', text_color);
     })
+
   });

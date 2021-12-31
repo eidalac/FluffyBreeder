@@ -925,6 +925,8 @@
 		<<run console.log(`ERROR: <<removeFluffy>>: $fluffyError`)>>
 		<<set $fluffyError = false>>
 	<<else>>
+		<<run console.log(_args[0])>>
+		<<run console.log($globalFluffies)>>
 		<<set _ID = _args[0].ID>>
 		
 		<<if _args[1] === "kill">>
@@ -935,12 +937,12 @@
 
 		<<set $globalFluffies[_ID].onDisplay = false>>
 
-		<<if $globalFluffies[_fl].foodType == "Nursing">>
+		<<if $globalFluffies[_ID].foodType == "Nursing">>
 			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
 		<</if>> /* Close nursing check */
 
-		<<if $globalFluffies[_fl].nursing > 0>>
-			<<for _child range $globalFluffies[_fl].children>>
+		<<if $globalFluffies[_ID].nursing > 0>>
+			<<for _child range $globalFluffies[_ID].children>>
 				<<if $globalFluffies[_child].foodType == "Nursing">>
 					<<set $globalFluffies[_child].foodType = "Nothing">>
 					<<set $globalFluffies[_child].foodQuality = -1>>
@@ -948,13 +950,13 @@
 			<</for>> /* Close child check*/
 		<</if>> /* Close Nursing check */
 
-		<<set $globalFluffies[_fl].nursing = 0>>
+		<<set $globalFluffies[_ID].nursing = 0>>
 
-		<<if $globalFluffies[_fl].specialFriend != -1>>
-			<<set $globalFluffies[$globalFluffies[_fl].specialFriend].specialFriend = -1>>
+		<<if $globalFluffies[_ID].specialFriend != -1>>
+			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>
 			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].stress += 20>>
 			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].happy -= 20>>
-			<<set $globalFluffies[_fl].specialFriend = -1>>
+			<<set $globalFluffies[_ID].specialFriend = -1>>
 		<</if>> /* Close special friend check */
 
 		<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>

@@ -203,11 +203,14 @@ button {
  *** */
 <<widget "colorizeText">>
 	<<set _msg = _args[1] ? _args[1] : "">>
-	<<if _args[0] != "Black">>
-		<<- `@@color:${_args[0]};${_args[1]}`>>
+	<<set _luminance = getLuminance(_args[0])>>
+	<<run console.log(_luminance)>>
+	<<if _luminance > 64 >>
+		<<set _background = "var(--text-dark)">>
 	<<else>>
-		<<- `@@background:${_args[0]}; color:white;${_msg}`>>
+		<<set _background = "lightgray">>
 	<</if>>
+	<<- `@@background:${_background}; color:${_args[0]};${_msg}`>>
 <</widget>>
 
 /* ***
@@ -217,15 +220,15 @@ button {
  *** */
 <<widget "fluffSpeech">>
 	<<set _msg = _args[0] ? _args[0] : "">>
-	<<if _args[0] != "Black">>
-		<<- `@@color:${_args[1]};`+'"'+`
-			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
-		`+'"'>>
+	<<set _luminance = getLuminance(_args[1])>>
+	<<if _luminance > 64 >>
+		<<set _background = "var(--text-dark)">>
 	<<else>>
-		<<- `@@background:${_args[1]}; color:white;`+'"'+`
-			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
-		`+'"'>>
+		<<set _background = "lightgray">>
 	<</if>>
+	<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
+		${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
+	`+'"'>>
 <</widget>>
 
 /* ***

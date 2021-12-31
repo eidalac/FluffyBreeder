@@ -406,7 +406,14 @@ window.closestIndex = (num, arr) => {
      };
   };
   return index;
- };
+};
+
+window.getLuminance = (hex) => {
+  const hexstr = hex.replace('#','');
+  const [r, g, b] = [parseInt(hexstr.substring(0, 2), 16), parseInt(hexstr.substring(2, 4), 16), parseInt(hexstr.substring(4, 6), 16)];
+
+  return (0.2126*r + 0.7152*g + 0.0722*b);
+}
 
 window.inRange = function(x, min, max) {
   return ((x-min)*(x-max) <= 0);
