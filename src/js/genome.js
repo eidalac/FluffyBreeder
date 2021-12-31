@@ -2686,6 +2686,9 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 37):
 			return 1; // micro
 		case (subSpecies <= 56):
+
+		console.log(`DEBUG: getSubSpecies: Angora generated from gene: ${this.elementAt(49)}.`);
+
 			return 2; // angora
 		case (subSpecies <= 64):
 			return 3; //fluffalo
