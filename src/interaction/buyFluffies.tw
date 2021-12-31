@@ -66,15 +66,10 @@
 						/* More than 1 fluffy present and selected */
 						<<if _listCheck > 0>>
 							<<set $actions -= _listCheck>>
-							<<set _motherFluffies = $randomFluffies.filter(fluffy => fluffy.nursing > 0)>>
 						
 							<<set _rID = 0>>
 							<<for _rID range $randomFluffies>>
 								<<if $globalFluffies[_rID].isChecked>>
-									/* check if mother was adopted alongside foals */
-									<<if _motherFluffies.filter(fluffy => $globalFluffies[_rID].mother).length == 0>>
-										<<set $globalFluffies[_rID].nursing == 0>>
-									<</if>>
 									<<run $ourStore.fluffies.push($globalFluffies[_rID].ID)>>
 				
 									/* only rename unnamed fluffies */
@@ -104,7 +99,6 @@
 							<<for _rFluffy range $randomFluffies>>
 
 								<<if $globalFluffies[_rID].isChecked>>
-									<<set $globalFluffies[_rID].nursing == 0>>
 									<<run $ourStore.fluffies.push($globalFluffies[_rID].ID)>>
 									/* only rename unnamed fluffies */
 									<<if $nameType === "ordinal" && $globalFluffies[_rID].hasName == false>>
@@ -131,7 +125,7 @@
 <<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 0: ${$randomFluffies}.`)>>
 <<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 1: ${$randomFluffies[0]}.`)>>
 							<<set $actions-->>
-							<<set $randomFluffies[0].nursing == 0>>
+
 							<<run $ourStore.fluffies.push($randomFluffies[0])>>
 <<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 2: ${$randomFluffies}.`)>>
 							/* only rename unnamed fluffies */
