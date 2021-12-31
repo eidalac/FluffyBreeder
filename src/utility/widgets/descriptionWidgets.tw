@@ -303,7 +303,7 @@ button {
 	<<elseif $training >= 60>>
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 40>>
-		<<set _color = `@@.stat-high.stat-unknown`>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
 		<<set _value = `???`>>	
 	<</if>>
 
@@ -370,7 +370,7 @@ button {
 	<<elseif $training >= 100>>
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 50>>
-		<<set _color = `@@.stat-high.stat-unknown`>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
 		<<set _value = `???`>>	
 	<</if>>
 
@@ -705,9 +705,14 @@ button {
 		<<personalityFix _fluffy>>
 		<div class="fluffy-details">
 			<div class="fluffy-details-left">
+				<div class="fluffy-species">
+					<span>Name: <<print `<span class="info-toggle" data-info="detail_name">${_fluffy.name}</span>`>></span>
+					<span>Personality: <<print `<span class="info-toggle" data-info="detail_personality">${_fluffy.personality}</span>`>> </span>
+					<span>Gender: <<print `<span class="info-toggle" data-info="detail_gender">${_fluffy.gender[0].toUpperCase()}${_fluffy.gender.slice(1)}</span>`>></span>
+					<span>Species: <<print `<span class="info-toggle" data-info="detail_species">${_fluffy.subSpeciesString}</span>`>></span>
+					<span>Breed: <<print `<span class="info-toggle" data-info="detail_breed">${_fluffy.breed[0].toUpperCase()}${_fluffy.breed.slice(1)}</span>`>></span>
+				</div>
 				<div class="fluffy-color">
-					<span><<- _fluffy.personality>> _fluffy.gender _fluffy.breed</span>
-					<span> Name: <<print _fluffy.name>></span>
 					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name>></span>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
 						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name>></span>

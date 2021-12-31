@@ -962,6 +962,12 @@ button:disabled{
   display: flex;
 }
 
+.info-toggle:hover {
+  background: lightgray;
+  color: black;
+  cursor: pointer;
+}
+
 /* Header */
 
 #header {
@@ -1145,14 +1151,11 @@ button:disabled{
   cursor: pointer;
   width: 30%;
 }
-.fluffy-stats .stat-entry:hover,
-.fluffy-stats .stat-entry:hover .stat-value:before,
-.fluffy-stats .stat-entry:hover .stat-value:after,
-.fluffy-attributes .attribute-entry:hover,
-.fluffy-attributes .attribute-entry:hover .attribute-value:before,
-.fluffy-attributes .attribute-entry:hover .attribute-value:after {
-  background: lightgray;
-  color: black;
+
+.fluffy-species {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
 }
 
 .fluffy-color {
@@ -1160,9 +1163,13 @@ button:disabled{
   display: flex;
   flex-direction: column;
 }
-.fluffy-family span,
-.fluffy-color span {
-  padding: 0em 0.5em 0em 0.5em;
+.fluffy-family > span,
+.fluffy-color > span  {
+  padding: 0.2em 0em 0.2em 0em;
+}
+.fluffy-family span span,
+.fluffy-color span span {
+  padding: 0.2em 0.5em 0.2em 0.5em;
   border-radius: 50px;
 }
 
@@ -1186,10 +1193,6 @@ button:disabled{
   justify-content: center;
   align-items: center;
   flex-wrap: wrap;
-}
-.fluffy-traits-entry:hover {
-  background: lightgray;
-  color: black;
 }
 
 .fluffy-family {
@@ -1228,12 +1231,10 @@ button:disabled{
   .fluffy-details {
     flex-direction: row;
   }
-  .fluffy-details > div {
-    align-items: center;
-  }
+  .fluffy-details > div,
+  .fluffy-species,
   .fluffy-color {
     align-items: center;
-    width: 100%;
   }
   .fluffy-desc-top {
     height: auto;
@@ -18827,7 +18828,7 @@ Genes       Height multiplier
 	 	&lt;&lt;set _thisStress = 2&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 	 
-	 /* Then check based on personaity: */
+	 /* Then check based on personality: */
 	 &lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
 		&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
 			&lt;&lt;set _thisStress = Number(_thisStress) + 3&gt;&gt;
@@ -24501,7 +24502,7 @@ button {
 	&lt;&lt;elseif $training &gt;= 60&gt;&gt;
 		&lt;&lt;set _value = `${_args[0]}`&gt;&gt;
 	&lt;&lt;elseif $training &lt;= 40&gt;&gt;
-		&lt;&lt;set _color = `@@.stat-high.stat-unknown`&gt;&gt;
+		&lt;&lt;set _color = `@@.stat-unknown.stat-value`&gt;&gt;
 		&lt;&lt;set _value = `???`&gt;&gt;	
 	&lt;&lt;/if&gt;&gt;
 
@@ -24568,7 +24569,7 @@ button {
 	&lt;&lt;elseif $training &gt;= 100&gt;&gt;
 		&lt;&lt;set _value = `${_args[0]}`&gt;&gt;
 	&lt;&lt;elseif $training &lt;= 50&gt;&gt;
-		&lt;&lt;set _color = `@@.stat-high.stat-unknown`&gt;&gt;
+		&lt;&lt;set _color = `@@.stat-unknown.stat-value`&gt;&gt;
 		&lt;&lt;set _value = `???`&gt;&gt;	
 	&lt;&lt;/if&gt;&gt;
 
@@ -24903,9 +24904,14 @@ button {
 		&lt;&lt;personalityFix _fluffy&gt;&gt;
 		&lt;div class=&quot;fluffy-details&quot;&gt;
 			&lt;div class=&quot;fluffy-details-left&quot;&gt;
+				&lt;div class=&quot;fluffy-species&quot;&gt;
+					&lt;span&gt;Name: &lt;&lt;print `&lt;span class=&quot;info-toggle&quot; data-info=&quot;detail_name&quot;&gt;${_fluffy.name}&lt;/span&gt;`&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Personality: &lt;&lt;print `&lt;span class=&quot;info-toggle&quot; data-info=&quot;detail_personality&quot;&gt;${_fluffy.personality}&lt;/span&gt;`&gt;&gt; &lt;/span&gt;
+					&lt;span&gt;Gender: &lt;&lt;print `&lt;span class=&quot;info-toggle&quot; data-info=&quot;detail_gender&quot;&gt;${_fluffy.gender[0].toUpperCase()}${_fluffy.gender.slice(1)}&lt;/span&gt;`&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Species: &lt;&lt;print `&lt;span class=&quot;info-toggle&quot; data-info=&quot;detail_species&quot;&gt;${_fluffy.subSpeciesString}&lt;/span&gt;`&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Breed: &lt;&lt;print `&lt;span class=&quot;info-toggle&quot; data-info=&quot;detail_breed&quot;&gt;${_fluffy.breed[0].toUpperCase()}${_fluffy.breed.slice(1)}&lt;/span&gt;`&gt;&gt;&lt;/span&gt;
+				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-color&quot;&gt;
-					&lt;span&gt;&lt;&lt;- _fluffy.personality&gt;&gt; _fluffy.gender _fluffy.breed&lt;/span&gt;
-					&lt;span&gt; Name: &lt;&lt;print _fluffy.name&gt;&gt;&lt;/span&gt;
 					&lt;span&gt;Coat: &lt;&lt;colorizeText _fluffy.cColor.hex _fluffy.cColor.name&gt;&gt;&lt;/span&gt;
 					&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;
 						&lt;span&gt;Mane: &lt;&lt;colorizeText _fluffy.mColor.hex _fluffy.mColor.name&gt;&gt;&lt;/span&gt;
@@ -26125,32 +26131,32 @@ button {
 	/* Pick a random child trait:*/
 	&lt;&lt;switch random(0,5)&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity = &quot;Fussy&quot; &gt;&gt;
+			&lt;&lt;set $activeFluffy.personality = &quot;Fussy&quot; &gt;&gt;
 			&lt;&lt;set $activeFluffy.strength++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 140&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
 		&lt;&lt;case 1&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity =  &quot;Shy&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.personality =  &quot;Shy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.learning++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
 		&lt;&lt;case 2&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity = &quot;Lazy&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.personality = &quot;Lazy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.thinking++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 80&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
 		&lt;&lt;case 3&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity = &quot;Cute&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.personality = &quot;Cute&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 100&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
 		&lt;&lt;case 4&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity = &quot;Peppy&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.personality = &quot;Peppy&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.energy++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 100&gt;&gt;
 		&lt;&lt;default&gt;&gt;
-			&lt;&lt;set $activeFluffy.personaity = &quot;Cute&quot;&gt;&gt;
+			&lt;&lt;set $activeFluffy.personality = &quot;Cute&quot;&gt;&gt;
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
