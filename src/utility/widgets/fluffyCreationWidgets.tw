@@ -94,7 +94,7 @@
 		specialFriend: -1,
 		pregnant: false,
 		pregnantBy: -1,
-		nursing: 0,
+		nursing: [],
 		nursingMax: 0,
 		onDisplay: false,
 		sold: false,
@@ -198,7 +198,7 @@
 			specialFriend: -1,
 			pregnant: false,
 			pregnantBy: -1,
-			nursing: 0,
+			nursing: [],
 			nursingMax: 0,
 			onDisplay: false,
 			sold: false,
@@ -899,7 +899,7 @@
 		<<set $globalFluffies[_ID].dead = true>>
 		
 		/* Trauma for children */
-		<<if $globalFluffies[_ID].nursing > 0>>
+		<<if $globalFluffies[_ID].nursing.length > 0>>
 			<<for _child range $globalFluffies[_ID].children>>
 				<<if $globalFluffies[_child].foodType == "Nursing">>
 					<<set $globalFluffies[_child].foodType = "Nothing">>
@@ -913,7 +913,7 @@
 		
 		/* Trauma for parent */
 		<<if $globalFluffies[_ID].foodType == "Nursing">>
-			<<set $globalFluffies[$globalFluffies[_ID].mother].nursing-->>
+			<<set $globalFluffies[$globalFluffies[_ID].mother].nursing.delete(_ID)>>
 			<<set $globalFluffies[$globalFluffies[_ID].mother].stress += 10>>
 			<<set $globalFluffies[$globalFluffies[_ID].mother].trauma += 5>>
 			<<set $globalFluffies[$globalFluffies[_ID].mother].happy -= 5>>
@@ -921,7 +921,7 @@
 			<<set $globalFluffies[$globalFluffies[_ID].father].trauma += 5>>
 			<<set $globalFluffies[$globalFluffies[_ID].father].happy -= 5>>
 		<</if>> /* Close Nursing foal check */
-		<<set $globalFluffies[_ID].nursing = 0>>
+		<<set $globalFluffies[_ID].nursing = []>>
 		
 		/* Trauma for lovers */
 		<<if $globalFluffies[_ID].specialFriend != -1>>
@@ -957,10 +957,10 @@
 		<<set $globalFluffies[_ID].onDisplay = false>>
 
 		<<if $globalFluffies[_ID].foodType == "Nursing">>
-			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing-->>
+			<<set $globalFluffies[$globalFluffies[_fl].mother].nursing.delete(_ID)>>
 		<</if>> /* Close nursing check */
 
-		<<if $globalFluffies[_ID].nursing > 0>>
+		<<if $globalFluffies[_ID].nursing.length > 0>>
 			<<for _child range $globalFluffies[_ID].children>>
 				<<if $globalFluffies[_child].foodType == "Nursing">>
 					<<set $globalFluffies[_child].foodType = "Nothing">>
@@ -969,7 +969,7 @@
 			<</for>> /* Close child check*/
 		<</if>> /* Close Nursing check */
 
-		<<set $globalFluffies[_ID].nursing = 0>>
+		<<set $globalFluffies[_ID].nursing = []>>
 
 		<<if $globalFluffies[_ID].specialFriend != -1>>
 			<<set $globalFluffies[$globalFluffies[_ID].specialFriend].specialFriend = -1>>

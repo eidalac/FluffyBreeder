@@ -24,7 +24,37 @@ Save.onLoad.add(function (save)
   }
 
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
-  {         
+  {
+    // Update the nursing from a count to an array:
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].nursing === 'number')
+    {
+      // How many children does this fluffy have?
+      var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;
+
+      if (cCount <= 0)
+      {
+        // No kids, just make it an empty array:
+        save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
+      }
+      else 
+      {
+        // If we have more kids than the number nursing, just pick the youngest.
+        if (cCount > save.state.history[save.state.index].variables.globalFluffies[i].nursing)
+        {
+          cCount = Number(Number(cCount) - Number(save.state.history[save.state.index].variables.globalFluffies[i].nursing));
+        }
+
+        // Start with a blank array:
+        save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
+
+        // Push the children in revrse order to get youngest first:
+        for (;cCount > 0; cCount--)
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].nursing.push(save.state.history[save.state.index].variables.globalFluffies[i].children[cCount]);
+        }
+      }
+    }
+
     // Set color info if we are using old style data
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].cColor === 'string' ||
     typeof save.state.history[save.state.index].variables.globalFluffies[i].mColor === 'string' ||

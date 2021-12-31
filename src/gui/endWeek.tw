@@ -173,12 +173,13 @@
 
 	/* some logic checking */
 	<<if ndef $globalFluffies[_ef].nursing>>
-		<<set $globalFluffies[_ef].nursing = -1>>
+		<<set $globalFluffies[_ef].nursing = []>>
 	<</if>>
+	/*
 	<<if $globalFluffies[_ef].nursing < 0>>
 		<<set $globalFluffies[_ef].nursing = 0>>
 	<</if>>
-
+	*/
 
 	/* Logic check if mother is no longer in the store: */
 	<<if $globalFluffies[_ef].foodType == "Nursing" && $ourStore.fluffies.includes($globalFluffies[_ef].mother) == false>>
@@ -674,7 +675,7 @@
 		<<set _mom = $globalFluffies[$globalFluffies[_ef].mother]>>
 		
 		<<if $globalFluffies[_ef].foodType == "Nursing">>
-			<<if _mom.nursingMax < _mom.nursing>>
+			<<if _mom.nursingMax < _mom.nursing.length>>
 	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
 				<<run $globalFluffies[_ef].furStage += 4>>
 	 		<</if>>
@@ -707,7 +708,8 @@
 		<<set $globalFluffies[_ef].length = Number(_newH).toFixed(2)>>
 
 		<<if ($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight) > 0.14 && $globalFluffies[_ef].weaned == false>> 	
-	 		<<set $globalFluffies[$globalFluffies[_ef].mother].nursing-->>
+	 		/*<<set $globalFluffies[$globalFluffies[_ef].mother].nursing-->>*/
+			 <<set $globalFluffies[$globalFluffies[_ef].mother].nursing.delete(_ef)>>
 
 			<br><<print $globalFluffies[_ef].name>> is ready for solid food
 	 		<<if $globalFluffies[_ef].foodType == "Nothing">>
@@ -720,7 +722,7 @@
 	 		
 	 		<<set $globalFluffies[_ef].weaned = true>>
 
-	 		<<if $globalFluffies[$globalFluffies[_ef].mother].nursing == 0>>
+	 		<<if $globalFluffies[$globalFluffies[_ef].mother].length == 0>>
 	 			<br><<print $globalFluffies[$globalFluffies[_ef].mother].name>> is done nursing.
 	 		<</if>> 
 	 	<</if>>
@@ -810,7 +812,7 @@
 				<<set $globalFluffies[_ef].dueDate = -1>>
 				<<set $globalFluffies[_ef].pregnant = false>>
 
-			<<elseif $globalFluffies[_ef].nursing > 0>>
+			<<elseif $globalFluffies[_ef].nursing.length > 0>>
 				 <br><<- $globalFluffies[_ef].name>> is nursing foals.
 			<<else>>
 				<<if $globalFluffies[_ef].dueDate < 0>>

@@ -89,7 +89,8 @@
 
 			<<set $ourStore.foals++>>
 
-			<<set $mom.nursing++>>
+			/*<<set $mom.nursing++>>*/
+			<<run $mom.nursing.push($activeFluffy.ID)>>
 			<<set $mom.stress += 5>>
 
 			<<if $activeFluffy.colorGroup[0] == "Brown" || $activeFluffy.colorGroup[1] == "Brown">>
@@ -128,7 +129,7 @@
 	<<set $mom.pregnant = false>>
 	<<set $mom.pregnantBy = -1>>
 	<<set $mom.nursingTime = $week + 5>>
-	<<set $mom.nursingMax = $mom.nursing>>
+	<<set $mom.nursingMax = $mom.nursing.length>>
 	<<set $mom.nursingMax -= $rand[2]>>
 	
 	/* Save changes to mom and dad*/ 

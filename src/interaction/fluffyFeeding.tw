@@ -10,137 +10,166 @@
  *
  *********** */
 
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
 <<if $activeFluffy.foodQuality < 1 && ($activeFluffy.foodType == "Nursing" || $activeFluffy.foodType == "Nothing")>>
 	<<set $activeFluffy.foodQuality = 2>>
 <</if>>
 
-<div class="w3-row w3-container w3-mobile">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-<<set $ui = "main">>
-<br>
-<br>
 
-<<set $nextButton to "Back to list.", $nextLink to "Fluffy List">>
+<<set $nextButton to "Back to the Store", $nextLink to "Week Start">>
 
-<span id="fluffy-name">
-	<<PlayerStatus>><br>
-	<<FluffyDesc>>
-</span>
-<hr>
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
 
-<<if $activeFluffy.foodType === "Nothing">>
-	This fluffy is not being fed.
+	<<sidebarTop>>
+
+	<div>
+		<div class="w3-dropdown-hover">
+			@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+		
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card" id="header">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item">Feeding</h1>
+</header>
+
+<<timed 5ms>>
+<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main">
 	<br>
-	<br>Do you want to start feeding it?
 	<br>
-	
-	<<if $activeFluffy.weaned == true>>
+	<br>
+	<br>
+	<span id="fluffy-name">
+		<<FluffyDesc>>
+	</span>
+	<hr>
+
+	<<if $activeFluffy.foodType === "Nothing">>
+		This fluffy is not being fed.
 		<br>
-		<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-		<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-		<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<<else>>
+		<br>Do you want to start feeding it?
 		<br>
-		<<button [[Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	
-	
-<<elseif $activeFluffy.foodType === "Formula">>
-	Feeding: on Formula
-	<br>Quality:<<switch $activeFluffy.foodQuality>>
-				<<case 0>> Trash
-				<<case 1>> Cheap
-				<<case 2>> Basic
-				<<case 3>> Good
-				<<case 4>> Quality
-				<<case -1>>
+		
+		<<if $activeFluffy.weaned == true>>
+			<br>
+			<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+			<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+			<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<<else>>
+			<br>
+			<<button [[Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		
+		
+	<<elseif $activeFluffy.foodType === "Formula">>
+		Feeding: on Formula
+		<br>Quality:<<switch $activeFluffy.foodQuality>>
+					<<case 0>> Trash
+					<<case 1>> Cheap
+					<<case 2>> Basic
+					<<case 3>> Good
+					<<case 4>> Quality
+					<<case -1>>
+				<</switch>>
+		<br> 
+
+		<<if $activeFluffy.foodQuality > 0>>
+			<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		<<if $activeFluffy.foodQuality < 4>>
+			<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		
+		<<button [[Stop Feeding|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		
+		<br>@@.green; Current Cost: ¤@@<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
+
+	<<elseif $activeFluffy.foodType != "Nursing">>
+		Feeding: $activeFluffy.foodType
+		<br>
+
+		<<if $activeFluffy.foodType != "Kibble">>  
+		<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		<<if $activeFluffy.foodType != "Greens">>  
+		<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		<<if $activeFluffy.foodType != "Sketti">>  
+		<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		
+		<<button [[Stop Feeding|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+
+		<br>Quality:<<switch $activeFluffy.foodQuality>>
+					<<case 0>> Trash
+					<<case 1>> Cheap
+					<<case 2>> Basic
+					<<case 3>> Good
+					<<case 4>> Quality
+					<<case -1>> 
+				<</switch>> 
+		<br>
+
+		<<if $activeFluffy.foodQuality > 0>>
+			<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		<<if $activeFluffy.foodQuality < 4>>
+			<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<</if>>
+		
+		<br>
+
+		<br>
+		@@.green;Current Cost: ¤@@
+			<<switch $activeFluffy.foodType>>
+				<<case "Kibble">>
+					<<print Number($foodPrice.kibble[$activeFluffy.foodQuality]).toFixed(2)>>
+				<<case "Greens">>
+					<<print Number($foodPrice.greens[$activeFluffy.foodQuality]).toFixed(2)>>
+				<<case "Sketti">>
+					<<print Number($foodPrice.sketti[$activeFluffy.foodQuality]).toFixed(2)>>
+				<<case "Forumla">>
+					<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
+				<<case "Nursing" "Nothing">>
+					0.00
 			<</switch>>
-	<br> 
-
-	<<if $activeFluffy.foodQuality > 0>>
-		<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	<<if $activeFluffy.foodQuality < 4>>
-		<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	
-	<<button [[Stop Feeding|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	
-	<br>@@.green; Current Cost: ¤@@<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
-
-<<elseif $activeFluffy.foodType != "Nursing">>
-	Feeding: $activeFluffy.foodType
-	<br>
-
-	<<if $activeFluffy.foodType != "Kibble">>  
-	<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	<<if $activeFluffy.foodType != "Greens">>  
-	<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	<<if $activeFluffy.foodType != "Sketti">>  
-	<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	
-	<<button [[Stop Feeding|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-
-	<br>Quality:<<switch $activeFluffy.foodQuality>>
-				<<case 0>> Trash
-				<<case 1>> Cheap
-				<<case 2>> Basic
-				<<case 3>> Good
-				<<case 4>> Quality
-				<<case -1>> 
-			<</switch>> 
-	<br>
-
-	<<if $activeFluffy.foodQuality > 0>>
-		<<button [[Decrease|Fluffy Feeding]]>><<set $activeFluffy.foodQuality-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	<<if $activeFluffy.foodQuality < 4>>
-		<<button [[Increase|Fluffy Feeding]]>><<set $activeFluffy.foodQuality++>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-	<</if>>
-	
-	<br>
-
-	<br>
-	@@.green;Current Cost: ¤@@
-		<<switch $activeFluffy.foodType>>
-			<<case "Kibble">>
-				<<print Number($foodPrice.kibble[$activeFluffy.foodQuality]).toFixed(2)>>
-			<<case "Greens">>
-				<<print Number($foodPrice.greens[$activeFluffy.foodQuality]).toFixed(2)>>
-			<<case "Sketti">>
-				<<print Number($foodPrice.sketti[$activeFluffy.foodQuality]).toFixed(2)>>
-			<<case "Forumla">>
-				<<print Number($foodPrice.formula[$activeFluffy.foodQuality]).toFixed(2)>>
-			<<case "Nursing" "Nothing">>
-				0.00
-		<</switch>>
-	<br>
-<<else>>
-	Feeding: $activeFluffy.foodType
-	<br>@@.green;Current Cost: ¤@@ 0.00
-	<br>Nursing checks
-	<<set _mom = $globalFluffies[$activeFluffy.mother]>>
-	<br> mother milk: _mom.nursingMax / foals: _mom.nursing
-	
-	<<if _mom.nursingMax >= _mom.nursing>>
-		<br> _mom.name is producing enough milk.
+		<br>
 	<<else>>
-		<br> _mom.name is not producing enough milk for all her foals.
+		Feeding: $activeFluffy.foodType
+		<br>@@.green;Current Cost: ¤@@ 0.00
+		<br>Nursing checks
+		<<set _mom = $globalFluffies[$activeFluffy.mother]>>
+		<br> mother milk: _mom.nursingMax / foals: _mom.nursing.length
+		
+		<<if _mom.nursingMax >= _mom.nursing.length>>
+			<br> _mom.name is producing enough milk.
+		<<else>>
+			<br> _mom.name is not producing enough milk for all her foals.
+		<</if>>
+		<br><<button [[Put on Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula", $activeFluffy.foodQuality = 2, $globalFluffies[$activeFluffy.mother].nursing.delete($activeFluffy.ID)>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+
+
 	<</if>>
-	<br><<button [[Put on Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula", $activeFluffy.foodQuality = 2, $globalFluffies[$activeFluffy.mother].nursing-->><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-
-
-<</if>>
-
-
-
-/* Sidebar link for mobile users */
-<<SidebarButton>>
 
 </div>
+
+/* Sidebar link for mobile users */
+/*<<SidebarButton>>*/
+
+
 
 
 <<script>>
