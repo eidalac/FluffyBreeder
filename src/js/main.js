@@ -201,14 +201,14 @@ window.getInfo = function(infokd) {
         return `<b class="info-highlight">Crippled</b> fluffies are barely able to move without assistance.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       /* Lung Defects */
+      case 'trait_tired':
+        return `<b class="info-highlight">Breathless</b> fluffies are barely getting sleep.<p>Energy: <span style="color:darkred">-1</span>, Strength: <span style="color:darkred">-1</span><p>`
       case 'trait_breathless':
-        return `<b class="info-highlight">Breathless</b> fluffies have a slightly harder time breathing.<p>Energy: <span style="color:darkred">-1</span>, Strength: <span style="color:darkred">-1</span><p>`
-      case 'trait_bronchitis':
-        return `<b class="info-highlight">Bronchitis</b> This fluffy has frequent coughing and wheezing.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
-      case 'trait_asthmatic':
-        return `<b class="info-highlight">Asthmatic</b> fluffies have difficulty breathing, chest pains, cough, and wheezing.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
-      case 'trait_lungcancer':
-        return `<b class="info-highlight">Lung Cancer</b> This fluffy has long term cancer in it's lungs.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
+        return `<b class="info-highlight">Breathless</b> fluffies have a hard time breathing.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_stertorous':
+        return `<b class="info-highlight">Asthmatic</b> fluffies have difficulty breathing, cough, and wheeze.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
+      case 'trait_exhausted':
+        return `<b class="info-highlight">Exhausted</b> fluffies are unable to get anything done.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
       /* Weight Defects */
       case 'trait_chubby':
@@ -237,12 +237,12 @@ window.getInfo = function(infokd) {
       /* Stomach defect */
       case 'trait_delicate':
         return `<b class="info-highlight">Delicate</b> fluffies are picky eaters.<p>Thinking: <span style="color:darkred">-1</span>, Learning: <span style="color:darkred">-1</span><p>`
-      case 'trait_nauseous':
-        return `<b class="info-highlight">Nauseous</b> This fluffy gets ill from even kibble.<p>Thinking: <span style="color:darkred">-2</span>, Learning: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
-      case 'trait_ulcers':
-        return `<b class="info-highlight">Ulcers</b> This fluffy has painfull ulcers.<p>Thinking: <span style="color:darkred">-3</span>, Learning: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
-      case 'trait_appendicitis':
-        return `<b class="info-highlight">Appendicitis</b> This fluffy has a swollen appendix and is in constant pain.<p>Thinking: <span style="color:darkred">-4</span>, Learning: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
+      case 'trait_squeamish':
+        return `<b class="info-highlight">Nauseous</b> fluffies get sick easily and throw up a lot.<p>Thinking: <span style="color:darkred">-2</span>, Learning: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_anxious':
+        return `<b class="info-highlight">Anxious</b> fluffies are permanently uneasy.<p>Thinking: <span style="color:darkred">-3</span>, Learning: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
+      case 'trait_fearful':
+        return `<b class="info-highlight">Fearful</b> fluffies are terrified by literally everything.<p>Thinking: <span style="color:darkred">-4</span>, Learning: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
       /* Mental defect */
       case 'trait_silly':
@@ -251,16 +251,16 @@ window.getInfo = function(infokd) {
         return `<b class="info-highlight">Simple</b> fluffies are dull minded, even by fluffy standards.<p>Learning: <span style="color:darkred">-2</span>, Thinking: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_moron':
         return `<b class="info-highlight">Moronic</b> fluffies are amazingly stupid.<p>Learning: <span style="color:darkred">-3</span>, Thinking: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-1</span><p>`
-      case 'traitkmbecile':
+      case 'trait_imbecile':
         return `<b class="info-highlight">Imbecilic</b> fluffies have never been troubled by a single thought.<p>Learning: <span style="color:darkred">-4</span>, Thinking: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       /* Eye defect */
-      case 'trait_nearsighted':
-        return `<b class="info-highlight">Nearsighted</b> fluffies have a harder time seeing details more than a few feet away.<p>Learning: <span style="color:darkred">-1</span><p>`
-      case 'trait_colourblind':
-        return `<b class="info-highlight">Colourblind</b> fluffies see a reduced range of colors.<p>Learning: <span style="color:darkred">-2</span>, Energy: <span style="color:darkred">-1</span><p>`
-      case 'trait_nearblind':
-        return `<b class="info-highlight">Near blind</b> fluffies have very limited vision and mostly see light and shadows.<p>Learning: <span style="color:darkred">-3</span>, Energy: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_careless':
+        return `<b class="info-highlight">Careless</b> fluffies are prone to accidents.<p>Learning: <span style="color:darkred">-1</span><p>`
+      case 'trait_unaware':
+        return `<b class="info-highlight">Unaware</b> fluffies have a hard time noticing issues.<p>Learning: <span style="color:darkred">-2</span>, Energy: <span style="color:darkred">-1</span><p>`
+      case 'trait_oblivious':
+        return `<b class="info-highlight">Oblivious</b> fluffies are almost entirely unaware of their surroundings.<p>Learning: <span style="color:darkred">-3</span>, Energy: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_blind':
         return `<b class="info-highlight">Blind</b> fluffies do not see.  At all.<p>Learning: <span style="color:darkred">-4</span>, Energy: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
 
