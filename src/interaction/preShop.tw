@@ -47,8 +47,8 @@
 
         /* Setup lists for any existing fluffies (leave the lists empty if there are none) */
         <<if _wildFluffies.length > 0>>
-            <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
-            <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+            <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female" && fluffy.age > 0)>>
+            <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male" && fluffy.age > 0)>>
             <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
             <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
         <<else>>
@@ -70,6 +70,7 @@
                         <<fetchName>>
                         <<set $activeFluffy.hasName = true>>
                     <</if>>
+                    <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
                     <<run console.log($activeFluffy)>>
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
@@ -96,6 +97,12 @@
                         <<set $mom.hasName = true>>
                     <</if>>
                     <<run console.log($mom)>>
+                    <<set $mom.genes = Genome.fromString($mom.geneString)>>
+
+                    <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: pre generated mome age invalid: ${$mom.age}.`)>>
+                <</if>>
+
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -105,6 +112,10 @@
                     <<set $mom.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($mom)>>
                     <<setGeneTraits $activeFluffy>>
+
+                    <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: generated mom age invalid: ${$mom.age}.`)>>
+                <</if>>
                 <</if>>
 
                 <<addTrait "Feral" $mom>>
@@ -119,6 +130,11 @@
                         <<set $dad.hasName = true>>
                     <</if>>
                     <<run console.log($dad)>>
+                    <<set $dad.genes = Genome.fromString($dad.geneString)>>
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: pre gen dad age invalid: ${$dad.age}.`)>>
+                <</if>>
+
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -127,11 +143,24 @@
                     <<set $dad.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($dad)>>
                     <<setGeneTraits $activeFluffy>>
+
+
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: generated dad age invalid: ${$dad.age}.`)>>
+                <</if>>
+
                 <</if>>
 
                 <<addTrait "Feral" $dad>>
                 <<run $randomFluffies.push($dad.ID)>>
                 <<run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)>>
+
+                <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)>>
+                <</if>>
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: dad age invalid: ${$dad.age}.`)>>
+                <</if>>
 
                 <<set $mom.specialFriend = $dad.ID>>
                 <<set $dad.specialFriend = $mom.ID>>
@@ -166,6 +195,11 @@
                         <<set $mom.hasName = true>>
                     <</if>>
                     <<run console.log($mom)>>
+                    <<set $mom.genes = Genome.fromString($mom.geneString)>>
+
+                <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: Pre generated mom age invalid 1: ${$mom.age}.`)>>
+                <</if>>
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -175,6 +209,10 @@
                     <<set $mom.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($mom)>>
                     <<setGeneTraits $activeFluffy>>
+
+                <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: generated mom age invalid 1: ${$mom.age}.`)>>
+                <</if>>
                 <</if>>
 
                 <<addTrait "Feral" $mom>>
@@ -189,6 +227,11 @@
                         <<set $dad.hasName = true>>
                     <</if>>
                     <<run console.log($dad)>>
+                    <<set $dad.genes = Genome.fromString($dad.geneString)>>
+
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: pre generated dad age invalid 1: ${$dad.age}.`)>>
+                <</if>>
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -197,11 +240,22 @@
                     <<set $dad.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($dad)>>
                     <<setGeneTraits $activeFluffy>>
+
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: generated dad age invalid 1: ${$dad.age}.`)>>
+                <</if>>
                 <</if>>
 
                 <<addTrait "Feral" $dad>>
                 <<run $randomFluffies.push($dad.ID)>>
                 <<run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)>>
+
+                <<if $mom.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)>>
+                <</if>>
+                <<if $dad.age <= 0>>>
+                    <<run console.log(`ERROR: [Pre Shop]: Dad age invalid: ${$dad.age}.`)>>
+                <</if>>
 
                 <<set $mom.specialFriend = $dad.ID>>
                 <<set $dad.specialFriend = $mom.ID>>
@@ -262,6 +316,8 @@
                         <<fetchName>>
                         <<set $activeFluffy.hasName = true>>
                     <</if>>
+
+                    <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -398,6 +454,7 @@
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _oldFluffies.length > 0>>
                     <<set $activeFluffy = _oldFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                     <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
                 <<else>>
                     <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
                     <<fetchName>>

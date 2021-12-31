@@ -35,7 +35,7 @@
 	<</if>>
 
 	<<set $activeFluffy = {
-		name: "Fluffy",
+		name: "BASE FLUFFY",
 		hasName: false,
 		geneString: _geneSTR,
 		genes: Genome.fromString(_geneSTR),
@@ -216,13 +216,24 @@
 		} >>
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
-		
-		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2))))>>
-		<<set _rAge = Math.clamp(Number(_rAge), 48, 96)>>
 
-		<<set $activeFluffy.age = Math.round(Number(Number(_rAge) / Number(52)))>>
+		<<run console.log(`DEBUG: newFromGene: age check: maturity ${$activeFluffy.maturity}.`)>>
 
-		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number($activeFluffy.age*52)), 0)>>
+		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2)))>>
+
+		<<run console.log(`DEBUG: newFromGene: age check: random ${_rAge}.`)>>
+
+		<<set _rAge = Math.clamp(Number(_rAge), 52, 96)>>
+
+		<<run console.log(`DEBUG: newFromGene: age check: random bound ${_rAge}.`)>>
+
+		<<set $activeFluffy.age = Math.trunc(Number(_rAge / 52))>>
+
+		<<run console.log(`DEBUG: newFromGene: age check: set age ${$activeFluffy.age}.`)>>
+
+		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)>>
+
+		<<run console.log(`DEBUG: newFromGene: age check: set ageWeeks ${$activeFluffy.ageWeeks}.`)>>
 
 		<<switch $alicornRarity>>
 		<<case 0>>
@@ -252,7 +263,7 @@
 			<</if>>
 		<</switch>>
 	<<else>>
-		<br><br>@@.red; newFromGene called with no gene.@@<br><br>
+		<<run console.log(`ERROR: <<newFromGene>>: called with no gene!.`)>>
 	<</if>>
 <</widget>>
 
