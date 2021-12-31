@@ -44,7 +44,7 @@
 		origin: 0,
 		ID: 0,
 		sID: 0,
-		gender: "",
+		gender: _args[0],
 		length: 33,
 		maxLength: 33,
 		lengthAdd: 0, 
@@ -118,8 +118,13 @@
  *	Creates a new fluffy from an existing genome. Can force subspecies.
  *** */
 <<widget "newFromGene">>
-	<<if def _args.length>>
-		<<set _subspecies = _args[1] ? _args[1] : _args[0].getSubSpecies()>>
+	<<if def _args>>
+		<<if def _args[1]>>
+			<<set _subspecies = _args[1]>>
+			<<run _args[0].setSubSpecies("3/8")>>
+		<<else>>
+			<<set _subspecies = _args[0].getSubSpecies()>>
+		<</if>>
 		<<set _l = random(0, 1)>>
 		<<set _f = random(0, 1)>>
 		<<set _h = random(0, 2) / 100>>
@@ -212,9 +217,12 @@
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 		
-		<<set _rAge = random($activeFluffy.maturity, ($activeFluffy.maturity*2))>>
-		<<set $activeFluffy.age = Math.round(_rAge/52)>>
-		<<set $activeFluffy.ageWeeks = Math.max(_rAge-($activeFluffy.age*52), 0)>>
+		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2))))>>
+		<<set _rAge = Math.clamp(Number(_rAge), 48, 96)>>
+
+		<<set $activeFluffy.age = Math.round(Number(Number(_rAge) / Number(52)))>>
+
+		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number($activeFluffy.age*52)), 0)>>
 
 		<<switch $alicornRarity>>
 		<<case 0>>

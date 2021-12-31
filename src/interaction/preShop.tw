@@ -18,9 +18,9 @@
  *	They have preset genes with one each Domiante and Recesive trait, so have the highest diversity and can spawn any possible combination.
  *** */
 <<BaseFluffy "MALE">>
-<<set _Granddad = clone($activeFluffy)>>
+<<set _Granddad = $activeFluffy>>
 <<BaseFluffy "FEMALE">>
-<<set _Grandmom = clone($activeFluffy)>>
+<<set _Grandmom = $activeFluffy>>
 
 <<set $count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
 
@@ -44,13 +44,26 @@
 <<else>>
 
     <<if $shop == "feral">>
+
+        /* Setup lists for any existing fluffies (leave the lists empty if there are none) */
+        <<if _wildFluffies.length > 0>>
+            <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
+            <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
+            <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
+            <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
+        <<else>>
+            <<set _femaleFluffies = []>>
+            <<set _maleFluffies = []>>
+            <<set _youngFluffies = []>>
+            <<set _oldFluffies = []>>
+        <</if>>
+
         <<switch random(0, 10)>>
 
             /* solo foal */
             <<case 0>>
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && __youngFluffies.length > 0>>
-                    <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
                     <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _youngFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
@@ -76,7 +89,6 @@
             <<case 1 2 3>>
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
-                    <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
                     <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
@@ -101,7 +113,6 @@
 
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
-                    <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
                     <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
                         <<fetchName>>
@@ -149,8 +160,7 @@
             <<case 5 6 7 8>>
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
-                <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female")>>
-                <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]>>
+                    <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $mom.hasName = true>>
@@ -173,9 +183,8 @@
                 
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
-                    <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male")>>
                     <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
-                   <<if random(0, 3) == 0>>
+                    <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $dad.hasName = true>>
                     <</if>>
@@ -248,8 +257,7 @@
             <<default>>
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _wildFluffies.length > 0>>
-                    <<set _wildFluffy = _wildFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
-                    <<set $activeFluffy = _wildFluffy>>
+                    <<set $activeFluffy = _wildFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
                         <<fetchName>>
                         <<set $activeFluffy.hasName = true>>
@@ -388,8 +396,7 @@
             /* shelter sells pre-owned, older, named fluffies */
             <<if $shop == "shelter">>
                 /* 25% chance that wild fluffy is pre-owned */
-                <<if random(0, 3) == 0 && _wildFluffies.length > 0>>
-                    <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
+                <<if random(0, 3) == 0 && _oldFluffies.length > 0>>
                     <<set $activeFluffy = _oldFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                 <<else>>
                     <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
