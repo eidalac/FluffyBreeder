@@ -1441,12 +1441,8 @@ Genome.prototype.setBreed = function(new_gene) {
  * 
  * @return Object
  */
-Genome.prototype.newCoatColorObject = function(addition) {
+Genome.prototype.newCoatColorObject = function(addition = 0) {
 	return this.getNewGeneColor(17, addition);
-}
-
-Genome.prototype.newCoatColorObject = function() {
-	return this.getNewGeneColor(17, 0);
 }
 
 /**
@@ -1456,11 +1452,8 @@ Genome.prototype.newCoatColorObject = function() {
  * 
  * @return Object
  */
- Genome.prototype.newManeColorObject = function(addition) {
+Genome.prototype.newManeColorObject = function(addition = 0) {
 	return this.getNewGeneColor(22, addition);
-}
-Genome.prototype.newManeColorObject = function() {
-	return this.getNewGeneColor(22, 0);
 }
 
 /**
@@ -1470,13 +1463,9 @@ Genome.prototype.newManeColorObject = function() {
  * 
  * @return Object
  */
- Genome.prototype.newEyeColorObject = function(addition) {
+ Genome.prototype.newEyeColorObject = function(addition = 0) {
 	return this.getNewGeneColor(27, addition);
 }
-Genome.prototype.newEyeColorObject = function() {
-	return this.getNewGeneColor(27, 0);
-}
-
 
 /**
  * Retrieves the color code from this gene set with a new system.
@@ -1657,23 +1646,18 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
 	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 
-	const colors = window.colorList;
-	var geneObject;
+	let geneObject;
 	const colorFilter = hexToFilter(hexString);
-	let deltaArr = [];
-
-	// Iterate through all colors and compare hexString
-	for (let color in colors) {
-		deltaArr.push(hexColorDelta(hexString, colors[color].hex));
-	}
+	const genHex = hexString;
+	const genFilter = colorFilter;
 
 	// Check which existing color most matches generated color
-	const closest = closestIndex(1, deltaArr);
-	var genName = colors[closest].name;
-	var genHex = colors[closest].hex;
-	var genFilter = colorFilter;
-	console.log(`DEBUG: getNewGeneColor(): geneObject = ${genName}, ${genHex}, ${genFilter}.`);
-	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter)};
+	const ntcObject = ntc.name(hexString);
+	const genName = ntcObject[1];
+	const genGroup = ntcObject[3];
+
+	console.log(`DEBUG: getNewGeneColor(): geneObject = ${genName}, ${hexString}, ${genFilter}.`);
+	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter), group: String(genGroup)};
 	console.log(`DEBUG: getNewGeneColor(): geneObject = ${geneObject.name}, ${geneObject.hex}.`);
 	return geneObject;
 }

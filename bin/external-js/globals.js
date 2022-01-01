@@ -28,8 +28,7 @@ $( document ).ready(function() {
         $infoContainer.addClass('info-active');
   
         /* Get info text to render in container */
-        let info_id = $(this).attr('data-info');
-        let info_text = getInfo(info_id);
+        let info_text = getInfo($target);
         $infoContainer.html(`<span>${info_text}</span>`);
         renderInfo(e);
       } else {

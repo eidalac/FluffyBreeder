@@ -1,4 +1,5 @@
 // Insert global js here
+
 /* ----- CONFIG ------ */
 
 // Allow only 5000 iterations
@@ -159,8 +160,9 @@ window.renderInfo = function(e) {
   }
 }
 
-window.getInfo = function(infokd) {
-    switch(infokd) {
+window.getInfo = function($target) {
+    const info_id = $target.attr('data-info')
+    switch(info_id) {
       case 'stat_strength':
         return '<b class="info-highlight">Strength</b> indicate general physical ability and coordination.'
       case 'stat_energy':
@@ -264,8 +266,26 @@ window.getInfo = function(infokd) {
       case 'trait_blind':
         return `<b class="info-highlight">Blind</b> fluffies do not see.  At all.<p>Learning: <span style="color:darkred">-4</span>, Energy: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
 
+      /* Colors */
+      case 'detail_color':
+        const $colorHex = $target.attr('data-color');
+        const $colorName = $target.attr('data-color-name');
+        const $colorGroup = $target.attr('data-color-group');
+        let shadeHex;
+        for (const shade in ntc.shades) {
+          if(ntc.shades[shade].includes($colorGroup)) {
+            shadeHex = `#${ntc.shades[shade][0]}`;
+          }
+        }
+        const colorLuminance = getLuminance($colorHex);
+        const shadeLuminance = getLuminance(shadeHex);
+        const colorBackground = colorLuminance > 64 ? "var(--text-dark)" : "lightgray";
+        const shadeBackground = shadeLuminance > 64 ? "var(--text-dark)" : "lightgray";
+        return `<span class="info-highlight info-color" style="background:${colorBackground}; color:${$colorHex};">${$colorName}</span>
+        is considered a <span class="info-color" style="background:${shadeBackground}; color:${shadeHex}">${$colorGroup}</span> color.`
+
       default:
-        return `${infokd} has no info yet.`
+        return `${info_id} has no info yet.`
   }
 }
 

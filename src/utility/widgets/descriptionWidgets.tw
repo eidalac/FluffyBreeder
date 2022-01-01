@@ -62,62 +62,62 @@ button {
 		<<set _fluffies = $ourStore.fluffies>>
 	<</if>>
 	<<for _fl range _fluffies>>
-		<<set $globalFluffies[$activeFluffy.ID].preOwned = false>>
-		/*<<fixColors $globalFluffies[_fl]>>*/
-		<<if _args[0] === "breeding">>
-			<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
-				<<continue>>
-			<</if>>
-		<</if>>
-				
-		/* Double check we are removing sold fluffies: */
-		<<if $globalFluffies[_fl].sold == true>>
-			<<run $ourStore.fluffies.delete(_fl)>>
-			<<continue>>
-		<</if>>
-		
-		/* Double check we are removing dead fluffies: */
-		<<if $globalFluffies[_fl].dead == true>>
-			<<run $ourStore.fluffies.delete(_fl)>>
-			<<continue>>
-		<</if>>
-		
-		/* Unweaned babbies */
-		<<if $globalFluffies[_fl].weaned === false>>
-			<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
-				<<continue>>
-			<</if>>
-		
-			/* immature */
-			<<elseif Number($globalFluffies[_fl].age) == 0 &&  Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
-				<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
-					<<set $globalFluffies[_fl].isChecked = false>>
-					<<continue>>
-				<</if>>
-			<<elseif $globalFluffies[_fl].gender == "male">>
-				<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
-					<<set $globalFluffies[_fl].isChecked = false>>
-					<<continue>>
-				<</if>>
-			<<else>>
-				<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
-					<<set $globalFluffies[_fl].isChecked = false>>
+		<<capture _fl>>
+			<<colorGroup $globalFluffies[_fl]>>
+			<<set $globalFluffies[_fl].preOwned = true>>
+			/*<<fixColors $globalFluffies[_fl]>>*/
+			<<if _args[0] === "breeding">>
+				<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
 					<<continue>>
 				<</if>>
 			<</if>>
-		
-			<<if $globalFluffies[_fl].onDisplay == true && $listType != "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
+					
+			/* Double check we are removing sold fluffies: */
+			<<if $globalFluffies[_fl].sold == true>>
+				<<run $ourStore.fluffies.delete(_fl)>>
 				<<continue>>
-			<<elseif $globalFluffies[_fl].onDisplay == false && $listType == "Display">>
-				<<set $globalFluffies[_fl].isChecked = false>>
+			<</if>>
+			
+			/* Double check we are removing dead fluffies: */
+			<<if $globalFluffies[_fl].dead == true>>
+				<<run $ourStore.fluffies.delete(_fl)>>
 				<<continue>>
-			<<else>>
+			<</if>>
+			
+			/* Unweaned babbies */
+			<<if $globalFluffies[_fl].weaned === false>>
+				<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<</if>>
+			
+				/* immature */
+				<<elseif Number($globalFluffies[_fl].age) == 0 &&  Number($globalFluffies[_fl].ageWeeks) <= $globalFluffies[_fl].maturity>>
+					<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<<elseif $globalFluffies[_fl].gender == "male">>
+					<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<<else>>
+					<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<</if>>
+			
+				<<if $globalFluffies[_fl].onDisplay == true && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<<elseif $globalFluffies[_fl].onDisplay == false && $listType == "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<<else>>
 
-			<<clampValues $globalFluffies[_fl]>>
-	
-			<<capture _fl>>
+				<<clampValues $globalFluffies[_fl]>>
 			
 				<label>
 					<div class="fluffy-description">
@@ -184,8 +184,8 @@ button {
 						</div>
 					</div>
 				</label>
-			<</capture>>
-		<</if>>
+			<</if>>
+		<</capture>>
 	<</for>>
 <</widget>>
 
@@ -198,19 +198,19 @@ button {
 <<widget "inlineColor">><<if _args[0] != "Black">><<- "@@color:"+_args[0]+";"+_args[0]>><<else>><<- "@@background:"+_args[0]+"; color:white;"+_args[0]>><</if>><</widget>>
 
 /* ***
- *	Called as <<colorizeText $color $message>>
+ *	Called as <<colorizeText $color $message $attr>>
  *	Returns the message in provided color.
  *** */
 <<widget "colorizeText">>
 	<<set _msg = _args[1] ? _args[1] : "">>
+	<<set _attr = _args[2] ? _args[2] : "">>
 	<<set _luminance = getLuminance(_args[0])>>
-	<<run console.log(_luminance)>>
 	<<if _luminance > 64 >>
 		<<set _background = "var(--text-dark)">>
 	<<else>>
 		<<set _background = "lightgray">>
 	<</if>>
-	<<- `@@background:${_background}; color:${_args[0]};${_msg}`>>
+	<<print `<span ${_attr} style="background:${_background}; color:${_args[0]};">${_msg}</span>`>>
 <</widget>>
 
 /* ***
@@ -284,7 +284,7 @@ button {
  *	Normal ranges for a stat are 0-6
  *** */
 <<widget "displayStat">>
-	<<set _value = "???">>
+	<<set _value = "Unknown">>
 	<<set _color = "">>
 
 	<<if _args[0] < 3>>
@@ -304,7 +304,7 @@ button {
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 40>>
 		<<set _color = `@@.stat-unknown.stat-value`>>
-		<<set _value = `???`>>	
+		<<set _value = `Unknown`>>	
 	<</if>>
 
 	<<- `${_color};${_value}`>>
@@ -318,7 +318,7 @@ button {
  *  This reverses the high/low ranges (ie 0 is green, 200 is red.)
  *** */
 <<widget "displayFlippedAttribute">>
-	<<set _value = "???">>
+	<<set _value = "Unknown">>
 	<<set _color = "">>
 
 	<<if _args[0] < 67>>
@@ -338,7 +338,7 @@ button {
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 50>>
 		<<set _color = `@@.stat-unknown.stat-value`>>
-		<<set _value = `???`>>	
+		<<set _value = `Unknown`>>	
 	<</if>>
 
 	<<- `${_color};${_value}`>>
@@ -351,7 +351,7 @@ button {
  *	Attributes can range from 0 to 200.
  *** */
 <<widget "displayAttribute">>
-	<<set _value = "???">>
+	<<set _value = "Unknown">>
 	<<set _color = "">>
 
 	<<if _args[0] < 67>>
@@ -371,7 +371,7 @@ button {
 		<<set _value = `${_args[0]}`>>
 	<<elseif $training <= 50>>
 		<<set _color = `@@.stat-unknown.stat-value`>>
-		<<set _value = `???`>>	
+		<<set _value = `Unknown`>>	
 	<</if>>
 
 	<<- `${_color};${_value}`>>
@@ -713,12 +713,16 @@ button {
 					<span>Breed: <<print `<span class="info-toggle" data-info="detail_breed">${_fluffy.breed[0].toUpperCase()}${_fluffy.breed.slice(1)}</span>`>></span>
 				</div>
 				<div class="fluffy-color">
-					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name>></span>
+					<<set _infoText = `class="info-toggle" data-info="detail_color" `>>
+					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.colorGroup[0]}"`>>
+					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name _infoText+_infoColor>></span>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
-						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name>></span>
+						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.colorGroup[1]}"`>>
+						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name _infoText+_infoColor>></span>
 					<</if>>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
-						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name>></span>
+						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.colorGroup[2]}"`>>
+						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name _infoText+_infoColor>></span>
 					<</if>>
 				</div>
 				<div class="fluffy-traits">
@@ -732,8 +736,8 @@ button {
 					</div>
 				</div>
 				<div class="fluffy-family">
-					<<if _fluffy.mother == -1>><span>Mother: @@.orange;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor.hex $globalFluffies[_fluffy.mother].name>></span><</if>>
-					<<if _fluffy.father == -1>><span>Father: @@.orange;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor.hex $globalFluffies[_fluffy.father].name>></span><</if>>
+					<<if _fluffy.mother == -1>><span>Mother: @@.mediumorchid;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor.hex $globalFluffies[_fluffy.mother].name>></span><</if>>
+					<<if _fluffy.father == -1>><span>Father: @@.mediumorchid;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor.hex $globalFluffies[_fluffy.father].name>></span><</if>>
 					<<if _fluffy.specialFriend != -1>><span>Special Friend: <<colorizeText $globalFluffies[_fluffy.specialFriend].cColor.hex $globalFluffies[_fluffy.specialFriend].name>></span><</if>>
 					<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
 					<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>

@@ -32,7 +32,7 @@ Sample Usage:
 
 */
 
-var ntc = {
+window.ntc = {
 
   init: function() {
     var color, rgb, hsl;

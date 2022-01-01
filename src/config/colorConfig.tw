@@ -28,7 +28,7 @@
 	<<set _maneGroup = "">>
 	<<set _eyeGroup = "">>
 
-	/* Interate through the list of colors, if they match, remember the tier and group.*/
+	/* Iterate through the list of colors, if they match, remember the tier and group.*/
 	<<for _i = 0; _i < $colors.length; _i++>>
 
 		<<if $activeFluffy.cColor.name== $colors[_i].name>>
@@ -83,6 +83,10 @@
 		<</if>>
 	
 	/* Complimentary pair */
+	<<elseif _coatGroup == "Black" && _maneGroup == "White">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "White" && _maneGroup == "Black">>
+		<<set _pairBonus = 0.5>>
 	<<elseif _coatGroup == "Blue" && _maneGroup == "Orange">>
 		<<set _pairBonus = 0.5>>
 	<<elseif _coatGroup == "Orange" && _maneGroup == "Blue">>
@@ -163,9 +167,25 @@
  *	Color Group
  *	Call as <<colorGroup $fluffy>>
  *
- *	Finds the color group of $fluffy)
+ *	Finds the name of the color group of $fluffy.
+ *	Without fluffy, will simply apply to $ntcArr.
  *** */
 <<widget "colorGroup">>
+	<<fluffyError _args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<colorGroup>>: ${$fluffyError}.`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<set _ntcFluffy = _args[0]>>
+		<<run
+			_ntcFluffy.colorGroup[0] = ntc.name(_ntcFluffy.cColor.hex)[3];
+			_ntcFluffy.colorGroup[1] = ntc.name(_ntcFluffy.mColor.hex)[3];
+			_ntcFluffy.colorGroup[2] = ntc.name(_ntcFluffy.eColor.hex)[3];
+		>>
+	<</if>>
+<</widget>>
+
+/* <<widget "colorGroup">>
 	<<fluffyError _args[0]>>
 	<<if $fluffyError>>
 		<<run console.log(`ERROR: <<colorGroup>>: ${$fluffyError}.`)>>
@@ -183,6 +203,7 @@
 		<<set _hslFluffy.colorGroup = ["", "", ""]>>
 
 		<<run console.log(`DEBUG: colorGroup: _hslCoat = ${_hslCoat}, _hslMane = ${_hslMane}, _hslEyes = ${_hslEyes}.`)>>
+		console.log(ntc.name(State.variables.activeFluffy.cColor.hex))
 
 		<<for _i = 0; _i < groupList.length-2; _i++>>
 			<<capture _i>>
@@ -204,7 +225,6 @@
 			<</capture>>
 		<</for>>
 
-		/* No matches found, bad*/
 		<<if _hslFluffy.colorGroup[0] == "">>
 			<br>@@.red;No color match found for coat: <<print _fluffy.ID>>.
 		<</if>>
@@ -215,7 +235,7 @@
 			<br>@@.red;No color match found for eye: <<print _fluffy.ID>>.
 		<</if>>	
 	<</if>>
-<</widget>>
+<</widget>> */
 
 /* ***
  *	Call as <<setFilters $fluffy>>

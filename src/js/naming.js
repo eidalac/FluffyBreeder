@@ -471,6 +471,11 @@ window.nameList = {
 			"Fire",
 			"Flare",
 			"Tomato",
+			"Burgundy",
+			"Ribbon",
+			"Cardinal",
+			"Torch",
+			"Salmon"
 		],
 		"Orange": [
 			"Orange",
@@ -483,7 +488,10 @@ window.nameList = {
 			"Physalis",
 			"Mango",
 			"Honey",
-			"Pumpkin"
+			"Pumpkin",
+			"Carrot",
+			"Copper",
+			"Calico"
 		],
 		"Yellow": [
 			"Yellow",
@@ -499,7 +507,7 @@ window.nameList = {
 			"Butters",
 			"Mustard"
 		],
-		"Chartreuse": [
+		"Green": [
 			"Starfruit",
 			"Venom",
 			"Lush",
@@ -513,9 +521,7 @@ window.nameList = {
 			"Slime",
 			"Bowser",
 			"Frogger",
-			"Greenery"
-		],
-		"Green": [
+			"Greenery",
 			"Green",
 			"Greeny",
 			"Apple",
@@ -531,9 +537,7 @@ window.nameList = {
 			"Olive",
 			"Papaya",
 			"Evergreen",
-			"Matcha"
-		],
-		"Emerald": [
+			"Matcha",
 			"Emerald",
 			"Druid",
 			"Nettle",
@@ -544,7 +548,24 @@ window.nameList = {
 			"Spruce",
 			"Peppermint"
 		],
-		"Cyan": [
+		"Blue": [
+			"Azure",
+			"Water",
+			"Vermeer",
+			"Mystic",
+			"Atlantic",
+			"Sapphire",
+			"Ocean",
+			"Seashore",
+			"Blue",
+			"Bluey",
+			"Blueberry",
+			"Heaven",
+			"Damson",
+			"Saskatoon",
+			"Bilberry",
+			"Huckleberry",
+			"Juniper",
 			"Synergy",
 			"Teal",
 			"Bianchi",
@@ -554,28 +575,6 @@ window.nameList = {
 			"Baltic",
 			"Poseidon",
 			"Frost",
-			""
-		],
-		"Azure": [
-			"Azure",
-			"Water",
-			"Vermeer",
-			"Mystic",
-			"Atlantic",
-			"Sapphire",
-			"Ocean",
-			"Seashore"
-		],
-		"Blue": [
-			"Blue",
-			"Bluey",
-			"Blueberry",
-			"Heaven",
-			"Damson",
-			"Saskatoon",
-			"Bilberry",
-			"Huckleberry",
-			"Juniper"
 		],
 		"Violet": [
 			"Plum",
@@ -587,16 +586,6 @@ window.nameList = {
 			"Grape",
 			"Mulberry",
 			"Raisin",
-		],
-		"Magenta": [
-			"Fuschia",
-			"Candy",
-			"Orchid",
-			"Akebi",
-			"Flamingo",
-			"Lilac"
-		],
-		"Rose": [
 			"Rose",
 			"Pinkie",
 			"Yogurt",
@@ -604,6 +593,11 @@ window.nameList = {
 			"Bordeaux",
 			"Velvet",
 			"Fuschia",
+			"Candy",
+			"Orchid",
+			"Akebi",
+			"Flamingo",
+			"Lilac"
 		],
 		"Brown": [
 			"Browny",
@@ -616,6 +610,8 @@ window.nameList = {
 			"Hazel",
 			"Hazelnut",
 			"Almond",
+			"Cinnamon",
+			"Sandy",
 		],
 		"White": [
 			"Cauliflower",
@@ -639,6 +635,16 @@ window.nameList = {
 			"Chaos",
 			"Angst"
 		],
+		"Grey": [
+			"Foggy",
+			"Ash",
+			"Smoke",
+			"Bullet",
+			"Jet",
+			"Platinum",
+			"Stone",
+			"Rocky"
+		]
 	},
 	"abuse": [
 		"Pincushion",
