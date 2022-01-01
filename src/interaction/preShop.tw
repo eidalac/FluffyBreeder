@@ -280,7 +280,7 @@
                         <<if ($activeFluffy.weight / $activeFluffy.maxWeight) <= 0.14>>
                             /* nursing */
                             <<set $globalFluffies[$activeFluffy.ID].weaned = false>>
-                            <<set $globalFluffies[$mom.ID].nursing++>>
+                            <<set $globalFluffies[$mom.ID].nursing.push($activeFluffy.ID)>>
                             <<set $globalFluffies[$activeFluffy.ID].foodType = "Nursing">>
                         <<else>>
                             /* weaned */
@@ -291,8 +291,8 @@
                 <</for>>
 
                 /* Set max nursing so milk is generated */
-                <<if $globalFluffies[$mom.ID].nursing > 0>>
-                    <<set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing>>
+                <<if $globalFluffies[$mom.ID].nursing.length > 0>>
+                    <<set $globalFluffies[$mom.ID].nursingMax = $globalFluffies[$mom.ID].nursing.length>>
                     <<set $globalFluffies[$mom.ID].nursingMax -= random(0,1)>>
                 <</if>>
 

@@ -12,6 +12,11 @@
  *
  *********** */
 
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 <<set $ui = "main">>
@@ -90,7 +95,7 @@
 						<<for _bf range $ourStore.fluffies>>
 							<<if $globalFluffies[_bf].isChecked == true && $ourStore.onDisplay < $ourStore.display>>
 				
-								<<if $globalFluffies[_bf].pregnant == false && $globalFluffies[_bf].nursing < 1 && $globalFluffies[_bf].weaned == true>>
+								<<if $globalFluffies[_bf].pregnant == false && $globalFluffies[_bf].nursing.length < 1 && $globalFluffies[_bf].weaned == true>>
 
 									<<if $globalFluffies[_bf].specialFriend != -1>>
 										<<set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1>>
@@ -321,7 +326,7 @@
 													<<if $globalFluffies[_bf].weaned == false>> 
 														<<set $globalFluffies[_bf].foodType = "Formula">>
 														<<set $globalFluffies[_bf].foodQuality = 0>>
-														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
 													<</if>>
 												<</if>>
 											<</for>>
@@ -333,7 +338,7 @@
 													<<if $globalFluffies[_bf].weaned == false>> 
 														<<set $globalFluffies[_bf].foodType = "Formula">>
 														<<set $globalFluffies[_bf].foodQuality = 1>>
-														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
 													<</if>>
 												<</if>>
 											<</for>>
@@ -345,7 +350,7 @@
 													<<if $globalFluffies[_bf].weaned == false>> 
 														<<set $globalFluffies[_bf].foodType = "Formula">>
 														<<set $globalFluffies[_bf].foodQuality = 2>>
-														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
 													<</if>>
 												<</if>>
 											<</for>>
@@ -357,7 +362,7 @@
 													<<if $globalFluffies[_bf].weaned == false>> 
 														<<set $globalFluffies[_bf].foodType = "Formula">>
 														<<set $globalFluffies[_bf].foodQuality = 3>>
-														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
 													<</if>>
 												<</if>>
 											<</for>>
@@ -369,7 +374,7 @@
 													<<if $globalFluffies[_bf].weaned == false>> 
 														<<set $globalFluffies[_bf].foodType = "Formula">>
 														<<set $globalFluffies[_bf].foodQuality = 4>>
-														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing-->>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
 													<</if>>
 												<</if>>
 											<</for>>
