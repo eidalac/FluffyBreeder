@@ -1743,7 +1743,7 @@ window.ntc = {
 ["DFE6CF", "Willow Brook", "Green"],
 ["69755C", "Willow Grove", "Green"],
 ["462C77", "Windsor", "Violet"],
-["522C35", "Wine Berry", "Red"],
+["522C35", "Wine Berry", "Brown"],
 ["D0C383", "Winter Hazel", "Yellow"],
 ["F9E8E2", "Wisp Pink", "Red"],
 ["C9A0DC", "Wisteria", "Violet"],

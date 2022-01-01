@@ -420,7 +420,7 @@ window.hexToHSL = function (hex) {
     : 0;
   return [
     60 * h < 0 ? 60 * h + 360 : 60 * h,
-    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 1),
     (100 * (2 * l - s)) / 2,
   ];
 };
@@ -467,4 +467,40 @@ window.getLuminance = (hex) => {
 
 window.inRange = function(x, min, max) {
   return ((x-min)*(x-max) <= 0);
+}
+
+window.getColorAppeal = function (hex) {
+	hex = hex === '#ffffff' ? '#fffffe' : hex;
+  const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+	let hsl = hexToHSL(hex);
+  let [h, s, l] = [hsl[0], hsl[1], hsl[2]];
+	let appeal = 100 - ((100-l) + (100-s))/2;
+
+  const bonus = s >= l ? l >= 30 ? s-l : l <= 5 ? 100 - s*1.5 : 0 : l >= 50 ? l/6 : l <= 10 ? 100 - l : 0;
+
+  appeal = bonus > 0 ? appeal += bonus : appeal;
+
+  return Math.round(clamp(appeal, 0, 100));
+}
+
+window.getColorProximity = function (hex, group = undefined) {
+  let shades = window.shades;
+	let rgb = hexToRgb(hex)
+  let [r, g, b] = [rgb[0], rgb[1], rgb[2]]
+  let minimum = 10000000000000;
+  
+  for(let i in shades) {
+  	if(group && shades[i][1] === group) {
+      let shade_rgb = hexToRgb(`#${shades[i][0]}`);
+      let [shade_r, shade_g, shade_b] = [shade_rgb[0], shade_rgb[1], shade_rgb[2]];
+      let distance = Math.sqrt(Math.pow((r - shade_r), 2) + Math.pow((g - shade_g), 2) + Math.pow((b - shade_b), 2));
+      return Math.min(minimum, distance);
+    } else {
+      let shade_rgb = hexToRgb(`#${shades[i][0]}`);
+      let [shade_r, shade_g, shade_b] = [shade_rgb[0], shade_rgb[1], shade_rgb[2]];
+      let distance = Math.sqrt(Math.pow((r - shade_r), 2) + Math.pow((g - shade_g), 2) + Math.pow((b - shade_b), 2));
+      minimum = Math.min(minimum, distance);
+    }
+  }
+  return Math.min(minimum, distance);
 }
