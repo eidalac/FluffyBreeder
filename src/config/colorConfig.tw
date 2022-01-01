@@ -116,6 +116,7 @@
  *	Used to limit the colors you can get from different sources.
  *** */
 <<widget "limitColor">>
+/*
 	<<if ndef(_args)>>
 		<<run console.log(`ERROR: <<limitColor>>: Called with no arguments.`)>>
 	<<elseif _args.length > 2>>
@@ -123,7 +124,6 @@
 	<<else>>
 		<<set _wGene = [ "W/w;", "W/W;", "w/W;" ]>>
 
-		/* Some logic/sanity checking: */ 
 		<<script>>
 			if (state.temporary.args.length == 1)
 			{
@@ -137,16 +137,11 @@
 			}
 		<</script>>
 
-		/* Ignor eyes, only look at coat and mane */
 		<<set _nColors = clone($colors)>>
 
-		/* Interate through the list of colors, if they match, remember the tier and group.*/
 		<<run _nColors.deleteWith(function (val) { 	return val.tier < _low; })>>
 		<<run _nColors.deleteWith(function (val) { 	return val.tier > _high; })>>
 
-		/* Now we have an arry for colors that are within the specified ranges.*/
-	
-		/*  	have to set the genes... */
 		<<set _randomCoat = _nColors.random()>>
 		<<set _randomMane = _nColors.random()>>
 
@@ -156,11 +151,11 @@
 
 		<<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
 
-		<<set $activeFluffy.mColor.name = $activeFluffy.genes.getManeColorObject()>>
-		<<set $activeFluffy.cColor.name= $activeFluffy.genes.getCoatColorObject()>>
-		<<set $activeFluffy.eColor.name = $activeFluffy.genes.getEyeColorObject()>>
+		<<set $activeFluffy.mColor = $activeFluffy.genes.getManeColorObject()>>
+		<<set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorObject()>>
+		<<set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorObject()>>
 	<</if>>
-	
+*/	
 <</widget>>
 
 /* ***
@@ -226,13 +221,13 @@
 		<</for>>
 
 		<<if _hslFluffy.colorGroup[0] == "">>
-			<br>@@.red;No color match found for coat: <<print _fluffy.ID>>.
+			<<run console.log(`ERROR: colorGroup: No color match found for coat ${_hslFluffy.cColor} on Fluffy ${_hslFluffy.ID}.`)>>
 		<</if>>
 		<<if _hslFluffy.colorGroup[1] == "">>
-			<br>@@.red;No color match found for mane: <<print _fluffy.ID>>.
+			<<run console.log(`ERROR: colorGroup: No color match found for mane ${_hslFluffy.mColor} on Fluffy ${_hslFluffy.ID}.`)>>
 		<</if>>
 		<<if _hslFluffy.colorGroup[2] == "">>
-			<br>@@.red;No color match found for eye: <<print _fluffy.ID>>.
+			<<run console.log(`ERROR: colorGroup: No color match found for eye ${_hslFluffy.eColor} on Fluffy ${_hslFluffy.ID}.`)>>
 		<</if>>	
 	<</if>>
 <</widget>> */

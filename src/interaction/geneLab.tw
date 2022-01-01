@@ -28,14 +28,6 @@
 You are editing the genes of:
 <br><span id="desc"><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>></span>
 
-<<set _cObj = $activeFluffy.genes.newCoatColorObject($activeFluffy.coatModifer)>>
-<<set _mObj = $activeFluffy.genes.newManeColorObject($activeFluffy.maneModifer)>>
-<<set _eObj = $activeFluffy.genes.newEyeColorObject($activeFluffy.eyeModifer)>>
-
-<<run console.log(`DEBUG: [geneLab]: new gene hex test: Coat =  ${_cObj.name}.`)>>
-<<run console.log(`DEBUG: [geneLab]: new gene hex test: Mane =  ${_mObj.name}.`)>>
-<<run console.log(`DEBUG: [geneLab]: new gene hex test: Eyes =  ${_eObj.name}.`)>>
-
 /* ***
  *	Gender, the easy one.  Click a link, swap gender.
  *** */
@@ -434,7 +426,7 @@ Coat Color:
 <<set _ccString  = $globalFluffies[$activeFluffy.ID].genes.getCoatColor().toString() + ";">>
 
 <span id="ccolor">
-	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatColorObject()>>
+	<<print $globalFluffies[$activeFluffy.ID].cColor.name>>
 </span>
 
 <div id="cc-form">
@@ -454,12 +446,14 @@ Coat Color:
 		<<if _geneCheck === null>>
 			<<replace "#cc-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
 		<<else>>
+			/* Gene passes the regex check, save it to the genome: */
 			<<run $globalFluffies[$activeFluffy.ID].genes.setCoatColor(_ccString)>>
-			
-			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+
+			/* Update the gene string: */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
 
-			<<set $globalFluffies[$activeFluffy.ID].cColor = $globalFluffies[$activeFluffy.ID].genes.getCoatColorObject()>>
+			/* Update the color object: */
+			<<set $activeFluffy.cColor = $activeFluffy.genes.newCoatColorObject($activeFluffy.coatModifer)>>
 
 			/* Update the color groups and value bonus */
 			<<colorValue>>
@@ -467,7 +461,7 @@ Coat Color:
 
 			/* And update the pbreed */
 			<<replace "#cc-form-error">>Gene set.  Coat = <<print $globalFluffies[$activeFluffy.ID].cColor.name>><br> <</replace>>
-			<<replace "#ccolor">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatColorObject()>><</replace>>
+			<<replace "#ccolor">><<print $globalFluffies[$activeFluffy.ID].cColor.name>><</replace>>
 			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
 		<</if>>
 	<</if>>
@@ -480,11 +474,10 @@ Coat Color:
  *	Mane Color
  *** */
 Mane Color: 
-<<set _mcString  = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + ";">>
-
+<<set _mcString = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + ";">>
 
 <span id="mcolor">
-	<<print $globalFluffies[$activeFluffy.ID].genes.getManeColorObject()>>
+	<<print $globalFluffies[$activeFluffy.ID].mColor.name>>
 </span>
 
 <div id="mc-form">
@@ -504,20 +497,22 @@ Mane Color:
 		<<if _geneCheck === null>>
 			<<replace "#mc-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
 		<<else>>
+			/* Gene passes the regex check, save it to the genome: */
 			<<run $globalFluffies[$activeFluffy.ID].genes.setManeColor(_mcString)>>
-			
-			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+
+			/* Update the gene string: */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
 
-			<<set $globalFluffies[$activeFluffy.ID].mColor = $globalFluffies[$activeFluffy.ID].genes.getManeColorObject()>>
+			/* Update the color object: */
+			<<set $activeFluffy.mColor = $activeFluffy.genes.newManeColorObject($activeFluffy.maneModifer)>>
 
 			/* Update the color groups and value bonus */
 			<<colorValue>>
 			<<colorGroup $activeFluffy>>
 
 			/* And update the pbreed */
-			<<replace "#mc-form-error">>Gene set.  Mane Color = <<print $globalFluffies[$activeFluffy.ID].mColor>><br> <</replace>>
-			<<replace "#mcolor">><<print $globalFluffies[$activeFluffy.ID].genes.getManeColorObject()>><</replace>>
+			<<replace "#mc-form-error">>Gene set.  Mane Color = <<print $globalFluffies[$activeFluffy.ID].mColor.name>><br> <</replace>>
+			<<replace "#mcolor">><<print $globalFluffies[$activeFluffy.ID].mColor.name>><</replace>>
 			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
 		<</if>>
 	<</if>>
@@ -533,7 +528,7 @@ Mane Color:
 Eye Color: 
 <<set _ecString  = $globalFluffies[$activeFluffy.ID].genes.getEyeColor().toString() + ";">>
 <span id="ecolor">
-	<<print $globalFluffies[$activeFluffy.ID].genes.getEyeColorObject()>>
+	<<print $globalFluffies[$activeFluffy.ID].eColor.name>>
 </span>
 
 <div id="ec-form">
@@ -553,16 +548,19 @@ Eye Color:
 		<<if _geneCheck === null>>
 			<<replace "#ec-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
 		<<else>>
-			<<run $globalFluffies[$activeFluffy.ID].genes.setEyeColor(_ecString )>>
-			
-			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			/* Gene passes the regex check, save it to the genome: */
+			<<run $globalFluffies[$activeFluffy.ID].genes.setEyeColor(_ecString)>>
+
+			/* Update the gene string: */
 			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
 
-			<<set $globalFluffies[$activeFluffy.ID].eColor = $globalFluffies[$activeFluffy.ID].genes.getEyeColorObject()>>
+			/* Update the color object: */
+			<<set $activeFluffy.eColor = $activeFluffy.genes.newEyeColorObject($activeFluffy.eyeModifer)>>
+
 
 			/* And update the pbreed */
 			<<replace "#ec-form-error">>Gene set.  Eye Color = <<print $globalFluffies[$activeFluffy.ID].eColor.name>><br> <</replace>>
-			<<replace "#ecolor">><<print $globalFluffies[$activeFluffy.ID].genes.getEyeColorObject()>><</replace>>
+			<<replace "#ecolor">><<print $globalFluffies[$activeFluffy.ID].eColor.name>><</replace>>
 			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
 		<</if>>
 	<</if>>

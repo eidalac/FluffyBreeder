@@ -218,23 +218,10 @@
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 
-		<<run console.log(`DEBUG: newFromGene: age check: maturity ${$activeFluffy.maturity}.`)>>
-
 		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2)))>>
-
-		<<run console.log(`DEBUG: newFromGene: age check: random ${_rAge}.`)>>
-
 		<<set _rAge = Math.clamp(Number(_rAge), 52, 96)>>
-
-		<<run console.log(`DEBUG: newFromGene: age check: random bound ${_rAge}.`)>>
-
 		<<set $activeFluffy.age = Math.trunc(Number(_rAge / 52))>>
-
-		<<run console.log(`DEBUG: newFromGene: age check: set age ${$activeFluffy.age}.`)>>
-
 		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)>>
-
-		<<run console.log(`DEBUG: newFromGene: age check: set ageWeeks ${$activeFluffy.ageWeeks}.`)>>
 
 		<<switch $alicornRarity>>
 		<<case 0>>
@@ -303,8 +290,6 @@
 			<<elseif _testGene === _testGene.toUpperCase()>>
 				<<set _traitMaxLevel++>>
 			<</if>>
-
-			<<run console.log(`DEBUG: setGeneTraits: ${_gene} _defectMaxLevel = ${_defectMaxLevel}, _traitMaxLevel = ${_traitMaxLevel}.`)>>
 		<</for>>
 
 		<<set _traitIndex = [
@@ -319,13 +304,8 @@
 			{ gene: 120, name: "Eye" }
 		] >>
 
-		<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex.length}.`)>>
-		<<run console.log(`DEBUG: setGeneTraits: _traitIndex ${_traitIndex}.`)>>
-
 		<<for _index range _traitIndex>>
 
-			<<run console.log(`DEBUG: setGeneTraits: _index ${_index}.`)>>
-		
 			<<set _gene = _index.gene>>
 			<<set _testGene = "">>
 			<<set _testGene += $activeFluffy.geneString.substring(_gene, _gene+1)>>
@@ -381,8 +361,6 @@
 
 			/* Increment the count: */
 			<<set _defectCount++>>
-
-			<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisDefect} defect at level ${_defectLevel}.`)>>
 
 			<<switch _thisDefect>>
 				<<case "Leg">>
@@ -590,8 +568,6 @@
 			/* Increment the count: */
 			<<set _traitCount++>>
 
-			<<run console.log(`DEBUG: setGeneTraits: pushing = ${_thisTrait} defect at level ${_traitCount}.`)>>
-			
 			<<switch _thisTrait>>
 				<<case "Leg">>
 					<<switch _traitLevel>>

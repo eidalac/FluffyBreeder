@@ -399,7 +399,7 @@ window.hexToFilter = function (hex) {
     const result = solver.solve();
     return result.filter;
   } else {
-    console.log("DEBUG: Hex is not a string:", hex)
+    console.log("ERROR: Hex is not a string:", hex)
   }
 }
 

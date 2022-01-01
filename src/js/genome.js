@@ -1519,10 +1519,6 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	var hexTwo = -1;
 	var hexThree = -1;
 
-	console.log(`DEBUG: getNewGeneColor(): bFactor =  ${bFactor}.`);
-	console.log(`DEBUG: getNewGeneColor(): yFactor =  ${yFactor}.`);
-	console.log(`DEBUG: getNewGeneColor(): rFactor =  ${rFactor}.`);
-
     for (let i in valueIndex) {
         let bIndex = valueIndex[i].string.replaceAll(/c/g, 'b');
 		bIndex = bIndex.replaceAll(/C/g, 'B');
@@ -1549,8 +1545,6 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 			break;
 		}
 	}
-
-	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
 
 	var dif = 0;
 
@@ -1625,8 +1619,6 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 		}
 	}
 	
-	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
-
 	hexOne = Number(Number(hexOne) * 1.9).toFixed(0);
 	hexTwo = Number(Number(hexTwo) * 1.7).toFixed(0);
 	hexThree = Number(Number(hexThree) * 1.4).toFixed(0);
@@ -1635,16 +1627,10 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	hexTwo = Math.clamp(hexTwo, 0, 255);
 	hexThree = Math.clamp(hexThree, 0, 255);
 
-	console.log(`DEBUG: getNewGeneColor(): hexOne =  ${hexOne}, hexTwo =  ${hexTwo}, hexThree =  ${hexThree}.`);
-
 	var hexString = '#';
-	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 	hexString += hexOne.toString(16).length === 1 ? '0' + hexOne.toString(16) : hexOne.toString(16);
-	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 	hexString += hexTwo.toString(16).length === 1 ? '0' + hexTwo.toString(16) : hexTwo.toString(16); 
-	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 	hexString += hexThree.toString(16).length === 1 ? '0' + hexThree.toString(16) : hexThree.toString(16);
-	console.log(`DEBUG: getNewGeneColor(): hexString =  ${hexString}.`);
 
 	let geneObject;
 	const colorFilter = hexToFilter(hexString);
@@ -1665,14 +1651,12 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 /**
  * Retrieves the color code from this gene set.
  * Gene pattern is (B/b;Y/y;R/r;O/o;W/w).
- * there are over 81 base combiations
- * some are hand picked so this will be done as a massive coded list.
  * 
  * @param int index index of the first gene in the sequence
  *
  * @return String
  */
-Genome.prototype.getGeneColor = function(index) {
+ Genome.prototype.getGeneColor = function(index) {
 	// clear up the string
 	var geneOne = this.elementAt(index).toString().split('/');		// {[B], [b]}
 	var geneTwo = this.elementAt(index+1).toString().split('/');	// {[Y], [y]}
@@ -1739,255 +1723,6 @@ Genome.prototype.getGeneColor = function(index) {
 		const random_color = colors[random].name;
 		geneObject = {name: random_color, hex: "#FF9900"}
 	}
-
-	// now the bastard monster switch
-	// switch (geneString) {
-	// case "bByyrRoO":
-	// 	geneString = "Gold";
-	// 	break;
-	// case "bBYYrrOO":
-	// 	geneString = "Lavender";
-	// 	break;
-	// case "bByyrroO":
-	// 	geneString = "CornflowerBlue";
-	// 	break;
-	// case "BByYrROO":
-	// 	geneString = "CornflowerBlue";
-	// 	break;
-	// case "bByYRROO":
-	// 	geneString = "MidnightBlue";
-	// 	break;
-	// case "bBYYRRoo":
-	// 	geneString = "Orchid";
-	// 	break;
-	// case "bbyyrROO":
-	// 	geneString = "PeachPuff";
-	// 	break;
-	// case "bByyrROO":
-	// 	geneString = "YellowGreen";
-	// 	break;
-	// case "BByYrRoO":
-	// 	geneString = "GreenYellow";
-	// 	break;
-	// case "bbyyrroO":
-	// 	geneString = "Chartreuse";
-	// 	break;
-	// case "bbyyrrOO":
-	// 	geneString = "OliveDrab";
-	// 	break;
-	// case "bbyYrRoO":
-	// 	geneString = "Moccasin";
-	// 	break;
-	// case "BByyrROO":
-	// 	geneString = "Yellow";
-	// 	break;
-	// case "bbyYrroo":
-	// 	geneString = "Khaki";
-	// 	break;
-	// case "bbYYrroo":
-	// 	geneString = "PaleGoldenRod";
-	// 	break;
-	// case "bByyrRoo":
-	// 	geneString = "Thistle";
-	// 	break;
-	// case "bByYrRoO":
-	// 	geneString = "Violet";
-	// 	break;
-	// case "bBYYrROO":
-	// 	geneString = "RebeccaPurple";
-	// 	break;
-	// case "bBYYrroO":
-	// 	geneString = "Plum";
-	// 	break;
-	// case "bByYrRoo":
-	// 	geneString = "Purple";
-	// 	break;
-	// case "bBYYRRoO":
-	// 	geneString = "PaleVioletRed";
-	// 	break;
-	// case "bBYYRROO":
-	// 	geneString = "Fuchsia";
-	// 	break;
-	// case "bBYYrRoO":
-	// 	geneString = "OrangeRed";
-	// 	break;
-	// case "BBYYrRoO":
-	// 	geneString = "Tomato";
-	// 	break;
-	// case "bbyyrroo":
-	// 	geneString = "Chocolate";
-	// 	break;
-	// case "bBYYrRoo":
-	// 	geneString = "Red";
-	// 	break;
-	// case "BByYrRoo":
-	// 	geneString = "FireBrick";
-	// 	break;
-	// case "BBYYrRoo":
-	// 	geneString = "Crimson";
-	// 	break;
-	// case "BByyrRoo":
-	// 	geneString = "IndianRed";
-	// 	break;
-	// case "BByyrRoO":
-	// 	geneString = "Salmon";
-	// 	break;
-	// case "BByYRRoO":
-	// 	geneString = "LightCoral";
-	// 	break;
-	// case "BBYYRRoO":
-	// 	geneString = "DarkSalmon";
-	// 	break;
-	// case "BByYRROO":
-	// 	geneString = "Red";
-	// 	break;
-	// case "BByyRRoO":
-	// 	geneString = "Maroon";
-	// 	break;
-	// case "BBYYRROO":
-	// 	geneString = "MediumVioletRed";
-	// 	break;
-	// case "BBYYRRoo":
-	// 	geneString = "DeepPink";
-	// 	break;
-	// case "BByyRROO":
-	// 	geneString = "HotPink";
-	// 	break;
-	// case "BByyRRoo":
-	// 	geneString = "Pink";
-	// 	break;
-	// case "bbyyrRoo":
-	// 	geneString = "Tomato";
-	// 	break;
-	// case "bbyyrRoO":
-	// 	geneString = "Coral";
-	// 	break;
-	// case "BByYRRoo":
-	// 	geneString = "Orange";
-	// 	break;
-	// case "bbyyRRoO":
-	// 	geneString = "Orange";
-	// 	break;
-	// case "bbyyRROO":
-	// 	geneString = "Orange";
-	// 	break;
-	// case "bbyyRRoo":
-	// 	geneString = "Orange";
-	// 	break;
-	// case "bByYrROO":
-	// 	geneString = "SpringGreen";
-	// 	break;
-	// case "bbyYrroO":
-	// 	geneString = "OliveDrab";
-	// 	break;
-	// case "bbYYrroO":
-	// 	geneString = "SeaGreen";
-	// 	break;
-	// case "bbyYrrOO":
-	// 	geneString = "ForestGreen";
-	// 	break;
-	// case "bbYYrrOO":
-	// 	geneString = "Green";
-	// 	break;
-	// case "bByyrroo":
-	// 	geneString = "SandyBrown";
-	// 	break;
-	// case "bbYYrRoo":
-	// 	geneString = "Chocolate";
-	// 	break;
-	// case "bByYrroo":
-	// 	geneString = "Brown";
-	// 	break;
-	// case "bbYYrRoO":
-	// 	geneString = "Brown";
-	// 	break;
-	// case "bbyYrRoo":
-	// 	geneString = "Brown";
-	// 	break;
-	// case "bbyYrROO":
-	// 	geneString = "Brown";
-	// 	break;
-	// case "bBYYrroo":
-	// 	geneString = "Sienna";
-	// 	break;
-	// case "bbYYrROO":
-	// 	geneString = "Sienna";
-	// 	break;
-	// case "bbyYRRoO":
-	// 	geneString = "Tan";
-	// 	break;
-	// case "BByYrroo":
-	// 	geneString = "BurlyWood";
-	// 	break;
-	// case "bbYYRRoO":
-	// 	geneString = "RosyBrown";
-	// 	break;
-	// case "bbyYRROO":
-	// 	geneString = "SandyBrown";
-	// 	break;
-	// case "bbyYRRoo":
-	// 	geneString = "DarkGoldenRod";
-	// 	break;
-	// case "BBYYrroo":
-	// 	geneString = "Tan";
-	// 	break;
-	// case "BByyrroo":
-	// 	geneString = "BurlyWood";
-	// 	break;
-	// case "bbYYRROO":
-	// 	geneString = "BlanchedAlmond";
-	// 	break;
-	// case "bbYYRRoo":
-	// 	geneString = "Cornsilk";
-	// 	break;
-	// case "bByyrrOO":
-	// 	geneString = "BlueViolet";
-	// 	break;
-	// case "bByYrroO":
-	// 	geneString = "SlateBlue";
-	// 	break;
-	// case "bByYrrOO":
-	// 	geneString = "Indigo";
-	// 	break;
-	// case "BByYrroO":
-	// 	geneString = "RoyalBlue";
-	// 	break;
-	// case "BBYYrroO":
-	// 	geneString = "BlueViolet";
-	// 	break;
-	// case "BByYrrOO":
-	// 	geneString = "BlueViolet";
-	// 	break;
-	// case "BByyrroO":
-	// 	geneString = "BlueViolet";
-	// 	break;
-	// case "BBYYrrOO":
-	// 	geneString = "BlueViolet";
-	// 	break;
-	// case "BByyrrOO":
-	// 	geneString = "MediumPurple";
-	// 	break;
-	// case "bByyRRoO":
-	// 	geneString = "SteelBlue";
-	// 	break;
-	// case "bByyRROO":
-	// 	geneString = "SkyBlue";
-	// 	break;
-	// case "bByyRRoo":
-	// 	geneString = "DodgerBlue";
-	// 	break;
-	// case "bByYRRoO":
-	// 	geneString = "Blue";
-	// 	break;
-	// case "bByYRRoo":
-	// 	geneString = "RoyalBlue";
-	// 	break;
-	// case "BBYYrROO":
-	// 	geneString = "Navy";
-	// 	break;
-	// default:
-	// 	return "INVALID COLOR";
-	// }
 	
 	return geneObject; 
 };
@@ -1996,14 +1731,16 @@ Genome.prototype.getGeneColor = function(index) {
  * Sets the color gene.  Used for the gene lab.
  *
  * @param string new_gene string
+ * @param int addition modifer to the base color (0-28)
  * 
  * @return boolean - true if the gene was found valid and set, false if it was found to be invalid.
  */
 Genome.prototype.setCoatColor = function(new_gene) {
-	var test_gene = Genome.fromString(new_gene);
-	switch (test_gene.getGeneColor(0)) {
-	case "INVALID COLOR":
 
+	var geneCheck = new_gene.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i);
+
+	if (geneCheck == false)
+	{
 		/* Reset to default values: */
 		this.genes[17] = "B/b";
 		this.genes[18] = "Y/y";
@@ -2011,7 +1748,9 @@ Genome.prototype.setCoatColor = function(new_gene) {
 		this.genes[20] = "O/o";
 		this.genes[21] = "W/w";
 		return false;
-	default:
+	}
+	else
+	{
 		var parts = new_gene.split(';');
 		this.genes[17] = parts[0];
 		this.genes[18] = parts[1];
@@ -2023,9 +1762,11 @@ Genome.prototype.setCoatColor = function(new_gene) {
 };
 
 Genome.prototype.setManeColor = function(new_gene) {
-	var test_gene = Genome.fromString(new_gene);
-	switch (test_gene.getGeneColor(0)) {
-	case "INVALID COLOR":
+
+	var geneCheck = new_gene.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i);
+
+	if (geneCheck == false)
+	{
 		/* Reset to default values: */
 		this.genes[22] = "B/b";
 		this.genes[23] = "Y/y";
@@ -2033,7 +1774,9 @@ Genome.prototype.setManeColor = function(new_gene) {
 		this.genes[25] = "O/o";
 		this.genes[26] = "W/w";
 		return false;
-	default:
+	}
+	else
+	{
 		var parts = new_gene.split(';');
 		this.genes[22] = parts[0];
 		this.genes[23] = parts[1];
@@ -2045,9 +1788,10 @@ Genome.prototype.setManeColor = function(new_gene) {
 };
 
 Genome.prototype.setEyeColor = function(new_gene) {
-	var test_gene = Genome.fromString(new_gene);
-	switch (test_gene.getGeneColor(0)) {
-	case "INVALID COLOR":
+	var geneCheck = new_gene.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i);
+
+	if (geneCheck == false)
+	{
 		/* Reset to default values: */
 		this.genes[27] = "B/b";
 		this.genes[28] = "Y/y";
@@ -2055,7 +1799,9 @@ Genome.prototype.setEyeColor = function(new_gene) {
 		this.genes[30] = "O/o";
 		this.genes[31] = "W/w";
 		return false;
-	default:
+	}
+	else
+	{
 		var parts = new_gene.split(';');
 		this.genes[27] = parts[0];
 		this.genes[28] = parts[1];
@@ -2670,9 +2416,6 @@ Genome.prototype.getCoatCurlDesc = function() {
 		case (subSpecies <= 37):
 			return 1; // micro
 		case (subSpecies <= 56):
-
-		console.log(`DEBUG: getSubSpecies: Angora generated from gene: ${this.elementAt(49)}.`);
-
 			return 2; // angora
 		case (subSpecies <= 64):
 			return 3; //fluffalo
