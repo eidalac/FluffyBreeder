@@ -33,7 +33,14 @@
 
 <<elseif $ourStore.fluffies.includes($mom.ID) == false>>
 	/* Mother was removed in a prior event. */
-	<<run console.log(`WARNING: [Event Birth]: $mom is not in store.`)>>
+	/*<<run console.log(`WARNING: [Event Birth]: $mom is not in store.`)>>*/
+	/* Not an error as fluffies can re-appear, but need to clear the birth */
+	<<set $globalFluffies[$mom.ID].litter = 0>>
+	<<set $globalFluffies[$mom.ID].dueDate = -1>>
+	<<set $globalFluffies[$mom.ID].pregnant = false>>
+	<<set $globalFluffies[$mom.ID].pregnantBy = -1>>
+	<<set $globalFluffies[$mom.ID].nursingTime = 0>>
+	<<set $globalFluffies[$mom.ID].nursingMax = 0>>
 	<<goto "Event Main">>
 
 <</if>>

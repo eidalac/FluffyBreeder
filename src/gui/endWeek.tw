@@ -803,7 +803,7 @@
 		<</if>>
 		
 		<<if $globalFluffies[_ef].pregnant>>
-			<<if $globalFluffies[_ef].dueDate == 0>>
+			<<if $globalFluffies[_ef].dueDate <= 0>>
 				/* Push to event stack  */
 				<<run $eventBirths.push($globalFluffies[_ef].ID)>>
 				
@@ -815,6 +815,9 @@
 			<<else>>
 				<<if $globalFluffies[_ef].dueDate < 0>>
 					<<set $globalFluffies[_ef].dueDate = -1>>
+					<<set $globalFluffies[_ef].pregnant = false>>
+					<<set $globalFluffies[_ef].litter = 0>>
+					<<set $globalFluffies[_ef].pregnantBy = -1>>
 				<<else>>
 					<<set $globalFluffies[_ef].dueDate-->>
 				<</if>>
@@ -822,6 +825,15 @@
 		<<else>>
 			<<set $globalFluffies[_ef].dueDate = -1>>
 		<</if>>
+	<<elseif $globalFluffies[_ef].pregnant>>
+	 	<<run console.log(`ERROR: endWeek: Male with pregnant flag set.`)>>
+		<<set $globalFluffies[_ef].litter = 0>>
+		<<set $globalFluffies[_ef].dueDate = -1>>
+		<<set $globalFluffies[_efD].pregnant = false>>
+		<<set $globalFluffies[_ef].pregnantBy = -1>>
+		<<set $globalFluffies[_ef].nursingTime = 0>>
+		<<set $globalFluffies[_ef].nursingMax = 0>>
+		<<set $globalFluffies[_ef].nursing = []>>
 	<</if>>
 
 	/* ***

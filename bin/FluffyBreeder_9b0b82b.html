@@ -19265,7 +19265,14 @@ button {
 
 &lt;&lt;elseif $ourStore.fluffies.includes($mom.ID) == false&gt;&gt;
 	/* Mother was removed in a prior event. */
-	&lt;&lt;run console.log(`WARNING: [Event Birth]: $mom is not in store.`)&gt;&gt;
+	/*&lt;&lt;run console.log(`WARNING: [Event Birth]: $mom is not in store.`)&gt;&gt;*/
+	/* Not an error as fluffies can re-appear, but need to clear the birth */
+	&lt;&lt;set $globalFluffies[$mom.ID].litter = 0&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID].dueDate = -1&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID].pregnant = false&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID].pregnantBy = -1&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID].nursingTime = 0&gt;&gt;
+	&lt;&lt;set $globalFluffies[$mom.ID].nursingMax = 0&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 
 &lt;&lt;/if&gt;&gt;
@@ -20937,7 +20944,7 @@ Genes       Height multiplier
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;if $globalFluffies[_ef].pregnant&gt;&gt;
-			&lt;&lt;if $globalFluffies[_ef].dueDate == 0&gt;&gt;
+			&lt;&lt;if $globalFluffies[_ef].dueDate &lt;= 0&gt;&gt;
 				/* Push to event stack  */
 				&lt;&lt;run $eventBirths.push($globalFluffies[_ef].ID)&gt;&gt;
 				
@@ -20949,6 +20956,9 @@ Genes       Height multiplier
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if $globalFluffies[_ef].dueDate &lt; 0&gt;&gt;
 					&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
+					&lt;&lt;set $globalFluffies[_ef].pregnant = false&gt;&gt;
+					&lt;&lt;set $globalFluffies[_ef].litter = 0&gt;&gt;
+					&lt;&lt;set $globalFluffies[_ef].pregnantBy = -1&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;set $globalFluffies[_ef].dueDate--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -20956,6 +20966,15 @@ Genes       Height multiplier
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;elseif $globalFluffies[_ef].pregnant&gt;&gt;
+	 	&lt;&lt;run console.log(`ERROR: endWeek: Male with pregnant flag set.`)&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].litter = 0&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_efD].pregnant = false&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].pregnantBy = -1&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].nursingTime = 0&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].nursingMax = 0&gt;&gt;
+		&lt;&lt;set $globalFluffies[_ef].nursing = []&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
@@ -26190,6 +26209,11 @@ Subspecies:
                 &lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
 
                 &lt;&lt;set _litter = Math.clamp(Math.round(($mom.fertility + $dad.fertility) / 2) + random(-1, 3), 1, 8)&gt;&gt;
+
+                /* Repeat mom may already be pregers, so skip adding more. */
+                &lt;&lt;if $mom.pregnant == true&gt;&gt;
+                    &lt;&lt;set _litter = 0&gt;&gt;
+                &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;for _ls = 0; _ls &lt; _litter; _ls++&gt;&gt;
                     /* Cull children at 25% */
