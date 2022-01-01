@@ -17,7 +17,6 @@
 /* ***
  *	Base expenses
  *** */
-<<run console.log(`DEBUG: [endWeek]: Finances 1 : cash = ${$cash}, cost = ${$costs}.`)>>
 <<set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)>>
 
 <<if $ourStore.upgrades.includes("Deluxe Toys")>>
@@ -34,7 +33,6 @@
 	<<set $costs += 1>>
 <</if>>
 
-<<run console.log(`DEBUG: [endWeek]: Finances 2 : cash = ${$cash}, cost = ${$costs}.`)>>
 /* moving the count updates to here, to prevent double loops */
 <<set $ourStore.stallions = 0>>
 <<set $ourStore.mares = 0>>
@@ -392,7 +390,9 @@
 
 	<<if $globalFluffies[_ef].temperament >= _smartyBase>>
 
+		/*
 		<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)>>
+		*/
 
 		/* Random chance to not fire at all: */
 		<<if $smartySyndrom > random(0, 10)>>
@@ -412,7 +412,9 @@
 				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
 				<<set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))>>
 
+				/*
 				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)>>
+				*/
 
 				<<set _smartyChance = 0>>
 
@@ -448,13 +450,9 @@
 				* 
 				*** **********************************************/
 
-				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}.`)>>
-
 				<<set _ran = Number(random(1, 100))>>
-				<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(1, 100) = ${_ran}.`)>>
 
 				<<if _smartyThreshold > _ran>>
-					<<run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: random(1, 100): ${_smartyThreshold} > ${_ran}.`)>>
 					<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 				<</if>>
 			<</if>>
@@ -878,18 +876,13 @@
 /* ***
  *	Final expenses:
  *** */
-<<run console.log(`DEBUG: [endWeek]: 2 Finances: cash = ${$cash}, cost = ${$costs}, feedCost = ${_feedCost}.`)>>
-
 <<script>>
 	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
 	State.variables.cashLastWeek = Number(State.variables.cash);
 	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
 <</script>>
 
-<<run console.log(`DEBUG: [endWeek]: 3 Finances: cash = ${$cash}, cost = ${$costs}.`)>>
-
 <<cashMinus $costs>>
-
 
 <br>Upkeep this week was $costs.
 

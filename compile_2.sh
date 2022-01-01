@@ -49,6 +49,7 @@ function compile() {
 	
 	devTools/concatFiles.sh src/css/ '*.css' bin/fb.css
 
+	
 	$TWEEGO_EXE -o "$file" --module=bin/fb.css src/ || build_failed="true"
 	if [ "$build_failed" = "true" ]; then
 		echoError "Build failed."
