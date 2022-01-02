@@ -15,8 +15,6 @@
 /* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
 @@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
-
 <<set _currentVer = "v1.26.239-beta">>
 
 /* Clear any checkboxes */
@@ -115,102 +113,104 @@
 	"Purple"
  ]>>
 
-<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
 
-	<<sidebarTop>>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 
-	<div>
-		<div class="w3-dropdown-hover">
-			@@.sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
-		</div>
-	
-		<div class="w3-dropdown-hover">
-			@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
-		</div>
+	<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+		<<sidebarTop>>
 
-		<div class="w3-dropdown-hover">
-			@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
-				<<set $listType = "All", $encyclopedia = "Fluffy List">>
-			<</button>>@@
-		</div>
+		<div>
+			<div class="w3-dropdown-hover">
+				@@.sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
+			</div>
+		
+			<div class="w3-dropdown-hover">
+				@@#selectbutton;<<button [[Store Upgrades|Buy Upgrades]]>><</button>>@@
+			</div>
 
-		<div class="dropdown-container w3-left-align w3-hover-cyan w3-dark-grey">
-			<button class="dropdown-btn w3-button"><span>Get Fluffies</span><i class="fa fa-caret-down"></i></button>
-			<div class="dropdown-inner-container w3-hide w3-grey w3-card">
-			
-				@@.sortbutton;<<button [[Fluffy Mart|Pre Shop]]>>
-					<<set $shop = "mart">>
-					<<set $actions-->>
-				<</button>>@@
-				@@.sortbutton;<<button [[Fluffy Shelter|Pre Shop]]>>
-					<<set $shop = "shelter">>
-					<<set $actions-->>
-				<</button>>@@
-				@@.sortbutton;<<button [[Fluffy Mill|Pre Shop]]>>
-					<<set $shop = "mill">>
-					<<set $actions-->>
-				<</button>>@@
-				@@.sortbutton;<<button [[Fluffy Breeder|Pre Shop]]>>
-					<<set $shop = "breeder">>
-					<<set $actions-->>
-				<</button>>@@
-				@@.sortbutton;<<button [[Hunt Ferals|Pre Shop]]>>
-					<<set $shop = "feral">>
-					<<set $actions-->>
-				<</button>>@@
-				@@.sortbutton;<<button [[Angora Shop|Pre Shop]]>>
-					<<set $shop = "angora">>
-					<<set $actions-->>
+			<div class="w3-dropdown-hover">
+				@@#selectbutton;<<button [[Store Fluffies|Fluffy List]]>>
+					<<set $listType = "All", $encyclopedia = "Fluffy List">>
 				<</button>>@@
 			</div>
+
+			<div class="dropdown-container w3-left-align w3-hover-cyan w3-dark-grey">
+				<button class="dropdown-btn w3-button"><span>Get Fluffies</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+				
+					@@.sortbutton;<<button [[Fluffy Mart|Pre Shop]]>>
+						<<set $shop = "mart">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Shelter|Pre Shop]]>>
+						<<set $shop = "shelter">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Mill|Pre Shop]]>>
+						<<set $shop = "mill">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Breeder|Pre Shop]]>>
+						<<set $shop = "breeder">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Hunt Ferals|Pre Shop]]>>
+						<<set $shop = "feral">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Angora Shop|Pre Shop]]>>
+						<<set $shop = "angora">>
+						<<set $actions-->>
+					<</button>>@@
+				</div>
+			</div>
+
+			<div class="w3-dropdown-hover">
+				@@#selectbutton;<<button [[Encyclopedia|Encyclopedia]]>><</button>>@@
+				<<set $encyclopedia = "Fluffy Statistics">>
+			</div>
+			
+			<<systemButtons>>
 		</div>
+	</nav>
 
-		<div class="w3-dropdown-hover">
-			@@#selectbutton;<<button [[Encyclopedia|Encyclopedia]]>><</button>>@@
-			<<set $encyclopedia = "Fluffy Statistics">>
-		</div>
-		
-		<<systemButtons>>
-	</div>
-</nav>
+	<header class="w3-bar w3-card" id="header">
+		<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+		<h1 id="navHead" class="w3-bar-item"><<- $ourStore.name>></h1>
+	</header>
 
-<header class="w3-bar w3-card" id="header">
-	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
- 	<h1 id="navHead" class="w3-bar-item"><<- $ourStore.name>></h1>
-</header>
+	<<timed 5ms>>
+	<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+	<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<</timed>>
 
-<<timed 5ms>>
-<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
-<<run $("#selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
-<</timed>>
+	<div class="w3-container" id="main">
 
-<div class="w3-container" id="main">
+		<br>
+		<br>
+		<br>
+		<br>
 
-	<br>
-	<br>
-	<br>
-	<br>
+		Open for business for the week
 
-	Open for business for the week
-
-	<br>Current Version: _currentVer / Save version: $ver
-		
-	<br>
-	<br>
-	<<print String.format("{0} {1} {2}, {3}",
-		$gameDays[new Date($gameDate).getDay()],
-		$gameMonths[new Date($gameDate).getMonth()],
-		new Date($gameDate).getDate(),
-		new Date($gameDate).getFullYear()
-	)>>
-	<br>
-	<br><<PlayerStatus>>
-	<br>
-	<br><<SidebarCash>>
-	<br><<SidebarStore>>
-	<br>
-	<br><span id="fluffy-count"><<SidebarFluffies>></span>
-	<br>
+		<br>Current Version: _currentVer / Save version: $ver
+			
+		<br>
+		<br>
+		<<print String.format("{0} {1} {2}, {3}",
+			$gameDays[new Date($gameDate).getDay()],
+			$gameMonths[new Date($gameDate).getMonth()],
+			new Date($gameDate).getDate(),
+			new Date($gameDate).getFullYear()
+		)>>
+		<br>
+		<br><<PlayerStatus>>
+		<br>
+		<br><<SidebarCash>>
+		<br><<SidebarStore>>
+		<br>
+		<br><span id="fluffy-count"><<SidebarFluffies>></span>
+		<br>
 </div>
 
 <<script>>

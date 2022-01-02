@@ -133,7 +133,7 @@ button {
 
 			/* Make sure the color groups are set: */
 			<<set $activeFluffy = $globalFluffies[_fl]>>
-			<<colorGroup $activeFluffy>>
+			/*<<colorGroup $activeFluffy>>*/
 			<<set $globalFluffies[_fl] = $activeFluffy>>
 
 			<<run console.log(`DEBUG: [eventCustomer]: Fluffy ${_fl} gender = ${$globalFluffies[_fl].gender}`)>>
@@ -326,8 +326,8 @@ button {
 			/* Coat: */
 			<<elseif _card.includes("Coat")>>
 				<<if _card.includes("Group")>>
-					<<if _card.includes($globalFluffies[_fl].colorGroup[0])>>
-						<<run console.log(`DEBUG: [eventCustomer]: Coat Color Group Match (${$globalFluffies[_fl].colorGroup[0]} === ${_card})`)>>
+					<<if _card.includes($globalFluffies[_fl].cColor.group)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Coat Color Group Match (${$globalFluffies[_fl].cColor.group} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -336,27 +336,27 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						<<if $globalFluffies[_fl].colorGroup[0] === "Blue" && _card === "Orange" ||
-							$globalFluffies[_fl].colorGroup[0] === "Orange" && _card === "Blue" ||
-							$globalFluffies[_fl].colorGroup[0] === "Red" && _card === "Green" ||
-							$globalFluffies[_fl].colorGroup[0] === "Green" && _card === "Red" ||
-							$globalFluffies[_fl].colorGroup[0] === "Yellow" && _card === "Purple" ||
-							$globalFluffies[_fl].colorGroup[0] === "Purple" && _card === "Yellow">>
+						<<if $globalFluffies[_fl].cColor.group === "Blue" && _card === "Orange" ||
+							$globalFluffies[_fl].cColor.group === "Orange" && _card === "Blue" ||
+							$globalFluffies[_fl].cColor.group === "Red" && _card === "Green" ||
+							$globalFluffies[_fl].cColor.group === "Green" && _card === "Red" ||
+							$globalFluffies[_fl].cColor.group === "Yellow" && _card === "Purple" ||
+							$globalFluffies[_fl].cColor.group === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`DEBUG: [eventCustomer]: Coat Complimentary Group Match (${$globalFluffies[_fl].colorGroup[0]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Coat Complimentary Group Match (${$globalFluffies[_fl].cColor.group} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
-				<<elseif _card.includes($globalFluffies[_fl].cColor)>>
-					<<run console.log(`DEBUG: [eventCustomer]: Coat Color Match (${$globalFluffies[_fl].cColor} in ${_card})`)>>
+				<<elseif _card.includes($globalFluffies[_fl].cColor.name)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Coat Color Match (${$globalFluffies[_fl].cColor.name} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 
 			/* Mane: */
 			<<elseif _card.includes("Mane")>>
 				<<if _card.includes("Group")>>
-					<<if _card.includes($globalFluffies[_fl].colorGroup[1])>>
-						<<run console.log(`DEBUG: [eventCustomer]: Mane Color Group Match (${$globalFluffies[_fl].colorGroup[1]} === ${_card})`)>>
+					<<if _card.includes($globalFluffies[_fl].mColor.group)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Mane Color Group Match (${$globalFluffies[_fl].mColor.group} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -365,27 +365,27 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						<<if $globalFluffies[_fl].colorGroup[1] === "Blue" && _card === "Orange" ||
-							$globalFluffies[_fl].colorGroup[1] === "Orange" && _card === "Blue" ||
-							$globalFluffies[_fl].colorGroup[1] === "Red" && _card === "Green" ||
-							$globalFluffies[_fl].colorGroup[1] === "Green" && _card === "Red" ||
-							$globalFluffies[_fl].colorGroup[1] === "Yellow" && _card === "Purple" ||
-							$globalFluffies[_fl].colorGroup[1] === "Purple" && _card === "Yellow">>
+						<<if $globalFluffies[_fl].mColor.group === "Blue" && _card === "Orange" ||
+							$globalFluffies[_fl].mColor.group === "Orange" && _card === "Blue" ||
+							$globalFluffies[_fl].mColor.group === "Red" && _card === "Green" ||
+							$globalFluffies[_fl].mColor.group === "Green" && _card === "Red" ||
+							$globalFluffies[_fl].mColor.group === "Yellow" && _card === "Purple" ||
+							$globalFluffies[_fl].mColor.group === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`DEBUG: [eventCustomer]: Mane Complimentary Group Match (${$globalFluffies[_fl].colorGroup[1]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Mane Complimentary Group Match (${$globalFluffies[_fl].mColor.group} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
-				<<elseif _card.includes($globalFluffies[_fl].mColor)>>
-					<<run console.log(`DEBUG: [eventCustomer]: Mane Color Match (${$globalFluffies[_fl].mColor} in ${_card})`)>>
+				<<elseif _card.includes($globalFluffies[_fl].mColor.name)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Mane Color Match (${$globalFluffies[_fl].mColor.name} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 
 			/* Eyes: */
 			<<elseif _card.includes("Eyes")>>
 				<<if _card.includes("Group")>>
-					<<if _card.includes($globalFluffies[_fl].colorGroup[2])>>
-						<<run console.log(`DEBUG: [eventCustomer]: Eye Color Group Match (${$globalFluffies[_fl].colorGroup[2]} === ${_card})`)>>
+					<<if _card.includes($globalFluffies[_fl].eColor.group)>>
+						<<run console.log(`DEBUG: [eventCustomer]: Eye Color Group Match (${$globalFluffies[_fl].eColor.group} === ${_card})`)>>
 						<<set _needsMatch += 2>>
 					<<else>>
 						/* ***
@@ -394,19 +394,19 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						<<if $globalFluffies[_fl].colorGroup[2] === "Blue" && _card === "Orange" ||
-							$globalFluffies[_fl].colorGroup[2] === "Orange" && _card === "Blue" ||
-							$globalFluffies[_fl].colorGroup[2] === "Red" && _card === "Green" ||
-							$globalFluffies[_fl].colorGroup[2] === "Green" && _card === "Red" ||
-							$globalFluffies[_fl].colorGroup[2] === "Yellow" && _card === "Purple" ||
-							$globalFluffies[_fl].colorGroup[2] === "Purple" && _card === "Yellow">>
+						<<if $globalFluffies[_fl].eColor.group === "Blue" && _card === "Orange" ||
+							$globalFluffies[_fl].eColor.group === "Orange" && _card === "Blue" ||
+							$globalFluffies[_fl].eColor.group === "Red" && _card === "Green" ||
+							$globalFluffies[_fl].eColor.group === "Green" && _card === "Red" ||
+							$globalFluffies[_fl].eColor.group === "Yellow" && _card === "Purple" ||
+							$globalFluffies[_fl].eColor.group === "Purple" && _card === "Yellow">>
 
-							<<run console.log(`DEBUG: [eventCustomer]: Eye Complimentary Group Match (${$globalFluffies[_fl].colorGroup[2]]} <> ${_card})`)>>
+							<<run console.log(`DEBUG: [eventCustomer]: Eye Complimentary Group Match (${$globalFluffies[_fl].eColor.group]} <> ${_card})`)>>
 							<<set _needsMatch += 1>>
 						<</if>>
 					<</if>>
-				<<elseif _card.includes($globalFluffies[_fl].eColor)>>
-					<<run console.log(`DEBUG: [eventCustomer]: Eye Color Match (${$globalFluffies[_fl].eColor} in ${_card})`)>>
+				<<elseif _card.includes($globalFluffies[_fl].eColor.name)>>
+					<<run console.log(`DEBUG: [eventCustomer]: Eye Color Match (${$globalFluffies[_fl].eColor.name} in ${_card})`)>>
 					<<set _needsMatch += 2>>
 				<</if>>
 			
@@ -525,8 +525,10 @@ button {
 	<<run console.log(`DEBUG: [eventCustomer]: Price 2: ${_price}`)>>
 	
 	<<set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)>>
-	<<set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)>>
 
+	<<set $activeFluffy = $globalFluffies[_fl]>>
+	<<colorValue>>
+		
 	<<set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)>>
 	<<set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)>>
 	

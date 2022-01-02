@@ -63,7 +63,7 @@ button {
 	<</if>>
 	<<for _fl range _fluffies>>
 		<<capture _fl>>
-			<<colorGroup $globalFluffies[_fl]>>
+			/*<<colorGroup $globalFluffies[_fl]>>*/
 			<<set $globalFluffies[_fl].preOwned = true>>
 			/*<<fixColors $globalFluffies[_fl]>>*/
 			<<if _args[0] === "breeding">>
@@ -241,15 +241,15 @@ button {
  *** */
 
 <<widget "fetchName">>
-	<<colorGroup $activeFluffy>>
+	/*<<colorGroup $activeFluffy>>*/
 	<<set _colorList = window.nameList["colors"]>>
 	<<set _genderList = window.nameList["gender"]>>
 	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
 	<<set _posGendered = random(0, _genderList[_gender].length-1)>>
 	<<set _posNeutral = random(0, _genderList["Neutral"].length-1)>>
 
-	<<set _coat = $activeFluffy.colorGroup[0]>>
-	<<set _mane = $activeFluffy.colorGroup[1]>>
+	<<set _coat = $activeFluffy.cColor.group>>
+	<<set _mane = $activeFluffy.mColor.group>>
 	
 	<<switch random(0, 4)>>
 		<<case 0 1 2>>
@@ -407,10 +407,19 @@ button {
 					
 	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
 	<<set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)>>
-	<<set $globalFluffies[_thisFluffy.ID].colorBonus = Math.clamp($globalFluffies[_thisFluffy.ID].colorBonus, 0.05, 5)>>
-			
+
+	<<set $activeFluffy = $globalFluffies[_thisFluffy.ID]>>
+	<<colorValue>>
+
+	<<run console.log(`DEBUG: <<displayPrice>>: Base price = ${_price}.`)>>
+
 	<<set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<displayPrice>>: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)>>
+
 	<<set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<displayPrice>>: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)>>
 					
 	<<set _ageMulti = 1>>
 			
@@ -420,13 +429,19 @@ button {
 		
 	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
 			
+	<<run console.log(`DEBUG: <<displayPrice>>: Price after age adustment = ${_price}.`)>>
+
 	<<if $globalFluffies[_thisFluffy.ID].traits.includes("Feral") == true>>
 		<<set _price = Number(_price / 4).toFixed(2)>>
 	<</if>>
 
+	<<run console.log(`DEBUG: <<displayPrice>>: Price after feral check = ${_price}.`)>>
+
 	<<if $globalFluffies[_thisFluffy.ID].subSpecies == 2>>
 		<<set _price = Number(_price * 1.3).toFixed(2)>>
 	<</if>>
+
+	<<run console.log(`DEBUG: <<displayPrice>>: Price after species check = ${_price}.`)>>
 
 	<<if  $debugMode>>
 		@@.orange;_price@@
@@ -576,7 +591,6 @@ button {
  *** */
 <<widget "FluffyDesc">>
 
-	/*<<colorValue>>*/
 	<<statValue>>
 	<<clampValues $activeFluffy>>
 
@@ -702,6 +716,7 @@ button {
 		<</if>>
 		<<clampValues _fluffy>>
 		<<personalityFix _fluffy>>
+		
 		<div class="fluffy-details">
 			<div class="fluffy-details-left">
 				<div class="fluffy-species">
@@ -713,14 +728,14 @@ button {
 				</div>
 				<div class="fluffy-color">
 					<<set _infoText = `class="info-toggle" data-info="detail_color" `>>
-					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.colorGroup[0]}"`>>
+					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.cColor.group}"`>>
 					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name _infoText+_infoColor>></span>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
-						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.colorGroup[1]}"`>>
+						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.mColor.group}"`>>
 						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name _infoText+_infoColor>></span>
 					<</if>>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
-						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.colorGroup[2]}"`>>
+						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.eColor.group}"`>>
 						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name _infoText+_infoColor>></span>
 					<</if>>
 				</div>
@@ -743,7 +758,9 @@ button {
 					<<if _fluffy.nursing.length > 0>><span>Is nursing <<print _fluffy.nursing.length >> foals</span><</if>>
 				</div>
 				<div class="fluffy-price">
-					<span>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>></span>
+					<span>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>>
+
+					</span>
 				</div>
 			</div>
 			<div class="fluffy-details-right">

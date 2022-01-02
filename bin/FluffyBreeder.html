@@ -13905,29 +13905,29 @@ Save.onLoad.add(function (save)
       {
           if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[k].name
+            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[k].name
           }
           else if (hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[groupList.length-1].name;
           }
 
           if (inRange(hslMane[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[k].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[k].name;
           }
           else if (hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[groupList.length-1].name;
           }
 
           if (inRange(hslEyes[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[k].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[k].name;
           }
           else if (hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
           }
       }
 
@@ -15028,8 +15028,7 @@ window.nameList = {
  *
  *********** */
 
-
-  
+ 
   
 /* ***
  *	Color Value
@@ -15038,50 +15037,27 @@ window.nameList = {
  *	Caculates the color value of $activeFluffy
  *** */
 &lt;&lt;widget &quot;colorValue&quot;&gt;&gt;
-	&lt;&lt;set _coatTier = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneTier = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _eyeTier = &quot;&quot;&gt;&gt;
-	
-	&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _eyeGroup = &quot;&quot;&gt;&gt;
 
-	/* Iterate through the list of colors, if they match, remember the tier and group.*/
-	&lt;&lt;for _i = 0; _i &lt; $colors.length; _i++&gt;&gt;
+	&lt;&lt;set _cAppeal = getColorAppeal($activeFluffy.cColor.hex)&gt;&gt;
+	&lt;&lt;set _mAppeal = getColorAppeal($activeFluffy.mColor.hex)&gt;&gt;
+	&lt;&lt;set _eAppeal = getColorAppeal($activeFluffy.eColor.hex)&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.cColor.name== $colors[_i].name&gt;&gt;
-			&lt;&lt;set _coatTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _coatGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.mColor.name == $colors[_i].name&gt;&gt;
-			&lt;&lt;set _maneTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _maneGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.eColor.name == $colors[_i].name&gt;&gt;
-			&lt;&lt;set _eyeTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _eyeGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
-
-	/* No matches found, bad*/
-	&lt;&lt;if _coatTier == &quot;&quot; || _coatGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for coat: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if _maneTier == &quot;&quot; || _maneGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for mane: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if _eyeTier == &quot;&quot; || _eyeGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for eye: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;	
+	&lt;&lt;set _coatGroup = $activeFluffy.cColor.group&gt;&gt;
+	&lt;&lt;set _maneGroup = $activeFluffy.mColor.group&gt;&gt;
+	&lt;&lt;set _eyeGroup = $activeFluffy.eColor.group&gt;&gt;
 
 	/* One point per tier for eyes, 2 for mane and 3 for coat. */
-	&lt;&lt;set _colorBonus = 0&gt;&gt;
-	&lt;&lt;set _colorBonus = Number(_eyeTier)&gt;&gt;
-	&lt;&lt;set _colorBonus += (2 * _maneTier)&gt;&gt;
-	&lt;&lt;set _colorBonus += (3 * _coatTier)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_cAppeal)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_netAppeal) + Number(Number(_mAppeal) / 2).toFixed(0)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)&gt;&gt;
+	&lt;&lt;set _netAppeal = Math.clamp(_netAppeal, 1, 180)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 1 = ${_netAppeal}.`)&gt;&gt;
 	
-	/* Divide by 6 to get the multplier (1-6) */
-	&lt;&lt;set _colorBonus = Number(_colorBonus / 12).toFixed(2)&gt;&gt;
+	/* Now it&#39;s a %, from 1-180% */
+	&lt;&lt;set _netAppeal = Number(_netAppeal / 100).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 2 = ${_netAppeal}. (${_coatGroup}, ${_maneGroup}, ${_eyeGroup})`)&gt;&gt;
 	
 	/* ***
 	 *	Complimentary pairs:
@@ -15120,9 +15096,24 @@ window.nameList = {
 	&lt;&lt;elseif _coatGroup == &quot;Brown&quot; &amp;&amp; _maneGroup == &quot;Brown&quot;&gt;&gt;
 		&lt;&lt;set _pairBonus = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)&gt;&gt;
-	
-	&lt;&lt;set $activeFluffy.colorBonus = Math.clamp($activeFluffy.colorBonus, 0.05, 5)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 3 = ${_netAppeal}, pair bonus = ${_pairBonus}.`)&gt;&gt;
+
+	&lt;&lt;set _colorBonus = Number(_netAppeal).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 4.1 = ${_colorBonus}.`)&gt;&gt;
+
+	&lt;&lt;set _colorBonus = Number(Number(_colorBonus)+ Number(_pairBonus)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 4 = ${_colorBonus}.`)&gt;&gt;
+
+	&lt;&lt;set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 5 = ${_colorBonus}.`)&gt;&gt;
+
+	&lt;&lt;set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 6 = ${$activeFluffy.colorBonus}.`)&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -15183,6 +15174,7 @@ window.nameList = {
  *	Finds the name of the color group of $fluffy.
  *	Without fluffy, will simply apply to $ntcArr.
  *** */
+ /*
 &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
 	&lt;&lt;fluffyError _args[0]&gt;&gt;
 	&lt;&lt;if $fluffyError&gt;&gt;
@@ -15197,7 +15189,7 @@ window.nameList = {
 		&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
-
+*/
 /* &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
 	&lt;&lt;fluffyError _args[0]&gt;&gt;
 	&lt;&lt;if $fluffyError&gt;&gt;
@@ -15297,7 +15289,7 @@ window.nameList = {
 		&lt;&lt;/for&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;colorGroup _fixFluffy&gt;&gt;
+	/*&lt;&lt;colorGroup _fixFluffy&gt;&gt;*/
 	&lt;&lt;setFilters _fixFluffy&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="3" name="Event Birth" tags="nobr" position="350,100" size="100,100">/* **********
  * eventBirth.tw
@@ -15369,7 +15361,8 @@ window.nameList = {
 			&lt;&lt;link _line&gt;&gt;&lt;&lt;toggleclass _sectionP &quot;hidden&quot;&gt;&gt;&lt;&lt;/link&gt;&gt;
 			&lt;div @id=&quot;_line&quot;&gt;&lt;/div&gt;
 			&lt;div @id=&quot;_section&quot; class=&quot;hidden&quot;&gt;
-				&lt;&lt;FluffyDesc&gt;&gt;
+				/*&lt;&lt;FluffyDesc&gt;&gt;*/
+				&lt;&lt;shortDesc $activeFluffy&gt;&gt;
 			&lt;/div&gt;
 			&lt;hr&gt;
 
@@ -15392,7 +15385,7 @@ window.nameList = {
 			&lt;&lt;run $mom.nursing.push($activeFluffy.ID)&gt;&gt;
 			&lt;&lt;set $mom.stress += 5&gt;&gt;
 
-			&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot; || $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+			&lt;&lt;if $activeFluffy.cColor.group == &quot;Brown&quot; || $activeFluffy.mColor.group == &quot;Brown&quot;&gt;&gt;
 				/* Push to event stack  */
 				&lt;&lt;run $eventList.push( { target: $activeFluffy.ID, type: &quot;Rejection&quot; } )&gt;&gt;
 			&lt;&lt;/if&gt;&gt; 
@@ -15452,10 +15445,10 @@ window.nameList = {
 &lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt; 
 
 /* Check if this is a brown foal rejection: */
-&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
+&lt;&lt;if $activeFluffy.cColor.group == &quot;Brown&quot;&gt;&gt;
 
     /* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
-    &lt;&lt;if $globalFluffies[$activeFluffy.mother].colorGroup[0] == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
+    &lt;&lt;if $globalFluffies[$activeFluffy.mother].cColor.group == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
 
         /* Skip this info for now */
         &lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -15547,7 +15540,7 @@ window.nameList = {
         @@.orange;Hugbox option.@@
     &lt;/span&gt;
     &lt;&lt;/if&gt;&gt; /* Close mother trait check */
-&lt;&lt;elseif $activeFluffy.colorGroup[1] == &quot;Brown&quot;&gt;&gt;
+&lt;&lt;elseif $activeFluffy.mColor.group == &quot;Brown&quot;&gt;&gt;
     /* for now skip a brown mane */
     &lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
 &lt;&lt;/if&gt;&gt; /* Close brown foal birth rejection */</tw-passagedata><tw-passagedata pid="5" name="Event Customer" tags="nobr" position="600,100" size="100,100">/* **********
@@ -15680,7 +15673,7 @@ button {
 
 			/* Make sure the color groups are set: */
 			&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
-			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
+			/*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
 			&lt;&lt;set $globalFluffies[_fl] = $activeFluffy&gt;&gt;
 
 			&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Fluffy ${_fl} gender = ${$globalFluffies[_fl].gender}`)&gt;&gt;
@@ -15873,8 +15866,8 @@ button {
 			/* Coat: */
 			&lt;&lt;elseif _card.includes(&quot;Coat&quot;)&gt;&gt;
 				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[0])&gt;&gt;
-						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Color Group Match (${$globalFluffies[_fl].colorGroup[0]} === ${_card})`)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].cColor.group)&gt;&gt;
+						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Color Group Match (${$globalFluffies[_fl].cColor.group} === ${_card})`)&gt;&gt;
 						&lt;&lt;set _needsMatch += 2&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						/* ***
@@ -15883,27 +15876,27 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						&lt;&lt;if $globalFluffies[_fl].colorGroup[0] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-							$globalFluffies[_fl].colorGroup[0] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-							$globalFluffies[_fl].colorGroup[0] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-							$globalFluffies[_fl].colorGroup[0] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-							$globalFluffies[_fl].colorGroup[0] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-							$globalFluffies[_fl].colorGroup[0] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+						&lt;&lt;if $globalFluffies[_fl].cColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].cColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].cColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].cColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].cColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].cColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Complimentary Group Match (${$globalFluffies[_fl].colorGroup[0]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Complimentary Group Match (${$globalFluffies[_fl].cColor.group} &lt;&gt; ${_card})`)&gt;&gt;
 							&lt;&lt;set _needsMatch += 1&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;elseif _card.includes($globalFluffies[_fl].cColor)&gt;&gt;
-					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Color Match (${$globalFluffies[_fl].cColor} in ${_card})`)&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].cColor.name)&gt;&gt;
+					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Coat Color Match (${$globalFluffies[_fl].cColor.name} in ${_card})`)&gt;&gt;
 					&lt;&lt;set _needsMatch += 2&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
 			/* Mane: */
 			&lt;&lt;elseif _card.includes(&quot;Mane&quot;)&gt;&gt;
 				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[1])&gt;&gt;
-						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Color Group Match (${$globalFluffies[_fl].colorGroup[1]} === ${_card})`)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].mColor.group)&gt;&gt;
+						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Color Group Match (${$globalFluffies[_fl].mColor.group} === ${_card})`)&gt;&gt;
 						&lt;&lt;set _needsMatch += 2&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						/* ***
@@ -15912,27 +15905,27 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						&lt;&lt;if $globalFluffies[_fl].colorGroup[1] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-							$globalFluffies[_fl].colorGroup[1] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-							$globalFluffies[_fl].colorGroup[1] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-							$globalFluffies[_fl].colorGroup[1] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-							$globalFluffies[_fl].colorGroup[1] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-							$globalFluffies[_fl].colorGroup[1] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+						&lt;&lt;if $globalFluffies[_fl].mColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].mColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].mColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].mColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].mColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].mColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Complimentary Group Match (${$globalFluffies[_fl].colorGroup[1]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Complimentary Group Match (${$globalFluffies[_fl].mColor.group} &lt;&gt; ${_card})`)&gt;&gt;
 							&lt;&lt;set _needsMatch += 1&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;elseif _card.includes($globalFluffies[_fl].mColor)&gt;&gt;
-					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Color Match (${$globalFluffies[_fl].mColor} in ${_card})`)&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].mColor.name)&gt;&gt;
+					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Mane Color Match (${$globalFluffies[_fl].mColor.name} in ${_card})`)&gt;&gt;
 					&lt;&lt;set _needsMatch += 2&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
 			/* Eyes: */
 			&lt;&lt;elseif _card.includes(&quot;Eyes&quot;)&gt;&gt;
 				&lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-					&lt;&lt;if _card.includes($globalFluffies[_fl].colorGroup[2])&gt;&gt;
-						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Color Group Match (${$globalFluffies[_fl].colorGroup[2]} === ${_card})`)&gt;&gt;
+					&lt;&lt;if _card.includes($globalFluffies[_fl].eColor.group)&gt;&gt;
+						&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Color Group Match (${$globalFluffies[_fl].eColor.group} === ${_card})`)&gt;&gt;
 						&lt;&lt;set _needsMatch += 2&gt;&gt;
 					&lt;&lt;else&gt;&gt;
 						/* ***
@@ -15941,19 +15934,19 @@ button {
 						*		Red - Green
 						*		Yellow - Purple
 						*** */
-						&lt;&lt;if $globalFluffies[_fl].colorGroup[2] === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-							$globalFluffies[_fl].colorGroup[2] === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-							$globalFluffies[_fl].colorGroup[2] === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-							$globalFluffies[_fl].colorGroup[2] === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-							$globalFluffies[_fl].colorGroup[2] === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-							$globalFluffies[_fl].colorGroup[2] === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+						&lt;&lt;if $globalFluffies[_fl].eColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
+							$globalFluffies[_fl].eColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
+							$globalFluffies[_fl].eColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
+							$globalFluffies[_fl].eColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
+							$globalFluffies[_fl].eColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
+							$globalFluffies[_fl].eColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Complimentary Group Match (${$globalFluffies[_fl].colorGroup[2]]} &lt;&gt; ${_card})`)&gt;&gt;
+							&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Complimentary Group Match (${$globalFluffies[_fl].eColor.group]} &lt;&gt; ${_card})`)&gt;&gt;
 							&lt;&lt;set _needsMatch += 1&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
-				&lt;&lt;elseif _card.includes($globalFluffies[_fl].eColor)&gt;&gt;
-					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Color Match (${$globalFluffies[_fl].eColor} in ${_card})`)&gt;&gt;
+				&lt;&lt;elseif _card.includes($globalFluffies[_fl].eColor.name)&gt;&gt;
+					&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Eye Color Match (${$globalFluffies[_fl].eColor.name} in ${_card})`)&gt;&gt;
 					&lt;&lt;set _needsMatch += 2&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			
@@ -16072,8 +16065,10 @@ button {
 	&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Price 2: ${_price}`)&gt;&gt;
 	
 	&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
 
+	&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
+	&lt;&lt;colorValue&gt;&gt;
+		
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
 	
@@ -16961,7 +16956,7 @@ button {
 /* Difficulty */
 &lt;&lt;set $eventDifficulty = 0&gt;&gt;
 
-&lt;&lt;if $activeFluffy.colorGroup[0] == &quot;Brown&quot;&gt;&gt;
+&lt;&lt;if $activeFluffy.cColor.group == &quot;Brown&quot;&gt;&gt;
     &lt;&lt;if $pooBaby == 0&gt;&gt;
         &lt;&lt;set $eventDifficulty = Number(2 * $training)&gt;&gt;
         &lt;&lt;set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)&gt;&gt;
@@ -18165,7 +18160,7 @@ Genes       Height multiplier
 						&lt;&lt;/switch&gt;&gt;
 					&lt;&lt;default&gt;&gt;
 						/* Pick a visible trait */
-						&lt;&lt;colorGroup $globalFluffies[_ef]&gt;&gt;
+						/*&lt;&lt;colorGroup $globalFluffies[_ef]&gt;&gt;*/
 
 						&lt;&lt;switch _visibleCards.random()&gt;&gt;
 							&lt;&lt;case &quot;Species&quot;&gt;&gt;
@@ -18176,21 +18171,21 @@ Genes       Height multiplier
 								&lt;&lt;set _push = $globalFluffies[_ef].breed&gt;&gt;
 							&lt;&lt;case &quot;Coat&quot;&gt;&gt;
 								&lt;&lt;if random(0,6) == 6&gt;&gt;
-									&lt;&lt;set _push = `${$globalFluffies[_ef].cColor} Coat`&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].cColor.name} Coat`&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;set _push = `Coat Group ${$globalFluffies[_ef].colorGroup[0]}`&gt;&gt;
+									&lt;&lt;set _push = `Coat Group ${$globalFluffies[_ef].cColor.group}`&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Mane&quot;&gt;&gt;
 								&lt;&lt;if random(0,6) == 6&gt;&gt;
-									&lt;&lt;set _push = `${$globalFluffies[_ef].mColor} Mane`&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].mColor.name} Mane`&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;set _push = `Mane Group ${$globalFluffies[_ef].colorGroup[1]}`&gt;&gt;
+									&lt;&lt;set _push = `Mane Group ${$globalFluffies[_ef].mColor.group}`&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Eyes&quot;&gt;&gt;
 								&lt;&lt;if random(0,6) == 6&gt;&gt;
-									&lt;&lt;set _push = `${$globalFluffies[_ef].eColor} Coat`&gt;&gt;
+									&lt;&lt;set _push = `${$globalFluffies[_ef].eColor.name} Coat`&gt;&gt;
 								&lt;&lt;else&gt;&gt;
-									&lt;&lt;set _push = `Eye Group ${$globalFluffies[_ef].colorGroup[2]}`&gt;&gt;
+									&lt;&lt;set _push = `Eye Group ${$globalFluffies[_ef].eColor.group}`&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Age&quot;&gt;&gt;
 								&lt;&lt;set _cat = Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks)&gt;&gt;
@@ -19312,8 +19307,6 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 /* Saves use the first eight printed words to make the &quot;file name&quot;, the below line cheats and makes saves nicer named. */
 @@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
-&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
-
 &lt;&lt;set _currentVer = &quot;v1.26.239-beta&quot;&gt;&gt;
 
 /* Clear any checkboxes */
@@ -19412,102 +19405,104 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	&quot;Purple&quot;
  ]&gt;&gt;
 
-&lt;nav class=&quot;w3-bar-block w3-card w3-animate-left&quot; id=&quot;sidebar&quot;&gt;
 
-	&lt;&lt;sidebarTop&gt;&gt;
+&lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 
-	&lt;div&gt;
-		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@.sortbutton;&lt;&lt;button &quot;End Week&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
-		&lt;/div&gt;
-	
-		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
-		&lt;/div&gt;
+	&lt;nav class=&quot;w3-bar-block w3-card w3-animate-left&quot; id=&quot;sidebar&quot;&gt;
+		&lt;&lt;sidebarTop&gt;&gt;
 
-		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
-				&lt;&lt;set $listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
-		&lt;/div&gt;
+		&lt;div&gt;
+			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+				@@.sortbutton;&lt;&lt;button &quot;End Week&quot;&gt;&gt;&lt;&lt;goto $nextLink&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			&lt;/div&gt;
+		
+			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+				@@#selectbutton;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			&lt;/div&gt;
 
-		&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-dark-grey&quot;&gt;
-			&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Get Fluffies&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
-			&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
-			
-				@@.sortbutton;&lt;&lt;button [[Fluffy Mart|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
-				@@.sortbutton;&lt;&lt;button [[Fluffy Shelter|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
-				@@.sortbutton;&lt;&lt;button [[Fluffy Mill|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
-				@@.sortbutton;&lt;&lt;button [[Fluffy Breeder|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
-				@@.sortbutton;&lt;&lt;button [[Hunt Ferals|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
-				@@.sortbutton;&lt;&lt;button [[Angora Shop|Pre Shop]]&gt;&gt;
-					&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
-					&lt;&lt;set $actions--&gt;&gt;
+			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+				@@#selectbutton;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
+					&lt;&lt;set $listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;&gt;&gt;
 				&lt;&lt;/button&gt;&gt;@@
 			&lt;/div&gt;
+
+			&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-dark-grey&quot;&gt;
+				&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Get Fluffies&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
+				&lt;div class=&quot;dropdown-inner-container w3-hide w3-grey w3-card&quot;&gt;
+				
+					@@.sortbutton;&lt;&lt;button [[Fluffy Mart|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;mart&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					@@.sortbutton;&lt;&lt;button [[Fluffy Shelter|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;shelter&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					@@.sortbutton;&lt;&lt;button [[Fluffy Mill|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;mill&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					@@.sortbutton;&lt;&lt;button [[Fluffy Breeder|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;breeder&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					@@.sortbutton;&lt;&lt;button [[Hunt Ferals|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;feral&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+					@@.sortbutton;&lt;&lt;button [[Angora Shop|Pre Shop]]&gt;&gt;
+						&lt;&lt;set $shop = &quot;angora&quot;&gt;&gt;
+						&lt;&lt;set $actions--&gt;&gt;
+					&lt;&lt;/button&gt;&gt;@@
+				&lt;/div&gt;
+			&lt;/div&gt;
+
+			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
+				@@#selectbutton;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+				&lt;&lt;set $encyclopedia = &quot;Fluffy Statistics&quot;&gt;&gt;
+			&lt;/div&gt;
+			
+			&lt;&lt;systemButtons&gt;&gt;
 		&lt;/div&gt;
+	&lt;/nav&gt;
 
-		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
-			&lt;&lt;set $encyclopedia = &quot;Fluffy Statistics&quot;&gt;&gt;
-		&lt;/div&gt;
-		
-		&lt;&lt;systemButtons&gt;&gt;
-	&lt;/div&gt;
-&lt;/nav&gt;
+	&lt;header class=&quot;w3-bar w3-card&quot; id=&quot;header&quot;&gt;
+		&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
+		&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot;&gt;&lt;&lt;- $ourStore.name&gt;&gt;&lt;/h1&gt;
+	&lt;/header&gt;
 
-&lt;header class=&quot;w3-bar w3-card&quot; id=&quot;header&quot;&gt;
-	&lt;button id=&quot;openNav&quot; class=&quot;w3-bar-item w3-button w3-large w3-hover-theme&quot;&gt;&amp;#9776;&lt;/button&gt;
- 	&lt;h1 id=&quot;navHead&quot; class=&quot;w3-bar-item&quot;&gt;&lt;&lt;- $ourStore.name&gt;&gt;&lt;/h1&gt;
-&lt;/header&gt;
+	&lt;&lt;timed 5ms&gt;&gt;
+	&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
+	&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+	&lt;&lt;/timed&gt;&gt;
 
-&lt;&lt;timed 5ms&gt;&gt;
-&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
-&lt;&lt;/timed&gt;&gt;
+	&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
 
-&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		&lt;br&gt;
 
-	&lt;br&gt;
-	&lt;br&gt;
-	&lt;br&gt;
-	&lt;br&gt;
+		Open for business for the week
 
-	Open for business for the week
-
-	&lt;br&gt;Current Version: _currentVer / Save version: $ver
-		
-	&lt;br&gt;
-	&lt;br&gt;
-	&lt;&lt;print String.format(&quot;{0} {1} {2}, {3}&quot;,
-		$gameDays[new Date($gameDate).getDay()],
-		$gameMonths[new Date($gameDate).getMonth()],
-		new Date($gameDate).getDate(),
-		new Date($gameDate).getFullYear()
-	)&gt;&gt;
-	&lt;br&gt;
-	&lt;br&gt;&lt;&lt;PlayerStatus&gt;&gt;
-	&lt;br&gt;
-	&lt;br&gt;&lt;&lt;SidebarCash&gt;&gt;
-	&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
-	&lt;br&gt;
-	&lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
-	&lt;br&gt;
+		&lt;br&gt;Current Version: _currentVer / Save version: $ver
+			
+		&lt;br&gt;
+		&lt;br&gt;
+		&lt;&lt;print String.format(&quot;{0} {1} {2}, {3}&quot;,
+			$gameDays[new Date($gameDate).getDay()],
+			$gameMonths[new Date($gameDate).getMonth()],
+			new Date($gameDate).getDate(),
+			new Date($gameDate).getFullYear()
+		)&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;&lt;&lt;PlayerStatus&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;&lt;&lt;SidebarCash&gt;&gt;
+		&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
+		&lt;br&gt;
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
@@ -21760,6 +21755,7 @@ Upgrades:
 				&lt;&lt;set $training += 1&gt;&gt;
 				&lt;&lt;set $activeFluffy.training++&gt;&gt;
 				&lt;&lt;set $activeFluffy.trust++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 				
 				&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Training Equipment&quot;)&gt;&gt;
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
@@ -21768,6 +21764,10 @@ Upgrades:
 					
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.stress++&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
+					&lt;&lt;if random(0, 1) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Training Equipment&quot;)&gt;&gt;
@@ -21778,6 +21778,10 @@ Upgrades:
 					&lt;&lt;if random(0, 2) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.stress++&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
+
+					&lt;&lt;if random(0, 2) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Training Equipment&quot;)&gt;&gt;
 					&lt;&lt;if random(0, 3) == 0&gt;&gt;
@@ -21786,6 +21790,10 @@ Upgrades:
 					
 					&lt;&lt;if random(0, 3) == 0&gt;&gt;
 						&lt;&lt;set $activeFluffy.stress++&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
+					&lt;&lt;if random(0, 3) == 0&gt;&gt;
+						&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 				
@@ -22770,7 +22778,7 @@ Breed:
 	&lt;&lt;if _bString.length != _match.length&gt;&gt;
 		&lt;&lt;replace &quot;#b-form-error&quot;&gt;&gt;@@.orange;Invalid gene length!@@&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _geneCheck = _bString.match(/([Ee]\/[Ee];[Pa]\/[Pa];[Ua]\/[Ua];)/)&gt;&gt;
+		&lt;&lt;set _geneCheck = _bString.match(/([Ee]\/[Ee];[Ppa]\/[pPa];[Uua]\/[Uua];)/)&gt;&gt;
 	
 		&lt;&lt;if _geneCheck === null&gt;&gt;
 			&lt;&lt;replace &quot;#b-form-error&quot;&gt;&gt;@@.orange;Invalid gene, does not match pattern [&lt;&lt;- _match&gt;&gt;] @@&lt;&lt;/replace&gt;&gt;
@@ -22859,7 +22867,7 @@ Coat Color:
 
 			/* Update the color groups and value bonus */
 			&lt;&lt;colorValue&gt;&gt;
-			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
+			/*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
 
 			/* And update the pbreed */
 			&lt;&lt;replace &quot;#cc-form-error&quot;&gt;&gt;Gene set.  Coat = &lt;&lt;print $globalFluffies[$activeFluffy.ID].cColor.name&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -22910,7 +22918,7 @@ Mane Color:
 
 			/* Update the color groups and value bonus */
 			&lt;&lt;colorValue&gt;&gt;
-			&lt;&lt;colorGroup $activeFluffy&gt;&gt;
+			/*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
 
 			/* And update the pbreed */
 			&lt;&lt;replace &quot;#mc-form-error&quot;&gt;&gt;Gene set.  Mane Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].mColor.name&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -22959,6 +22967,7 @@ Eye Color:
 			/* Update the color object: */
 			&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.newEyeColorObject($activeFluffy.eyeModifer)&gt;&gt;
 
+			&lt;&lt;colorValue&gt;&gt;
 
 			/* And update the pbreed */
 			&lt;&lt;replace &quot;#ec-form-error&quot;&gt;&gt;Gene set.  Eye Color = &lt;&lt;print $globalFluffies[$activeFluffy.ID].eColor.name&gt;&gt;&lt;br&gt; &lt;&lt;/replace&gt;&gt;
@@ -24016,7 +24025,7 @@ Subspecies:
         &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
         
         &lt;&lt;colorValue&gt;&gt;
-        &lt;&lt;colorGroup $activeFluffy&gt;&gt;
+        /*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
         &lt;&lt;statValue&gt;&gt;
 
         &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
@@ -24091,7 +24100,7 @@ button {
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;for _fl range _fluffies&gt;&gt;
 		&lt;&lt;capture _fl&gt;&gt;
-			&lt;&lt;colorGroup $globalFluffies[_fl]&gt;&gt;
+			/*&lt;&lt;colorGroup $globalFluffies[_fl]&gt;&gt;*/
 			&lt;&lt;set $globalFluffies[_fl].preOwned = true&gt;&gt;
 			/*&lt;&lt;fixColors $globalFluffies[_fl]&gt;&gt;*/
 			&lt;&lt;if _args[0] === &quot;breeding&quot;&gt;&gt;
@@ -24269,15 +24278,15 @@ button {
  *** */
 
 &lt;&lt;widget &quot;fetchName&quot;&gt;&gt;
-	&lt;&lt;colorGroup $activeFluffy&gt;&gt;
+	/*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
 	&lt;&lt;set _colorList = window.nameList[&quot;colors&quot;]&gt;&gt;
 	&lt;&lt;set _genderList = window.nameList[&quot;gender&quot;]&gt;&gt;
 	&lt;&lt;set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()&gt;&gt;
 	&lt;&lt;set _posGendered = random(0, _genderList[_gender].length-1)&gt;&gt;
 	&lt;&lt;set _posNeutral = random(0, _genderList[&quot;Neutral&quot;].length-1)&gt;&gt;
 
-	&lt;&lt;set _coat = $activeFluffy.colorGroup[0]&gt;&gt;
-	&lt;&lt;set _mane = $activeFluffy.colorGroup[1]&gt;&gt;
+	&lt;&lt;set _coat = $activeFluffy.cColor.group&gt;&gt;
+	&lt;&lt;set _mane = $activeFluffy.mColor.group&gt;&gt;
 	
 	&lt;&lt;switch random(0, 4)&gt;&gt;
 		&lt;&lt;case 0 1 2&gt;&gt;
@@ -24435,10 +24444,19 @@ button {
 					
 	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
 	&lt;&lt;set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_thisFluffy.ID].colorBonus = Math.clamp($globalFluffies[_thisFluffy.ID].colorBonus, 0.05, 5)&gt;&gt;
-			
+
+	&lt;&lt;set $activeFluffy = $globalFluffies[_thisFluffy.ID]&gt;&gt;
+	&lt;&lt;colorValue&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Base price = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)&gt;&gt;
 					
 	&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
@@ -24448,13 +24466,19 @@ button {
 		
 	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
 			
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after age adustment = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after feral check = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].subSpecies == 2&gt;&gt;
 		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after species check = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if  $debugMode&gt;&gt;
 		@@.orange;_price@@
@@ -24604,7 +24628,6 @@ button {
  *** */
 &lt;&lt;widget &quot;FluffyDesc&quot;&gt;&gt;
 
-	/*&lt;&lt;colorValue&gt;&gt;*/
 	&lt;&lt;statValue&gt;&gt;
 	&lt;&lt;clampValues $activeFluffy&gt;&gt;
 
@@ -24730,6 +24753,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;clampValues _fluffy&gt;&gt;
 		&lt;&lt;personalityFix _fluffy&gt;&gt;
+		
 		&lt;div class=&quot;fluffy-details&quot;&gt;
 			&lt;div class=&quot;fluffy-details-left&quot;&gt;
 				&lt;div class=&quot;fluffy-species&quot;&gt;
@@ -24741,14 +24765,14 @@ button {
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-color&quot;&gt;
 					&lt;&lt;set _infoText = `class=&quot;info-toggle&quot; data-info=&quot;detail_color&quot; `&gt;&gt;
-					&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.cColor.hex}&quot; data-color-name=&quot;${_fluffy.cColor.name}&quot; data-color-group=&quot;${_fluffy.colorGroup[0]}&quot;`&gt;&gt;
+					&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.cColor.hex}&quot; data-color-name=&quot;${_fluffy.cColor.name}&quot; data-color-group=&quot;${_fluffy.cColor.group}&quot;`&gt;&gt;
 					&lt;span&gt;Coat: &lt;&lt;colorizeText _fluffy.cColor.hex _fluffy.cColor.name _infoText+_infoColor&gt;&gt;&lt;/span&gt;
 					&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt; 1&gt;&gt;
-						&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.mColor.hex}&quot; data-color-name=&quot;${_fluffy.mColor.name}&quot; data-color-group=&quot;${_fluffy.colorGroup[1]}&quot;`&gt;&gt;
+						&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.mColor.hex}&quot; data-color-name=&quot;${_fluffy.mColor.name}&quot; data-color-group=&quot;${_fluffy.mColor.group}&quot;`&gt;&gt;
 						&lt;span&gt;Mane: &lt;&lt;colorizeText _fluffy.mColor.hex _fluffy.mColor.name _infoText+_infoColor&gt;&gt;&lt;/span&gt;
 					&lt;&lt;/if&gt;&gt;
 					&lt;&lt;if _fluffy.age &gt; 0 || _fluffy.ageWeeks &gt;= 1&gt;&gt;
-						&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.eColor.hex}&quot; data-color-name=&quot;${_fluffy.eColor.name}&quot; data-color-group=&quot;${_fluffy.colorGroup[2]}&quot;`&gt;&gt;
+						&lt;&lt;set _infoColor = `data-color=&quot;${_fluffy.eColor.hex}&quot; data-color-name=&quot;${_fluffy.eColor.name}&quot; data-color-group=&quot;${_fluffy.eColor.group}&quot;`&gt;&gt;
 						&lt;span&gt;Eyes: &lt;&lt;colorizeText _fluffy.eColor.hex _fluffy.eColor.name _infoText+_infoColor&gt;&gt;&lt;/span&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
@@ -24771,7 +24795,9 @@ button {
 					&lt;&lt;if _fluffy.nursing.length &gt; 0&gt;&gt;&lt;span&gt;Is nursing &lt;&lt;print _fluffy.nursing.length &gt;&gt; foals&lt;/span&gt;&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-price&quot;&gt;
-					&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;
+
+					&lt;/span&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
 			&lt;div class=&quot;fluffy-details-right&quot;&gt;
@@ -25953,7 +25979,7 @@ button {
 	/*&lt;&lt;fixColors $activeFluffy&gt;&gt;*/
 	&lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
 	&lt;&lt;colorValue&gt;&gt; 
-	&lt;&lt;colorGroup $activeFluffy&gt;&gt;
+	/*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
 	&lt;&lt;statValue&gt;&gt;
 
 	/* Pick a random child trait:*/
@@ -27280,17 +27306,13 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 &lt;&lt;widget &quot;sidebarTop&quot;&gt;&gt;
-	
 	&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
-	
 	&lt;div class=&quot;w3-container&quot;&gt;
 		&lt;span id=&quot;close-dropdown-btn&quot; class=&quot;w3-button w3-display-topright w3-large&quot;&gt;X&lt;/span&gt;
 		&lt;br&gt;
 		&lt;div class=&quot;w3-padding w3-center&quot;&gt;
 			&lt;span id=&quot;app-name&quot;&gt;Fluffy Breeder&lt;/span&gt;
-			
 			&lt;&lt;iconSprite&gt;&gt;
-			
 			&lt;&lt;= &#39;&lt;img class=&quot;w3-circle responsive&quot; src=&quot;&#39; + _iconSprite + &#39;&quot;  alt=&quot;avatar&quot; style=&quot;width:100px&quot;&gt;&#39;&gt;&gt;
 		&lt;/div&gt;
 	&lt;/div&gt;
@@ -27700,13 +27722,13 @@ button {
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.coat != false&gt;&gt;
-		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[0] == $fluffyFilters.coat)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.cColor.group == $fluffyFilters.coat)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.mane != false&gt;&gt;
-		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[1] == $fluffyFilters.mane)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.mColor.group == $fluffyFilters.mane)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;if $fluffyFilters.eyes != false&gt;&gt;
-		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.colorGroup[2] == $fluffyFilters.eyes)&gt;&gt;
+		&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.eColor.group == $fluffyFilters.eyes)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;replaceFluffies _type $filterFluffies&gt;&gt;
