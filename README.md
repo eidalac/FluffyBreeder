@@ -1,11 +1,12 @@
 # Current Build:
-https://github.com/eidalac/FluffyBreeder/releases/download/v1.16.195-beta/FluffyBreeder.html
+https://github.com/eidalac/FluffyBreeder/tree/main/bin
+
 
 # Design Document:
 https://docs.google.com/document/d/1LIVm4eylJ_1YTUdhYx_K6K-_H0sQ3r1WelZ_44poASs/edit?usp=sharing
 
 # Discord:
-https://discord.gg/jWVsxJA4R8
+https://discord.gg/NkaKYK7Uuh
 
 # FluffyBreeder
 A text baseed fluffy breeding game
