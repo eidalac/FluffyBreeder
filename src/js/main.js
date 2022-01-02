@@ -171,7 +171,22 @@ Save.onLoad.add(function (save)
   }
 });
 
-/* ----- Utility ----- */
+/* ----- Fluffy Description ----- */
+
+window.selectFluffy = function(e) {
+  const $checkbox = $(this).find('.fluffy-checkbox')
+  const fluffy_id = $checkbox.attr('data-fluffy-id')
+  const customerEvent = $('#passage-event-customer')
+  if (!customerEvent && $checkbox.prop('checked')) {
+    $checkbox.prop('checked', false);
+    State.variables.globalFluffies[fluffy_id].isChecked = false
+  } else if (!customerEvent) {
+    $checkbox.prop('checked', true);
+    State.variables.globalFluffies[fluffy_id].isChecked = true
+  }
+}
+
+/* ----- Info Container ----- */
 
 window.renderInfo = function(e) {
   var mq = window.matchMedia('(min-width: 767px)');

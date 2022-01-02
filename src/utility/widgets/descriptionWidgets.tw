@@ -54,7 +54,7 @@ button {
 		<<set _breeder = $activeFluffy.ID>>
 	<</if>>
 	<<set _fluffies = []>>
-	<<if def _args[1]>>
+	<<if def _args[1] && _args[1].length > 0>>
 		<<for _fluffy range _args[1]>>
 			<<run _fluffies.push(_fluffy.ID)>>
 		<</for>>
@@ -119,71 +119,73 @@ button {
 
 				<<clampValues $globalFluffies[_fl]>>
 			
-				<label>
-					<div class="fluffy-description">
-					
-						<div class="fluffy-checkbox">
-							<<if _args[0] != "customer" && _args[0] != "breeding">><<checkbox "$globalFluffies[_fl].isChecked" false true `$globalFluffies[_fl].isChecked ? 'checked' : ''`>><</if>>
-						</div>
+				<div class="fluffy-description">
 				
-						<div class="fluffy-desc-top w3-row w3-dark-grey">
-							<div class="fluffy-name w3-container">
-								<<if _args[0] === "customer" || _args[0] === "breeding">>
-									<<- $globalFluffies[_fl].name>>
-								<<else>>
-									[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
-								<</if>>
-							</div>
-							<div class="fluffy-quickactions w3-rest w3-container">
-							<<if _args[0] === "customer">>
-								<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
-								
-								<<button _buttonString>>
-									<<OfferFluffy $globalFluffies[_fl].ID>>
-								<</button>>
-							<<elseif _args[0] === "breeding">>
-								<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
-								
-								<<button _buttonString "Fluffy Breeding">>
-									<<set $activeFluffy = $globalFluffies[_breeder]>>
-
-									<<if $globalFluffies[_fl].gender == "male">>
-										<<set $breedStal = _fl>>
-										<<set $breedMare = _breeder>>
-									<<else>>
-										<<set $breedMare = _fl>>
-										<<set $breedStal = _breeder>>
-									<</if>>
-								<</button>>
+					<div class="fluffy-checkbox-container">
+						<<if _args[0] != "customer" && _args[0] != "breeding">>
+						<<print
+							`<input class="fluffy-checkbox" data-fluffy-id="${_fl}" name="fluffy-checkbox" type="checkbox" tabindex="0" class="macro-checkbox">`
+						>>
+						<</if>>
+					</div>
+			
+					<div class="fluffy-desc-top w3-row w3-dark-grey">
+						<div class="fluffy-name w3-container">
+							<<if _args[0] === "customer" || _args[0] === "breeding">>
+								<<- $globalFluffies[_fl].name>>
 							<<else>>
-									[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]]
-								<<if $listType != "Display">>
-									[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
-								<<else>>
-									[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
-								<</if>>
-								<<set _foodType = $globalFluffies[_fl].foodType>>
-								<<set _foodTitle = "Food: ">>
-								<<switch $globalFluffies[_fl].foodQuality>>
-									<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">><<set _foodTitle += `${_foodType} (trash)`>> <<else>><<set _foodTitle += `${_foodType}`>> <</if>>
-									<<case 1>> <<set _foodTitle += `${_foodType} (cheap)`>>
-									<<case 2>> <<set _foodTitle += `${_foodType} (basic)`>>
-									<<case 3>> <<set _foodTitle += `${_foodType} (good)`>>
-									<<case 4>> <<set _foodTitle += `${_foodType} (premium)`>>
-									<<case -1>> <<set _foodTitle += ``>>
-									
-								<</switch>>
-								[[_foodTitle|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
+								[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
 							<</if>>
-							</div>
 						</div>
+						<div class="fluffy-quickactions w3-rest w3-container">
+						<<if _args[0] === "customer">>
+							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString>>
+								<<OfferFluffy $globalFluffies[_fl].ID>>
+							<</button>>
+						<<elseif _args[0] === "breeding">>
+							<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString "Fluffy Breeding">>
+								<<set $activeFluffy = $globalFluffies[_breeder]>>
 
-						<div class="fluffy-desc-bottom w3-row w3-dark-grey">
-							<<drawSprite $globalFluffies[_fl]>>
-							<<shortDesc $globalFluffies[_fl]>>
+								<<if $globalFluffies[_fl].gender == "male">>
+									<<set $breedStal = _fl>>
+									<<set $breedMare = _breeder>>
+								<<else>>
+									<<set $breedMare = _fl>>
+									<<set $breedStal = _breeder>>
+								<</if>>
+							<</button>>
+						<<else>>
+								[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]]
+							<<if $listType != "Display">>
+								[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+							<<else>>
+								[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+							<</if>>
+							<<set _foodType = $globalFluffies[_fl].foodType>>
+							<<set _foodTitle = "Food: ">>
+							<<switch $globalFluffies[_fl].foodQuality>>
+								<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">><<set _foodTitle += `${_foodType} (trash)`>> <<else>><<set _foodTitle += `${_foodType}`>> <</if>>
+								<<case 1>> <<set _foodTitle += `${_foodType} (cheap)`>>
+								<<case 2>> <<set _foodTitle += `${_foodType} (basic)`>>
+								<<case 3>> <<set _foodTitle += `${_foodType} (good)`>>
+								<<case 4>> <<set _foodTitle += `${_foodType} (premium)`>>
+								<<case -1>> <<set _foodTitle += ``>>
+								
+							<</switch>>
+							[[_foodTitle|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
+						<</if>>
 						</div>
 					</div>
-				</label>
+
+					<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+						<<drawSprite $globalFluffies[_fl]>>
+						<<shortDesc $globalFluffies[_fl]>>
+					</div>
+				</div>
 			<</if>>
 		<</capture>>
 	<</for>>

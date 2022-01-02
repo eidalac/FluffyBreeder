@@ -1,20 +1,17 @@
-$( document ).ready(function() {
-		/* Sidebar */
+window.pageLoad = function () {
+  $( document ).ready(function() {
+		/* ----- Sidebar ----- */
 		/*  Check if mobile */
 		var mq = window.matchMedia('(min-width: 767px)');
 		if (mq.matches) {openSidebar();} else {closeSidebar();}
 		$('#openNav').on("click", window.openSidebar);
 		$('#close-dropdown-btn').on("click", window.closeSidebar);
 
-    /* Show/Sort/Filter */
-		$('.dropdown-btn').on("click", window.toggleButton);
+    /* ----- Fluffy Description ----- */
 
-    /* Close Subsort */
-    $('.subsort-btn .sortbutton').on("click", window.closeSubsort);
+    $('.fluffy-description').on("click", window.selectFluffy)
 
-    /* Remove titles */
-    $('#filter-reset-btn').on("click", window.removeTitle)
-    $('#sort-reset-btn').on("click", window.removeTitle)
+    /* ----- Info Container ----- */
 
     /* Prepare html for info container */
     $('body').append('<div class="info-container"></div>');
@@ -95,3 +92,16 @@ $( document ).ready(function() {
     })
 
   });
+}
+
+$( document ).ready(function() {
+  /* Show/Sort/Filter */
+  $('.dropdown-btn').on("click", window.toggleButton);
+
+  /* Close Subsort */
+  $('.subsort-btn .sortbutton').on("click", window.closeSubsort);
+
+  /* Remove titles */
+  $('#filter-reset-btn').on("click", window.removeTitle)
+  $('#sort-reset-btn').on("click", window.removeTitle)
+})

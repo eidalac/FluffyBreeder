@@ -13,7 +13,7 @@
  *********** */
 
 /* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
-@@font-size: 0; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
 <<script>>UIBar.destroy();<</script>>
 
@@ -46,7 +46,7 @@
 				<<for _bf range $ourStore.fluffies>>
 					<<set $globalFluffies[_bf].isChecked = false>>
 				<</for>>
-				<<replace "#fluffy-list">><<FluffyList>><</replace>>
+				<<replaceFluffies>>
 			<</button>>@@ 
 		</div>
 		<div class="w3-dropdown-hover">
@@ -54,7 +54,7 @@
 				<<for _bf range $ourStore.fluffies>>
 					<<set $globalFluffies[_bf].isChecked = true>>
 				<</for>>
-				<<replace "#fluffy-list">><<FluffyList>><</replace>>
+				<<replaceFluffies>>
 			<</button>>@@ 
 		</div>
 	  
@@ -69,14 +69,14 @@
 							<<run $("#sellbutton button").addClass("w3-show")>>
 							<<run $("#unsellbutton button").removeClass("w3-show")>>
 							<<run $("#unsellbutton button").addClass("w3-hide")>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+							<<replaceFluffies>>
 						<</button>>@@
 						@@.sortbutton;<<button "Show Display">><<set $listType = "Display">>
 							<<run $("#sellbutton button").removeClass("w3-show")>>
 							<<run $("#sellbutton button").addClass("w3-hide")>>
 							<<run $("#unsellbutton button").removeClass("w3-hide")>>
 							<<run $("#unsellbutton button").addClass("w3-show")>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+							<<replaceFluffies>>
 						<</button>>@@
 					</div>
 				</div>
@@ -108,7 +108,7 @@
 							<</if>>
 						<</for>>
 						
-						<<replace "#fluffy-list">><<FluffyList>><</replace>>
+						<<replaceFluffies>>
 						<</button>>@@
 						
 						@@#unsellbutton;<<button "Remove from Sale">>
@@ -118,7 +118,7 @@
 									<<set $globalFluffies[_bf].isChecked = false>>				
 								<</if>>
 							<</for>>
-							<<replace "#fluffy-list">><<FluffyList>><</replace>>
+							<<replaceFluffies>>
 						<</button>>@@
 						
 
@@ -132,7 +132,7 @@
 										<</if>>
 									<</for>>
 								
-									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+									<<replaceFluffies>>
 									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 								<</button>>@@
 								@@.sortbutton;<<button "Release">>
@@ -142,7 +142,7 @@
 											<<removeFluffy $globalFluffies[_bf]>>
 										<</if>>
 									<</for>>
-									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+									<<replaceFluffies>>
 									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 								<</button>>@@
 								@@.sortbutton;<<button "Murder">>
@@ -152,7 +152,7 @@
 											<<removeFluffy $globalFluffies[_bf] "kill">>
 										<</if>>
 									<</for>>
-									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+									<<replaceFluffies>>
 									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
 								<</button>>@@
 							</div>
@@ -172,7 +172,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 0>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 										@@.sortbutton;<<button "Cheap">>
 												<<for _bf range $ourStore.fluffies>>
@@ -181,7 +181,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 1>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 										@@.sortbutton;<<button "Basic">>
 												<<for _bf range $ourStore.fluffies>>
@@ -190,7 +190,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 2>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 										@@.sortbutton;<<button "Good">>
 												<<for _bf range $ourStore.fluffies>>
@@ -199,7 +199,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 3>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 										@@.sortbutton;<<button "Quality">>
 												<<for _bf range $ourStore.fluffies>>
@@ -208,7 +208,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 4>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 									</div>
 								</div>
@@ -223,7 +223,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 0>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
@@ -232,7 +232,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 1>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Basic">>
 												<<for _bf range $ourStore.fluffies>>
@@ -241,7 +241,7 @@
 														<<set $globalFluffies[_bf].foodQuality = 2>>
 													<</if>>
 												<</for>> 
-												<<replace "#fluffy-list">><<FluffyList>><</replace>>
+												<<replaceFluffies>>
 											<</button>>@@
 										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
@@ -250,7 +250,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 3>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
@@ -259,7 +259,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 4>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 									</div>
 								</div>
@@ -275,7 +275,7 @@
 											<<set $globalFluffies[_bf].foodQuality = 0>>
 											<</if>>
 											<</for>> 
-										<<replace "#fluffy-list">><<FluffyList>><</replace>>
+										<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
@@ -284,7 +284,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 1>>
 												<</if>>
 											<</for>> 
-										<<replace "#fluffy-list">><<FluffyList>><</replace>>
+										<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Basic">>
 											<<for _bf range $ourStore.fluffies>>
@@ -293,7 +293,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 2>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
@@ -302,7 +302,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 3>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
@@ -311,7 +311,7 @@
 													<<set $globalFluffies[_bf].foodQuality = 4>>
 												<</if>>
 											<</for>> 
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 									</div>
 								</div>
@@ -330,7 +330,7 @@
 													<</if>>
 												<</if>>
 											<</for>>
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Cheap">>
 											<<for _bf range $ourStore.fluffies>>
@@ -342,7 +342,7 @@
 													<</if>>
 												<</if>>
 											<</for>>
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Basic">>
 											<<for _bf range $ourStore.fluffies>>
@@ -354,7 +354,7 @@
 													<</if>>
 												<</if>>
 											<</for>>
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Good">>
 											<<for _bf range $ourStore.fluffies>>
@@ -366,7 +366,7 @@
 													<</if>>
 												<</if>>
 											<</for>>
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 										@@.sortbutton;<<button "Quality">>
 											<<for _bf range $ourStore.fluffies>>
@@ -378,7 +378,7 @@
 													<</if>>
 												<</if>>
 											<</for>>
-											<<replace "#fluffy-list">><<FluffyList>><</replace>>
+											<<replaceFluffies>>
 										<</button>>@@
 
 									</div>
@@ -391,7 +391,7 @@
 											<<set $globalFluffies[_bf].foodQuality = 0>>
 										<</if>>
 									<</for>>
-									<<replace "#fluffy-list">><<FluffyList>><</replace>>
+									<<replaceFluffies>>
 								<</button>>@@
 
 							</div>
@@ -438,5 +438,7 @@
 <</timed>>
 
 <<script>>
- 	importScripts("./external-js/globals.js",);
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
 <</script>>
