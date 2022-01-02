@@ -10,8 +10,7 @@
  *
  *********** */
 
-
-  
+ 
   
 /* ***
  *	Color Value
@@ -20,50 +19,27 @@
  *	Caculates the color value of $activeFluffy
  *** */
 <<widget "colorValue">>
-	<<set _coatTier = "">>
-	<<set _maneTier = "">>
-	<<set _eyeTier = "">>
-	
-	<<set _coatGroup = "">>
-	<<set _maneGroup = "">>
-	<<set _eyeGroup = "">>
 
-	/* Iterate through the list of colors, if they match, remember the tier and group.*/
-	<<for _i = 0; _i < $colors.length; _i++>>
+	<<set _cAppeal = getColorAppeal($activeFluffy.cColor.hex)>>
+	<<set _mAppeal = getColorAppeal($activeFluffy.mColor.hex)>>
+	<<set _eAppeal = getColorAppeal($activeFluffy.eColor.hex)>>
 
-		<<if $activeFluffy.cColor.name== $colors[_i].name>>
-			<<set _coatTier = $colors[_i].tier>>
-			<<set _coatGroup = $colors[_i].group>>
-		<</if>>
-		<<if $activeFluffy.mColor.name == $colors[_i].name>>
-			<<set _maneTier = $colors[_i].tier>>
-			<<set _maneGroup = $colors[_i].group>>
-		<</if>>
-		<<if $activeFluffy.eColor.name == $colors[_i].name>>
-			<<set _eyeTier = $colors[_i].tier>>
-			<<set _eyeGroup = $colors[_i].group>>
-		<</if>>
-	<</for>>
-
-	/* No matches found, bad*/
-	<<if _coatTier == "" || _coatGroup == "">>
-		<br>@@.red;No color match found for coat: <<print $activeFluffy.ID>>.
-	<</if>>
-	<<if _maneTier == "" || _maneGroup == "">>
-		<br>@@.red;No color match found for mane: <<print $activeFluffy.ID>>.
-	<</if>>
-	<<if _eyeTier == "" || _eyeGroup == "">>
-		<br>@@.red;No color match found for eye: <<print $activeFluffy.ID>>.
-	<</if>>	
+	<<set _coatGroup = $activeFluffy.cColor.group>>
+	<<set _maneGroup = $activeFluffy.mColor.group>>
+	<<set _eyeGroup = $activeFluffy.eColor.group>>
 
 	/* One point per tier for eyes, 2 for mane and 3 for coat. */
-	<<set _colorBonus = 0>>
-	<<set _colorBonus = Number(_eyeTier)>>
-	<<set _colorBonus += (2 * _maneTier)>>
-	<<set _colorBonus += (3 * _coatTier)>>
+	<<set _netAppeal = Number(_cAppeal)>>
+	<<set _netAppeal = Number(_netAppeal) + Number(Number(_mAppeal) / 2).toFixed(0)>>
+	<<set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)>>
+	<<set _netAppeal = Math.clamp(_netAppeal, 1, 180)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 1 = ${_netAppeal}.`)>>
 	
-	/* Divide by 6 to get the multplier (1-6) */
-	<<set _colorBonus = Number(_colorBonus / 12).toFixed(2)>>
+	/* Now it's a %, from 1-180% */
+	<<set _netAppeal = Number(_netAppeal / 100).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 2 = ${_netAppeal}. (${_coatGroup}, ${_maneGroup}, ${_eyeGroup})`)>>
 	
 	/* ***
 	 *	Complimentary pairs:
@@ -102,9 +78,20 @@
 	<<elseif _coatGroup == "Brown" && _maneGroup == "Brown">>
 		<<set _pairBonus = 0>>
 	<</if>>
-	<<set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)>>
-	
-	<<set $activeFluffy.colorBonus = Math.clamp($activeFluffy.colorBonus, 0.05, 5)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 3 = ${_netAppeal}, pair bonus = ${_pairBonus}.`)>>
+
+	<<set _colorBonus = Number(_netAppeal + _pairBonus).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 4 = ${_colorBonus}.`)>>
+
+	<<set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 5 = ${_colorBonus}.`)>>
+
+	<<set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)>>
+
+	<<run console.log(`DEBUG: <<colorValue>>: Bonus 6 = ${$activeFluffy.colorBonus}.`)>>
 <</widget>>
 
 

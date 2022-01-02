@@ -16576,7 +16576,7 @@ window.hexToHSL = function (hex) {
     : 0;
   return [
     60 * h < 0 ? 60 * h + 360 : 60 * h,
-    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 0),
+    100 * (s ? (l <= 0.5 ? s / (2 * l - s) : s / (2 - (2 * l - s))) : 1),
     (100 * (2 * l - s)) / 2,
   ];
 };
@@ -16623,6 +16623,42 @@ window.getLuminance = (hex) => {
 
 window.inRange = function(x, min, max) {
   return ((x-min)*(x-max) <= 0);
+}
+
+window.getColorAppeal = function (hex) {
+	hex = hex === '#ffffff' ? '#fffffe' : hex;
+  const clamp = (num, min, max) => Math.min(Math.max(num, min), max);
+	let hsl = hexToHSL(hex);
+  let [h, s, l] = [hsl[0], hsl[1], hsl[2]];
+	let appeal = 100 - ((100-l) + (100-s))/2;
+
+  const bonus = s >= l ? l >= 30 ? s-l : l <= 5 ? 100 - s*1.5 : 0 : l >= 50 ? l/6 : l <= 10 ? 100 - l : 0;
+
+  appeal = bonus > 0 ? appeal += bonus : appeal;
+
+  return Math.round(clamp(appeal, 0, 100));
+}
+
+window.getColorProximity = function (hex, group = undefined) {
+  let shades = window.shades;
+	let rgb = hexToRgb(hex)
+  let [r, g, b] = [rgb[0], rgb[1], rgb[2]]
+  let minimum = 10000000000000;
+  
+  for(let i in shades) {
+  	if(group && shades[i][1] === group) {
+      let shade_rgb = hexToRgb(`#${shades[i][0]}`);
+      let [shade_r, shade_g, shade_b] = [shade_rgb[0], shade_rgb[1], shade_rgb[2]];
+      let distance = Math.sqrt(Math.pow((r - shade_r), 2) + Math.pow((g - shade_g), 2) + Math.pow((b - shade_b), 2));
+      return Math.min(minimum, distance);
+    } else {
+      let shade_rgb = hexToRgb(`#${shades[i][0]}`);
+      let [shade_r, shade_g, shade_b] = [shade_rgb[0], shade_rgb[1], shade_rgb[2]];
+      let distance = Math.sqrt(Math.pow((r - shade_r), 2) + Math.pow((g - shade_g), 2) + Math.pow((b - shade_b), 2));
+      minimum = Math.min(minimum, distance);
+    }
+  }
+  return Math.min(minimum, distance);
 }
 /* twine-user-script #9: "naming.js" */
 window.nameList = {
@@ -17309,8 +17345,7 @@ window.nameList = {
  *
  *********** */
 
-
-  
+ 
   
 /* ***
  *	Color Value
@@ -17319,50 +17354,27 @@ window.nameList = {
  *	Caculates the color value of $activeFluffy
  *** */
 &lt;&lt;widget &quot;colorValue&quot;&gt;&gt;
-	&lt;&lt;set _coatTier = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneTier = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _eyeTier = &quot;&quot;&gt;&gt;
-	
-	&lt;&lt;set _coatGroup = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _maneGroup = &quot;&quot;&gt;&gt;
-	&lt;&lt;set _eyeGroup = &quot;&quot;&gt;&gt;
 
-	/* Iterate through the list of colors, if they match, remember the tier and group.*/
-	&lt;&lt;for _i = 0; _i &lt; $colors.length; _i++&gt;&gt;
+	&lt;&lt;set _cAppeal = getColorAppeal($activeFluffy.cColor.hex)&gt;&gt;
+	&lt;&lt;set _mAppeal = getColorAppeal($activeFluffy.mColor.hex)&gt;&gt;
+	&lt;&lt;set _eAppeal = getColorAppeal($activeFluffy.eColor.hex)&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.cColor.name== $colors[_i].name&gt;&gt;
-			&lt;&lt;set _coatTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _coatGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.mColor.name == $colors[_i].name&gt;&gt;
-			&lt;&lt;set _maneTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _maneGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.eColor.name == $colors[_i].name&gt;&gt;
-			&lt;&lt;set _eyeTier = $colors[_i].tier&gt;&gt;
-			&lt;&lt;set _eyeGroup = $colors[_i].group&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;/for&gt;&gt;
-
-	/* No matches found, bad*/
-	&lt;&lt;if _coatTier == &quot;&quot; || _coatGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for coat: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if _maneTier == &quot;&quot; || _maneGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for mane: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if _eyeTier == &quot;&quot; || _eyeGroup == &quot;&quot;&gt;&gt;
-		&lt;br&gt;@@.red;No color match found for eye: &lt;&lt;print $activeFluffy.ID&gt;&gt;.
-	&lt;&lt;/if&gt;&gt;	
+	&lt;&lt;set _coatGroup = $activeFluffy.cColor.group&gt;&gt;
+	&lt;&lt;set _maneGroup = $activeFluffy.mColor.group&gt;&gt;
+	&lt;&lt;set _eyeGroup = $activeFluffy.eColor.group&gt;&gt;
 
 	/* One point per tier for eyes, 2 for mane and 3 for coat. */
-	&lt;&lt;set _colorBonus = 0&gt;&gt;
-	&lt;&lt;set _colorBonus = Number(_eyeTier)&gt;&gt;
-	&lt;&lt;set _colorBonus += (2 * _maneTier)&gt;&gt;
-	&lt;&lt;set _colorBonus += (3 * _coatTier)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_cAppeal)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_netAppeal) + Number(Number(_mAppeal) / 2).toFixed(0)&gt;&gt;
+	&lt;&lt;set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)&gt;&gt;
+	&lt;&lt;set _netAppeal = Math.clamp(_netAppeal, 1, 180)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 1 = ${_netAppeal}.`)&gt;&gt;
 	
-	/* Divide by 6 to get the multplier (1-6) */
-	&lt;&lt;set _colorBonus = Number(_colorBonus / 12).toFixed(2)&gt;&gt;
+	/* Now it&#39;s a %, from 1-180% */
+	&lt;&lt;set _netAppeal = Number(_netAppeal / 100).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 2 = ${_netAppeal}. (${_coatGroup}, ${_maneGroup}, ${_eyeGroup})`)&gt;&gt;
 	
 	/* ***
 	 *	Complimentary pairs:
@@ -17401,9 +17413,20 @@ window.nameList = {
 	&lt;&lt;elseif _coatGroup == &quot;Brown&quot; &amp;&amp; _maneGroup == &quot;Brown&quot;&gt;&gt;
 		&lt;&lt;set _pairBonus = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;set $activeFluffy.colorBonus = Number(_colorBonus) + Number(_pairBonus)&gt;&gt;
-	
-	&lt;&lt;set $activeFluffy.colorBonus = Math.clamp($activeFluffy.colorBonus, 0.05, 5)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 3 = ${_netAppeal}, pair bonus = ${_pairBonus}.`)&gt;&gt;
+
+	&lt;&lt;set _colorBonus = Number(_netAppeal + _pairBonus).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 4 = ${_colorBonus}.`)&gt;&gt;
+
+	&lt;&lt;set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 5 = ${_colorBonus}.`)&gt;&gt;
+
+	&lt;&lt;set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 6 = ${$activeFluffy.colorBonus}.`)&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -18567,8 +18590,10 @@ button {
 	&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Price 2: ${_price}`)&gt;&gt;
 	
 	&lt;&lt;set $globalFluffies[_fl].statBonus = Math.clamp($globalFluffies[_fl].statBonus, 0.02, 3)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_fl].colorBonus = Math.clamp($globalFluffies[_fl].colorBonus, 0.05, 5)&gt;&gt;
 
+	&lt;&lt;set $activeFluffy = $globalFluffies[_fl]&gt;&gt;
+	&lt;&lt;colorValue&gt;&gt;
+		
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_fl].statBonus)).toFixed(2)&gt;&gt;
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_fl].colorBonus).toFixed(2)&gt;&gt;
 	
@@ -26900,10 +26925,19 @@ button {
 					
 	&lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
 	&lt;&lt;set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)&gt;&gt;
-	&lt;&lt;set $globalFluffies[_thisFluffy.ID].colorBonus = Math.clamp($globalFluffies[_thisFluffy.ID].colorBonus, 0.05, 5)&gt;&gt;
-			
+
+	&lt;&lt;set $activeFluffy = $globalFluffies[_thisFluffy.ID]&gt;&gt;
+	&lt;&lt;colorValue&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Base price = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)&gt;&gt;
+
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)&gt;&gt;
 					
 	&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
@@ -26916,6 +26950,8 @@ button {
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
+	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with after feral = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].subSpecies == 2&gt;&gt;
 		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
@@ -27069,7 +27105,6 @@ button {
  *** */
 &lt;&lt;widget &quot;FluffyDesc&quot;&gt;&gt;
 
-	/*&lt;&lt;colorValue&gt;&gt;*/
 	&lt;&lt;statValue&gt;&gt;
 	&lt;&lt;clampValues $activeFluffy&gt;&gt;
 
@@ -27195,6 +27230,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 		&lt;&lt;clampValues _fluffy&gt;&gt;
 		&lt;&lt;personalityFix _fluffy&gt;&gt;
+		
 		&lt;div class=&quot;fluffy-details&quot;&gt;
 			&lt;div class=&quot;fluffy-details-left&quot;&gt;
 				&lt;div class=&quot;fluffy-species&quot;&gt;
@@ -27236,7 +27272,9 @@ button {
 					&lt;&lt;if _fluffy.nursing.length &gt; 0&gt;&gt;&lt;span&gt;Is nursing &lt;&lt;print _fluffy.nursing.length &gt;&gt; foals&lt;/span&gt;&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
 				&lt;div class=&quot;fluffy-price&quot;&gt;
-					&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;&lt;/span&gt;
+					&lt;span&gt;Sale Price: &lt;&lt;displayPrice $globalFluffies[_fluffy.ID]&gt;&gt;
+
+					&lt;/span&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
 			&lt;div class=&quot;fluffy-details-right&quot;&gt;
