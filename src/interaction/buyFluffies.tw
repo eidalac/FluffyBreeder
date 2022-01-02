@@ -18,8 +18,6 @@
 <<set $nextButton to "End Shopping", $nextLink to "Week Start">>
 <<set _rID = 0>>
 
-<<run console.log(`DEBUG: [Buy Fluffy]: Enter Event: ${$randomFluffies}.`)>>
-
 <<for _rID range $randomFluffies>>
 	<<set $globalFluffies[_rID].isChecked = false>>
 <</for>>
@@ -46,12 +44,9 @@
 					<<set _buyText = "Take Fluffies">>
 				<</if>>
 			  	@@#buybutton;<<button _buyText>>
-<<run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$randomFluffies.length}.`)>>
-
 					<<set _listCheck = 0>>
 					<<set _rID = 0>>
 					<<for _rID range $randomFluffies>>
-<<run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)>>
 						<<if $globalFluffies[_rID].isChecked>>
 							<<run _listCheck++>>
 						<</if>>
@@ -125,12 +120,9 @@
 
 						/* Only 1 fluffy present, selected or not */
 						<<else>>
-<<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 0: ${$randomFluffies}.`)>>
-<<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 1: ${$randomFluffies[0]}.`)>>
 							<<set $actions-->>
 
 							<<run $ourStore.fluffies.push($randomFluffies[0])>>
-<<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 2: ${$randomFluffies}.`)>>
 							/* only rename unnamed fluffies */
 							<<if $nameType === "ordinal" && $globalFluffies[$randomFluffies[0]].hasName == false>>
 								<<set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + " " + $randomFluffies[0])>>
@@ -143,7 +135,6 @@
 							<<else>>
 								<<set $ourStore.mares++>>
 							<</if>>
-<<run console.log(`DEBUG: [Buy Fluffy]: Solo Get 3: ${$globalFluffies[$randomFluffies[0]]}, ${$globalFluffies[$randomFluffies[0]].ID}, ${$globalFluffies[$randomFluffies[0]].isChecked}.`)>>
 							<<set $globalFluffies[$randomFluffies[0]].isChecked = false>>
 						<</if>>
 

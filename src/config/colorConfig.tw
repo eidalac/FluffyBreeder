@@ -34,13 +34,9 @@
 	<<set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)>>
 	<<set _netAppeal = Math.clamp(_netAppeal, 1, 180)>>
 
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 1 = ${_netAppeal}.`)>>
-	
 	/* Now it's a %, from 1-180% */
 	<<set _netAppeal = Number(_netAppeal / 100).toFixed(2)>>
 
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 2 = ${_netAppeal}. (${_coatGroup}, ${_maneGroup}, ${_eyeGroup})`)>>
-	
 	/* ***
 	 *	Complimentary pairs:
 	 *		Blue - Orange
@@ -79,23 +75,10 @@
 		<<set _pairBonus = 0>>
 	<</if>>
 
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 3 = ${_netAppeal}, pair bonus = ${_pairBonus}.`)>>
-
 	<<set _colorBonus = Number(_netAppeal).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 4.1 = ${_colorBonus}.`)>>
-
 	<<set _colorBonus = Number(Number(_colorBonus)+ Number(_pairBonus)).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 4 = ${_colorBonus}.`)>>
-
 	<<set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 5 = ${_colorBonus}.`)>>
-
 	<<set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<colorValue>>: Bonus 6 = ${$activeFluffy.colorBonus}.`)>>
 <</widget>>
 
 
@@ -189,7 +172,6 @@
 		<<set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)>>
 		<<set _hslFluffy.colorGroup = ["", "", ""]>>
 
-		<<run console.log(`DEBUG: colorGroup: _hslCoat = ${_hslCoat}, _hslMane = ${_hslMane}, _hslEyes = ${_hslEyes}.`)>>
 		console.log(ntc.name(State.variables.activeFluffy.cColor.hex))
 
 		<<for _i = 0; _i < groupList.length-2; _i++>>

@@ -54,10 +54,16 @@ button {
 		<<set _breeder = $activeFluffy.ID>>
 	<</if>>
 	<<set _fluffies = []>>
-	<<if def _args[1] && _args[1].length > 0>>
-		<<for _fluffy range _args[1]>>
-			<<run _fluffies.push(_fluffy.ID)>>
-		<</for>>
+	<<if def _args[1]>>
+		<<if _args[1].length > 0>>
+			<<for _fluffy range _args[1]>>
+				<<run _fluffies.push(_fluffy.ID)>>
+			<</for>>
+		<<elseif _args[1].length == 0>>
+			<<set _fluffies = []>>
+		<<else>>
+			<<set _fluffies = $ourStore.fluffies>>
+		<</if>>
 	<<else>>
 		<<set _fluffies = $ourStore.fluffies>>
 	<</if>>
@@ -141,8 +147,8 @@ button {
 						<<if _args[0] === "customer">>
 							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
 							
-							<<button _buttonString>>
-								<<OfferFluffy $globalFluffies[_fl].ID>>
+							<<button _buttonString "Post Customer">>
+								<<set $activeFluffy = $globalFluffies[_fl]>>
 							<</button>>
 						<<elseif _args[0] === "breeding">>
 							<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
@@ -189,6 +195,12 @@ button {
 			<</if>>
 		<</capture>>
 	<</for>>
+
+	<<if _fluffies.length == 0>>
+		<br>
+		No matches found to filter.
+		<br>
+	<</if>>
 <</widget>>
 
 

@@ -1642,9 +1642,8 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	const genName = ntcObject[1];
 	const genGroup = ntcObject[3];
 
-	console.log(`DEBUG: getNewGeneColor(): geneObject = ${genName}, ${hexString}, ${genFilter}.`);
 	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter), group: String(genGroup)};
-	console.log(`DEBUG: getNewGeneColor(): geneObject = ${geneObject.name}, ${geneObject.hex}.`);
+
 	return geneObject;
 }
 
