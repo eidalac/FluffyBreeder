@@ -63,7 +63,7 @@ button {
 	<</if>>
 	<<for _fl range _fluffies>>
 		<<capture _fl>>
-			<<colorGroup $globalFluffies[_fl]>>
+			/*<<colorGroup $globalFluffies[_fl]>>*/
 			<<set $globalFluffies[_fl].preOwned = true>>
 			/*<<fixColors $globalFluffies[_fl]>>*/
 			<<if _args[0] === "breeding">>
@@ -239,15 +239,15 @@ button {
  *** */
 
 <<widget "fetchName">>
-	<<colorGroup $activeFluffy>>
+	/*<<colorGroup $activeFluffy>>*/
 	<<set _colorList = window.nameList["colors"]>>
 	<<set _genderList = window.nameList["gender"]>>
 	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
 	<<set _posGendered = random(0, _genderList[_gender].length-1)>>
 	<<set _posNeutral = random(0, _genderList["Neutral"].length-1)>>
 
-	<<set _coat = $activeFluffy.colorGroup[0]>>
-	<<set _mane = $activeFluffy.colorGroup[1]>>
+	<<set _coat = $activeFluffy.cColor.group>>
+	<<set _mane = $activeFluffy.mColor.group>>
 	
 	<<switch random(0, 4)>>
 		<<case 0 1 2>>
@@ -722,14 +722,14 @@ button {
 				</div>
 				<div class="fluffy-color">
 					<<set _infoText = `class="info-toggle" data-info="detail_color" `>>
-					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.colorGroup[0]}"`>>
+					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.cColor.group}"`>>
 					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name _infoText+_infoColor>></span>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
-						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.colorGroup[1]}"`>>
+						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.mColor.group}"`>>
 						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name _infoText+_infoColor>></span>
 					<</if>>
 					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
-						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.colorGroup[2]}"`>>
+						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.eColor.group}"`>>
 						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name _infoText+_infoColor>></span>
 					<</if>>
 				</div>

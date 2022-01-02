@@ -43,7 +43,7 @@ function compile() {
 	elif [[ -d .git ]]; then
 		COMMIT=$(git rev-parse --short HEAD)
 		if [[ "$usehash" ]]; then
-			file="bin/FluffyBreeder_${COMMIT}.html"
+			file="bin/FluffyBreeder_build_${COMMIT}.html"
 		fi
 	fi
 	

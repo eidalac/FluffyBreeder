@@ -81,29 +81,29 @@ Save.onLoad.add(function (save)
       {
           if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[k].name
+            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[k].name
           }
           else if (hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[0] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[groupList.length-1].name;
           }
 
           if (inRange(hslMane[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[k].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[k].name;
           }
           else if (hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[1] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[groupList.length-1].name;
           }
 
           if (inRange(hslEyes[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[k].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[k].name;
           }
           else if (hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].colorGroup[2] = groupList[groupList.length-1].name;
+            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
           }
       }
 
