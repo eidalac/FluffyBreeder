@@ -45,6 +45,9 @@ function compile() {
 		if [[ "$usehash" ]]; then
 			file="bin/FluffyBreeder_build_${COMMIT}.html"
 		fi
+
+		# Find and insert current commit
+		sed -i "s/COMMIT/$COMMIT/" ./src/init/storyInit.tw
 	fi
 	
 	devTools/concatFiles.sh src/css/ '*.css' bin/fb.css
@@ -56,6 +59,8 @@ function compile() {
 	fi
 
 	rm -f bin/fb.css
+	# Revert current commit insertion in ./src/init/storyInit.tw for next compilation
+	git checkout -- ./src/init/storyInit.tw
 
 	echoMessage "Saved to $file."
 }

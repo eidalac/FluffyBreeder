@@ -14,6 +14,30 @@ importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font
 /* -- Save Functions - */
 Save.onLoad.add(function (save)
 {
+  if (typeof save.state.history[save.state.index].variables.ver == 'undefined')
+  {
+    save.state.history[save.state.index].variables.ver = State.variables.ver;
+    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
+  }
+  else if (save.state.history[save.state.index].variables.ver != State.variables.ver)
+  {
+    save.state.history[save.state.index].variables.saveVer = save.state.history[save.state.index].variables.ver;
+    save.state.history[save.state.index].variables.saveReleaseID = save.state.history[save.state.index].variables.releaseID;
+
+    save.state.history[save.state.index].variables.ver = State.variables.ver;
+    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
+  }
+
+  if (typeof save.state.history[save.state.index].variables.saveVer == 'undefined')
+  {
+    save.state.history[save.state.index].variables.saveVer = State.variables.ver;
+  }
+
+  if (typeof save.state.history[save.state.index].variables.saveReleaseID == 'undefined')
+  {
+    save.state.history[save.state.index].variables.saveReleaseID = State.variables.releaseID;
+  }
+
   if (typeof save.state.history[save.state.index].variables.grandmotherGene == 'undefined')
   {
     save.state.history[save.state.index].variables.grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";

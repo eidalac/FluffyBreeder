@@ -16192,6 +16192,30 @@ importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font
 /* -- Save Functions - */
 Save.onLoad.add(function (save)
 {
+  if (typeof save.state.history[save.state.index].variables.ver == 'undefined')
+  {
+    save.state.history[save.state.index].variables.ver = State.variables.ver;
+    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
+  }
+  else if (save.state.history[save.state.index].variables.ver != State.variables.ver)
+  {
+    save.state.history[save.state.index].variables.saveVer = save.state.history[save.state.index].variables.ver;
+    save.state.history[save.state.index].variables.saveReleaseID = save.state.history[save.state.index].variables.releaseID;
+
+    save.state.history[save.state.index].variables.ver = State.variables.ver;
+    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
+  }
+
+  if (typeof save.state.history[save.state.index].variables.saveVer == 'undefined')
+  {
+    save.state.history[save.state.index].variables.saveVer = State.variables.ver;
+  }
+
+  if (typeof save.state.history[save.state.index].variables.saveReleaseID == 'undefined')
+  {
+    save.state.history[save.state.index].variables.saveReleaseID = State.variables.releaseID;
+  }
+
   if (typeof save.state.history[save.state.index].variables.grandmotherGene == 'undefined')
   {
     save.state.history[save.state.index].variables.grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
@@ -21678,7 +21702,9 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 /* Saves use the first eight printed words to make the &quot;file name&quot;, the below line cheats and makes saves nicer named. */
 @@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
-&lt;&lt;set _currentVer = &quot;v1.26.239-beta&quot;&gt;&gt;
+&lt;&lt;if ndef $saveVer&gt;&gt;
+	&lt;&lt;set $saveVer = $ver&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
 /* Clear any checkboxes */
 &lt;&lt;for _f range $ourStore.fluffies&gt;&gt;
@@ -21856,7 +21882,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 		Open for business for the week
 
-		&lt;br&gt;Current Version: _currentVer / Save version: $ver
+		&lt;br&gt;Current Version: $ver / Save version: $saveVer
 			
 		&lt;br&gt;
 		&lt;br&gt;
@@ -22380,7 +22406,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.26.239-beta&quot;, $releaseID = COMMIT&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;236fc87&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -26462,10 +26488,16 @@ button {
 		&lt;&lt;set _breeder = $activeFluffy.ID&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set _fluffies = []&gt;&gt;
-	&lt;&lt;if def _args[1] &amp;&amp; _args[1].length &gt; 0&gt;&gt;
-		&lt;&lt;for _fluffy range _args[1]&gt;&gt;
-			&lt;&lt;run _fluffies.push(_fluffy.ID)&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;if def _args[1]&gt;&gt;
+		&lt;&lt;if _args[1].length &gt; 0&gt;&gt;
+			&lt;&lt;for _fluffy range _args[1]&gt;&gt;
+				&lt;&lt;run _fluffies.push(_fluffy.ID)&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;elseif _args[1].length == 0&gt;&gt;
+			&lt;&lt;set _fluffies = []&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _fluffies = $ourStore.fluffies&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _fluffies = $ourStore.fluffies&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -26597,6 +26629,12 @@ button {
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/capture&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+
+	&lt;&lt;if _fluffies.length == 0&gt;&gt;
+		&lt;br&gt;
+		No matches found to filter.
+		&lt;br&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -30068,6 +30106,8 @@ button {
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed)&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed &amp;&amp; fluffy.gender != $activeFluffy.gender)&gt;&gt;
+
+			&lt;&lt;run console.log(`DEBUG: resetList: Filter size (2 - breed) ${$filterFluffies.length}.`)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;switch $fluffyFilters.maturity&gt;&gt;
@@ -30120,6 +30160,7 @@ button {
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _replaceFluffies = []&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _replaceFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;run pageLoad();&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="pronoun widgets" tags="widget nobr" position="225,725" size="100,100">/* **********
