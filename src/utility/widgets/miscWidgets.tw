@@ -792,6 +792,8 @@
 			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed)>>
 		<<else>>
 			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed && fluffy.gender != $activeFluffy.gender)>>
+
+			<<run console.log(`DEBUG: resetList: Filter size (2 - breed) ${$filterFluffies.length}.`)>>
 		<</if>>
 	<</if>>
 	<<switch $fluffyFilters.maturity>>
@@ -844,6 +846,7 @@
 	<<else>>
 		<<set _replaceFluffies = []>>
 	<</if>>
+
 	<<replace "#fluffy-list">><<FluffyList _type _replaceFluffies>><</replace>>
 	<<run pageLoad();>>
 <</widget>>

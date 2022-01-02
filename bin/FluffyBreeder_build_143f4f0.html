@@ -26462,10 +26462,16 @@ button {
 		&lt;&lt;set _breeder = $activeFluffy.ID&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;set _fluffies = []&gt;&gt;
-	&lt;&lt;if def _args[1] &amp;&amp; _args[1].length &gt; 0&gt;&gt;
-		&lt;&lt;for _fluffy range _args[1]&gt;&gt;
-			&lt;&lt;run _fluffies.push(_fluffy.ID)&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
+	&lt;&lt;if def _args[1]&gt;&gt;
+		&lt;&lt;if _args[1].length &gt; 0&gt;&gt;
+			&lt;&lt;for _fluffy range _args[1]&gt;&gt;
+				&lt;&lt;run _fluffies.push(_fluffy.ID)&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;elseif _args[1].length == 0&gt;&gt;
+			&lt;&lt;set _fluffies = []&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _fluffies = $ourStore.fluffies&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _fluffies = $ourStore.fluffies&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -26597,6 +26603,12 @@ button {
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/capture&gt;&gt;
 	&lt;&lt;/for&gt;&gt;
+
+	&lt;&lt;if _fluffies.length == 0&gt;&gt;
+		&lt;br&gt;
+		No matches found to filter.
+		&lt;br&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -30068,6 +30080,8 @@ button {
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed)&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed &amp;&amp; fluffy.gender != $activeFluffy.gender)&gt;&gt;
+
+			&lt;&lt;run console.log(`DEBUG: resetList: Filter size (2 - breed) ${$filterFluffies.length}.`)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;switch $fluffyFilters.maturity&gt;&gt;
@@ -30120,6 +30134,7 @@ button {
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _replaceFluffies = []&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
+
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _replaceFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;run pageLoad();&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="pronoun widgets" tags="widget nobr" position="225,725" size="100,100">/* **********
