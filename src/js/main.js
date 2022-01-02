@@ -196,13 +196,13 @@ Save.onLoad.add(function (save)
 /* ----- Fluffy Description ----- */
 
 window.selectFluffy = function(e) {
-  const $checkbox = $(this).find('.fluffy-checkbox')
-  const fluffy_id = $checkbox.attr('data-fluffy-id')
-  const customerEvent = $('#passage-event-customer')
-  if (!customerEvent && $checkbox.prop('checked')) {
+  const $checkbox = $(this).find('.fluffy-checkbox');
+  const fluffy_id = $checkbox.attr('data-fluffy-id');
+  const customerEvent = $('#passage-event-customer');
+  if (!customerEvent[0] && $checkbox.prop('checked')) {
     $checkbox.prop('checked', false);
     State.variables.globalFluffies[fluffy_id].isChecked = false
-  } else if (!customerEvent) {
+  } else if (!customerEvent[0]) {
     $checkbox.prop('checked', true);
     State.variables.globalFluffies[fluffy_id].isChecked = true
   }
