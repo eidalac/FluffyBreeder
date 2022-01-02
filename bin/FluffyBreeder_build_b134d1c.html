@@ -18011,7 +18011,18 @@ button {
 	&lt;hr&gt;
 	&lt;br&gt;
 	/* Display the initial list*/
-	&lt;&lt;timed 20ms&gt;&gt;&lt;&lt;replaceFluffies &quot;customer&quot;&gt;&gt;&lt;&lt;/timed&gt;&gt;
+	&lt;&lt;timed 20ms&gt;&gt;
+	&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
+	&lt;&lt;set $fluffyFilters = {
+		breed: false,
+		maturity: false,
+		gender: false,
+		coat: false,
+		mane: false,
+		eyes: false
+	}&gt;&gt;
+	&lt;&lt;resetList&gt;&gt;
+	&lt;&lt;/timed&gt;&gt;
 &lt;/div&gt;
 
 
@@ -22314,7 +22325,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;171167e&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;b134d1c&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -24220,7 +24231,8 @@ Upgrades:
 				&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 					&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
 				&lt;&lt;/for&gt;&gt;
-				&lt;&lt;replaceFluffies&gt;&gt;
+				&lt;&lt;set _type = $listType&gt;&gt;	
+				&lt;&lt;resetList&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@ 
 		&lt;/div&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -24228,7 +24240,8 @@ Upgrades:
 				&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 					&lt;&lt;set $globalFluffies[_bf].isChecked = true&gt;&gt;
 				&lt;&lt;/for&gt;&gt;
-				&lt;&lt;replaceFluffies&gt;&gt;
+				&lt;&lt;set _type = $listType&gt;&gt;	
+				&lt;&lt;resetList&gt;&gt;
 			&lt;&lt;/button&gt;&gt;@@ 
 		&lt;/div&gt;
 	  
@@ -24243,14 +24256,16 @@ Upgrades:
 							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
-							&lt;&lt;replaceFluffies&gt;&gt;
+							&lt;&lt;set _type = $listType&gt;&gt;	
+							&lt;&lt;resetList&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 						@@.sortbutton;&lt;&lt;button &quot;Show Display&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Display&quot;&gt;&gt;
 							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
 							&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).removeClass(&quot;w3-hide&quot;)&gt;&gt;
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
-							&lt;&lt;replaceFluffies&gt;&gt;
+							&lt;&lt;set _type = $listType&gt;&gt;	
+							&lt;&lt;resetList&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 					&lt;/div&gt;
 				&lt;/div&gt;
@@ -24260,7 +24275,7 @@ Upgrades:
 	        	&lt;&lt;sortButtons&gt;&gt;
 				&lt;&lt;filterButtons&gt;&gt;
 			&lt;/div&gt;
-
+/*			bulk actions are broken ATM, so removing the buttons for now.
 	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 				&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
 					&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Bulk Actions&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
@@ -24281,8 +24296,8 @@ Upgrades:
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 						&lt;&lt;/for&gt;&gt;
-						
-						&lt;&lt;replaceFluffies&gt;&gt;
+						&lt;&lt;set _type = &quot;None&quot;&gt;&gt;	
+						&lt;&lt;resetList&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 						
 						@@#unsellbutton;&lt;&lt;button &quot;Remove from Sale&quot;&gt;&gt;
@@ -24292,7 +24307,8 @@ Upgrades:
 									&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;				
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;/for&gt;&gt;
-							&lt;&lt;replaceFluffies&gt;&gt;
+							&lt;&lt;set _type = &quot;None&quot;&gt;&gt;	
+							&lt;&lt;resetList&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 						
 
@@ -24306,7 +24322,8 @@ Upgrades:
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/for&gt;&gt;
 								
-									&lt;&lt;replaceFluffies&gt;&gt;
+									&lt;&lt;set _type = $listType&gt;&gt;	
+									&lt;&lt;resetList&gt;&gt;
 									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/button&gt;&gt;@@
 								@@.sortbutton;&lt;&lt;button &quot;Release&quot;&gt;&gt;
@@ -24316,7 +24333,9 @@ Upgrades:
 											&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/for&gt;&gt;
-									&lt;&lt;replaceFluffies&gt;&gt;
+
+									&lt;&lt;set _type = $listType&gt;&gt;	
+									&lt;&lt;resetList&gt;&gt;
 									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/button&gt;&gt;@@
 								@@.sortbutton;&lt;&lt;button &quot;Murder&quot;&gt;&gt;
@@ -24326,7 +24345,9 @@ Upgrades:
 											&lt;&lt;removeFluffy $globalFluffies[_bf] &quot;kill&quot;&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/for&gt;&gt;
-									&lt;&lt;replaceFluffies&gt;&gt;
+
+									&lt;&lt;set _type = $listType&gt;&gt;	
+									&lt;&lt;resetList&gt;&gt;
 									&lt;&lt;replace &quot;#list-count&quot;&gt;&gt;&lt;br&gt;The store has &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) &lt;&lt;/replace&gt;&gt;
 								&lt;&lt;/button&gt;&gt;@@
 							&lt;/div&gt;
@@ -24346,7 +24367,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24355,7 +24377,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24364,7 +24387,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24373,7 +24397,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24382,7 +24407,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 									&lt;/div&gt;
 								&lt;/div&gt;
@@ -24397,7 +24423,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24406,7 +24433,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24415,7 +24443,8 @@ Upgrades:
 														&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/for&gt;&gt; 
-												&lt;&lt;replaceFluffies&gt;&gt;
+												&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24424,7 +24453,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24433,7 +24463,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 									&lt;/div&gt;
 								&lt;/div&gt;
@@ -24449,7 +24480,8 @@ Upgrades:
 											&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
 											&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-										&lt;&lt;replaceFluffies&gt;&gt;
+										&lt;&lt;set _type = $listType&gt;&gt;	
+										&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24458,7 +24490,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 1&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-										&lt;&lt;replaceFluffies&gt;&gt;
+										&lt;&lt;set _type = $listType&gt;&gt;	
+										&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24467,7 +24500,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 2&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24476,7 +24510,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 3&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24485,7 +24520,8 @@ Upgrades:
 													&lt;&lt;set $globalFluffies[_bf].foodQuality = 4&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt; 
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 									&lt;/div&gt;
 								&lt;/div&gt;
@@ -24504,7 +24540,8 @@ Upgrades:
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt;
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Cheap&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24516,7 +24553,8 @@ Upgrades:
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt;
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Basic&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24528,7 +24566,8 @@ Upgrades:
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt;
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Good&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24540,7 +24579,8 @@ Upgrades:
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt;
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
@@ -24552,7 +24592,8 @@ Upgrades:
 													&lt;&lt;/if&gt;&gt;
 												&lt;&lt;/if&gt;&gt;
 											&lt;&lt;/for&gt;&gt;
-											&lt;&lt;replaceFluffies&gt;&gt;
+											&lt;&lt;set _type = $listType&gt;&gt;	
+											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
 
 									&lt;/div&gt;
@@ -24565,7 +24606,8 @@ Upgrades:
 											&lt;&lt;set $globalFluffies[_bf].foodQuality = 0&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/for&gt;&gt;
-									&lt;&lt;replaceFluffies&gt;&gt;
+									&lt;&lt;set _type = $listType&gt;&gt;	
+									&lt;&lt;resetList&gt;&gt;
 								&lt;&lt;/button&gt;&gt;@@
 
 							&lt;/div&gt;
@@ -24573,7 +24615,7 @@ Upgrades:
 					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
-			
+*/
 			&lt;&lt;systemButtons&gt;&gt;
 
 		&lt;/div&gt;
