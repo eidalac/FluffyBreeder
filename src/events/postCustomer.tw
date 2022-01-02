@@ -28,41 +28,29 @@ button {
 		<h1>Customer</h1>
         
         <<set _needsMatch = 0>>
-
-	    <<run console.log(`DEBUG: [postCustomer]: Wants = ${$customerWants}`)>>
-
         <<if $customerWants != 0>>
             <<for _card range $customerDeck>>
-                <<run console.log(`DEBUG: [postCustomer]: Need ${_card}`)>>
-
-                <<run console.log(`DEBUG: [postCustomer]: Fluffy ${$activeFluffy.ID} gender = ${$activeFluffy.gender}`)>>
-
                 /* Caculate the age values */
                 <<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
 
                 /* Personality, +2 points if it matches, 0 otherwise */
                 <<if _card === $activeFluffy.personality>>
-                    <<run console.log(`DEBUG: [postCustomer]: Personality match (${$activeFluffy.personality} === ${_card}`)>>
                     <<set _needsMatch += 2>>
 
                 /* Gender, +2 points if it matches, 0 otherwise */
                 <<elseif _card.toLowerCase() == $activeFluffy.gender.toLowerCase()>>
-                    <<run console.log(`DEBUG: [postCustomer]: Gender match (${$activeFluffy.gender} == ${_card})`)>>
                     <<set _needsMatch += 2>>
 
                 /* Breed, value depends on what is offered*/
                 <<elseif _card === "Earthy" || _card === "Unicorn" || _card === "Pegasus" || _card === "Alicorn">>
                     /* Pefect match, 2 points */
                     <<if $activeFluffy.breed === _card>>
-                        <<run console.log(`DEBUG: [postCustomer]: Breed match (${$activeFluffy.breed} === ${_card}`)>>
                         <<set _needsMatch += 2>>
 
                     /* Half matches */				
                     <<elseif $activeFluffy.breed != "Earthy">>
-                        <<run console.log(`DEBUG: [postCustomer]: Breed half match (${$activeFluffy.breed} != ${_card}`)>>
                         <<set _needsMatch += 1>>
                     <<else>>
-                        <<run console.log(`DEBUG: [postCustomer]: Breed no match found (${$activeFluffy.breed} != ${_card}`)>>
                         <<set _needsMatch += 0>>
                     <</if>>			
 
@@ -226,7 +214,6 @@ button {
                 <<elseif _card.includes("Coat")>>
                     <<if _card.includes("Group")>>
                         <<if _card.includes($activeFluffy.cColor.group)>>
-                            <<run console.log(`DEBUG: [postCustomer]: Coat Color Group Match (${$activeFluffy.cColor.group} === ${_card})`)>>
                             <<set _needsMatch += 2>>
                         <<else>>
                             /* ***
@@ -242,12 +229,10 @@ button {
                                 $activeFluffy.cColor.group === "Yellow" && _card === "Purple" ||
                                 $activeFluffy.cColor.group === "Purple" && _card === "Yellow">>
 
-                                <<run console.log(`DEBUG: [postCustomer]: Coat Complimentary Group Match (${$activeFluffy.cColor.group} <> ${_card})`)>>
                                 <<set _needsMatch += 1>>
                             <</if>>
                         <</if>>
                     <<elseif _card.includes($activeFluffy.cColor.name)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Coat Color Match (${$activeFluffy.cColor.name} in ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <</if>>
 
@@ -255,7 +240,6 @@ button {
                 <<elseif _card.includes("Mane")>>
                     <<if _card.includes("Group")>>
                         <<if _card.includes($activeFluffy.mColor.group)>>
-                            <<run console.log(`DEBUG: [postCustomer]: Mane Color Group Match (${$activeFluffy.mColor.group} === ${_card})`)>>
                             <<set _needsMatch += 2>>
                         <<else>>
                             /* ***
@@ -271,12 +255,10 @@ button {
                                 $activeFluffy.mColor.group === "Yellow" && _card === "Purple" ||
                                 $activeFluffy.mColor.group === "Purple" && _card === "Yellow">>
 
-                                <<run console.log(`DEBUG: [postCustomer]: Mane Complimentary Group Match (${$activeFluffy.mColor.group} <> ${_card})`)>>
                                 <<set _needsMatch += 1>>
                             <</if>>
                         <</if>>
                     <<elseif _card.includes($activeFluffy.mColor.name)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Mane Color Match (${$activeFluffy.mColor.name} in ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <</if>>
 
@@ -284,7 +266,6 @@ button {
                 <<elseif _card.includes("Eyes")>>
                     <<if _card.includes("Group")>>
                         <<if _card.includes($activeFluffy.eColor.group)>>
-                            <<run console.log(`DEBUG: [postCustomer]: Eye Color Group Match (${$activeFluffy.eColor.group} === ${_card})`)>>
                             <<set _needsMatch += 2>>
                         <<else>>
                             /* ***
@@ -300,103 +281,79 @@ button {
                                 $activeFluffy.eColor.group === "Yellow" && _card === "Purple" ||
                                 $activeFluffy.eColor.group === "Purple" && _card === "Yellow">>
 
-                                <<run console.log(`DEBUG: [postCustomer]: Eye Complimentary Group Match (${$activeFluffy.eColor.group]} <> ${_card})`)>>
                                 <<set _needsMatch += 1>>
                             <</if>>
                         <</if>>
                     <<elseif _card.includes($activeFluffy.eColor.name)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Eye Color Match (${$activeFluffy.eColor.name} in ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <</if>>
                 
                 /* Age "Newborn": */
                 <<elseif _card == "Newborn">>
                     <<if _cat == 0>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif _cat == 1>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
                 /* Age "Chirpy": */
                 <<elseif _card == "Chirpy">>
                     <<if _cat == 1>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif _cat == 0>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <<elseif $activeFluffy.weaned === false>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
                 /* Age "Talky": */
                 <<elseif _card == "Talky">>
                     <<if $activeFluffy.weaned>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif $activeFluffy.weaned === false>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <<elseif _cat < Number($activeFluffy.maturity/2)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
                 /* Age "Foal": */
                 <<elseif _card == "Foal">>
                     <<if _cat < Number($activeFluffy.maturity/2)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif $activeFluffy.weaned>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <<elseif _cat <= $activeFluffy.maturity>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
                 /* Age "Youth": */
                 <<elseif _card == "Youth">>
                     <<if _cat < $activeFluffy.maturity>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif _cat < Number($activeFluffy.maturity/2)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (maturity: ${$activeFluffy.maturity} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
                 /* Age "Adult": */
                 <<elseif _card == "Adult">>
                     <<if _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<elseif _cat < $activeFluffy.maturity>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (maturity: ${$activeFluffy.maturity} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <<elseif _cat >= Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
 
                 /* Age "Grey": */
                 <<elseif _card == "Grey">>
                     <<if _cat >= Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 2>>
                     <<else>>
-                        <<run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} <> ${_card})`)>>
                         <<set _needsMatch += 1>>
                     <</if>>
 
                 <<elseif _card === $activeFluffy.subSpeciesString>>
-                    <<run console.log(`DEBUG: [postCustomer]: subSpecies Match (${$activeFluffy.subSpeciesString} === ${_card})`)>>
                     <<set _needsMatch += 2>>
                 <</if>>	
             <</for>>
         <</if>>
-
-        <<run console.log(`DEBUG: [postCustomer]: matches: (${_needsMatch} vs ${$customerWants})`)>>
 
         <<set _msgString = "">>
         <<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
@@ -405,8 +362,6 @@ button {
             
         <<set _price = Number($activeFluffy.training)>>
         <<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
-
-        <<run console.log(`DEBUG: [postCustomer]: Price 1: ${_price}`)>>
 
         <<switch $activeFluffy.breed>>
             <<case "unicorn">>
@@ -420,8 +375,6 @@ button {
         <</switch>>
         
         <<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
-
-        <<run console.log(`DEBUG: [postCustomer]: Price 2: ${_price}`)>>
         
         <<set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)>>
 
@@ -452,13 +405,10 @@ button {
             <<set _price = Number(_price * 1.3).toFixed(2)>>
         <</if>>	
 
-        <<run console.log(`DEBUG: [postCustomer]: Price 3: ${_price}`)>>
-        
         /* Debug flag since I can't track down this issue yet. */
         <<if _price <= 0>>
-            <br>
-            <br>@@.red; ERROR: Price _price <= 0.  Value dump: StatBonus = <<- $activeFluffy.statBonus>>, ageMulti = <<- _ageMulti>>, colorBonus = <<- $activeFluffy.colorBonus>>, Initial price = <<- Number($activeFluffy.training) + Number(Number($activeFluffy.trust/10))>>.
-            <br>
+            <<run console.log(`ERROR: [postCustomer]: price was negative.`)>>
+            <<set _price = Number($earthPrice.mart)>>
         <</if>>
         
         <br>@@.orange;Base price = <<- _price>>.@@
@@ -473,30 +423,22 @@ button {
         <<set _msgString += "<br>@@.orange;Price Bonus = "+ _priceBonus + ".@@">>
 
         <<set _price = Number(_price * _priceBonus).toFixed(2)>>
-        
-        <<run console.log(`DEBUG: [postCustomer]: Price 4: ${_price}`)>>
 
         /* Check if they will accept the offer */
         <<if $customerWants > 0 && Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) <= 33>>
 
-                <<run console.log(`DEBUG: [postCustomer]: Match Fail.`)>>
-
-                <<if _customerTolerance > 0>>
-                    <<run console.log(`DEBUG: [postCustomer]: Tolerance pass.`)>>
-                    <<set _customerTolerance-->>
+                <<if $customerTolerance > 0>>
+                    <<set $customerTolerance-->>
                     <<set _msgString += "<br>@@.orange;They are not at all pleased with " + $activeFluffy.name + ".@@">>
                     <<= _msgString>>
                     [[CONTINUE|Event Customer][$encyclopedia = 0]]
                 <<else>>
-                    <<run console.log(`DEBUG: [postCustomer]: Tolerance fail.`)>>
                     <<set _msgString += "<br>@@.orange;This customer is fed up.@@">>
                     <<= _msgString>>
                     /*<<run pageLoad()>>*/
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 <</if>>
         <<else>>
-
-            <<run console.log(`DEBUG: [postCustomer]: Accepts Match 1.`)>>
 
             <<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$activeFluffy.name + ".@@<br>">>
             

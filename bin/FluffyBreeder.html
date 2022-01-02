@@ -12045,9 +12045,8 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 	const genName = ntcObject[1];
 	const genGroup = ntcObject[3];
 
-	console.log(`DEBUG: getNewGeneColor(): geneObject = ${genName}, ${hexString}, ${genFilter}.`);
 	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter), group: String(genGroup)};
-	console.log(`DEBUG: getNewGeneColor(): geneObject = ${geneObject.name}, ${geneObject.hex}.`);
+
 	return geneObject;
 }
 
@@ -16323,9 +16322,7 @@ Save.onLoad.add(function (save)
     const expected_length = save.state.history[save.state.index].variables.grandfatherGene.length;
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].geneString.length < expected_length)
     {
-      console.log(`DEBUG: onLoad: appending genenome ID ${save.state.history[save.state.index].variables.globalFluffies[i].ID}`);
       var addStr = save.state.history[save.state.index].variables.grandfatherGene.subString(save.state.history[save.state.index].variables.globalFluffies[i].geneString.length);
-      console.log(`DEBUG: onLoad: appending genenome is ${addStr}`);
 
       save.state.history[save.state.index].variables.globalFluffies[i].geneString += addStr;
     }
@@ -17430,13 +17427,9 @@ window.nameList = {
 	&lt;&lt;set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)&gt;&gt;
 	&lt;&lt;set _netAppeal = Math.clamp(_netAppeal, 1, 180)&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 1 = ${_netAppeal}.`)&gt;&gt;
-	
 	/* Now it&#39;s a %, from 1-180% */
 	&lt;&lt;set _netAppeal = Number(_netAppeal / 100).toFixed(2)&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 2 = ${_netAppeal}. (${_coatGroup}, ${_maneGroup}, ${_eyeGroup})`)&gt;&gt;
-	
 	/* ***
 	 *	Complimentary pairs:
 	 *		Blue - Orange
@@ -17475,23 +17468,10 @@ window.nameList = {
 		&lt;&lt;set _pairBonus = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 3 = ${_netAppeal}, pair bonus = ${_pairBonus}.`)&gt;&gt;
-
 	&lt;&lt;set _colorBonus = Number(_netAppeal).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 4.1 = ${_colorBonus}.`)&gt;&gt;
-
 	&lt;&lt;set _colorBonus = Number(Number(_colorBonus)+ Number(_pairBonus)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 4 = ${_colorBonus}.`)&gt;&gt;
-
 	&lt;&lt;set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 5 = ${_colorBonus}.`)&gt;&gt;
-
 	&lt;&lt;set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;colorValue&gt;&gt;: Bonus 6 = ${$activeFluffy.colorBonus}.`)&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -17585,7 +17565,6 @@ window.nameList = {
 		&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
 		&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
 
-		&lt;&lt;run console.log(`DEBUG: colorGroup: _hslCoat = ${_hslCoat}, _hslMane = ${_hslMane}, _hslEyes = ${_hslEyes}.`)&gt;&gt;
 		console.log(ntc.name(State.variables.activeFluffy.cColor.hex))
 
 		&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
@@ -18625,41 +18604,29 @@ button {
 		&lt;h1&gt;Customer&lt;/h1&gt;
         
         &lt;&lt;set _needsMatch = 0&gt;&gt;
-
-	    &lt;&lt;run console.log(`DEBUG: [postCustomer]: Wants = ${$customerWants}`)&gt;&gt;
-
         &lt;&lt;if $customerWants != 0&gt;&gt;
             &lt;&lt;for _card range $customerDeck&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Need ${_card}`)&gt;&gt;
-
-                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Fluffy ${$activeFluffy.ID} gender = ${$activeFluffy.gender}`)&gt;&gt;
-
                 /* Caculate the age values */
                 &lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
 
                 /* Personality, +2 points if it matches, 0 otherwise */
                 &lt;&lt;if _card === $activeFluffy.personality&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [postCustomer]: Personality match (${$activeFluffy.personality} === ${_card}`)&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                 /* Gender, +2 points if it matches, 0 otherwise */
                 &lt;&lt;elseif _card.toLowerCase() == $activeFluffy.gender.toLowerCase()&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [postCustomer]: Gender match (${$activeFluffy.gender} == ${_card})`)&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                 /* Breed, value depends on what is offered*/
                 &lt;&lt;elseif _card === &quot;Earthy&quot; || _card === &quot;Unicorn&quot; || _card === &quot;Pegasus&quot; || _card === &quot;Alicorn&quot;&gt;&gt;
                     /* Pefect match, 2 points */
                     &lt;&lt;if $activeFluffy.breed === _card&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Breed match (${$activeFluffy.breed} === ${_card}`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                     /* Half matches */				
                     &lt;&lt;elseif $activeFluffy.breed != &quot;Earthy&quot;&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Breed half match (${$activeFluffy.breed} != ${_card}`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;else&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Breed no match found (${$activeFluffy.breed} != ${_card}`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;			
 
@@ -18823,7 +18790,6 @@ button {
                 &lt;&lt;elseif _card.includes(&quot;Coat&quot;)&gt;&gt;
                     &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.cColor.group)&gt;&gt;
-                            &lt;&lt;run console.log(`DEBUG: [postCustomer]: Coat Color Group Match (${$activeFluffy.cColor.group} === ${_card})`)&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18839,12 +18805,10 @@ button {
                                 $activeFluffy.cColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
                                 $activeFluffy.cColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-                                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Coat Complimentary Group Match (${$activeFluffy.cColor.group} &lt;&gt; ${_card})`)&gt;&gt;
                                 &lt;&lt;set _needsMatch += 1&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.cColor.name)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Coat Color Match (${$activeFluffy.cColor.name} in ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
@@ -18852,7 +18816,6 @@ button {
                 &lt;&lt;elseif _card.includes(&quot;Mane&quot;)&gt;&gt;
                     &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.mColor.group)&gt;&gt;
-                            &lt;&lt;run console.log(`DEBUG: [postCustomer]: Mane Color Group Match (${$activeFluffy.mColor.group} === ${_card})`)&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18868,12 +18831,10 @@ button {
                                 $activeFluffy.mColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
                                 $activeFluffy.mColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-                                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Mane Complimentary Group Match (${$activeFluffy.mColor.group} &lt;&gt; ${_card})`)&gt;&gt;
                                 &lt;&lt;set _needsMatch += 1&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.mColor.name)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Mane Color Match (${$activeFluffy.mColor.name} in ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
@@ -18881,7 +18842,6 @@ button {
                 &lt;&lt;elseif _card.includes(&quot;Eyes&quot;)&gt;&gt;
                     &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.eColor.group)&gt;&gt;
-                            &lt;&lt;run console.log(`DEBUG: [postCustomer]: Eye Color Group Match (${$activeFluffy.eColor.group} === ${_card})`)&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18897,103 +18857,79 @@ button {
                                 $activeFluffy.eColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
                                 $activeFluffy.eColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
 
-                                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Eye Complimentary Group Match (${$activeFluffy.eColor.group]} &lt;&gt; ${_card})`)&gt;&gt;
                                 &lt;&lt;set _needsMatch += 1&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.eColor.name)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Eye Color Match (${$activeFluffy.eColor.name} in ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 
                 /* Age &quot;Newborn&quot;: */
                 &lt;&lt;elseif _card == &quot;Newborn&quot;&gt;&gt;
                     &lt;&lt;if _cat == 0&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat == 1&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Chirpy&quot;: */
                 &lt;&lt;elseif _card == &quot;Chirpy&quot;&gt;&gt;
                     &lt;&lt;if _cat == 1&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat == 0&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Talky&quot;: */
                 &lt;&lt;elseif _card == &quot;Talky&quot;&gt;&gt;
                     &lt;&lt;if $activeFluffy.weaned&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Foal&quot;: */
                 &lt;&lt;elseif _card == &quot;Foal&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif $activeFluffy.weaned&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (weaned: ${$activeFluffy.weaned} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;elseif _cat &lt;= $activeFluffy.maturity&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Youth&quot;: */
                 &lt;&lt;elseif _card == &quot;Youth&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; $activeFluffy.maturity&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (maturity: ${$activeFluffy.maturity} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;elseif _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Adult&quot;: */
                 &lt;&lt;elseif _card == &quot;Adult&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat &lt; $activeFluffy.maturity&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (maturity: ${$activeFluffy.maturity} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;elseif _cat &gt;= Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Age &quot;Grey&quot;: */
                 &lt;&lt;elseif _card == &quot;Grey&quot;&gt;&gt;
                     &lt;&lt;if _cat &gt;= Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;else&gt;&gt;
-                        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Age Half Match (${_cat} &lt;&gt; ${_card})`)&gt;&gt;
                         &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;elseif _card === $activeFluffy.subSpeciesString&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [postCustomer]: subSpecies Match (${$activeFluffy.subSpeciesString} === ${_card})`)&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
                 &lt;&lt;/if&gt;&gt;	
             &lt;&lt;/for&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-
-        &lt;&lt;run console.log(`DEBUG: [postCustomer]: matches: (${_needsMatch} vs ${$customerWants})`)&gt;&gt;
 
         &lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
@@ -19002,8 +18938,6 @@ button {
             
         &lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
         &lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
-
-        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Price 1: ${_price}`)&gt;&gt;
 
         &lt;&lt;switch $activeFluffy.breed&gt;&gt;
             &lt;&lt;case &quot;unicorn&quot;&gt;&gt;
@@ -19017,8 +18951,6 @@ button {
         &lt;&lt;/switch&gt;&gt;
         
         &lt;&lt;set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)&gt;&gt;
-
-        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Price 2: ${_price}`)&gt;&gt;
         
         &lt;&lt;set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)&gt;&gt;
 
@@ -19049,13 +18981,10 @@ button {
             &lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
         &lt;&lt;/if&gt;&gt;	
 
-        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Price 3: ${_price}`)&gt;&gt;
-        
         /* Debug flag since I can&#39;t track down this issue yet. */
         &lt;&lt;if _price &lt;= 0&gt;&gt;
-            &lt;br&gt;
-            &lt;br&gt;@@.red; ERROR: Price _price &lt;= 0.  Value dump: StatBonus = &lt;&lt;- $activeFluffy.statBonus&gt;&gt;, ageMulti = &lt;&lt;- _ageMulti&gt;&gt;, colorBonus = &lt;&lt;- $activeFluffy.colorBonus&gt;&gt;, Initial price = &lt;&lt;- Number($activeFluffy.training) + Number(Number($activeFluffy.trust/10))&gt;&gt;.
-            &lt;br&gt;
+            &lt;&lt;run console.log(`ERROR: [postCustomer]: price was negative.`)&gt;&gt;
+            &lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
         &lt;&lt;/if&gt;&gt;
         
         &lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
@@ -19070,30 +18999,22 @@ button {
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
 
         &lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
-        
-        &lt;&lt;run console.log(`DEBUG: [postCustomer]: Price 4: ${_price}`)&gt;&gt;
 
         /* Check if they will accept the offer */
         &lt;&lt;if $customerWants &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) &lt;= 33&gt;&gt;
 
-                &lt;&lt;run console.log(`DEBUG: [postCustomer]: Match Fail.`)&gt;&gt;
-
-                &lt;&lt;if _customerTolerance &gt; 0&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [postCustomer]: Tolerance pass.`)&gt;&gt;
-                    &lt;&lt;set _customerTolerance--&gt;&gt;
+                &lt;&lt;if $customerTolerance &gt; 0&gt;&gt;
+                    &lt;&lt;set $customerTolerance--&gt;&gt;
                     &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They are not at all pleased with &quot; + $activeFluffy.name + &quot;.@@&quot;&gt;&gt;
                     &lt;&lt;= _msgString&gt;&gt;
                     [[CONTINUE|Event Customer][$encyclopedia = 0]]
                 &lt;&lt;else&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [postCustomer]: Tolerance fail.`)&gt;&gt;
                     &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;This customer is fed up.@@&quot;&gt;&gt;
                     &lt;&lt;= _msgString&gt;&gt;
                     /*&lt;&lt;run pageLoad()&gt;&gt;*/
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 &lt;&lt;/if&gt;&gt;
         &lt;&lt;else&gt;&gt;
-
-            &lt;&lt;run console.log(`DEBUG: [postCustomer]: Accepts Match 1.`)&gt;&gt;
 
             &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$activeFluffy.name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
             
@@ -19220,7 +19141,6 @@ button {
  * pre-process calls for eventCustomer.
  *
  *********** */
-&lt;&lt;run console.log(`DEBUG:[preCustomer]: Customer test cards ${$customerCards}.`)&gt;&gt;
 
 /* Each customer is &#39;generated&#39; per fluffy on display.  Don&#39;t do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
@@ -19236,8 +19156,6 @@ button {
 /* For each &quot;want&quot; pluck a random card from our deck and assign it to this customer: */
 &lt;&lt;run $customerDeck = $customerCards.pluckMany($customerWants)&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG:[preCustomer]: Customer test deck ${$customerDeck} (wants = ${$customerWants}).`)&gt;&gt;
-
 /*&lt;&lt;set $customerDeck = [ &quot;Female&quot; ]&gt;&gt;
 &lt;&lt;set $customerWants = 1&gt;&gt;
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)&gt;&gt;*/
@@ -19251,8 +19169,6 @@ button {
 &lt;&lt;run $rand.push(random(10,15))&gt;&gt;
 &lt;&lt;run $rand.push(random(0,94))&gt;&gt;
 &lt;&lt;run $rand.push(random(5,10))&gt;&gt;
-
-&lt;&lt;run console.log(`DEBUG:[preCustomer]: going to event passage.`)&gt;&gt;
 
 /* Once all the caculations are done we display the event: */
 &lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="14" name="Pre Mating" tags="nobr" position="475,225" size="100,100">/* **********
@@ -20436,10 +20352,6 @@ Genes       Height multiplier
 
 	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase&gt;&gt;
 
-		/*
-		&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyBase = ${_smartyBase}, smartySyndrom = ${$smartySyndrom}.`)&gt;&gt;
-		*/
-
 		/* Random chance to not fire at all: */
 		&lt;&lt;if $smartySyndrom &gt; random(0, 10)&gt;&gt;
 			/* An existing smarty has a 1/4 chance of fireing an event. */
@@ -20457,10 +20369,6 @@ Genes       Height multiplier
 				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))&gt;&gt;
 				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))&gt;&gt;
 				&lt;&lt;set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))&gt;&gt;
-
-				/*
-				&lt;&lt;run console.log(`DEBUG: [endWeek]: Smarty Check ${_ef}: _smartyThreshold = ${_smartyThreshold}, temperament = ${Number($globalFluffies[_ef].temperament)}.`)&gt;&gt;
-				*/
 
 				&lt;&lt;set _smartyChance = 0&gt;&gt;
 
@@ -22406,7 +22314,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;236fc87&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;60727a2&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22708,8 +22616,6 @@ profitsTotal: 0
 &lt;&lt;set $nextButton to &quot;End Shopping&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 &lt;&lt;set _rID = 0&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Enter Event: ${$randomFluffies}.`)&gt;&gt;
-
 &lt;&lt;for _rID range $randomFluffies&gt;&gt;
 	&lt;&lt;set $globalFluffies[_rID].isChecked = false&gt;&gt;
 &lt;&lt;/for&gt;&gt;
@@ -22736,12 +22642,9 @@ profitsTotal: 0
 					&lt;&lt;set _buyText = &quot;Take Fluffies&quot;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			  	@@#buybutton;&lt;&lt;button _buyText&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$randomFluffies.length}.`)&gt;&gt;
-
 					&lt;&lt;set _listCheck = 0&gt;&gt;
 					&lt;&lt;set _rID = 0&gt;&gt;
 					&lt;&lt;for _rID range $randomFluffies&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffies]: checking list: ${$globalFluffies[_rID].name}, ${$globalFluffies[_rID].isChecked}.`)&gt;&gt;
 						&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
 							&lt;&lt;run _listCheck++&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
@@ -22815,12 +22718,9 @@ profitsTotal: 0
 
 						/* Only 1 fluffy present, selected or not */
 						&lt;&lt;else&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 0: ${$randomFluffies}.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 1: ${$randomFluffies[0]}.`)&gt;&gt;
 							&lt;&lt;set $actions--&gt;&gt;
 
 							&lt;&lt;run $ourStore.fluffies.push($randomFluffies[0])&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 2: ${$randomFluffies}.`)&gt;&gt;
 							/* only rename unnamed fluffies */
 							&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $globalFluffies[$randomFluffies[0]].hasName == false&gt;&gt;
 								&lt;&lt;set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + &quot; &quot; + $randomFluffies[0])&gt;&gt;
@@ -22833,7 +22733,6 @@ profitsTotal: 0
 							&lt;&lt;else&gt;&gt;
 								&lt;&lt;set $ourStore.mares++&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Buy Fluffy]: Solo Get 3: ${$globalFluffies[$randomFluffies[0]]}, ${$globalFluffies[$randomFluffies[0]].ID}, ${$globalFluffies[$randomFluffies[0]].isChecked}.`)&gt;&gt;
 							&lt;&lt;set $globalFluffies[$randomFluffies[0]].isChecked = false&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 
@@ -25921,8 +25820,6 @@ Subspecies:
     &lt;&lt;set $globalFluffies[_ef].isChecked = false&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 0: ${$globalFluffies.length}.`)&gt;&gt;
-
 /* ***
 *	Generate fluffies, may be a full family of 10+, may be just one
 *** */
@@ -25966,13 +25863,11 @@ Subspecies:
                     &lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
                     &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 1: ${$globalFluffies.length}.`)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;addTrait &quot;Feral&quot; $activeFluffy&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 2: ${$globalFluffies.length}.`)&gt;&gt;
             /* mated pair */
             &lt;&lt;case 1 2 3&gt;&gt;
                 /* 25% chance that wild fluffy is pre-owned */
@@ -25993,7 +25888,6 @@ Subspecies:
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)&gt;&gt;
                     &lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
                     &lt;&lt;set $mom = $activeFluffy&gt;&gt;
                     &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
@@ -26007,7 +25901,6 @@ Subspecies:
 
                 &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($mom.ID)&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)&gt;&gt;
 
                 /* 25% chance that wild fluffy is pre-owned */
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _maleFluffies.length &gt; 0&gt;&gt;
@@ -26040,7 +25933,6 @@ Subspecies:
 
                 &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)&gt;&gt;
 
                 &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
                     &lt;&lt;run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)&gt;&gt;
@@ -26090,7 +25982,6 @@ Subspecies:
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 3: ${$globalFluffies.length}.`)&gt;&gt;
                     &lt;&lt;run $activeFluffy.genes.setGender(&quot;female&quot;)&gt;&gt;&lt;&lt;set $activeFluffy.gender = &quot;female&quot;&gt;&gt;
                     &lt;&lt;set $mom = $activeFluffy&gt;&gt;
                     &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
@@ -26104,8 +25995,7 @@ Subspecies:
 
                 &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($mom.ID)&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 4: ${$globalFluffies.length}.`)&gt;&gt;
-                
+
                 /* 25% chance that wild fluffy is pre-owned */
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _maleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]&gt;&gt;
@@ -26135,7 +26025,6 @@ Subspecies:
 
                 &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
-                &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation 5: ${$globalFluffies.length}.`)&gt;&gt;
 
                 &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
                     &lt;&lt;run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)&gt;&gt;
@@ -26252,13 +26141,10 @@ Subspecies:
     &lt;&lt;/if&gt;&gt;
     
     &lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-        &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$globalFluffies.length}.`)&gt;&gt;
         &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-        &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral: ${$activeFluffy.ID}.`)&gt;&gt;
         &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
         &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
         &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-        &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Push Validation Non Feral Post: ${$globalFluffies.length}.`)&gt;&gt;
     &lt;&lt;/if&gt;&gt;
 
     /* We may have generated one or a family, so run the checks on all of them in turn. */
@@ -26428,9 +26314,6 @@ Subspecies:
         &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
     &lt;&lt;/for&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Random List Size: ${$randomFluffies.length}.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Random List: ${$randomFluffies}.`)&gt;&gt;
 
 &lt;br&gt;
 
@@ -30106,8 +29989,6 @@ button {
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed)&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.breed == $fluffyFilters.breed &amp;&amp; fluffy.gender != $activeFluffy.gender)&gt;&gt;
-
-			&lt;&lt;run console.log(`DEBUG: resetList: Filter size (2 - breed) ${$filterFluffies.length}.`)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;switch $fluffyFilters.maturity&gt;&gt;

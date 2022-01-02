@@ -145,9 +145,7 @@ Save.onLoad.add(function (save)
     const expected_length = save.state.history[save.state.index].variables.grandfatherGene.length;
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].geneString.length < expected_length)
     {
-      console.log(`DEBUG: onLoad: appending genenome ID ${save.state.history[save.state.index].variables.globalFluffies[i].ID}`);
       var addStr = save.state.history[save.state.index].variables.grandfatherGene.subString(save.state.history[save.state.index].variables.globalFluffies[i].geneString.length);
-      console.log(`DEBUG: onLoad: appending genenome is ${addStr}`);
 
       save.state.history[save.state.index].variables.globalFluffies[i].geneString += addStr;
     }
