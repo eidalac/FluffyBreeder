@@ -16228,7 +16228,7 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
     // Update the nursing from a count to an array:
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].nursing === 'number')
+    if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
     {
       // How many children does this fluffy have?
       var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;
@@ -16373,13 +16373,13 @@ Save.onLoad.add(function (save)
 /* ----- Fluffy Description ----- */
 
 window.selectFluffy = function(e) {
-  const $checkbox = $(this).find('.fluffy-checkbox')
-  const fluffy_id = $checkbox.attr('data-fluffy-id')
-  const customerEvent = $('#passage-event-customer')
-  if (!customerEvent && $checkbox.prop('checked')) {
+  const $checkbox = $(this).find('.fluffy-checkbox');
+  const fluffy_id = $checkbox.attr('data-fluffy-id');
+  const customerEvent = $('#passage-event-customer');
+  if (!customerEvent[0] && $checkbox.prop('checked')) {
     $checkbox.prop('checked', false);
     State.variables.globalFluffies[fluffy_id].isChecked = false
-  } else if (!customerEvent) {
+  } else if (!customerEvent[0]) {
     $checkbox.prop('checked', true);
     State.variables.globalFluffies[fluffy_id].isChecked = true
   }
@@ -22325,7 +22325,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;b134d1c&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;d2630df&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -24275,7 +24275,7 @@ Upgrades:
 	        	&lt;&lt;sortButtons&gt;&gt;
 				&lt;&lt;filterButtons&gt;&gt;
 			&lt;/div&gt;
-/*			bulk actions are broken ATM, so removing the buttons for now.
+/*			bulk actions are broken ATM, so removing the buttons for now.*/
 	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 				&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
 					&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Bulk Actions&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
@@ -24615,7 +24615,7 @@ Upgrades:
 					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
-*/
+
 			&lt;&lt;systemButtons&gt;&gt;
 
 		&lt;/div&gt;
