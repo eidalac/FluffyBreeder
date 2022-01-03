@@ -18000,6 +18000,9 @@ button {
 
 			&lt;br&gt;if you meet all &lt;&lt;- $customerWants&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number($customerWants / 5))&gt;&gt;x price bonus.
 		&lt;&lt;/if&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		[[Decline this request|Event Main][$encyclopedia = 0]]
 	&lt;/div&gt;	
 
 	&lt;div id=&quot;fluffy-list&quot;&gt;&lt;/div&gt;
@@ -18938,6 +18941,12 @@ button {
 
                 &lt;&lt;elseif _card === $activeFluffy.subSpeciesString&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
+
+                &lt;&lt;elseif _card.includes(&quot;Trait&quot;)&gt;&gt;
+                    &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
+                    &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
+                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;	
             &lt;&lt;/for&gt;&gt;
         &lt;&lt;/if&gt;&gt;
@@ -20438,7 +20447,7 @@ Genes       Height multiplier
 			&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
 
 			&lt;&lt;set _visibleCards = [ &quot;Species&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Age&quot; ]&gt;&gt;
-			&lt;&lt;set _nonvisibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot; ]&gt;&gt;
+			&lt;&lt;set _nonvisibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot;, &quot;Trait&quot; ]&gt;&gt;
 
 			/* Generate 1-3 customer cards for each fluffy on display */
 			&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
@@ -20469,6 +20478,8 @@ Genes       Height multiplier
 								&lt;&lt;/switch&gt;&gt;
 							&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].temperament &gt; 190 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 130 ? &quot;Low temperament&quot; : &quot;Average temperament&quot;&gt;&gt;
+							&lt;&lt;case &quot;Trait&quot;&gt;&gt;
+								&lt;&lt;set _push = &quot;Trait &quot; + $globalFluffies[_ef].traits.random()&gt;&gt;
 							&lt;&lt;default&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].personality&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
@@ -22334,7 +22345,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4609a4c&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;23550d6&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
