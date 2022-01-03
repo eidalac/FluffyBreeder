@@ -423,16 +423,10 @@ button {
 	<<set $activeFluffy = $globalFluffies[_thisFluffy.ID]>>
 	<<colorValue>>
 
-	<<run console.log(`DEBUG: <<displayPrice>>: Base price = ${_price}.`)>>
 
 	<<set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<displayPrice>>: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)>>
-
 	<<set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)>>
-
-	<<run console.log(`DEBUG: <<displayPrice>>: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)>>
-					
+				
 	<<set _ageMulti = 1>>
 			
 	<<if $globalFluffies[_thisFluffy.ID].age == 0 && $globalFluffies[_thisFluffy.ID].ageWeeks < 45>>
@@ -440,20 +434,14 @@ button {
 	<</if>>
 		
 	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
-			
-	<<run console.log(`DEBUG: <<displayPrice>>: Price after age adustment = ${_price}.`)>>
 
 	<<if $globalFluffies[_thisFluffy.ID].traits.includes("Feral") == true>>
 		<<set _price = Number(_price / 4).toFixed(2)>>
 	<</if>>
 
-	<<run console.log(`DEBUG: <<displayPrice>>: Price after feral check = ${_price}.`)>>
-
 	<<if $globalFluffies[_thisFluffy.ID].subSpecies == 2>>
 		<<set _price = Number(_price * 1.3).toFixed(2)>>
 	<</if>>
-
-	<<run console.log(`DEBUG: <<displayPrice>>: Price after species check = ${_price}.`)>>
 
 	<<if  $debugMode>>
 		@@.orange;_price@@

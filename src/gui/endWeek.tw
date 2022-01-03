@@ -647,7 +647,6 @@
 	 <</switch>>
 	 
 
-	
 	/* ***
 	 *	Grow foals.
 	 *** */
@@ -673,17 +672,26 @@
 			<<set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)>>
 	 	<<else>> 
 	 		<<switch $globalFluffies[_ef].foodQuality>>
-	 			<<case 0>>
-	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
 	 			<<case 1>>
 	 				<<set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)>>
-					<<run $globalFluffies[_ef].furStage += 1>>
+					 <<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.20)).toFixed(0)>>
+					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+	 			<<case 2>>
+	 				<<set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)>>
+					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.30)).toFixed(0)>>
+					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
 	 			<<case 3>>
 	 				<<set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)>>
-					<<run $globalFluffies[_ef].furStage += 2>>
+					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.40)).toFixed(0)>>
+					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
 	 			<<case 4>>	 		
 	 				<<set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)>>
-					<<run $globalFluffies[_ef].furStage += 3>>
+					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.50)).toFixed(0)>>
+					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+	 			<<default>> /* 0 */
+	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
+					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.10)).toFixed(0)>>
+					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
 	 		<</switch>>
 		<</if>>
 
@@ -719,7 +727,7 @@
 	<<else>>
 		<<run $globalFluffies[_ef].furStage += Number($globalFluffies[_ef].coatLength)>>
 	<</if>>
-	
+
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */

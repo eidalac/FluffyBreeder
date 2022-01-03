@@ -20620,7 +20620,6 @@ Genes       Height multiplier
 	 &lt;&lt;/switch&gt;&gt;
 	 
 
-	
 	/* ***
 	 *	Grow foals.
 	 *** */
@@ -20646,17 +20645,26 @@ Genes       Height multiplier
 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)&gt;&gt;
 	 	&lt;&lt;else&gt;&gt; 
 	 		&lt;&lt;switch $globalFluffies[_ef].foodQuality&gt;&gt;
-	 			&lt;&lt;case 0&gt;&gt;
-	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
 	 			&lt;&lt;case 1&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 1&gt;&gt;
+					 &lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.20)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+	 			&lt;&lt;case 2&gt;&gt;
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.30)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 3&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 2&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.40)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 4&gt;&gt;	 		
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 3&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.50)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+	 			&lt;&lt;default&gt;&gt; /* 0 */
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.10)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 		&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
@@ -20692,7 +20700,7 @@ Genes       Height multiplier
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;run $globalFluffies[_ef].furStage += Number($globalFluffies[_ef].coatLength)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
+
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
@@ -21819,6 +21827,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		&lt;br&gt;
 		&lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
 		&lt;br&gt;
+		&lt;br&gt;&lt;&lt;showInventory&gt;&gt;
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
@@ -22325,7 +22334,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;d2630df&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4609a4c&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23901,6 +23910,8 @@ Upgrades:
 	&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
 	&lt;br&gt;
 
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: shearing check; furstage = ${$activeFluffy.furStage}.`)&gt;&gt;
+
 	&lt;div id=&quot;product-form&quot;&gt;
 		&lt;&lt;if $activeFluffy.furStage &gt; 67&gt;&gt;
 			&lt;&lt;set _shear = true&gt;&gt;
@@ -23969,25 +23980,19 @@ Upgrades:
 					&lt;&lt;set _woolQuality = Number(Number(_woolQuality).toFixed(2) / Number(6).toFixed(2)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _woolQuality = Number(_woolQuality).toFixed(0)&gt;&gt;
 
-					/*
-					&lt;&lt;if UInv.CreateBag(&quot;Test&quot;)&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					&lt;&lt;if UInv.AddItem(&quot;Test&quot;, &quot;wool&quot;, _woolYield, `${_coatGroup} wool`)&gt;&gt;
-						&lt;&lt;if UInv.SetItemPropertyValue(&quot;Test&quot;, `${_coatGroup} wool`, &quot;quality&quot;, _woolQuality)&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-
 					&lt;&lt;set _item =
 					{
 						name: &quot;Wool&quot;,
-						color: $activeFluffy.cColor.hex,
+						color: $activeFluffy.cColor.group,
 						amount: _woolYield,
 						quality: _woolQuality
 					} &gt;&gt;
 
-					&lt;&lt;set $ourStore.inventory.push(_item)&gt;&gt;
-					*/
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: Wool adding, color = ${$activeFluffy.cColor.group}, amount = ${_woolYield}, qualty = ${_woolQuality}.`)&gt;&gt;
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: Wool adding, item name = ${_item.name} color = ${_item.color}, amount = ${_item.amount}, qualty = ${_item.quality}.`)&gt;&gt;
+
+					&lt;&lt;addInventory _item&gt;&gt;
+
 					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 					&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;
 						&lt;br&gt;&lt;&lt;fluffSpeech&quot;huu huu... why taek pwetty fwuff fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor.hex&gt;&gt;
@@ -26782,16 +26787,10 @@ button {
 	&lt;&lt;set $activeFluffy = $globalFluffies[_thisFluffy.ID]&gt;&gt;
 	&lt;&lt;colorValue&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Base price = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)&gt;&gt;
-
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)&gt;&gt;
-					
+				
 	&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].age == 0 &amp;&amp; $globalFluffies[_thisFluffy.ID].ageWeeks &lt; 45&gt;&gt;
@@ -26799,20 +26798,14 @@ button {
 	&lt;&lt;/if&gt;&gt;
 		
 	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-			
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after age adustment = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after feral check = ${_price}.`)&gt;&gt;
-
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].subSpecies == 2&gt;&gt;
 		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after species check = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if  $debugMode&gt;&gt;
 		@@.orange;_price@@
@@ -29103,7 +29096,172 @@ button {
 			&lt;&lt;set $activeFluffy = _activeFluffy&gt;&gt;
 		&lt;/div&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="50" name="math widgets" tags="nobr widget" position="1225,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="50" name="inventory widgets" tags="nobr widget" position="1225,600" size="100,100">/* **********
+ * inventoryWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Widgse for inventory system
+ *
+ *********** */
+
+
+/* ***
+ *	Call as &lt;&lt;showInventory&gt;&gt;
+ *	Lists the store inventory.
+ *** */
+&lt;&lt;widget &quot;showInventory&quot;&gt;&gt;
+
+    &lt;&lt;set _milkCount = [0, 0, 0]&gt;&gt;
+    &lt;&lt;set _meatCount = [0, 0, 0]&gt;&gt;
+    &lt;&lt;set _woolCount = [ [], [], []]&gt;&gt;
+
+    &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+        /*&lt;&lt;set _woolCount[0][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[0][_i] = 0&gt;&gt;
+        /*&lt;&lt;set _woolCount[1][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[1][_i] = 0&gt;&gt;
+        /*&lt;&lt;set _woolCount[2][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[2][_i] = 0&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+
+    &lt;&lt;for _this, _inventory range $ourStore.inventory&gt;&gt;
+        &lt;&lt;if _inventory.quality != 0 &amp;&amp; _inventory.quality != 1 &amp;&amp; _inventory.quality != 2&gt;&gt;
+            &lt;&lt;run $ourStore.delete(_inventory)&gt;&gt;
+            &lt;&lt;run console.log(`ERROR: &lt;&lt;showInventory&gt;&gt;: Invalid milk quality ${_inventory.quality}.`)&gt;&gt;
+        &lt;&lt;else&gt;&gt;
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            &lt;&lt;if _inventory.name === &quot;Milk&quot;&gt;&gt;
+                &lt;&lt;set _milkCount[_inventory.quality] = Number(Number(_milkCount[_inventory.quality]) + _inventory.amount)&gt;&gt;
+
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            &lt;&lt;elseif _inventory.name === &quot;Meat&quot;&gt;&gt;
+                &lt;&lt;set _meatCount[_inventory.quality] = Number(Number(_meatCount[_inventory.quality]) + _inventory.amount)&gt;&gt;
+
+            /* Wool also has a color to deal with */
+            &lt;&lt;elseif _inventory.name === &quot;Wool&quot;&gt;&gt;
+                &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+                    &lt;&lt;for _j = 0; _j &lt; 3; _j++&gt;&gt;
+                        &lt;&lt;if ntc.shades[_i][1] === _inventory.color&gt;&gt;
+                            &lt;&lt;set _woolCount[_j][_i] = Number(Number(_woolCount[_j][_i]) + _inventory.amount)&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;/for&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
+
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;run $ourStore.delete(_inventory)&gt;&gt;
+                &lt;&lt;run console.log(`ERROR: &lt;&lt;showInventory&gt;&gt;: Invalid inventory item ${_inventory.name}.`)&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+
+    &lt;br&gt;@@.coral;Store Inventory@@
+    &lt;br&gt;
+    &lt;&lt;if _milkCount[0] &lt;= 0 &amp;&amp; _milkCount[1] &lt;= 0 &amp;&amp; _milkCount[2] &lt;= 0&gt;&gt;
+        @@.lightsalmon;0 ҁ@@ of milk.
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;if _milkCount[0] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[0]&gt;&gt; ҁ@@ of low quality milk.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _milkCount[1] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[1]&gt;&gt; ҁ@@ of average quality milk.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _milkCount[2] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[2]&gt;&gt; ҁ@@ of high quality milk.
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+    &lt;br&gt;
+    &lt;&lt;if _meatCount[0] &lt;= 0 &amp;&amp; _meatCount[1] &lt;= 0 &amp;&amp; _meatCount[2] &lt;= 0&gt;&gt;
+        @@.lightsalmon;0 ҁ@@ of meat.
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;if _meatCount[0] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[0]&gt;&gt; ҁ@@ of low quality meat.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _meatCount[1] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[1]&gt;&gt; ҁ@@ of average quality meat.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _meatCount[2] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[2]&gt;&gt; ҁ@@ of high quality meat.
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+    &lt;&lt;set _check = false&gt;&gt;
+    &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+        &lt;&lt;if _woolCount[0][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[0][_i]&gt;&gt; ҁ@@ of low quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;elseif _woolCount[1][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[1][_i]&gt;&gt; ҁ@@ of average quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;elseif _woolCount[2][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[2][_i]&gt;&gt; ouҁ@@ of high quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+    &lt;&lt;if _check == false&gt;&gt;
+        &lt;br&gt;
+        @@.lightsalmon;0 ҁ@@ of woool.
+    &lt;&lt;/if&gt;&gt;
+
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Call as &lt;&lt;addInventory item&gt;&gt;
+ *	Adds an item to the store inventory.
+ *** */
+&lt;&lt;widget &quot;addInventory&quot;&gt;&gt;
+    &lt;&lt;if ndef _args[0]&gt;&gt;
+        &lt;&lt;run console.log(`ERROR: &lt;&lt;addInventory&gt;&gt;: Called with no arguments.`)&gt;&gt;
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;set _newItem =
+        {
+            name: _args[0].name,
+            color: _args[0].color,
+            amount: Math.clamp(_args[0].amount, 0, 64),
+            quality: Math.clamp(_args[0].quality, 0, 2)
+        } &gt;&gt;
+
+        &lt;&lt;if _newItem.name === &quot;Wool&quot; || _newItem.name === &quot;Milk&quot; || _newItem.name === &quot;Meat&quot;&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: valid type.`)&gt;&gt;
+            &lt;&lt;if $ourStore.inventory.length == 0&gt;&gt;
+                &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing to empty inventory ${_newItem.name}.`)&gt;&gt;
+                &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;for _this, _inventory range $ourStore.inventory&gt;&gt;
+
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: existing check ${_this}.`)&gt;&gt;
+                    &lt;&lt;if _inventory.name == _newItem.name &amp;&amp; _inventory.quality == _newItem.quality&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: existing check ${_this}; name and quality match.`)&gt;&gt;
+                        &lt;&lt;if _inventory.name === &quot;Wool&quot;&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: found wool.`)&gt;&gt;
+                            &lt;&lt;if _inventory.color == _newItem.color&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: adding to wool.`)&gt;&gt;
+                                &lt;&lt;set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing ${_newItem.name}.`)&gt;&gt;
+                                &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: adding to non wool.`)&gt;&gt;
+                            &lt;&lt;set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+    &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing ${_newItem.name}.`)&gt;&gt;
+                        &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: no matches ${_this}.`)&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;else&gt;&gt;
+            &lt;&lt;run console.log(`ERROR: &lt;&lt;addInventory&gt;&gt;: Called unsuported item type ${_newItem.name}.`)&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="51" name="math widgets" tags="nobr widget" position="100,725" size="100,100">/* **********
  * mathWidgets.tw
  *
  * Package: FluffyBreeder
@@ -29239,7 +29397,7 @@ button {
 			
 		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="51" name="misc widgets" tags="nobr widget" position="100,725" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="misc widgets" tags="nobr widget" position="225,725" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -30086,7 +30244,7 @@ button {
 
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _replaceFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;run pageLoad();&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="pronoun widgets" tags="widget nobr" position="225,725" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="53" name="pronoun widgets" tags="widget nobr" position="350,725" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder
