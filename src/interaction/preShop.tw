@@ -65,7 +65,7 @@
                     <<set $activeFluffy = _youngFluffies[Math.floor(Math.random(0, _youngFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $activeFluffy.hasName = true>>
                     <</if>>
                     <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
@@ -89,7 +89,7 @@
                     <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                     /* if it's a previous fluffy, 25% chance to have new name */
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $mom.hasName = true>>
                     <</if>>
                     <<run console.log($mom)>>
@@ -120,7 +120,7 @@
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
                     <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $dad.hasName = true>>
                     <</if>>
                     <<run console.log($dad)>>
@@ -184,7 +184,7 @@
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
                     <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $mom.hasName = true>>
                     <</if>>
                     <<run console.log($mom)>>
@@ -214,7 +214,7 @@
                 <<if random(0, 3) == 0 && _maleFluffies.length > 0>>
                     <<set $dad = _maleFluffies[Math.floor(Math.random(0, _maleFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $dad.hasName = true>>
                     <</if>>
                     <<run console.log($dad)>>
@@ -308,7 +308,7 @@
                 <<if random(0, 3) == 0 && _wildFluffies.length > 0>>
                     <<set $activeFluffy = _wildFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
                     <<if random(0, 3) == 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $activeFluffy.hasName = true>>
                     <</if>>
 
@@ -337,7 +337,7 @@
         <<set $activeFluffy.subSpecies = $activeFluffy.genes.getSubSpecies()>>
         <<set $activeFluffy.subSpeciesString = $activeFluffy.genes.getSubSpeciesDesc()>>
 
-        <<fetchName>>
+        <<setName>>
         <<set $activeFluffy.hasName = true>>
 
     <<else>>
@@ -415,7 +415,7 @@
                 /* fluffies have a 50% chance to be named */
                 <<switch random(0, 1)>>
                     <<case 0>>
-                        <<fetchName>>
+                        <<setName>>
                         <<set $activeFluffy.hasName = true>>
                     <<case 1>>
                         <<set $activeFluffy.name = "Fluffy">>
@@ -449,7 +449,7 @@
                      <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
                 <<else>>
                     <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
-                    <<fetchName>>
+                    <<setName>>
                     <<set $activeFluffy.hasName = true>>
                     <<limitColor 1 2 3 4>>
                 <</if>>
@@ -457,7 +457,7 @@
                 <<set $activeFluffy.furStage = Number(random(60, 120))>>
             <<elseif $shop == "breeder" || $shop == "angora">>
                 /* breeder fluffies always have a name */
-                <<fetchName>>
+                <<setName>>
                 <<set $activeFluffy.hasName = true>>
                 <<set $activeFluffy.furStage = Number(random(90, 180))>>
             <</if>>

@@ -246,13 +246,13 @@ button {
 <</widget>>
 
 /* ***
- *	fetchName
- *	Call as <<fetchName>>
+ *	setName
+ *	Call as <<setName $fetch>>
  *
  *	finds appropriate name for ($activeFluffy)
  *** */
 
-<<widget "fetchName">>
+<<widget "setName">>
 	/*<<colorGroup $activeFluffy>>*/
 	<<set _colorList = window.nameList["colors"]>>
 	<<set _genderList = window.nameList["gender"]>>
@@ -262,31 +262,47 @@ button {
 
 	<<set _coat = $activeFluffy.cColor.group>>
 	<<set _mane = $activeFluffy.mColor.group>>
+	<<set _randomName == "Fluffy">>
 	
-	<<switch random(0, 4)>>
+	/* Get name, 75% color, 25% gender*/
+	<<switch random(0, 3)>>
 		<<case 0 1 2>>
-		/* Get name relating to color*/
-			<<if ndef _colorList[_coat] || ndef _coat>>
-				<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
-			<<elseif _coat.length != 0>>
-				<<set _posCoat = random(0, _colorList[_coat].length-1)>>
-				<<set $activeFluffy.name = _colorList[_coat][_posCoat]>>
-			<<else>>
-				<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
-			<</if>>
-		<<case 4>>
+		/* Get name relating to color, 75% coat, 25% mane*/
+			<<switch random(0, 3)>>
+				<<case 0 1 2>>
+					<<if ndef _coat || ndef _colorList[_coat]>>
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<<elseif _coat.length != 0>>
+						<<set _posCoat = random(0, _colorList[_coat].length-1)>>
+						<<set _randomName = _colorList[_coat][_posCoat]>>
+					<<else>>	
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<</if>>
+				<<case 3>>
+					<<if ndef _mane || ndef _colorList[_mane]>>
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<<elseif _mane.length != 0>>
+						<<set _posCoat = random(0, _colorList[_mane].length-1)>>
+						<<set _randomName = _colorList[_mane][_posCoat]>>
+					<<else>>	
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<</if>>
+			<</switch>>
+		<<case 3>>
 		/* Get name relating to gender, 50% gendered, 50% neutral */
 			<<switch random(0, 1)>>
 				<<case 0>>
-					<<set $activeFluffy.name = _genderList[_gender][_posGendered]>>
+					<<set _randomName = _genderList[_gender][_posGendered]>>
 				<<case 1>>
-					<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
-				<<default>>
-					<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+					<<set _randomName = _genderList["Neutral"][_posNeutral]>>
 			<</switch>>
 		<<default>>
-			<<set $activeFluffy.name = _genderList["Neutral"][_posNeutral]>>
+			<<set _randomName = _genderList["Neutral"][_posNeutral]>>
 	<</switch>>
+	<<if _args[0] != true>>
+		<<set $activeFluffy.name = _randomName>>
+	<</if>>
+	<<set $randomName = _randomName>>
 <</widget>>
 
 /* ***
