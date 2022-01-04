@@ -51,7 +51,7 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
     // Update the nursing from a count to an array:
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].nursing === 'number')
+    if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
     {
       // How many children does this fluffy have?
       var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;

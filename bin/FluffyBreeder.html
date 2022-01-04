@@ -16228,7 +16228,7 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
     // Update the nursing from a count to an array:
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].nursing === 'number')
+    if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
     {
       // How many children does this fluffy have?
       var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;
@@ -16373,13 +16373,13 @@ Save.onLoad.add(function (save)
 /* ----- Fluffy Description ----- */
 
 window.selectFluffy = function(e) {
-  const $checkbox = $(this).find('.fluffy-checkbox')
-  const fluffy_id = $checkbox.attr('data-fluffy-id')
-  const customerEvent = $('#passage-event-customer')
-  if (!customerEvent && $checkbox.prop('checked')) {
+  const $checkbox = $(this).find('.fluffy-checkbox');
+  const fluffy_id = $checkbox.attr('data-fluffy-id');
+  const customerEvent = $('#passage-event-customer');
+  if (!customerEvent[0] && $checkbox.prop('checked')) {
     $checkbox.prop('checked', false);
     State.variables.globalFluffies[fluffy_id].isChecked = false
-  } else if (!customerEvent) {
+  } else if (!customerEvent[0]) {
     $checkbox.prop('checked', true);
     State.variables.globalFluffies[fluffy_id].isChecked = true
   }
@@ -18000,6 +18000,9 @@ button {
 
 			&lt;br&gt;if you meet all &lt;&lt;- $customerWants&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number($customerWants / 5))&gt;&gt;x price bonus.
 		&lt;&lt;/if&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		[[Decline this request|Event Main][$encyclopedia = 0]]
 	&lt;/div&gt;	
 
 	&lt;div id=&quot;fluffy-list&quot;&gt;&lt;/div&gt;
@@ -18938,6 +18941,12 @@ button {
 
                 &lt;&lt;elseif _card === $activeFluffy.subSpeciesString&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
+
+                &lt;&lt;elseif _card.includes(&quot;Trait&quot;)&gt;&gt;
+                    &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
+                    &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
+                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;	
             &lt;&lt;/for&gt;&gt;
         &lt;&lt;/if&gt;&gt;
@@ -19990,16 +19999,20 @@ Genes       Height multiplier
 /* ***
  *	Base expenses
  *** */
-&lt;&lt;set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)&gt;&gt;
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
 
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Training Equipment&quot;) || $ourStore.upgrades.includes(&quot;Fancy Training Equipment&quot;) || $ourStore.upgrades.includes(&quot;Basic Training Equipment&quot;)&gt;&gt;
@@ -20438,7 +20451,7 @@ Genes       Height multiplier
 			&lt;&lt;run $eventCustomer.push($globalFluffies[_ef].ID)&gt;&gt;
 
 			&lt;&lt;set _visibleCards = [ &quot;Species&quot;, &quot;Gender&quot;, &quot;Breed&quot;, &quot;Coat&quot;, &quot;Mane&quot;, &quot;Eyes&quot;, &quot;Age&quot; ]&gt;&gt;
-			&lt;&lt;set _nonvisibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot; ]&gt;&gt;
+			&lt;&lt;set _nonvisibleCards = [ &quot;Personality&quot;, &quot;Stat&quot;, &quot;Temperament&quot;, &quot;Trait&quot; ]&gt;&gt;
 
 			/* Generate 1-3 customer cards for each fluffy on display */
 			&lt;&lt;for _c = random(0,3); _c &gt;= 0; _c--&gt;&gt;
@@ -20469,6 +20482,8 @@ Genes       Height multiplier
 								&lt;&lt;/switch&gt;&gt;
 							&lt;&lt;case &quot;Temperament&quot;&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].temperament &gt; 190 ? &quot;High temperament&quot; : $globalFluffies[_ef].temperament &lt; 130 ? &quot;Low temperament&quot; : &quot;Average temperament&quot;&gt;&gt;
+							&lt;&lt;case &quot;Trait&quot;&gt;&gt;
+								&lt;&lt;set _push = &quot;Trait &quot; + $globalFluffies[_ef].traits.random()&gt;&gt;
 							&lt;&lt;default&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].personality&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
@@ -20620,7 +20635,6 @@ Genes       Height multiplier
 	 &lt;&lt;/switch&gt;&gt;
 	 
 
-	
 	/* ***
 	 *	Grow foals.
 	 *** */
@@ -20646,17 +20660,26 @@ Genes       Height multiplier
 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)&gt;&gt;
 	 	&lt;&lt;else&gt;&gt; 
 	 		&lt;&lt;switch $globalFluffies[_ef].foodQuality&gt;&gt;
-	 			&lt;&lt;case 0&gt;&gt;
-	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
 	 			&lt;&lt;case 1&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 1&gt;&gt;
+					 &lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.20)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+	 			&lt;&lt;case 2&gt;&gt;
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.30)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 3&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 2&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.40)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 4&gt;&gt;	 		
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += 3&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.50)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+	 			&lt;&lt;default&gt;&gt; /* 0 */
+	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.10)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
 	 		&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
@@ -20692,7 +20715,7 @@ Genes       Height multiplier
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;run $globalFluffies[_ef].furStage += Number($globalFluffies[_ef].coatLength)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	
+
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
@@ -21353,7 +21376,14 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;br&gt;You have @@.cyan; &lt;span id = &quot;shop_points&quot;&gt;&lt;&lt;- $storePoints&gt;&gt;&lt;/span&gt;@@ points left.
 &lt;br&gt;
 &lt;br&gt;Remaining points will become @@.yellowgreen;¤&lt;span id = &quot;shop_cash&quot;&gt;&lt;&lt;- $storePoints+100&gt;&gt;&lt;/span&gt;@@.
-&lt;br&gt;Weekly upkeep will be @@.yellowgreen;¤&lt;span id = &quot;shop_upkeep&quot;&gt;&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;&lt;/span&gt;@@.
+&lt;br&gt;Weekly upkeep will be @@.yellowgreen;¤&lt;span id = &quot;shop_upkeep&quot;&gt;
+											&lt;&lt;set $costs = 0&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+											&lt;&lt;print $costs&gt;&gt;
+										&lt;/span&gt;@@.
 &lt;br&gt;
 
 
@@ -21630,8 +21660,51 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	&lt;&lt;set $globalFluffies[_f].isChecked = false&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
+/* ***
+ *	Base expenses
+ *** */
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;set _feedCost = 0&gt;&gt;
+
+&lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
+	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Greens&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Formula&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Default&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = 0&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;script&gt;&gt;
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
+
 /* Round the cash to 2 decimal places */
 &lt;&lt;cashClamp&gt;&gt;
+
+
 
 /* Set the UI info and the sidebar buttons*/
 &lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
@@ -21819,6 +21892,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 		&lt;br&gt;
 		&lt;br&gt;&lt;span id=&quot;fluffy-count&quot;&gt;&lt;&lt;SidebarFluffies&gt;&gt;&lt;/span&gt;
 		&lt;br&gt;
+		&lt;br&gt;&lt;&lt;showInventory&gt;&gt;
 &lt;/div&gt;
 
 &lt;&lt;script&gt;&gt;
@@ -22325,7 +22399,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;b134d1c&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;b434ec6&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23022,6 +23096,47 @@ profitsTotal: 0
 
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 
+/* ***
+ *	Base expenses
+ *** */
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;set _feedCost = 0&gt;&gt;
+
+&lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
+	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Greens&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Formula&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Default&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = 0&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;script&gt;&gt;
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
+
 
 &lt;&lt;set $nextButton to &quot;Back to the Store&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
@@ -23062,7 +23177,7 @@ profitsTotal: 0
 &lt;br&gt;
 &lt;br&gt;What improvements do you want to make to your store?
 &lt;br&gt;
-&lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
+&lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;
 Upgrades:
 &lt;&lt;for _i, _upgrade range $ourStore.upgrades&gt;&gt;
@@ -23083,7 +23198,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.space += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23097,7 +23213,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23111,7 +23228,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23134,7 +23252,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23148,7 +23267,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23162,7 +23282,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23184,7 +23305,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.display += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23198,7 +23320,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23212,7 +23335,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23342,7 +23466,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	
 	
 	&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;
-&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
+&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;
 Upgrades:
 &lt;&lt;for _i, _upgrade range $ourStore.upgrades&gt;&gt;
@@ -23901,6 +24025,8 @@ Upgrades:
 	&lt;span id=&quot;breed-message&quot;&gt;&lt;/span&gt;
 	&lt;br&gt;
 
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: shearing check; furstage = ${$activeFluffy.furStage}.`)&gt;&gt;
+
 	&lt;div id=&quot;product-form&quot;&gt;
 		&lt;&lt;if $activeFluffy.furStage &gt; 67&gt;&gt;
 			&lt;&lt;set _shear = true&gt;&gt;
@@ -23969,25 +24095,19 @@ Upgrades:
 					&lt;&lt;set _woolQuality = Number(Number(_woolQuality).toFixed(2) / Number(6).toFixed(2)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _woolQuality = Number(_woolQuality).toFixed(0)&gt;&gt;
 
-					/*
-					&lt;&lt;if UInv.CreateBag(&quot;Test&quot;)&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					&lt;&lt;if UInv.AddItem(&quot;Test&quot;, &quot;wool&quot;, _woolYield, `${_coatGroup} wool`)&gt;&gt;
-						&lt;&lt;if UInv.SetItemPropertyValue(&quot;Test&quot;, `${_coatGroup} wool`, &quot;quality&quot;, _woolQuality)&gt;&gt;
-						&lt;&lt;/if&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-
 					&lt;&lt;set _item =
 					{
 						name: &quot;Wool&quot;,
-						color: $activeFluffy.cColor.hex,
+						color: $activeFluffy.cColor.group,
 						amount: _woolYield,
 						quality: _woolQuality
 					} &gt;&gt;
 
-					&lt;&lt;set $ourStore.inventory.push(_item)&gt;&gt;
-					*/
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: Wool adding, color = ${$activeFluffy.cColor.group}, amount = ${_woolYield}, qualty = ${_woolQuality}.`)&gt;&gt;
+&lt;&lt;run console.log(`Debug: [fluffyInteract]: Wool adding, item name = ${_item.name} color = ${_item.color}, amount = ${_item.amount}, qualty = ${_item.quality}.`)&gt;&gt;
+
+					&lt;&lt;addInventory _item&gt;&gt;
+
 					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 					&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;
 						&lt;br&gt;&lt;&lt;fluffSpeech&quot;huu huu... why taek pwetty fwuff fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor.hex&gt;&gt;
@@ -24275,7 +24395,7 @@ Upgrades:
 	        	&lt;&lt;sortButtons&gt;&gt;
 				&lt;&lt;filterButtons&gt;&gt;
 			&lt;/div&gt;
-/*			bulk actions are broken ATM, so removing the buttons for now.
+/*			bulk actions are broken ATM, so removing the buttons for now.*/
 	        &lt;div class=&quot;w3-dropdown-hover&quot;&gt;
 				&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-grey&quot;&gt;
 					&lt;button class=&quot;dropdown-btn w3-button&quot;&gt;&lt;span&gt;Bulk Actions&lt;/span&gt;&lt;i class=&quot;fa fa-caret-down&quot;&gt;&lt;/i&gt;&lt;/button&gt;
@@ -24615,7 +24735,7 @@ Upgrades:
 					&lt;/div&gt;
 				&lt;/div&gt;
 			&lt;/div&gt;
-*/
+
 			&lt;&lt;systemButtons&gt;&gt;
 
 		&lt;/div&gt;
@@ -26599,9 +26719,16 @@ button {
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _background = &quot;lightgray&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
-		${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
-	`+&#39;&quot;&#39;&gt;&gt;
+
+	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt;= 1&gt;&gt;&gt;
+			&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
+			${&quot;cheep... cheep...&quot;}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -26782,16 +26909,10 @@ button {
 	&lt;&lt;set $activeFluffy = $globalFluffies[_thisFluffy.ID]&gt;&gt;
 	&lt;&lt;colorValue&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Base price = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with stat bonus (${_thisFluffy.statBonus}) = ${_price}.`)&gt;&gt;
-
 	&lt;&lt;set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price with color bonus (${_thisFluffy.colorBonus}) = ${_price}.`)&gt;&gt;
-					
+				
 	&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].age == 0 &amp;&amp; $globalFluffies[_thisFluffy.ID].ageWeeks &lt; 45&gt;&gt;
@@ -26799,20 +26920,14 @@ button {
 	&lt;&lt;/if&gt;&gt;
 		
 	&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-			
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after age adustment = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].traits.includes(&quot;Feral&quot;) == true&gt;&gt;
 		&lt;&lt;set _price = Number(_price / 4).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after feral check = ${_price}.`)&gt;&gt;
-
 	&lt;&lt;if $globalFluffies[_thisFluffy.ID].subSpecies == 2&gt;&gt;
 		&lt;&lt;set _price = Number(_price * 1.3).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;run console.log(`DEBUG: &lt;&lt;displayPrice&gt;&gt;: Price after species check = ${_price}.`)&gt;&gt;
 
 	&lt;&lt;if  $debugMode&gt;&gt;
 		@@.orange;_price@@
@@ -27203,7 +27318,7 @@ button {
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
 			&lt;&lt;fluffSpeech &quot;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
-								
+		
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
 				&lt;&lt;fluffSpeech &quot;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh..&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
@@ -27254,11 +27369,11 @@ button {
 		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;&lt;- $title&gt;&gt;, nu wan ugwy babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt;, nu wan ugwy babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;&lt;- $title&gt;&gt;...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;title&gt;...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
@@ -27311,7 +27426,7 @@ button {
 		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;, hewp &lt;&lt;- $title&gt;&gt;, gib wowstes&#39; babbeh nu wub.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;hewp &lt;title&gt;, gib wowstes&#39; babbeh nu wub.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
@@ -27367,7 +27482,7 @@ button {
 		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;&lt;- $title&gt;&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
@@ -29103,7 +29218,172 @@ button {
 			&lt;&lt;set $activeFluffy = _activeFluffy&gt;&gt;
 		&lt;/div&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="50" name="math widgets" tags="nobr widget" position="1225,600" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="50" name="inventory widgets" tags="nobr widget" position="1225,600" size="100,100">/* **********
+ * inventoryWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Widgse for inventory system
+ *
+ *********** */
+
+
+/* ***
+ *	Call as &lt;&lt;showInventory&gt;&gt;
+ *	Lists the store inventory.
+ *** */
+&lt;&lt;widget &quot;showInventory&quot;&gt;&gt;
+
+    &lt;&lt;set _milkCount = [0, 0, 0]&gt;&gt;
+    &lt;&lt;set _meatCount = [0, 0, 0]&gt;&gt;
+    &lt;&lt;set _woolCount = [ [], [], []]&gt;&gt;
+
+    &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+        /*&lt;&lt;set _woolCount[0][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[0][_i] = 0&gt;&gt;
+        /*&lt;&lt;set _woolCount[1][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[1][_i] = 0&gt;&gt;
+        /*&lt;&lt;set _woolCount[2][_i].color = ntc.shades[_i][1]&gt;&gt;*/
+        &lt;&lt;set _woolCount[2][_i] = 0&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+
+    &lt;&lt;for _this, _inventory range $ourStore.inventory&gt;&gt;
+        &lt;&lt;if _inventory.quality != 0 &amp;&amp; _inventory.quality != 1 &amp;&amp; _inventory.quality != 2&gt;&gt;
+            &lt;&lt;run $ourStore.delete(_inventory)&gt;&gt;
+            &lt;&lt;run console.log(`ERROR: &lt;&lt;showInventory&gt;&gt;: Invalid milk quality ${_inventory.quality}.`)&gt;&gt;
+        &lt;&lt;else&gt;&gt;
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            &lt;&lt;if _inventory.name === &quot;Milk&quot;&gt;&gt;
+                &lt;&lt;set _milkCount[_inventory.quality] = Number(Number(_milkCount[_inventory.quality]) + _inventory.amount)&gt;&gt;
+
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            &lt;&lt;elseif _inventory.name === &quot;Meat&quot;&gt;&gt;
+                &lt;&lt;set _meatCount[_inventory.quality] = Number(Number(_meatCount[_inventory.quality]) + _inventory.amount)&gt;&gt;
+
+            /* Wool also has a color to deal with */
+            &lt;&lt;elseif _inventory.name === &quot;Wool&quot;&gt;&gt;
+                &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+                    &lt;&lt;for _j = 0; _j &lt; 3; _j++&gt;&gt;
+                        &lt;&lt;if ntc.shades[_i][1] === _inventory.color&gt;&gt;
+                            &lt;&lt;set _woolCount[_j][_i] = Number(Number(_woolCount[_j][_i]) + _inventory.amount)&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;/for&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
+
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;run $ourStore.delete(_inventory)&gt;&gt;
+                &lt;&lt;run console.log(`ERROR: &lt;&lt;showInventory&gt;&gt;: Invalid inventory item ${_inventory.name}.`)&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+
+    &lt;br&gt;@@.coral;Store Inventory@@
+    &lt;br&gt;
+    &lt;&lt;if _milkCount[0] &lt;= 0 &amp;&amp; _milkCount[1] &lt;= 0 &amp;&amp; _milkCount[2] &lt;= 0&gt;&gt;
+        @@.lightsalmon;0 ҁ@@ of milk.
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;if _milkCount[0] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[0]&gt;&gt; ҁ@@ of low quality milk.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _milkCount[1] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[1]&gt;&gt; ҁ@@ of average quality milk.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _milkCount[2] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _milkCount[2]&gt;&gt; ҁ@@ of high quality milk.
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+    &lt;br&gt;
+    &lt;&lt;if _meatCount[0] &lt;= 0 &amp;&amp; _meatCount[1] &lt;= 0 &amp;&amp; _meatCount[2] &lt;= 0&gt;&gt;
+        @@.lightsalmon;0 ҁ@@ of meat.
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;if _meatCount[0] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[0]&gt;&gt; ҁ@@ of low quality meat.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _meatCount[1] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[1]&gt;&gt; ҁ@@ of average quality meat.
+        &lt;&lt;/if&gt;&gt;
+        &lt;&lt;if _meatCount[2] &gt; 0&gt;&gt;
+            @@.lightsalmon;&lt;&lt;- _meatCount[2]&gt;&gt; ҁ@@ of high quality meat.
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+
+    &lt;&lt;set _check = false&gt;&gt;
+    &lt;&lt;for _i = 0; _i &lt; ntc.shades.length; _i++&gt;&gt;
+        &lt;&lt;if _woolCount[0][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[0][_i]&gt;&gt; ҁ@@ of low quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;elseif _woolCount[1][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[1][_i]&gt;&gt; ҁ@@ of average quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;elseif _woolCount[2][_i] &gt; 0&gt;&gt;
+            &lt;br&gt;
+            @@.lightsalmon;&lt;&lt;- _woolCount[2][_i]&gt;&gt; ouҁ@@ of high quality &lt;&lt;- ntc.shades[_i][1]&gt;&gt; wool
+            &lt;&lt;set _check = true&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/for&gt;&gt;
+    &lt;&lt;if _check == false&gt;&gt;
+        &lt;br&gt;
+        @@.lightsalmon;0 ҁ@@ of woool.
+    &lt;&lt;/if&gt;&gt;
+
+&lt;&lt;/widget&gt;&gt;
+
+/* ***
+ *	Call as &lt;&lt;addInventory item&gt;&gt;
+ *	Adds an item to the store inventory.
+ *** */
+&lt;&lt;widget &quot;addInventory&quot;&gt;&gt;
+    &lt;&lt;if ndef _args[0]&gt;&gt;
+        &lt;&lt;run console.log(`ERROR: &lt;&lt;addInventory&gt;&gt;: Called with no arguments.`)&gt;&gt;
+    &lt;&lt;else&gt;&gt;
+        &lt;&lt;set _newItem =
+        {
+            name: _args[0].name,
+            color: _args[0].color,
+            amount: Math.clamp(_args[0].amount, 0, 64),
+            quality: Math.clamp(_args[0].quality, 0, 2)
+        } &gt;&gt;
+
+        &lt;&lt;if _newItem.name === &quot;Wool&quot; || _newItem.name === &quot;Milk&quot; || _newItem.name === &quot;Meat&quot;&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: valid type.`)&gt;&gt;
+            &lt;&lt;if $ourStore.inventory.length == 0&gt;&gt;
+                &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing to empty inventory ${_newItem.name}.`)&gt;&gt;
+                &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+            &lt;&lt;else&gt;&gt;
+                &lt;&lt;for _this, _inventory range $ourStore.inventory&gt;&gt;
+
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: existing check ${_this}.`)&gt;&gt;
+                    &lt;&lt;if _inventory.name == _newItem.name &amp;&amp; _inventory.quality == _newItem.quality&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: existing check ${_this}; name and quality match.`)&gt;&gt;
+                        &lt;&lt;if _inventory.name === &quot;Wool&quot;&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: found wool.`)&gt;&gt;
+                            &lt;&lt;if _inventory.color == _newItem.color&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: adding to wool.`)&gt;&gt;
+                                &lt;&lt;set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing ${_newItem.name}.`)&gt;&gt;
+                                &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+                            &lt;&lt;/if&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: adding to non wool.`)&gt;&gt;
+                            &lt;&lt;set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+    &lt;&lt;run console.log(`DEBUT: &lt;&lt;addInventory&gt;&gt;: pushing ${_newItem.name}.`)&gt;&gt;
+                        &lt;&lt;set $ourStore.inventory.push(_newItem)&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+    &lt;&lt;run console.log(`DEBUG: &lt;&lt;addInventory&gt;&gt;: no matches ${_this}.`)&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+        &lt;&lt;else&gt;&gt;
+            &lt;&lt;run console.log(`ERROR: &lt;&lt;addInventory&gt;&gt;: Called unsuported item type ${_newItem.name}.`)&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="51" name="math widgets" tags="nobr widget" position="100,725" size="100,100">/* **********
  * mathWidgets.tw
  *
  * Package: FluffyBreeder
@@ -29239,7 +29519,7 @@ button {
 			
 		&lt;&lt;/script&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="51" name="misc widgets" tags="nobr widget" position="100,725" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="misc widgets" tags="nobr widget" position="225,725" size="100,100">/* **********
  * miscWidgets.tw
  *
  * Package: FluffyBreeder
@@ -29373,6 +29653,9 @@ button {
 	| &#39;&#39;¤&#39;&#39;$cash
 	&lt;/span&gt;
 	&lt;br&gt;Upkeep | ¤$costs
+	&lt;&lt;if def _feedCost&gt;&gt;
+	(Rent: ¤&lt;&lt;- Number(Number($costs) - Number(_feedCost)).toFixed(2)&gt;&gt;, Feeding: ¤_feedCost)
+	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -30086,7 +30369,7 @@ button {
 
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _replaceFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;run pageLoad();&gt;&gt;
-&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="52" name="pronoun widgets" tags="widget nobr" position="225,725" size="100,100">/* **********
+&lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="53" name="pronoun widgets" tags="widget nobr" position="350,725" size="100,100">/* **********
  * pronounWidgets.tw
  *
  * Package: FluffyBreeder

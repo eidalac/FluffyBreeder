@@ -249,6 +249,8 @@
 	<span id="breed-message"></span>
 	<br>
 
+<<run console.log(`Debug: [fluffyInteract]: shearing check; furstage = ${$activeFluffy.furStage}.`)>>
+
 	<div id="product-form">
 		<<if $activeFluffy.furStage > 67>>
 			<<set _shear = true>>
@@ -317,25 +319,19 @@
 					<<set _woolQuality = Number(Number(_woolQuality).toFixed(2) / Number(6).toFixed(2)).toFixed(2)>>
 					<<set _woolQuality = Number(_woolQuality).toFixed(0)>>
 
-					/*
-					<<if UInv.CreateBag("Test")>>
-					<</if>>
-					<<if UInv.AddItem("Test", "wool", _woolYield, `${_coatGroup} wool`)>>
-						<<if UInv.SetItemPropertyValue("Test", `${_coatGroup} wool`, "quality", _woolQuality)>>
-						<</if>>
-					<</if>>
-
-
 					<<set _item =
 					{
 						name: "Wool",
-						color: $activeFluffy.cColor.hex,
+						color: $activeFluffy.cColor.group,
 						amount: _woolYield,
 						quality: _woolQuality
 					} >>
 
-					<<set $ourStore.inventory.push(_item)>>
-					*/
+<<run console.log(`Debug: [fluffyInteract]: Wool adding, color = ${$activeFluffy.cColor.group}, amount = ${_woolYield}, qualty = ${_woolQuality}.`)>>
+<<run console.log(`Debug: [fluffyInteract]: Wool adding, item name = ${_item.name} color = ${_item.color}, amount = ${_item.amount}, qualty = ${_item.quality}.`)>>
+
+					<<addInventory _item>>
+
 					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 					<<replace "#shear-msg">>
 						<br><<fluffSpeech"huu huu... why taek pwetty fwuff fwom <fluffy>?" $activeFluffy.cColor.hex>>

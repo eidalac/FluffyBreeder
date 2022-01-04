@@ -24,8 +24,51 @@
 	<<set $globalFluffies[_f].isChecked = false>>
 <</for>>
 
+/* ***
+ *	Base expenses
+ *** */
+<<set $costs = 0>>
+<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+
+<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Fancy Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Basic Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+
+<<set _feedCost = 0>>
+
+<<for _ef range $ourStore.fluffies>>
+	<<switch $globalFluffies[_ef].foodType>>
+		<<case "Kibble">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Greens">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Sketti">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Formula">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Default">>
+			<<set _feedCost = 0>>
+	<</switch>>
+<</for>>
+
+<<script>>
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+<</script>>
+
 /* Round the cash to 2 decimal places */
 <<cashClamp>>
+
+
 
 /* Set the UI info and the sidebar buttons*/
 <<set $ui = "main">>
@@ -213,6 +256,7 @@
 		<br>
 		<br><span id="fluffy-count"><<SidebarFluffies>></span>
 		<br>
+		<br><<showInventory>>
 </div>
 
 <<script>>
