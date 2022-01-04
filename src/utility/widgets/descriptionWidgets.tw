@@ -228,13 +228,14 @@ button {
 <</widget>>
 
 /* ***
- *	Called as <<fluffSpeech $message $color>>
+ *	Called as <<fluffSpeech $message $fluffy>>
  *	Translates message into fluffy speech. 
  * 	Replaces '<fluffy>' with actual name.
  *** */
 <<widget "fluffSpeech">>
 	<<set _msg = _args[0] ? _args[0] : "">>
-	<<set _luminance = getLuminance(_args[1])>>
+	<<set _color = _args[1].cColor.hex>>
+	<<set _luminance = getLuminance(_color)>>
 	<<if _luminance > 64 >>
 		<<set _background = "var(--text-dark)">>
 	<<else>>
@@ -242,12 +243,12 @@ button {
 	<</if>>
 
 	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks <= 1>>>
-			<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
+			<<- `@@background:${_background}; color:${_color};`+'"'+`
 			${"cheep... cheep..."}
 		`+'"'>>
 	<<else>>
-		<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
-			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
+		<<- `@@background:${_background}; color:${_color};`+'"'+`
+			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, _args[1].name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
 		`+'"'>>
 	<</if>>
 <</widget>>
