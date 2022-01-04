@@ -201,10 +201,30 @@ window.selectFluffy = function(e) {
   const customerEvent = $('#passage-event-customer');
   if (!customerEvent[0] && $checkbox.prop('checked')) {
     $checkbox.prop('checked', false);
-    State.variables.globalFluffies[fluffy_id].isChecked = false
+    State.variables.globalFluffies[fluffy_id].isChecked = false;
   } else if (!customerEvent[0]) {
     $checkbox.prop('checked', true);
-    State.variables.globalFluffies[fluffy_id].isChecked = true
+    State.variables.globalFluffies[fluffy_id].isChecked = true;
+  }
+}
+
+window.checkFluffies = function(e) {
+  const functionality = $(this).attr('data-function');
+  if (functionality.includes('check')) {
+    const $checkboxes = $('.fluffy-checkbox')
+    if (functionality === 'check-none') {
+      $checkboxes.each(function(i) {
+        const fluffy_id = $(this).attr('data-fluffy-id');
+        $(this).prop('checked', false);
+        State.variables.globalFluffies[fluffy_id].isChecked = false;
+      });
+    } else {
+      $checkboxes.each(function(i) {
+      const fluffy_id = $(this).attr('data-fluffy-id');
+      $(this).prop('checked', true);
+      State.variables.globalFluffies[fluffy_id].isChecked = true;
+      });
+    }
   }
 }
 

@@ -98,6 +98,9 @@ $( document ).ready(function() {
   /* Show/Sort/Filter */
   $('.dropdown-btn').on("click", window.toggleButton);
 
+  /* Check all/none */
+  $('.selectbutton').on("click", window.checkFluffies);
+
   /* Close Subsort */
   $('.subsort-btn .sortbutton').on("click", window.closeSubsort);
 
