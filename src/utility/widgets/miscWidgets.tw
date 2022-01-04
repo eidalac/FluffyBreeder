@@ -222,61 +222,66 @@
 			State.variables.actions = Math.clamp(Math.trunc(State.variables.actions), 0, 10);
 		<</script>>
 
-		<span style="color:lightcoral;">Stamina</span>
-		<<switch $actions>>
-			<<case 10>>
-				@@.green;■■■■■■■■■■@@
-			<<case 9>>
-				@@.green;■■■■■■■■■@@□
-			<<case 8>>
-				@@.green;■■■■■■■■@@□□
-			<<case 7>>
-				@@.yellowgreen;■■■■■■■@@□□□
-			<<case 6>>
-				@@.yellowgreen;■■■■■■@@□□□□
-			<<case 5>>
-				@@.yellow;■■■■■@@□□□□□
-			<<case 4>>
-				@@.yellow;■■■■@@□□□□□□
-			<<case 3>>
-				@@.orange;■■■@@□□□□□□□
-			<<case 2>>
-				@@.orange;■■@@□□□□□□□□
-			<<case 1>>
-				@@.red;■@@□□□□□□□□□
-			<<case 0>>
-				@@.red;□□□□□□□□□□@@
-		<</switch>>
-		
-		<span style="color:lightcoral;">Stress</span>
-
-		<<script>>
-			State.variables.stress = Math.clamp(Math.trunc(State.variables.stress), 0, 200);
-		<</script>>
-
-		<<if $stress < 20>>
-			@@color:rgb(0,255,0);□□□□□□□□□□@@
-		<<elseif $stress < 40>>
-			@@color:rgb(23,229,0);■□□□□□□□□□@@
-		<<elseif $stress < 60>>
-			@@color:rgb(51,204,0);■■□□□□□□□□@@
-		<<elseif $stress < 80>>
-			@@color:rgb(77,179,0);■■■□□□□□□□@@
-		<<elseif $stress < 100>>
-			@@color:rgb(102,153,0);■■■■□□□□□□@@
-		<<elseif $stress < 120>>
-			@@color:rgb(127,128,0);■■■■■□□□□□@@
-		<<elseif $stress < 140>>
-			@@color:rgb(153,102,0);■■■■■■□□□□@@
-		<<elseif $stress < 160>>
-			@@color:rgb(179,77,0);■■■■■■■□□□@@
-		<<elseif $stress < 180>>
-			@@color:rgb(204,51,0);■■■■■■■■□□@@
-		<<elseif $stress < 200>>
-			@@color:rgb(225,23,0);■■■■■■■■■□@@
-		<<else>>
-			@@color:rgb(255,0,0);■■■■■■■■■■@@
-		<</if>>
+		<div id="stamina-container">
+			<span style="color:lightcoral;">Stamina</span>
+			<div id="stamina-amount">
+			<<switch $actions>>
+				<<case 10>>
+					<span class="stat-high">■■■■■■■■■■</span>
+				<<case 9>>
+					<span class="stat-high">■■■■■■■■■</span><span>□</span>
+				<<case 8>>
+					<span class="stat-high">■■■■■■■■</span><span>□□</span>
+				<<case 7>>
+					<span class="stat-high">■■■■■■■</span><span>□□□</span>
+				<<case 6>>
+					<span class="stat-average">■■■■■■</span><span>□□□□</span>
+				<<case 5>>
+					<span class="stat-average">■■■■■</span><span>□□□□□</span>
+				<<case 4>>
+					<span class="stat-average">■■■■</span><span>□□□□□□</span>
+				<<case 3>>
+					<span class="stat-average">■■■</span><span>□□□□□□□</span>
+				<<case 2>>
+					<span class="stat-low">■■</span><span>□□□□□□□□</span>
+				<<case 1>>
+					<span class="stat-low">■</span><span>□□□□□□□□□</span>
+				<<case 0>>
+					<span class="stat-low">□□□□□□□□□□</span>
+			<</switch>>
+			</div>
+		</div>
+		<div id="stress-container">
+			<span style="color:lightcoral;">Stress</span>
+			<<script>>
+				State.variables.stress = Math.clamp(Math.trunc(State.variables.stress), 0, 200);
+			<</script>>
+			<div id="stress-amount">
+				<<if $stress < 20>>
+					<span class="stat-high">□□□□□□□□□□</span>
+				<<elseif $stress < 40>>
+					<span class="stat-high">■</span><span>□□□□□□□□□</span>
+				<<elseif $stress < 60>>
+					<span class="stat-high">■■</span><span>□□□□□□□□</span>
+				<<elseif $stress < 80>>
+					<span class="stat-high">■■■</span><span>□□□□□□□</span>
+				<<elseif $stress < 100>>
+					<span class="stat-average">■■■■</span><span>□□□□□□</span>
+				<<elseif $stress < 120>>
+					<span class="stat-average">■■■■■</span><span>□□□□□</span>
+				<<elseif $stress < 140>>
+					<span class="stat-average">■■■■■■</span><span>□□□□</span>
+				<<elseif $stress < 160>>
+					<span class="stat-average">■■■■■■■</span><span>□□□</span>
+				<<elseif $stress < 180>>
+					<span class="stat-low">■■■■■■■■</span><span>□□</span>
+				<<elseif $stress < 200>>
+					<span class="stat-low">■■■■■■■■■</span><span>□</span>
+				<<else>>
+					<span class="stat-low">■■■■■■■■■■</span>
+				<</if>>
+			</div>
+		</div>
 		<span style="color:lightcoral;">Reputation</span>
 		
 		<<script>>
