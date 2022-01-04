@@ -19999,16 +19999,20 @@ Genes       Height multiplier
 /* ***
  *	Base expenses
  *** */
-&lt;&lt;set $costs = Number(($ourStore.display + $ourStore.shelter + $ourStore.space) / 50).toFixed(2)&gt;&gt;
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
 
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
-	&lt;&lt;set $costs += 1&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Training Equipment&quot;) || $ourStore.upgrades.includes(&quot;Fancy Training Equipment&quot;) || $ourStore.upgrades.includes(&quot;Basic Training Equipment&quot;)&gt;&gt;
@@ -21372,7 +21376,14 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;br&gt;You have @@.cyan; &lt;span id = &quot;shop_points&quot;&gt;&lt;&lt;- $storePoints&gt;&gt;&lt;/span&gt;@@ points left.
 &lt;br&gt;
 &lt;br&gt;Remaining points will become @@.yellowgreen;¤&lt;span id = &quot;shop_cash&quot;&gt;&lt;&lt;- $storePoints+100&gt;&gt;&lt;/span&gt;@@.
-&lt;br&gt;Weekly upkeep will be @@.yellowgreen;¤&lt;span id = &quot;shop_upkeep&quot;&gt;&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;&lt;/span&gt;@@.
+&lt;br&gt;Weekly upkeep will be @@.yellowgreen;¤&lt;span id = &quot;shop_upkeep&quot;&gt;
+											&lt;&lt;set $costs = 0&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+											&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+											&lt;&lt;print $costs&gt;&gt;
+										&lt;/span&gt;@@.
 &lt;br&gt;
 
 
@@ -21649,8 +21660,51 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 	&lt;&lt;set $globalFluffies[_f].isChecked = false&gt;&gt;
 &lt;&lt;/for&gt;&gt;
 
+/* ***
+ *	Base expenses
+ *** */
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;set _feedCost = 0&gt;&gt;
+
+&lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
+	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Greens&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Formula&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Default&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = 0&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;script&gt;&gt;
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
+
 /* Round the cash to 2 decimal places */
 &lt;&lt;cashClamp&gt;&gt;
+
+
 
 /* Set the UI info and the sidebar buttons*/
 &lt;&lt;set $ui = &quot;main&quot;&gt;&gt;
@@ -22345,7 +22399,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;ecfb767&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;b434ec6&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23042,6 +23096,47 @@ profitsTotal: 0
 
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 
+/* ***
+ *	Base expenses
+ *** */
+&lt;&lt;set $costs = 0&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.display))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.shelter))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
+&lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
+
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
+	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;set _feedCost = 0&gt;&gt;
+
+&lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
+	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Greens&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Formula&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+		&lt;&lt;case &quot;Default&quot;&gt;&gt;
+			&lt;&lt;set _feedCost = 0&gt;&gt;
+	&lt;&lt;/switch&gt;&gt;
+&lt;&lt;/for&gt;&gt;
+
+&lt;&lt;script&gt;&gt;
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+&lt;&lt;/script&gt;&gt;
+
 
 &lt;&lt;set $nextButton to &quot;Back to the Store&quot;, $nextLink to &quot;Week Start&quot;&gt;&gt;
 
@@ -23082,7 +23177,7 @@ profitsTotal: 0
 &lt;br&gt;
 &lt;br&gt;What improvements do you want to make to your store?
 &lt;br&gt;
-&lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
+&lt;span id = &quot;shop_cash&quot;&gt;&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;
 Upgrades:
 &lt;&lt;for _i, _upgrade range $ourStore.upgrades&gt;&gt;
@@ -23103,7 +23198,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.space += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23117,7 +23213,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23131,7 +23228,8 @@ Space: &lt;span id=&quot;stats-space&quot;&gt;&lt;&lt;print $ourStore.space&gt;&
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.space += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-space&quot;&gt;&gt;&lt;&lt;print $ourStore.space&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23154,7 +23252,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt; 
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23168,7 +23267,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23182,7 +23282,8 @@ Shelter: &lt;span id=&quot;stats-shelter&quot;&gt;&lt;&lt;print $ourStore.shelte
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.shelter += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-shelter&quot;&gt;&gt;&lt;&lt;print $ourStore.shelter&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23204,7 +23305,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -100&gt;&gt;
 			&lt;&lt;set $ourStore.display += 1&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(1) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23218,7 +23320,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -1000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 10&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(10) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23232,7 +23335,8 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;cashAdd -10000&gt;&gt;
 			&lt;&lt;set $ourStore.display += 100&gt;&gt;
-			&lt;&lt;set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;
+			&lt;&lt;set _adding = Number(Number(100) / Number(50)).toFixed(2)&gt;&gt;
+			&lt;&lt;set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)&gt;&gt;
 			&lt;&lt;replace &quot;#stats-display&quot;&gt;&gt;&lt;&lt;print $ourStore.display&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;updateStoreButtons&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -23362,7 +23466,7 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 	
 	
 	&lt;&lt;replace &quot;#shop_cash&quot;&gt;&gt;
-&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
+&lt;br&gt;@@.green;Cash.@@ | ¤$cash&lt;br&gt;Weekly upkeep will be ¤&lt;&lt;print $costs&gt;&gt;.&lt;br&gt;&lt;&lt;SidebarStore&gt;&gt;
 &lt;br&gt;
 Upgrades:
 &lt;&lt;for _i, _upgrade range $ourStore.upgrades&gt;&gt;
@@ -26615,9 +26719,16 @@ button {
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set _background = &quot;lightgray&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
-		${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
-	`+&#39;&quot;&#39;&gt;&gt;
+
+	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt;= 1&gt;&gt;&gt;
+			&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
+			${&quot;cheep... cheep...&quot;}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
+		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -29542,6 +29653,9 @@ button {
 	| &#39;&#39;¤&#39;&#39;$cash
 	&lt;/span&gt;
 	&lt;br&gt;Upkeep | ¤$costs
+	&lt;&lt;if def _feedCost&gt;&gt;
+	(Rent: ¤&lt;&lt;- Number(Number($costs) - Number(_feedCost)).toFixed(2)&gt;&gt;, Feeding: ¤_feedCost)
+	&lt;&lt;/if&gt;&gt;
 	&lt;br&gt;
 &lt;&lt;/widget&gt;&gt;
 

@@ -41,7 +41,14 @@
 <br>You have @@.cyan; <span id = "shop_points"><<- $storePoints>></span>@@ points left.
 <br>
 <br>Remaining points will become @@.yellowgreen;¤<span id = "shop_cash"><<- $storePoints+100>></span>@@.
-<br>Weekly upkeep will be @@.yellowgreen;¤<span id = "shop_upkeep"><<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>></span>@@.
+<br>Weekly upkeep will be @@.yellowgreen;¤<span id = "shop_upkeep">
+											<<set $costs = 0>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+											<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+											<<print $costs>>
+										</span>@@.
 <br>
 
 

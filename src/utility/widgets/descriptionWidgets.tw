@@ -240,9 +240,16 @@ button {
 	<<else>>
 		<<set _background = "lightgray">>
 	<</if>>
-	<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
-		${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
-	`+'"'>>
+
+	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks <= 1>>>
+			<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
+			${"cheep... cheep..."}
+		`+'"'>>
+	<<else>>
+		<<- `@@background:${_background}; color:${_args[1]};`+'"'+`
+			${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, $activeFluffy.name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}
+		`+'"'>>
+	<</if>>
 <</widget>>
 
 /* ***

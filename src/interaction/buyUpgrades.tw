@@ -17,6 +17,47 @@
 
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
+/* ***
+ *	Base expenses
+ *** */
+<<set $costs = 0>>
+<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+
+<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Fancy Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Basic Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+
+<<set _feedCost = 0>>
+
+<<for _ef range $ourStore.fluffies>>
+	<<switch $globalFluffies[_ef].foodType>>
+		<<case "Kibble">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Greens">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Sketti">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Formula">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Default">>
+			<<set _feedCost = 0>>
+	<</switch>>
+<</for>>
+
+<<script>>
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+<</script>>
+
 
 <<set $nextButton to "Back to the Store", $nextLink to "Week Start">>
 
@@ -57,7 +98,7 @@
 <br>
 <br>What improvements do you want to make to your store?
 <br>
-<span id = "shop_cash"><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>>
+<span id = "shop_cash"><br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs>>.<br><<SidebarStore>>
 <br>
 Upgrades:
 <<for _i, _upgrade range $ourStore.upgrades>>
@@ -78,7 +119,8 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 		<<else>> 
 			<<cashAdd -100>>
 			<<set $ourStore.space += 1>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -92,7 +134,8 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 		<<else>>
 			<<cashAdd -1000>>
 			<<set $ourStore.space += 10>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -106,7 +149,8 @@ Space: <span id="stats-space"><<print $ourStore.space>></span> How much space yo
 		<<else>> 
 			<<cashAdd -10000>>
 			<<set $ourStore.space += 100>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -129,7 +173,8 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 		<<else>> 
 			<<cashAdd -100>>
 			<<set $ourStore.shelter += 1>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -143,7 +188,8 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 		<<else>>
 			<<cashAdd -1000>>
 			<<set $ourStore.shelter += 10>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -157,7 +203,8 @@ Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many ad
 		<<else>>
 			<<cashAdd -10000>>
 			<<set $ourStore.shelter += 100>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -179,7 +226,8 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<else>>
 			<<cashAdd -100>>
 			<<set $ourStore.display += 1>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -193,7 +241,8 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<else>>
 			<<cashAdd -1000>>
 			<<set $ourStore.display += 10>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -207,7 +256,8 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 		<<else>>
 			<<cashAdd -10000>>
 			<<set $ourStore.display += 100>>
-			<<set $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
 			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
 			<<updateStoreButtons>>
 		<</if>>
@@ -337,7 +387,7 @@ Display: <span id="stats-display"><<print $ourStore.display>></span> How many ad
 	
 	
 	<<replace "#shop_cash">>
-<br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>>.<br><<SidebarStore>>
+<br>@@.green;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs>>.<br><<SidebarStore>>
 <br>
 Upgrades:
 <<for _i, _upgrade range $ourStore.upgrades>>
