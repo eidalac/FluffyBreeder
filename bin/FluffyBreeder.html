@@ -1067,6 +1067,7 @@ button:disabled{
   display: flex;
   flex-direction: column;
   flex-wrap: wrap;
+  margin-top: 2em;
 }
 
 #stamina-container,
@@ -1081,7 +1082,11 @@ button:disabled{
 .fluffy-description {
   display: flex;
   flex-direction: column;
-  margin-top: 1em;
+  margin: 20px 0 0 0;
+}
+.fluffy-description.selected {
+  border: 4px solid var(--main-theme);
+  margin: 16px -4px -4px -4px;
 }
 
 .fluffy-interact .player-status {
@@ -2498,57 +2503,6 @@ Config.debug = false;
 /*! <<bugreport>> macro for SugarCube 2.x */
 !function(){"use strict";if("undefined"==typeof version||"undefined"==typeof version.title||"SugarCube"!==version.title||"undefined"==typeof version.major||version.major<2)throw new Error("<<bugreport>> macro requires SugarCube 2.0 or greater, aborting load");Macro.add("bugreport",{handler:function(){function serializeVariables(varObj,diffObj,doSort){function renderDiff(diff,orig){for(var keys=Object.keys(diff||{}),render=orig?clone(orig):{},i=0,klen=keys.length;klen>i;i++){var p=keys[i],diffP=diff[p];if(diffP===Diff.Op.Delete)delete render[p];else if(Array.isArray(diffP))switch(diffP[0]){case Diff.Op.SpliceArray:try{render.splice(diffP[1],1+(diffP[2]-diffP[1]))}catch(e){}break;case Diff.Op.Copy:render[p]=clone(diffP[1]);break;case Diff.Op.CopyDate:render[p]=new Date(diffP[1])}else{var recurse=renderDiff(diffP,render[p]);0!==Object.keys(recurse).length&&(render[p]=recurse)}}return render}var varList=[],diff=renderDiff(Diff.diff(varObj,diffObj));for(var p in diff){var sName="$"+(-1===p.search(/[^\w]/)?p:'"'+p+'"');varList.push(sName+"="+JSON.stringify(diff[p]))}return doSort&&("function"==typeof doSort?varList.sort(doSort):varList.sort()),0!==varList.length?varList.join(", "):""}var srcMatch,passages,varsPre,varsPost,dialog,dataEl,info=null!=this.args[0]&&Story.has(this.args[0])?Story.get(this.args[0]):null,last=State.length-1,source=unescape(window.location);null!==(srcMatch=/\/([^\/]+)$/.exec(source))&&(source=srcMatch[1]),passages=[];for(var i=0;last>=i;i++)passages.push('"'+State.index(i).title+'"');passages=passages.join(", "),varsPre=serializeVariables(State.index(0).variables,State.index(last).variables),varsPost=serializeVariables(State.index(last).variables,State.variables),dialog=UI.setup("Bug Report","bugreport"),dialog.innerHTML=(null!==info?'<div id="bugreport-info"></div>':"")+'<div><b>Bug report:</b> <a id="bugreport-data-select" class="link-internal macro-bugreport">[Select]</a></div><code id="bugreport-data" tabindex="0"></code>'+(/applewebkit|chrome/.test(Browser.userAgent)?"":'<div class="scroll-pad">&nbsp;</div>'),dataEl=dialog.querySelector("#bugreport-data"),null!==info&&new Wikifier(dialog.querySelector("#bugreport-info"),info.processText()),addAccessibleClickHandler("#bugreport-data-select",function(self){return function(){jQuery(dataEl).focus(),self.selectData(dataEl)}}(this.self)),insertText(dataEl,"[spoiler][code]"),insertElement(dataEl,"br"),insertText(dataEl,"SOURCE: "+source),insertElement(dataEl,"br"),insertElement(dataEl,"br"),insertText(dataEl,"PASSAGES:"),insertElement(dataEl,"br"),insertText(dataEl,passages),insertElement(dataEl,"br"),insertElement(dataEl,"br"),insertText(dataEl,"VARIABLES (PRE-EXECUTION):"),insertElement(dataEl,"br"),varsPre&&(insertText(dataEl,varsPre),insertElement(dataEl,"br")),insertElement(dataEl,"br"),insertText(dataEl,"VARIABLES (POST-EXECUTION):"),insertElement(dataEl,"br"),varsPost&&(insertText(dataEl,varsPost),insertElement(dataEl,"br")),insertText(dataEl,"[/code][/spoiler]"),UI.open()},selectData:function(e){var s,r;if(window.getSelection){s=window.getSelection();if(s.setBaseAndExtent){var l=(e.innerText.length>1)?e.innerText.length-1:1;try{s.setBaseAndExtent(e,0,e,l)}catch(error){r=document.createRange();r.selectNodeContents(e);s.removeAllRanges();s.addRange(r)}}else{if(window.opera&&e.innerHTML.substring(e.innerHTML.length-4)==='<br>'){e.innerHTML=e.innerHTML+'&nbsp;'}var r=document.createRange();r.selectNodeContents(e);s.removeAllRanges();s.addRange(r)}}else if(document.getSelection){s=document.getSelection();r=document.createRange();r.selectNodeContents(e);s.removeAllRanges();s.addRange(r)}else if(document.selection){r=document.body.createTextRange();r.moveToElementText(e);r.select()}}})}();
 /* twine-user-script #3: "colors.js" */
-window.groupList = [
-    {
-        "name": "Red",
-        "hue": 0
-    },
-    {
-        "name": "Orange",
-        "hue": 30
-    },
-    {
-        "name": "Yellow",
-        "hue": 60
-    },
-    {
-        "name": "Chartreuse",
-        "hue": 90
-    },
-    {
-        "name": "Green",
-        "hue": 120
-    },
-    {
-        "name": "Emerald",
-        "hue": 160
-    },
-    {
-        "name": "Cyan",
-        "hue": 180
-    },
-    {
-        "name": "Azure",
-        "hue": 210
-    },
-    {
-        "name": "Blue",
-        "hue": 240
-    },
-    {
-        "name": "Violet",
-        "hue": 270
-    },
-    {
-        "name": "Magenta",
-        "hue": 300
-    },
-    {
-        "name": "Rose",
-        "hue": 330
-    },
-]
-
 window.colorList = [
     {
       "name": "Absolute Zero",
@@ -14033,13 +13987,38 @@ Save.onLoad.add(function (save)
 window.selectFluffy = function(e) {
   const $checkbox = $(this).find('.fluffy-checkbox');
   const fluffy_id = $checkbox.attr('data-fluffy-id');
-  const customerEvent = $('#passage-event-customer');
-  if (!customerEvent[0] && $checkbox.prop('checked')) {
-    $checkbox.prop('checked', false);
-    State.variables.globalFluffies[fluffy_id].isChecked = false
-  } else if (!customerEvent[0]) {
-    $checkbox.prop('checked', true);
-    State.variables.globalFluffies[fluffy_id].isChecked = true
+  const fluffyList = $('#passage-fluffy-list');
+  const fluffyBuy = $('#passage-buy-fluffies');
+  if ((fluffyList[0] || fluffyBuy[0]) && $(this).hasClass('selected')) {
+    $(this).removeClass('selected');
+    console.log("check1")
+    State.variables.globalFluffies[fluffy_id].isChecked = false;
+  } else if (fluffyList[0] || fluffyBuy[0]) {
+    $(this).addClass('selected')
+    console.log("check2")
+    State.variables.globalFluffies[fluffy_id].isChecked = true;
+  }
+}
+
+window.checkFluffies = function(e) {
+  const functionality = $(this).attr('data-function');
+  if (functionality.includes('check')) {
+    const $checkboxes = $('.fluffy-checkbox')
+    if (functionality === 'check-none') {
+      $checkboxes.each(function(i) {
+        $(this).parent().parent().removeClass('selected')
+        const fluffy_id = $(this).attr('data-fluffy-id');
+        $(this).prop('checked', false);
+        State.variables.globalFluffies[fluffy_id].isChecked = false;
+      });
+    } else {
+      $checkboxes.each(function(i) {
+      $(this).parent().parent().addClass('selected')
+      const fluffy_id = $(this).attr('data-fluffy-id');
+      $(this).prop('checked', true);
+      State.variables.globalFluffies[fluffy_id].isChecked = true;
+      });
+    }
   }
 }
 
@@ -15397,7 +15376,7 @@ window.nameList = {
     /* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
     &lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &lt; 10&gt;&gt;
         &lt;br&gt;
-        &lt;&lt;fluffSpeech &quot;&lt;title&gt; halp... bad miwkie thief..save good fluffy mama, &lt;title&gt;...hu hu hu...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+        &lt;&lt;fluffSpeech &quot;&lt;title&gt; hewp... miwkie thief... sabe good fwuffy mummah, &lt;title&gt;... hu hu hu...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
         &lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 25&gt;&gt;
         &lt;&lt;set $globalFluffies[$activeFluffy.mother].trauma += 5&gt;&gt;
         &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
@@ -15434,7 +15413,7 @@ window.nameList = {
                 &lt;&lt;set _reactionString = &quot;But fluffy is gud mummah!  huuhuuhuu!&quot;&gt;&gt;
             &lt;&lt;/if&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Neutral option.@@
         
@@ -15452,7 +15431,7 @@ window.nameList = {
             &lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
             &lt;&lt;set _reactionString = &quot;Nu miwkies for bad babbeh!&quot;&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Abuse option.@@
         
@@ -15472,7 +15451,7 @@ window.nameList = {
 
             &lt;&lt;set _reactionString = &quot;Take bad babbehs for trashies?&quot;&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Hugbox option.@@
     &lt;/span&gt;
@@ -15502,20 +15481,20 @@ button {
 
 &lt;div&gt;
 	&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-		@@#selectbutton;&lt;&lt;button &quot;Check None&quot;&gt;&gt;
+		&lt;span data-function=&quot;check-none&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button &quot;Check None&quot;&gt;&gt;
 			&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 				&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 			&lt;&lt;replaceFluffies&gt;&gt;
-		&lt;&lt;/button&gt;&gt;@@ 
+		&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 	&lt;/div&gt;
 	&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-		@@#selectbutton;&lt;&lt;button &quot;Check All&quot;&gt;&gt;
+		&lt;span data-function=&quot;check-all&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button &quot;Check All&quot;&gt;&gt;
 			&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 				&lt;&lt;set $globalFluffies[_bf].isChecked = true&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 			&lt;&lt;replaceFluffies&gt;&gt;
-		&lt;&lt;/button&gt;&gt;@@ 
+		&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 	&lt;/div&gt;
 	
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -15589,7 +15568,7 @@ button {
 
 	&lt;&lt;timed 10ms&gt;&gt;
 	&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-	&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+	&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 	&lt;&lt;/timed&gt;&gt;
 	&lt;hr&gt;
 	&lt;br&gt;
@@ -15673,31 +15652,31 @@ button {
 
 &lt;h1&gt;Mating Event&lt;/h1&gt;
 
-/* Check this here for now, may want to add events if the male is forcefull */				
+/* Check this here for now, may want to add events if the male is forcefull */
+&lt;h1&gt;Mating&lt;/h1&gt;
 &lt;&lt;if $mom.pregnant || $mom.nursing.length &gt; 0&gt;&gt;
 	&lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
-
 &lt;&lt;elseif _count &gt; $ourStore.shelter&gt;&gt;
+	&lt;br&gt;
+	&lt;&lt;colorizeText $dad.cColor.hex $dad.name&gt;&gt; and &lt;&lt;colorizeText $mom.cColor.hex $mom.name&gt;&gt; wanted to have special hugs, but there is no room for more foals, so you have to separate them.
+	&lt;br&gt;&lt;&lt;fluffSpeech &quot;huhu... bu&#39; babbehs am bestes&#39; fing...&quot; $mom&gt;&gt;
+	&lt;&lt;set $mom.pregnant = false&gt;&gt;
+&lt;&lt;else&gt;&gt;
+	&lt;br&gt;
+	&lt;&lt;colorizeText $dad.cColor.hex $dad.name&gt;&gt; and &lt;&lt;colorizeText $mom.cColor.hex $mom.name&gt;&gt; are having special hugs.
+	&lt;&lt;fluffSpeech &quot;enf... enf... ENF...&quot; $dad&gt;&gt;
+	&lt;br&gt;
+	&lt;&lt;fluffSpeech &quot;GUD FEEWS!!&quot; $dad&gt;&gt; 
 
-	&lt;h1&gt;Mating&lt;/h1&gt;
-		&lt;br&gt;$mom.name and $dad.name wanted to have special hugs, but there is no room for more foals, so you have to separate them.
-		&lt;br&gt;@@.cyan;huhuhu@@
-		&lt;&lt;set $mom.pregnant = false&gt;&gt;
-		
-	&lt;&lt;else&gt;&gt;
-		&lt;br&gt;$mom.name and $dad.name have special hugs.
-		&lt;br&gt;enf enf enf
-		&lt;br&gt;//@@.cyan;GOODFEELS@@//
+	&lt;&lt;set _litter = Number(Math.round((Number($mom.fertility) + Number($dad.fertility)) / 2))&gt;&gt;
+	&lt;&lt;set _litter = Number(Number(_litter) + Number(+ $rand[1]))&gt;&gt;
+	&lt;&lt;set _litter = Math.clamp(_litter, 1, 8)&gt;&gt;
 
-		&lt;&lt;set _litter = Number(Math.round((Number($mom.fertility) + Number($dad.fertility)) / 2))&gt;&gt;
-		&lt;&lt;set _litter = Number(Number(_litter) + Number(+ $rand[1]))&gt;&gt;
-		&lt;&lt;set _litter = Math.clamp(_litter, 1, 8)&gt;&gt;
-
-		&lt;&lt;set $mom.pregnant = true&gt;&gt;
-		&lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
-		&lt;&lt;set $mom.dueDate = $rand[0]&gt;&gt;
-		&lt;&lt;set $mom.litter = _litter&gt;&gt;
-		&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
+	&lt;&lt;set $mom.pregnant = true&gt;&gt;
+	&lt;&lt;set $mom.pregnantBy = $dad.ID&gt;&gt;
+	&lt;&lt;set $mom.dueDate = $rand[0]&gt;&gt;
+	&lt;&lt;set $mom.litter = _litter&gt;&gt;
+	&lt;&lt;set $mom.preWeight = $mom.weight&gt;&gt;
 &lt;&lt;/if&gt;&gt; /* Close pregant/nursing check 
 
 /* Save changes to mom and dad*/ 
@@ -15881,15 +15860,15 @@ button {
 	&lt;&lt;case 1&gt;&gt;
 		&lt;&lt;colorizeText $actFluffy.cColor.hex $actFluffy.name&gt;&gt; has lost some weight due to starvation.
 		&lt;br&gt;
-		&lt;&lt;fluffSpeech  &quot;huu huu... &lt;fluffy&gt; hab wowstes\&#39; tummy huwties...&quot; $actFluffy.cColor.hex&gt;&gt;
+		&lt;&lt;fluffSpeech  &quot;huu huu... &lt;fluffy&gt; hab wowstes\&#39; tummy huwties...&quot; $actFluffy&gt;&gt;
 	&lt;&lt;case 2&gt;&gt;
 		&lt;&lt;colorizeText $actFluffy.cColor.hex $actFluffy.name&gt;&gt; is starving.
 		&lt;br&gt;
-		&lt;&lt;fluffSpeech  &quot;huu huu... &lt;fluffy&gt; hab wowstes\&#39; tummy huwties...&quot; $actFluffy.cColor.hex&gt;&gt;
+		&lt;&lt;fluffSpeech  &quot;huu huu... &lt;fluffy&gt; hab wowstes\&#39; tummy huwties...&quot; $actFluffy&gt;&gt;
 	&lt;&lt;case 3&gt;&gt;
 		&lt;&lt;colorizeText $actFluffy.cColor.hex $actFluffy.name&gt;&gt; is no longer starving.
 		&lt;br&gt;
-		&lt;&lt;fluffSpeech  &quot;tank \&#39;ou fow nummies, &lt;title&gt;...&quot; $actFluffy.cColor.hex&gt;&gt;
+		&lt;&lt;fluffSpeech  &quot;tank \&#39;ou fow nummies, &lt;title&gt;...&quot; $actFluffy&gt;&gt;
 &lt;&lt;/switch&gt;&gt;
 
 &lt;&lt;set $nextButton = &quot;Continue&quot;&gt;&gt;
@@ -16641,8 +16620,9 @@ button {
                 &lt;br&gt; 				
                 &lt;&lt;set _price = Number(Number(_price) + Number($rand[6]))&gt;&gt;
             &lt;&lt;/if&gt;&gt;
-
+            &lt;&lt;run console.log(&quot;DEBUG: Cash before sale: &quot;+$cash)&gt;&gt;
             &lt;&lt;cashMinus _price&gt;&gt;
+            &lt;&lt;run console.log(&quot;DEBUG: Cash after sale: &quot;+$cash)&gt;&gt;
 
             &lt;&lt;= _msgString&gt;&gt;
             &lt;br&gt;Sold &lt;&lt;- $activeFluffy.name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
@@ -17145,13 +17125,13 @@ button {
 		&lt;/div&gt;
 	
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+			&lt;span data-function=&quot;store-upgrades&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 		&lt;/div&gt;
 
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
+			&lt;span data-function=&quot;store-list&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
 				&lt;&lt;set $listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@
+			&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 		&lt;/div&gt;
 		
 		&lt;&lt;systemButtons&gt;&gt;
@@ -17165,7 +17145,7 @@ button {
 
 &lt;&lt;timed 5ms&gt;&gt;
 &lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
 &lt;div id=&quot;main&quot; class=&quot;w3-row w3-container w3-mobile&quot;&gt;
@@ -18139,67 +18119,93 @@ Genes       Height multiplier
 	 	&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
 	 		/* Quality has some boni */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
+	 		/* Good */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 		/* Basic */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
-	 		/* Cheap has some malus */
+	 		/* Cheap */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 3&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 3&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
-	 		/* Trash has more malus */
+	 		/* Trash */
 	 			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trauma++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust--&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 
 	 	&lt;&lt;case &quot;Greens&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
-	 		/* Quality has some boni */
+	 		/* Quality */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
+	 		/* Good */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 10&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 		/* Basic */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
 	 		/* Cheap has some malus */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament ++&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
 	 		/* Trash has more malus */
 	 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust -= 3&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trauma++&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
 	 	&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
 	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
-	 		/* Quality has some boni */
+	 		/* Quality */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 20&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trust += 20&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress -= 20&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 15&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
-	 		/* Good has some boni */
+	 		/* Good */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 15&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
+	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 		/* Basic */
 	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].trust += 10&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
-	 		/* Basic has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 1&gt;&gt;
+			&lt;&lt;elseif $globalFluffies[_ef].foodQuality === 1&gt;&gt;
+	 		/* Cheap */
+	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
+	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
 	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
-	 		/* Trash has some malus */
+	 		/* Trash */
 	 			&lt;&lt;set $globalFluffies[_ef].happy++&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].trust--&gt;&gt;
+				&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
 	 			&lt;&lt;set $globalFluffies[_ef].stress--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
@@ -19386,13 +19392,13 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			&lt;/div&gt;
 		
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-				@@#selectbutton;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+				&lt;span data-function=&quot;store-upgrades&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button [[Store Upgrades|Buy Upgrades]]&gt;&gt;&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 			&lt;/div&gt;
 
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-				@@#selectbutton;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
+				&lt;span data-function=&quot;store-list&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button [[Store Fluffies|Fluffy List]]&gt;&gt;
 					&lt;&lt;set $listType = &quot;All&quot;, $encyclopedia = &quot;Fluffy List&quot;&gt;&gt;
-				&lt;&lt;/button&gt;&gt;@@
+				&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 			&lt;/div&gt;
 
 			&lt;div class=&quot;dropdown-container w3-left-align w3-hover-cyan w3-dark-grey&quot;&gt;
@@ -19427,7 +19433,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 			&lt;/div&gt;
 
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-				@@#selectbutton;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;@@
+				&lt;span data-function=&quot;show-encyclopedia&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button [[Encyclopedia|Encyclopedia]]&gt;&gt;&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 				&lt;&lt;set $encyclopedia = &quot;Fluffy Statistics&quot;&gt;&gt;
 			&lt;/div&gt;
 			
@@ -19442,7 +19448,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 
 	&lt;&lt;timed 5ms&gt;&gt;
 	&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-	&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+	&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 	&lt;&lt;/timed&gt;&gt;
 
 	&lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
@@ -20484,63 +20490,69 @@ profitsTotal: 0
 	&lt;&lt;for _c, _id range $randomFluffies&gt;&gt;
 
 		&lt;&lt;capture _id&gt;&gt;
-			&lt;label&gt;
-				&lt;div style=&quot;position: relative; left: -22px; top: 22px; z-index: -1; height:20px&quot;&gt;
-					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;&lt;&lt;checkbox &quot;$globalFluffies[_id].isChecked&quot; false true `$globalFluffies[_id].isChecked ? &#39;checked&#39; : &#39;&#39;`&gt;&gt;&lt;&lt;/if&gt;&gt;
-				&lt;/div&gt;
+
+			&lt;div class=&quot;fluffy-description&quot;&gt;
 				
+				&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
+					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
+						&lt;&lt;print
+							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
+						&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;/div&gt;
+			
 				&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
 					&lt;&lt;drawSprite $globalFluffies[_id]&gt;&gt;
 					&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;
 				&lt;/div&gt;
-			&lt;/label&gt;
 
-			&lt;&lt;set _price = 0&gt;&gt;
-			
-			&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-				&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
+				&lt;&lt;set _price = 0&gt;&gt;
 				
-				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
-					&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
+				&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
+					&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
+					
+					&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+						&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
+						&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
+					&lt;&lt;set _price = Number($globalFluffies[_id].training)&gt;&gt;
+
+					&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))&gt;&gt;
+
+					&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
+						&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+						&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+						&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+							&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+						&lt;&lt;default&gt;&gt;
+							&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;/switch&gt;&gt;
+					
+					&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
+						&lt;&lt;set _ageMulti = 0.5&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;set _ageMulti = 1&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+					
+					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
+					&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
+					&lt;&lt;if $globalFluffies[_id].age == 0 &amp;&amp; $globalFluffies[_id].ageWeeks &lt; 45&gt;&gt;
+						&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
+					&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+
+					&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(_price * 1.5).toFixed(2)&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+
+					@@.green;¤_price.@@
+					&lt;hr&gt;
 				&lt;&lt;/if&gt;&gt;
-
-				&lt;&lt;set _price = Number($globalFluffies[_id].training)&gt;&gt;
-
-				&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))&gt;&gt;
-
-				&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
-					&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;default&gt;&gt;
-						&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-				&lt;&lt;/switch&gt;&gt;
-				
-				&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
-					&lt;&lt;set _ageMulti = 0.5&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _ageMulti = 1&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				
-				&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
-				&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
-				&lt;&lt;if $globalFluffies[_id].age == 0 &amp;&amp; $globalFluffies[_id].ageWeeks &lt; 45&gt;&gt;
-					&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-
-				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-
-				&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
-					&lt;&lt;set _price = Number(_price * 1.5).toFixed(2)&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-
-				@@.green;¤_price.@@
-				&lt;hr&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;/div&gt;
 
 			&lt;&lt;if _c == 0&gt;&gt;
 				&lt;div class=&quot;w3-container&quot;&gt;
@@ -20554,96 +20566,96 @@ profitsTotal: 0
 							&lt;&lt;run console.log(`DEBUT: &lt;&lt;talking&gt;&gt;: ${$activeFluffy.name}, ${$activeFluffy.personality}, ${_id}.`)&gt;&gt;
 							&lt;&lt;switch $globalFluffies[_id].personality&gt;&gt;
 								&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; nyu housie fow bestest babbeh?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;eep... h-hewwo... nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... &lt;fluffy&gt; get nyu housie?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin, &lt;fluffy&gt; am gud babbeh, gib\&#39; nyu housie pwease?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo hoomin! wan&#39;\ pway wid fwuffy? an\&#39; mebbeh be nyu daddeh ow mummah?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 								&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt; an\ babbehs&#39;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt; an\ babbehs&#39;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, be nyu daddeh ow mummah fow &lt;fluffy&gt;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\&#39; babbehs.&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie to &lt;fluffy&gt; an\&#39; babbehs.&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nice hoomin, mebbeh gib\&#39; nyu housie to &lt;fluffy&gt;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties... hab\&#39; babbehs...&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties... hab\&#39; babbehs...&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;h-hewwo nice hoomin... pwease no huwties...&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 									&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
 										&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?  babbehs am hungwy&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?  babbehs am hungwy&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;else&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin hab\&#39; nummies?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;else&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;wha\&#39; hoomin want fwom &lt;fluffy&gt;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Dull&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; an\&#39; babbehs awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; an\&#39; babbehs awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;pwease weabe &lt;fluffy&gt; awone, nu wan\&#39; any twouble...&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; an\&#39; babbehs need nyu homesie fow wawmsies!&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; an\&#39; babbehs need nyu homesie fow wawmsies!&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo nicest hoomin!! &lt;fluffy&gt; need nyu homesie fow wawmsies!&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; an\&#39; bestest babbehs nyu homesie?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; an\&#39; bestest babbehs nyu homesie?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;ah, hoomin hewe fow gib\&#39; &lt;fluffy&gt; nyu homesie?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Playful&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt; an\&#39; babbehs?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;nyu fwen? nice hoomin wan\&#39; pway wid &lt;fluffy&gt;?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 									&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
 										&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies fow babbehs?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies fow babbehs?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;else&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wookin\&#39; fow nummies, hoomin gib &lt;fluffy&gt; nummies?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;else&gt;&gt;
 										&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy, hab gud&#39; babbehs.&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy, hab gud&#39; babbehs.&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;else&gt;&gt;
-											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+											&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hoomin gib\&#39; &lt;fluffy&gt; nyu homesie, am gud fwuffy.&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;default&gt;&gt;
-									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo... nyu daddeh ow mummah?&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;/switch&gt;&gt;
 						&lt;&lt;else&gt;&gt;
-							&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $globalFluffies[_id].cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;&lt;/timed&gt;&gt;
 					&lt;span id=&quot;greet-msg&quot;&gt;&lt;/span&gt;
@@ -20741,7 +20753,7 @@ profitsTotal: 0
 
 &lt;&lt;timed 5ms&gt;&gt;
 &lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
 &lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
@@ -21117,7 +21129,7 @@ Upgrades:
 		&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
 		&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
 		
-		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
 &lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
@@ -21165,10 +21177,13 @@ Upgrades:
 		&lt;&lt;set $globalFluffies[$activeFluffy.ID].specialFriend = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;br&gt;&lt;&lt;print $globalFluffies[$breedStal].name&gt;&gt; and &lt;&lt;print $globalFluffies[$breedMare].name&gt;&gt; are now special friends.
 	&lt;br&gt;
-	&lt;br&gt; SPECIAL HUGS NOW
+	&lt;&lt;fluffSpeech  &quot;hewwo pwetty mawe, wan&#39; be speshaw fwens wid&#39; &lt;fluffy&gt;?&quot; $globalFluffies[$breedStal]&gt;&gt;
 	&lt;br&gt;
+	&lt;&lt;fluffSpeech  &quot;yus, &lt;fluffy&gt; wan&#39; be speshaw fwens!&quot; $globalFluffies[$breedMare]&gt;&gt;
+	&lt;br&gt;
+	&lt;&lt;colorizeText $globalFluffies[$breedStal].cColor.hex $globalFluffies[$breedStal].name&gt;&gt; and &lt;&lt;colorizeText $globalFluffies[$breedMare].cColor.hex $globalFluffies[$breedMare].name&gt;&gt; are now special friends.
+
 	&lt;&lt;set $globalFluffies[$breedStal].specialFriend = $breedMare&gt;&gt;
 	&lt;&lt;set $globalFluffies[$breedMare].specialFriend = $breedStal&gt;&gt;
 	
@@ -21228,7 +21243,7 @@ Upgrades:
 
 &lt;&lt;timed 5ms&gt;&gt;
 &lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
-&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 &lt;&lt;/timed&gt;&gt;
 
 &lt;div class=&quot;w3-container&quot; id=&quot;main&quot;&gt;
@@ -21525,13 +21540,13 @@ Upgrades:
 								&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh &lt;title&gt;, &lt;fluffy&gt; gib\&#39; \&#39;ou sowweh hoofsies!&quot; $activeFluffy.cColor.hex &gt;&gt;&lt;&lt;/replace&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 						&lt;&lt;default&gt;&gt;
-							&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo &lt;title&gt;!&quot; $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+							&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;hewwo &lt;title&gt;!&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;/switch&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wan die...&quot; $activeFluffy.cColor.hex &gt;&gt;&lt;&lt;/replace&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;cheep... cheep...&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/timed&gt;&gt;
 		&lt;&lt;if $activeFluffy.trauma &lt; 167&gt;&gt;
@@ -21555,10 +21570,10 @@ Upgrades:
 			&lt;&lt;if $activeFluffy.hasName == false&gt;&gt;
 				&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
 				&lt;&lt;set $activeFluffy.happy += 20&gt;&gt;
-				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wuv\&#39; nyu namesie!!&quot; $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wuv\&#39; nyu namesie!!&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;bu\&#39;... wike\&#39; old namesie...&quot; $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;append &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;otay, fwuffy am called &lt;fluffy&gt; nao&quot; $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;/append&gt;&gt;
+				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;bu\&#39;... wike\&#39; old namesie...&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;append &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;otay, fwuffy am called &lt;fluffy&gt; nao&quot; $activeFluffy&gt;&gt;&lt;&lt;/append&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
@@ -21694,7 +21709,7 @@ Upgrades:
 
 					&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 					&lt;&lt;replace &quot;#shear-msg&quot;&gt;&gt;
-						&lt;br&gt;&lt;&lt;fluffSpeech&quot;huu huu... why taek pwetty fwuff fwom &lt;fluffy&gt;?&quot; $activeFluffy.cColor.hex&gt;&gt;
+						&lt;br&gt;&lt;&lt;fluffSpeech&quot;huu huu... why taek pwetty fwuff fwom &lt;fluffy&gt;?&quot; $activeFluffy&gt;&gt;
 					&lt;&lt;/replace&gt;&gt;
 					&lt;&lt;replace &quot;.fluffy-interact&quot;&gt;&gt;&lt;&lt;interactDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -21739,7 +21754,7 @@ Upgrades:
 				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
 				&lt;&lt;replace &quot;#play-msg&quot;&gt;&gt;
 					&lt;br&gt;&lt;&lt;- $title&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex &quot;am bestest at pwayin\&#39;! Pway AWW da games wit\&#39;&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex &quot;, heheheh!&quot;&gt;&gt;
+					&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex &quot;, heheheh!&quot;&gt;&gt;
 				&lt;&lt;/replace&gt;&gt;
 				&lt;&lt;replace &quot;.fluffy-interact&quot;&gt;&gt;&lt;&lt;interactDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;else&gt;&gt;
@@ -21809,7 +21824,7 @@ Upgrades:
 				&lt;&lt;/if&gt;&gt;
 				
 				&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
-				&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy.cColor.hex&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex &quot;feew happeh and stwong! Wanna pway aww day wong!&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech $activeFluffy.name $activeFluffy&gt;&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex &quot;feew happeh and stwong! Wanna pway aww day wong!&quot;&gt;&gt;&lt;&lt;/replace&gt;&gt;
 				&lt;&lt;replace &quot;.fluffy-interact&quot;&gt;&gt;&lt;&lt;interactDetails&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;replace &quot;#train-msg&quot;&gt;&gt;&lt;br&gt;You are too tired for training right now.&lt;&lt;/replace&gt;&gt;
@@ -21931,22 +21946,22 @@ Upgrades:
 		&lt;/div&gt;
 	
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button &quot;Check None&quot;&gt;&gt;
+			&lt;span data-function=&quot;check-none&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button &quot;Check None&quot;&gt;&gt;
 				&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 					&lt;&lt;set $globalFluffies[_bf].isChecked = false&gt;&gt;
 				&lt;&lt;/for&gt;&gt;
 				&lt;&lt;set _type = $listType&gt;&gt;	
 				&lt;&lt;resetList&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@ 
+			&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 		&lt;/div&gt;
 		&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
-			@@#selectbutton;&lt;&lt;button &quot;Check All&quot;&gt;&gt;
+			&lt;span data-function=&quot;check-all&quot; class=&quot;selectbutton&quot;&gt;&lt;&lt;button &quot;Check All&quot;&gt;&gt;
 				&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 					&lt;&lt;set $globalFluffies[_bf].isChecked = true&gt;&gt;
 				&lt;&lt;/for&gt;&gt;
 				&lt;&lt;set _type = $listType&gt;&gt;	
 				&lt;&lt;resetList&gt;&gt;
-			&lt;&lt;/button&gt;&gt;@@ 
+			&lt;&lt;/button&gt;&gt;&lt;/span&gt;
 		&lt;/div&gt;
 	  
 			&lt;div class=&quot;w3-dropdown-hover&quot;&gt;
@@ -21962,6 +21977,7 @@ Upgrades:
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
 							&lt;&lt;set _type = $listType&gt;&gt;	
 							&lt;&lt;resetList&gt;&gt;
+							&lt;&lt;run pageLoad();&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 						@@.sortbutton;&lt;&lt;button &quot;Show Display&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Display&quot;&gt;&gt;
 							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
@@ -21970,6 +21986,7 @@ Upgrades:
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
 							&lt;&lt;set _type = $listType&gt;&gt;	
 							&lt;&lt;resetList&gt;&gt;
+							&lt;&lt;run pageLoad();&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 					&lt;/div&gt;
 				&lt;/div&gt;
@@ -22104,7 +22121,7 @@ Upgrades:
 												&lt;&lt;set _type = $listType&gt;&gt;	
 												&lt;&lt;resetList&gt;&gt;
 											&lt;&lt;/button&gt;&gt;@@
-										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+										@@.sortbutton;&lt;&lt;button &quot;Premium&quot;&gt;&gt;
 												&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 													&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 														&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Kibble&quot;&gt;&gt;
@@ -22160,7 +22177,7 @@ Upgrades:
 											&lt;&lt;set _type = $listType&gt;&gt;	
 											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
-										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+										@@.sortbutton;&lt;&lt;button &quot;Premium&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Greens&quot;&gt;&gt;
@@ -22217,7 +22234,7 @@ Upgrades:
 											&lt;&lt;set _type = $listType&gt;&gt;	
 											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
-										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+										@@.sortbutton;&lt;&lt;button &quot;Premium&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 													&lt;&lt;set $globalFluffies[_bf].foodType = &quot;Sketti&quot;&gt;&gt;
@@ -22286,7 +22303,7 @@ Upgrades:
 											&lt;&lt;set _type = $listType&gt;&gt;	
 											&lt;&lt;resetList&gt;&gt;
 										&lt;&lt;/button&gt;&gt;@@
-										@@.sortbutton;&lt;&lt;button &quot;Quality&quot;&gt;&gt;
+										@@.sortbutton;&lt;&lt;button &quot;Premium&quot;&gt;&gt;
 											&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 												&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 													&lt;&lt;if $globalFluffies[_bf].weaned == false&gt;&gt; 
@@ -22337,7 +22354,7 @@ Upgrades:
 		&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
 		&lt;&lt;run $(&quot;.sortbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-white&quot;)&gt;&gt;
 		
-		&lt;&lt;run $(&quot;#selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
+		&lt;&lt;run $(&quot;.selectbutton button&quot;).addClass(&quot;w3-button w3-hover-cyan w3-dark-grey&quot;)&gt;&gt;
 		&lt;&lt;run $(&quot;#sellbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey&quot;)&gt;&gt;
 		&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-bar-item w3-button w3-hover-cyan w3-grey w3-hide&quot;)&gt;&gt;
 		&lt;&lt;/timed&gt;&gt;
@@ -24193,7 +24210,7 @@ button {
 					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 						&lt;&lt;if _args[0] != &quot;customer&quot; &amp;&amp; _args[0] != &quot;breeding&quot;&gt;&gt;
 						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;checkbox&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
+							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
 						&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;/div&gt;
@@ -24291,13 +24308,14 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Called as &lt;&lt;fluffSpeech $message $color&gt;&gt;
+ *	Called as &lt;&lt;fluffSpeech $message $fluffy&gt;&gt;
  *	Translates message into fluffy speech. 
  * 	Replaces &#39;&lt;fluffy&gt;&#39; with actual name.
  *** */
 &lt;&lt;widget &quot;fluffSpeech&quot;&gt;&gt;
 	&lt;&lt;set _msg = _args[0] ? _args[0] : &quot;&quot;&gt;&gt;
-	&lt;&lt;set _luminance = getLuminance(_args[1])&gt;&gt;
+	&lt;&lt;set _color = _args[1].cColor.hex&gt;&gt;
+	&lt;&lt;set _luminance = getLuminance(_color)&gt;&gt;
 	&lt;&lt;if _luminance &gt; 64 &gt;&gt;
 		&lt;&lt;set _background = &quot;var(--text-dark)&quot;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
@@ -24305,12 +24323,12 @@ button {
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt;= 1&gt;&gt;&gt;
-			&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
+			&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`
 			${&quot;cheep... cheep...&quot;}
 		`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- `@@background:${_background}; color:${_args[1]};`+&#39;&quot;&#39;+`
-			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, $activeFluffy.name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
+		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`
+			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, _args[1].name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
 		`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
@@ -24913,193 +24931,193 @@ button {
 		&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 		
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh..&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh..&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case &quot;Bossy&quot;&gt;&gt; 
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu gib miwkies and wub to wowstes&#39; poopie babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu gib miwkies and wub to wowstes&#39; poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;NU! gu way! nu wan miwkie thief&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;NU! gu way! nu wan miwkie thief&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbehs nu nee wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbehs nu nee wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan gib wub to wowstes&#39; poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan gib wub to wowstes&#39; poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 			
 		&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh... nu wub.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh... nu wub.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Why nu smeww wike gud babbehs?&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Why nu smeww wike gud babbehs?&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike wowstes&#39; babbeh...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike wowstes&#39; babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 			
 		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;title&gt;, nu wan ugwy babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt;, nu wan ugwy babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;title&gt;...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;title&gt;...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wub... nu smeww pwetty...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wub... nu smeww pwetty...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dat one am mistake babbeh, mummah sowwy&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dat one am mistake babbeh, mummah sowwy&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan gib wub an&#39; huggies to poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan gib wub an&#39; huggies to poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Udda babbehs need miwkies a wot mowe...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Udda babbehs need miwkies a wot mowe...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Dull&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu cawe &#39;bout poopie babbeh! Nu wub&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu cawe &#39;bout poopie babbeh! Nu wub&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Too much babbehs awready anyways...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Too much babbehs awready anyways...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu get wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu get wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;hewp &lt;title&gt;, gib wowstes&#39; babbeh nu wub.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;hewp &lt;title&gt;, gib wowstes&#39; babbeh nu wub.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Wowstes&#39; poopie babbeh nu need wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Wowstes&#39; poopie babbeh nu need wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu wan... huu huu....&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu wan... huu huu....&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Wub and huggies //bad// fow poopie babbehs.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Wub and huggies //bad// fow poopie babbehs.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Ugwy, nu smeww pwetty babbeh am wowstes babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Ugwy, nu smeww pwetty babbeh am wowstes babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case &quot;Playful&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Mummah wub babbehs... except poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Mummah wub babbehs... except poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Babbeh? wha&#39; babbeh?? mummah nu can eben see! hee hee hee&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Babbeh? wha&#39; babbeh?? mummah nu can eben see! hee hee hee&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Mummah nu wub poopie babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Mummah nu wub poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
 			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;title&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
 			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Sensitibe babbeh nu fun… nu gwow big an stwong.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Sensitibe babbeh nu fun… nu gwow big an stwong.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan&#39; stupi dummeh poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan&#39; stupi dummeh poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;default&gt;&gt;
-			&lt;br&gt;&lt;&lt;fluffSpeech &quot;Hachu poopie babhes.  Bad Babhe&quot; $globalFluffies[$activeFluffy.mother].cColor.hex&gt;&gt;
+			&lt;br&gt;&lt;&lt;fluffSpeech &quot;Hachu poopie babhes.  Bad Babhe&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -25122,37 +25140,37 @@ button {
 			&lt;&lt;personalityFix $activeFluffy&gt;&gt;
 			&lt;&lt;switch $activeFluffy.personality&gt;&gt;
 				&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;babbeh no chwip? no wuv mummah &lt;fluffy&gt;?&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;babbeh no chwip? no wuv mummah &lt;fluffy&gt;?&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Shy&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;h-hewwo... babbeh? mummah no bothew... huu huu...&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;h-hewwo... babbeh? mummah no bothew... huu huu...&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
 					&lt;&lt;fluffSpeech &quot;babbeh? why nu come to mummah &lt;fluffy&gt;?&quot; $activeFluffy.cColor.hex &gt;&gt;
 				&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;hewwo nicest babbeh, &lt;fluffy&gt; am gud mummah, come to mummah, pweese...&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;hewwo nicest babbeh, &lt;fluffy&gt; am gud mummah, come to mummah, pweese...&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;babbeh! babbeh! why babbeh nu bweefies?&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;babbeh! babbeh! why babbeh nu bweefies?&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;huu huu... widdow babbeh has fowever sweepies...&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;huu huu... widdow babbeh has fowever sweepies...&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;dummeh babbeh! com to &lt;fluffy&gt; wight naw!&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;dummeh babbeh! com to &lt;fluffy&gt; wight naw!&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 					&lt;&lt;fluffSpeech &quot;babbeh?  need huggies?  need wuv? mummah gib\&#39; huggies!&quot; $activeFluffy.cColor.hex &gt;&gt;
 				&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;h-hewwo babbehs...&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;h-hewwo babbehs...&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; babbehs nu gud?&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; babbehs nu gud?&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Dull&quot;&gt;&gt;
 					&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wuv\&#39; babbehs, siwwy nu chiwpy babbeh.&quot; $activeFluffy.cColor.hex &gt;&gt;
 				&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;babbeh?  why no chiwp?  babbeh need milkies... huhuhu am worstest mummah..&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;babbeh?  why no chiwp?  babbeh need milkies... huhuhu am worstest mummah..&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;bad babbeh, give mummah heart hurties.  no wuv bad babbeh.&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;bad babbeh, give mummah heart hurties.  no wuv bad babbeh.&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;why babbeh nu play wid\&#39; mummah? &lt;fluffy&gt; wuv chu...&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;why babbeh nu play wid\&#39; mummah? &lt;fluffy&gt; wuv chu...&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wan\&#39; pway with babbeh, but babbeh am bad.&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wan\&#39; pway with babbeh, but babbeh am bad.&quot; $activeFluffy&gt;&gt;
 				&lt;&lt;default&gt;&gt;
-					&lt;&lt;fluffSpeech &quot;babbeh? why nu chiwp? babbeh nee\&#39; milkies... huhuhu am wowstest mummah..&quot; $activeFluffy.cColor.hex&gt;&gt;
+					&lt;&lt;fluffSpeech &quot;babbeh? why nu chiwp? babbeh nee\&#39; milkies... huhuhu am wowstest mummah..&quot; $activeFluffy&gt;&gt;
 			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
@@ -25169,43 +25187,43 @@ button {
 	&lt;&lt;switch $globalFluffies[$activeFluffy.ID].personality&gt;&gt;
 		/* These would be the worst personalities*/
 		&lt;&lt;case &quot;Bossy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; am smarty now! Will make bestest herd fwom dummy &lt;store&gt; fluffies!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; am smarty now! Will make bestest herd fwom dummy &lt;store&gt; fluffies!&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is best smawty now, dummys do what best smawty say!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is best smawty now, dummys do what best smawty say!&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Dis am smawty wand now!  Dummys do what smawty say or get wowstiest sowweh hoofsies!&quot; $activeFluffy&gt;&gt;
 
 		/* These are progressivly less &#39;hellgremlin&#39; (and rare) */
 		&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Wet smawty ous&#39;side! &lt;fluffy&gt; wan have hewd, dummeh fewal fwuffies do what smawty wan\&#39;!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Wet smawty ous&#39;side! &lt;fluffy&gt; wan have hewd, dummeh fewal fwuffies do what smawty wan\&#39;!&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Curious&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Smawty think dummeh hiddest bested nummies, smawty gonna find all da nummies and best enfing mares.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Smawty think dummeh hiddest bested nummies, smawty gonna find all da nummies and best enfing mares.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Playful&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Dummeh poopie &lt;title&gt; Smawty am bestest! Gib bestest toysies NAO!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Dummeh poopie &lt;title&gt; Smawty am bestest! Gib bestest toysies NAO!&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Dull&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Swilly &lt;title&gt; nu knows &lt;fluffy&gt; is smawtest smawty, neba find out.  Dummeh.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Swilly &lt;title&gt; nu knows &lt;fluffy&gt; is smawtest smawty, neba find out.  Dummeh.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Smawty &lt;fluffy&gt; be cawefuw. Nu wet hooman find out till ready for sowwry hoffies.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Smawty &lt;fluffy&gt; be cawefuw. Nu wet hooman find out till ready for sowwry hoffies.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; need get out of &lt;store&gt;. Wun away, make bestest herd.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; need get out of &lt;store&gt;. Wun away, make bestest herd.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;is am DUMMEH! Fwuffy wan\&#39; speshaw\&#39; wub! FWUFFY am SMAWTY!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;is am DUMMEH! Fwuffy wan\&#39; speshaw\&#39; wub! FWUFFY am SMAWTY!&quot; $activeFluffy&gt;&gt;
 
 		/* Foal traits, so these would be &#39;best babies&#39;*/
 		
 		/* Worst combo */
 		&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;GIVE BESTES\&#39; TOYS AN\&#39; NUMMIES TO BESTES\&#39; BABBEH WITE NOA!&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;GIVE BESTES\&#39; TOYS AN\&#39; NUMMIES TO BESTES\&#39; BABBEH WITE NOA!&quot; $activeFluffy&gt;&gt;
 		
 		/* Progressivly less nasty results */
 		&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Bestes\&#39; babbeh need bestes\&#39; toys, no give to dummeh babbehs.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Bestes\&#39; babbeh need bestes\&#39; toys, no give to dummeh babbehs.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Babbeh have nappies.  Give sowwy poopies if \&#39;ou wake babbeh.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;Babbeh have nappies.  Give sowwy poopies if \&#39;ou wake babbeh.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;case &quot;Cute&quot;&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;tehehehe. &lt;fluffy&gt; is bestes\&#39;, pretties\&#39; in whole &lt;store&gt;.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;tehehehe. &lt;fluffy&gt; is bestes\&#39;, pretties\&#39; in whole &lt;store&gt;.&quot; $activeFluffy&gt;&gt;
 		&lt;&lt;default&gt;&gt; /* shy */
-			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is bestes\&#39;, dummehs to dummeh to undastan.&quot; $activeFluffy.cColor.hex&gt;&gt;
+			&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; is bestes\&#39;, dummehs to dummeh to undastan.&quot; $activeFluffy&gt;&gt;
 			
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="48" name="fluffy creation widgets" tags="widget nobr" position="975,600" size="100,100">/* **********
@@ -27036,8 +27054,8 @@ button {
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
- *	Call as &lt;&lt;cashMinus nubmer&gt;&gt;
- *	Subract a possitive value from the $cash value.
+ *	Call as &lt;&lt;cashMinus number&gt;&gt;
+ *	Subtract a positive value from the $cash value.
  *** */
 &lt;&lt;widget &quot;cashMinus&quot;&gt;&gt;
 	&lt;&lt;if ndef _args[0]&gt;&gt;

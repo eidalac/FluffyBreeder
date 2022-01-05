@@ -135,7 +135,63 @@ window.ntc = {
 ["FFFFFF", "White"]
 ],
 
+/* Deprecated shades, maybe some use remains? */
+/*
+window.groupList = [
+    {
+        "name": "Red",
+        "hue": 0
+    },
+    {
+        "name": "Orange",
+        "hue": 30
+    },
+    {
+        "name": "Yellow",
+        "hue": 60
+    },
+    {
+        "name": "Chartreuse",
+        "hue": 90
+    },
+    {
+        "name": "Green",
+        "hue": 120
+    },
+    {
+        "name": "Emerald",
+        "hue": 160
+    },
+    {
+        "name": "Cyan",
+        "hue": 180
+    },
+    {
+        "name": "Azure",
+        "hue": 210
+    },
+    {
+        "name": "Blue",
+        "hue": 240
+    },
+    {
+        "name": "Violet",
+        "hue": 270
+    },
+    {
+        "name": "Magenta",
+        "hue": 300
+    },
+    {
+        "name": "Rose",
+        "hue": 330
+    },
+]
+*/
+
   names: [
+["0048BA", "Absolute Zero", "Blue"],
+["B0BF1A", "Acide Green", "Green"],
 ["35312C", "Acadia", "Brown"],
 ["75AA94", "Acapulco", "Green"],
 ["C0E8D5", "Aero Blue", "Green"],
@@ -1726,12 +1782,12 @@ window.ntc = {
 ["D4915D", "Whiskey Sour", "Orange"],
 ["EFE6E6", "Whisper", "Grey"],
 ["FFFFFF", "White", "White"],
-["D7EEE4", "White Ice", "Green"],
-["E7E5E8", "White Lilac", "Blue"],
-["EEE7DC", "White Linen", "Grey"],
-["F8F6D8", "White Nectar", "Green"],
-["DAD6CC", "White Pointer", "Grey"],
-["D4CFB4", "White Rock", "Green"],
+["D7EEE4", "White Ice", "White"],
+["E7E5E8", "White Lilac", "White"],
+["EEE7DC", "White Linen", "White"],
+["F8F6D8", "White Nectar", "White"],
+["DAD6CC", "White Pointer", "White"],
+["D4CFB4", "White Rock", "White"],
 ["F5F5F5", "White Smoke", "White"],
 ["7A89B8", "Wild Blue Yonder", "Blue"],
 ["E3D474", "Wild Rice", "Green"],
@@ -1774,7 +1830,16 @@ window.ntc = {
 ["DDC283", "Zombie", "Yellow"],
 ["A29589", "Zorba", "Brown"],
 ["17462E", "Zuccini", "Green"],
-["CDD5D5", "Zumthor", "Grey"]
+["CDD5D5", "Zumthor", "Grey"],
+["9A1115", "Mephiston Red", "Red"], /* ----- Custom colors start here ----- */
+["2F9AD6", "Guilliman Blue", "Blue"],
+["231F20", "Abaddon Black", "Black"],
+["14100E", "Nuln Oil", "Black"],
+["5A573F", "Agrax Earthshade", "Brown"],
+["EE3823", "Jokaero Orange", "Orange"],
+["7a744d", "Steel Legion Drab", "Brown"],
+["B94278", "Emperors Children", "Red"],
+["7761AB", "Genestealer Purple", "Violet"],
 ]
 
 };

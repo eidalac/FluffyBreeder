@@ -221,63 +221,69 @@
 	<<for _c, _id range $randomFluffies>>
 
 		<<capture _id>>
-			<label>
-				<div style="position: relative; left: -22px; top: 22px; z-index: -1; height:20px">
-					<<if $shop == "feral">><<checkbox "$globalFluffies[_id].isChecked" false true `$globalFluffies[_id].isChecked ? 'checked' : ''`>><</if>>
-				</div>
+
+			<div class="fluffy-description">
 				
+				<div class="fluffy-checkbox-container">
+					<<if $shop == "feral">>
+						<<print
+							`<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`
+						>>
+					<</if>>
+				</div>
+			
 				<div class="fluffy-desc-bottom w3-row w3-dark-grey">
 					<<drawSprite $globalFluffies[_id]>>
 					<<shortDesc $globalFluffies[_id]>>
 				</div>
-			</label>
 
-			<<set _price = 0>>
-			
-			<<if $shop != "feral">>
-				<br><<They>> would cost 
+				<<set _price = 0>>
 				
-				<<if $shop == "breeder">>
-					<<set $globalFluffies[_id].training = 50>>
-					<<set $globalFluffies[_id].trust = 50>>
+				<<if $shop != "feral">>
+					<br><<They>> would cost 
+					
+					<<if $shop == "breeder">>
+						<<set $globalFluffies[_id].training = 50>>
+						<<set $globalFluffies[_id].trust = 50>>
+					<</if>>
+
+					<<set _price = Number($globalFluffies[_id].training)>>
+
+					<<set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))>>
+
+					<<switch $globalFluffies[_id].breed>>
+						<<case "unicorn">>
+							<<set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)>>
+						<<case "pegasus">>
+							<<set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)>>
+						<<case "alicorn">>
+							<<set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)>>
+						<<default>>
+							<<set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)>>
+					<</switch>>
+					
+					<<if $shop == "shelter">>
+						<<set _ageMulti = 0.5>>
+					<<else>>
+						<<set _ageMulti = 1>>
+					<</if>>
+					
+					<<set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)>>
+					<<set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)>>
+					<<if $globalFluffies[_id].age == 0 && $globalFluffies[_id].ageWeeks < 45>>
+						<<set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
+					<</if>>
+
+					<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+
+					<<if $shop == "angora">>
+						<<set _price = Number(_price * 1.5).toFixed(2)>>
+					<</if>>
+
+					@@.green;¤_price.@@
+					<hr>
 				<</if>>
-
-				<<set _price = Number($globalFluffies[_id].training)>>
-
-				<<set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))>>
-
-				<<switch $globalFluffies[_id].breed>>
-					<<case "unicorn">>
-						<<set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)>>
-					<<case "pegasus">>
-						<<set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)>>
-					<<case "alicorn">>
-						<<set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)>>
-					<<default>>
-						<<set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)>>
-				<</switch>>
-				
-				<<if $shop == "shelter">>
-					<<set _ageMulti = 0.5>>
-				<<else>>
-					<<set _ageMulti = 1>>
-				<</if>>
-				
-				<<set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)>>
-				<<set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)>>
-				<<if $globalFluffies[_id].age == 0 && $globalFluffies[_id].ageWeeks < 45>>
-					<<set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
-				<</if>>
-
-				<<set _price = Number(_price * _ageMulti).toFixed(2)>>
-
-				<<if $shop == "angora">>
-					<<set _price = Number(_price * 1.5).toFixed(2)>>
-				<</if>>
-
-				@@.green;¤_price.@@
-				<hr>
-			<</if>>
+			</div>
 
 			<<if _c == 0>>
 				<div class="w3-container">

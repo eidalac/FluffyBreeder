@@ -198,12 +198,15 @@ Save.onLoad.add(function (save)
 window.selectFluffy = function(e) {
   const $checkbox = $(this).find('.fluffy-checkbox');
   const fluffy_id = $checkbox.attr('data-fluffy-id');
-  const customerEvent = $('#passage-event-customer');
-  if (!customerEvent[0] && $checkbox.prop('checked')) {
-    $checkbox.prop('checked', false);
+  const fluffyList = $('#passage-fluffy-list');
+  const fluffyBuy = $('#passage-buy-fluffies');
+  if ((fluffyList[0] || fluffyBuy[0]) && $(this).hasClass('selected')) {
+    $(this).removeClass('selected');
+    console.log("check1")
     State.variables.globalFluffies[fluffy_id].isChecked = false;
-  } else if (!customerEvent[0]) {
-    $checkbox.prop('checked', true);
+  } else if (fluffyList[0] || fluffyBuy[0]) {
+    $(this).addClass('selected')
+    console.log("check2")
     State.variables.globalFluffies[fluffy_id].isChecked = true;
   }
 }
@@ -214,12 +217,14 @@ window.checkFluffies = function(e) {
     const $checkboxes = $('.fluffy-checkbox')
     if (functionality === 'check-none') {
       $checkboxes.each(function(i) {
+        $(this).parent().parent().removeClass('selected')
         const fluffy_id = $(this).attr('data-fluffy-id');
         $(this).prop('checked', false);
         State.variables.globalFluffies[fluffy_id].isChecked = false;
       });
     } else {
       $checkboxes.each(function(i) {
+      $(this).parent().parent().addClass('selected')
       const fluffy_id = $(this).attr('data-fluffy-id');
       $(this).prop('checked', true);
       State.variables.globalFluffies[fluffy_id].isChecked = true;
