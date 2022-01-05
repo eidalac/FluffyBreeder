@@ -19,6 +19,26 @@
 	<<set $activeFluffy.foodQuality = 2>>
 <</if>>
 
+<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
+
+/*
+<<if _cat == 0>>
+	<<set _push = "Newborn">>
+<<elseif _cat == 1>>
+	<<set _push = "Chirpy">>
+<<elseif $globalFluffies[_ef].weaned === false>>
+	<<set _push = "Talky">>
+<<elseif _cat < Number($globalFluffies[_ef].maturity/2)>>
+	<<set _push = "Foal">>
+<<elseif _cat <= $globalFluffies[_ef].maturity>>
+	<<set _push = "Youth">>
+<<elseif _cat < Number($globalFluffies[_ef].maxAge * 52 * 0.75)>>
+	<<set _push = "Adult">>
+<<else>>
+	<<set _push = "Grey">>
+<</if>>
+ */
+
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
 
@@ -101,14 +121,19 @@
 		Feeding: $activeFluffy.foodType
 		<br>
 
-		<<if $activeFluffy.foodType != "Kibble">>  
-		<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-		<</if>>
-		<<if $activeFluffy.foodType != "Greens">>  
-		<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
-		<</if>>
-		<<if $activeFluffy.foodType != "Sketti">>  
-		<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+		<<if $activeFluffy.weaned == true>>
+			<<if $activeFluffy.foodType != "Kibble">>  
+			<<button [[Kibble|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Kibble">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+			<</if>>
+			<<if $activeFluffy.foodType != "Greens">>  
+			<<button [[Greens|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Greens">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+			<</if>>
+			<<if $activeFluffy.foodType != "Sketti">>  
+			<<button [[Sketti|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Sketti">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
+			<</if>>
+		<<else>>
+			<br>
+			<<button [[Formula|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Formula">><<set $activeFluffy.foodQuality = 2>><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
 		<</if>>
 		
 		<<button [[Stop Feeding|Fluffy Feeding]]>><<set $activeFluffy.foodType = "Nothing">><<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>><</button>>
@@ -165,12 +190,6 @@
 	<</if>>
 
 </div>
-
-/* Sidebar link for mobile users */
-/*<<SidebarButton>>*/
-
-
-
 
 <<script>>
  	importScripts("./external-js/globals.js").then(function() {
