@@ -18882,9 +18882,13 @@ button {
         &lt;&lt;/if&gt;&gt;
 
         &lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
+        /*
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number($customerWants * 2) + &quot;.@@&quot;&gt;&gt;
+        */
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
+
+        &lt;&lt;run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)&gt;&gt;
             
         &lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
         &lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
@@ -18991,9 +18995,8 @@ button {
                 &lt;br&gt; 				
                 &lt;&lt;set _price = Number(Number(_price) + Number($rand[6]))&gt;&gt;
             &lt;&lt;/if&gt;&gt;
-            &lt;&lt;run console.log(&quot;DEBUG: Cash before sale: &quot;+$cash)&gt;&gt;
+
             &lt;&lt;cashAdd _price&gt;&gt;
-            &lt;&lt;run console.log(&quot;DEBUG: Cash after sale: &quot;+$cash)&gt;&gt;
 
             &lt;&lt;= _msgString&gt;&gt;
             &lt;br&gt;Sold &lt;&lt;- $activeFluffy.name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
@@ -22356,7 +22359,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;04dcd78&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4adada6&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -29468,8 +29471,16 @@ button {
 		/* Log if this is somehow NaN: */
 		if (isNaN(State.variables.cash))
 		{
-			console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
-			State.variables.cash = Number(10).toFixed(2);
+			if (def State.variables.cashLastWeek &amp;&amp; !isNaN(State.variables.cashLastWeek))
+			{
+				console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing (revert to ${State.variables.cashLastWeek}) ${State.variables.cash}.`);
+				State.variables.cash = Number(State.variables.cashLastWeek).toFixed(2);
+			}
+			else
+			{
+				console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
+				State.variables.cash = Number(10).toFixed(2);
+			}
 		}
 	&lt;&lt;/script&gt;&gt;
 &lt;&lt;/widget&gt;&gt;

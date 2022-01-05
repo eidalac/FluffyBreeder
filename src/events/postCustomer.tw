@@ -362,9 +362,13 @@ button {
         <</if>>
 
         <<set _msgString = "">>
+        /*
         <<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
         <<set _msgString += "<br>@@.orange;Possible points = " + Number($customerWants * 2) + ".@@">>
+        */
         <<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + ".@@">>
+
+        <<run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)>>
             
         <<set _price = Number($activeFluffy.training)>>
         <<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
@@ -471,9 +475,8 @@ button {
                 <br> 				
                 <<set _price = Number(Number(_price) + Number($rand[6]))>>
             <</if>>
-            <<run console.log("DEBUG: Cash before sale: "+$cash)>>
+
             <<cashAdd _price>>
-            <<run console.log("DEBUG: Cash after sale: "+$cash)>>
 
             <<= _msgString>>
             <br>Sold <<- $activeFluffy.name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New reputation <<- $reputation>>.
