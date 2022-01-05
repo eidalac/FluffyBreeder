@@ -22359,7 +22359,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;9d33c3a&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;abbc09b&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23592,6 +23592,26 @@ Upgrades:
 	&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
+&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
+
+/*
+&lt;&lt;if _cat == 0&gt;&gt;
+	&lt;&lt;set _push = &quot;Newborn&quot;&gt;&gt;
+&lt;&lt;elseif _cat == 1&gt;&gt;
+	&lt;&lt;set _push = &quot;Chirpy&quot;&gt;&gt;
+&lt;&lt;elseif $globalFluffies[_ef].weaned === false&gt;&gt;
+	&lt;&lt;set _push = &quot;Talky&quot;&gt;&gt;
+&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maturity/2)&gt;&gt;
+	&lt;&lt;set _push = &quot;Foal&quot;&gt;&gt;
+&lt;&lt;elseif _cat &lt;= $globalFluffies[_ef].maturity&gt;&gt;
+	&lt;&lt;set _push = &quot;Youth&quot;&gt;&gt;
+&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maxAge * 52 * 0.75)&gt;&gt;
+	&lt;&lt;set _push = &quot;Adult&quot;&gt;&gt;
+&lt;&lt;else&gt;&gt;
+	&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
+&lt;&lt;/if&gt;&gt;
+ */
+
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 
 
@@ -23674,14 +23694,19 @@ Upgrades:
 		Feeding: $activeFluffy.foodType
 		&lt;br&gt;
 
-		&lt;&lt;if $activeFluffy.foodType != &quot;Kibble&quot;&gt;&gt;  
-		&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.foodType != &quot;Greens&quot;&gt;&gt;  
-		&lt;&lt;button [[Greens|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Greens&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $activeFluffy.foodType != &quot;Sketti&quot;&gt;&gt;  
-		&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;if $activeFluffy.weaned == true&gt;&gt;
+			&lt;&lt;if $activeFluffy.foodType != &quot;Kibble&quot;&gt;&gt;  
+			&lt;&lt;button [[Kibble|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;if $activeFluffy.foodType != &quot;Greens&quot;&gt;&gt;  
+			&lt;&lt;button [[Greens|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Greens&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;if $activeFluffy.foodType != &quot;Sketti&quot;&gt;&gt;  
+			&lt;&lt;button [[Sketti|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Sketti&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;
+			&lt;&lt;button [[Formula|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;button [[Stop Feeding|Fluffy Feeding]]&gt;&gt;&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;&lt;&lt;/button&gt;&gt;
@@ -23738,12 +23763,6 @@ Upgrades:
 	&lt;&lt;/if&gt;&gt;
 
 &lt;/div&gt;
-
-/* Sidebar link for mobile users */
-/*&lt;&lt;SidebarButton&gt;&gt;*/
-
-
-
 
 &lt;&lt;script&gt;&gt;
  	importScripts(&quot;./external-js/globals.js&quot;).then(function() {
@@ -29472,9 +29491,9 @@ button {
 		/* Log if this is somehow NaN: */
 		if (isNaN(State.variables.cash))
 		{
-			if (def State.variables.cashLastWeek &amp;&amp; !isNaN(State.variables.cashLastWeek))
+			if (typeof State.variables.cashLastWeek !== &#39;undefined&#39; &amp;&amp; !(isNaN(State.variables.cashLastWeek)))
 			{
-				console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing (revert to ${State.variables.cashLastWeek}) ${State.variables.cash}.`);
+				console.log(`ERROR: &lt;&lt;cashClamp&gt;&gt;: $cash is NaN after processing revert to ${State.variables.cashLastWeek}.`);
 				State.variables.cash = Number(State.variables.cashLastWeek).toFixed(2);
 			}
 			else

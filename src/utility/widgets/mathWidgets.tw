@@ -96,9 +96,9 @@
 		/* Log if this is somehow NaN: */
 		if (isNaN(State.variables.cash))
 		{
-			if (def State.variables.cashLastWeek && !isNaN(State.variables.cashLastWeek))
+			if (typeof State.variables.cashLastWeek !== 'undefined' && !(isNaN(State.variables.cashLastWeek)))
 			{
-				console.log(`ERROR: <<cashClamp>>: $cash is NaN after processing (revert to ${State.variables.cashLastWeek}) ${State.variables.cash}.`);
+				console.log(`ERROR: <<cashClamp>>: $cash is NaN after processing revert to ${State.variables.cashLastWeek}.`);
 				State.variables.cash = Number(State.variables.cashLastWeek).toFixed(2);
 			}
 			else
