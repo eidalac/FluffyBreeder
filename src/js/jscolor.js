@@ -1208,7 +1208,7 @@
              jsc.releaseTarget();
  
              // Always trigger changes AFTER detaching outstanding mouse handlers,
-             // in case some color change occured in user-defined onChange/onInput handler
+             // in case some color change occurred in user-defined onChange/onInput handler
              // would intrude into current mouse events
              thisObj.trigger('input');
              thisObj.trigger('change');

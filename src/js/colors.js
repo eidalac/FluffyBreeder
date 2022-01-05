@@ -1656,7 +1656,7 @@ window.colorList = [
       "hex": "#AB4B52"
     },
     {
-      "name": "English Vermillion",
+      "name": "English Vermilion",
       "hex": "#CC474B"
     },
     {

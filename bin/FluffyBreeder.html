@@ -6532,7 +6532,7 @@ window.colorList = [
       "hex": "#AB4B52"
     },
     {
-      "name": "English Vermillion",
+      "name": "English Vermilion",
       "hex": "#CC474B"
     },
     {
@@ -14186,7 +14186,7 @@ Genome.prototype.clearDefect = function(index) {
              jsc.releaseTarget();
  
              // Always trigger changes AFTER detaching outstanding mouse handlers,
-             // in case some color change occured in user-defined onChange/onInput handler
+             // in case some color change occurred in user-defined onChange/onInput handler
              // would intrude into current mouse events
              thisObj.trigger('input');
              thisObj.trigger('change');
@@ -17887,9 +17887,7 @@ button {
 				&lt;div class=&quot;fluffy-description&quot;&gt;
 				
 					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
-						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${$activeFluffy.ID}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
-						&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${$activeFluffy.ID}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 					&lt;/div&gt;
 
 					&lt;div class=&quot;fluffy-desc-top w3-row w3-dark-grey&quot;&gt;
@@ -22304,7 +22302,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;83995c1&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;50d2143&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22814,9 +22812,9 @@ profitsTotal: 0
 				
 				&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
-						&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
 			
@@ -26201,6 +26199,12 @@ Subspecies:
         /* Force generate angora */
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
         &lt;&lt;newFromGene $testChild 2&gt;&gt;
+
+        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
+
         &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
         &lt;&lt;set $activeFluffy.ageWeeks = random(0, 30)&gt;&gt;
         &lt;&lt;checkAgeCategory&gt;&gt;
@@ -26218,8 +26222,12 @@ Subspecies:
     &lt;&lt;else&gt;&gt;
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
         &lt;&lt;newFromGene $testChild&gt;&gt;
-    &lt;&lt;/if&gt;&gt;
 
+        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
 
     /* Don&#39;t generate alicorns at a shop or mill*/
     &lt;&lt;if $shop == &quot;mill&quot; || $shop == &quot;mart&quot;&gt;&gt;
@@ -26229,13 +26237,6 @@ Subspecies:
         &lt;&lt;/for&gt;&gt;
     &lt;&lt;/if&gt;&gt;
     
-    &lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
-        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-    &lt;&lt;/if&gt;&gt;
-
     /* We may have generated one or a family, so run the checks on all of them in turn. */
     &lt;&lt;for _rID range $randomFluffies&gt;&gt;
 
@@ -26284,7 +26285,6 @@ Subspecies:
             &lt;&lt;checkAgeCategory&gt;&gt;
             &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60))&gt;&gt;
 
-            &lt;&lt;limitColor 1 2&gt;&gt;
         &lt;&lt;elseif $shop == &quot;feral&quot;&gt;&gt;
             /* young fluffies get no names */
             &lt;&lt;if $activeFluffy.age != 0&gt;&gt;
@@ -26399,7 +26399,6 @@ Subspecies:
         &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
         
         &lt;&lt;colorValue&gt;&gt;
-        /*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
         &lt;&lt;statValue&gt;&gt;
 
         &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
@@ -26537,9 +26536,7 @@ button {
 				
 					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 						&lt;&lt;if _args[0] != &quot;customer&quot; &amp;&amp; _args[0] != &quot;breeding&quot;&gt;&gt;
-						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
-						&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;/div&gt;
 			

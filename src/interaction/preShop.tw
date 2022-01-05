@@ -330,6 +330,12 @@
         /* Force generate angora */
         <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
         <<newFromGene $testChild 2>>
+
+        <<set $activeFluffy.ID = $globalFluffies.length>>
+        <<run $globalFluffies.push($activeFluffy)>>
+        <<run $randomFluffies.push($activeFluffy.ID)>>
+        <<setGeneTraits $activeFluffy>>
+
         <<set $activeFluffy.age = 0>>
         <<set $activeFluffy.ageWeeks = random(0, 30)>>
         <<checkAgeCategory>>
@@ -347,8 +353,12 @@
     <<else>>
         <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
         <<newFromGene $testChild>>
-    <</if>>
 
+        <<set $activeFluffy.ID = $globalFluffies.length>>
+        <<run $globalFluffies.push($activeFluffy)>>
+        <<run $randomFluffies.push($activeFluffy.ID)>>
+        <<setGeneTraits $activeFluffy>>
+    <</if>>
 
     /* Don't generate alicorns at a shop or mill*/
     <<if $shop == "mill" || $shop == "mart">>
@@ -358,13 +368,6 @@
         <</for>>
     <</if>>
     
-    <<if $shop != "feral">>
-        <<set $activeFluffy.ID = $globalFluffies.length>>
-        <<run $globalFluffies.push($activeFluffy)>>
-        <<run $randomFluffies.push($activeFluffy.ID)>>
-        <<setGeneTraits $activeFluffy>>
-    <</if>>
-
     /* We may have generated one or a family, so run the checks on all of them in turn. */
     <<for _rID range $randomFluffies>>
 
@@ -413,7 +416,6 @@
             <<checkAgeCategory>>
             <<set $activeFluffy.furStage = Number(random(20, 60))>>
 
-            <<limitColor 1 2>>
         <<elseif $shop == "feral">>
             /* young fluffies get no names */
             <<if $activeFluffy.age != 0>>
@@ -528,7 +530,6 @@
         <<set $activeFluffy.geneString = $activeFluffy.genes.toString()>>
         
         <<colorValue>>
-        /*<<colorGroup $activeFluffy>>*/
         <<statValue>>
 
         <<set $activeFluffy.isChecked = false>>
