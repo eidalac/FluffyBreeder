@@ -237,11 +237,9 @@ window.selectFluffy = function(e) {
   const fluffyBuy = $('#passage-buy-fluffies');
   if ((fluffyList[0] || fluffyBuy[0]) && $(this).hasClass('selected')) {
     $(this).removeClass('selected');
-    console.log("check1")
     State.variables.globalFluffies[fluffy_id].isChecked = false;
   } else if (fluffyList[0] || fluffyBuy[0]) {
     $(this).addClass('selected')
-    console.log("check2")
     State.variables.globalFluffies[fluffy_id].isChecked = true;
   }
 }
