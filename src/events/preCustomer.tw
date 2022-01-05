@@ -14,7 +14,7 @@
 <<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
 
 /* First, we build a customer, starting with how many wants it has, up to 6 */
-<<set $customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)>>
+<<set $customerWants = Math.clamp(Math.clamp(random(-6, 6), 0, $customerCards.length), 0, 6)>>
 
 /* How picky the customer is and how many fails they will put up with */
 <<set $customerTolerance = random(0, 3)>>
@@ -23,10 +23,15 @@
 
 /* For each "want" pluck a random card from our deck and assign it to this customer: */
 <<run $customerDeck = $customerCards.pluckMany($customerWants)>>
-
-<<set $customerDeck = [ "Earthy" ]>>
+/*
+<<set $customerDeck = [ "trait slow" ]>>
 <<set $customerWants = 1>>
 <<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)>>
+*/
+<<if $customerWants == 0>>
+    <<set _anyFluffy = $ourStore.fluffies.random()>>
+    <<set $activeFluffy = $globalFluffies[_anyFluffy]>>
+<</if>>
 
 /* pre run random numbers for the event: */
 <<set $rand = []>>

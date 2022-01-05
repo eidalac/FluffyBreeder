@@ -50,7 +50,42 @@ Save.onLoad.add(function (save)
 
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
-    // Update the nursing from a count to an array:
+
+    // Update age category
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
+    {
+      var totalAge = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].age * 52) + save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks);
+
+      if (totalAge == 0)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 0;
+      }
+      else if (totalAge == 1)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 1;
+      }
+      else if (save.state.history[save.state.index].variables.globalFluffies[i].weaned === false)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 2;
+      }
+      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity / 2))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 3;
+      }
+      else if (totalAge <= Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 4;
+      }
+      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maxAge * 52 * 0.75))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 5;
+      }
+      else
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 6;
+      }
+    }
+
     if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
     {
       // How many children does this fluffy have?

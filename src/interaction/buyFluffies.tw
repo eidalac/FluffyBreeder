@@ -75,7 +75,7 @@
 										<<set $globalFluffies[_rID].name = ($ordinalString + " " + $globalFluffies[_rID].ID)>>
 									<</if>>
 						
-									<<if ($globalFluffies[_rID].ageWeeks + ($globalFluffies[_rID].age * 52) < $globalFluffies[_rID].maturity)>>
+									<<if $globalFluffies[_rID].ageCategory <= 4>>
 										<<set $ourStore.foals++>>
 									<<elseif $globalFluffies[_rID].gender == "male">>
 										<<set $ourStore.stallions++>>
@@ -128,7 +128,7 @@
 								<<set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + " " + $randomFluffies[0])>>
 							<</if>>
 				
-							<<if ($globalFluffies[$randomFluffies[0]].ageWeeks + ($globalFluffies[$randomFluffies[0]].age * 52) < $globalFluffies[$randomFluffies[0]].maturity)>>
+							<<if $globalFluffies[$randomFluffies[0]].ageCategory <= 4>>
 								<<set $ourStore.foals++>>
 							<<elseif $globalFluffies[$randomFluffies[0]].gender == "male">>
 								<<set $ourStore.stallions++>>
@@ -226,9 +226,9 @@
 				
 				<div class="fluffy-checkbox-container">
 					<<if $shop == "feral">>
-						<<print
-							`<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`
-						>>
+						<<print `<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
+					<<else>>
+						<<print `<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
 					<</if>>
 				</div>
 			
@@ -270,7 +270,7 @@
 					
 					<<set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)>>
 					<<set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)>>
-					<<if $globalFluffies[_id].age == 0 && $globalFluffies[_id].ageWeeks < 45>>
+					<<if $globalFluffies[_id].ageCategory < 5>>
 						<<set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
 					<</if>>
 
@@ -289,7 +289,7 @@
 				<div class="w3-container">
 					<<timed 5ms>>
 
-						<<if $globalFluffies[_id].age > 0 || $globalFluffies[_id].ageWeeks > 2>>
+						<<if $globalFluffies[_id].ageCategory >= 2>>
 							
 							<<personalityFix $globalFluffies[_id]>>
 							<<set $activeFluffy = $globalFluffies[_id]>>

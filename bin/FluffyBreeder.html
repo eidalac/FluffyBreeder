@@ -6532,7 +6532,7 @@ window.colorList = [
       "hex": "#AB4B52"
     },
     {
-      "name": "English Vermillion",
+      "name": "English Vermilion",
       "hex": "#CC474B"
     },
     {
@@ -14186,7 +14186,7 @@ Genome.prototype.clearDefect = function(index) {
              jsc.releaseTarget();
  
              // Always trigger changes AFTER detaching outstanding mouse handlers,
-             // in case some color change occured in user-defined onChange/onInput handler
+             // in case some color change occurred in user-defined onChange/onInput handler
              // would intrude into current mouse events
              thisObj.trigger('input');
              thisObj.trigger('change');
@@ -16210,7 +16210,42 @@ Save.onLoad.add(function (save)
 
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
-    // Update the nursing from a count to an array:
+
+    // Update age category
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
+    {
+      var totalAge = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].age * 52) + save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks);
+
+      if (totalAge == 0)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 0;
+      }
+      else if (totalAge == 1)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 1;
+      }
+      else if (save.state.history[save.state.index].variables.globalFluffies[i].weaned === false)
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 2;
+      }
+      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity / 2))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 3;
+      }
+      else if (totalAge <= Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 4;
+      }
+      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maxAge * 52 * 0.75))
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 5;
+      }
+      else
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 6;
+      }
+    }
+
     if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
     {
       // How many children does this fluffy have?
@@ -17413,121 +17448,10 @@ window.nameList = {
  *	Used to limit the colors you can get from different sources.
  *** */
 &lt;&lt;widget &quot;limitColor&quot;&gt;&gt;
-/*
-	&lt;&lt;if ndef(_args)&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;limitColor&gt;&gt;: Called with no arguments.`)&gt;&gt;
-	&lt;&lt;elseif _args.length &gt; 2&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;limitColor&gt;&gt;: Called with too many arguments.`)&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _wGene = [ &quot;W/w;&quot;, &quot;W/W;&quot;, &quot;w/W;&quot; ]&gt;&gt;
 
-		&lt;&lt;script&gt;&gt;
-			if (state.temporary.args.length == 1)
-			{
-				State.temporary.high = Number(Math.max(state.temporary.args[0], 6));
-				State.temporary.low = Number(Math.min(state.temporary.args[0], 1));
-			}
-			else
-			{
-				State.temporary.high = Number(Math.max(state.temporary.args[0], state.temporary.args[1], 6));
-				State.temporary.low = Number(Math.min(state.temporary.args[0], state.temporary.args[1], 1));
-			}
-		&lt;&lt;/script&gt;&gt;
-
-		&lt;&lt;set _nColors = clone($colors)&gt;&gt;
-
-		&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.tier &lt; _low; })&gt;&gt;
-		&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.tier &gt; _high; })&gt;&gt;
-
-		&lt;&lt;set _randomCoat = _nColors.random()&gt;&gt;
-		&lt;&lt;set _randomMane = _nColors.random()&gt;&gt;
-
-		&lt;&lt;run $activeFluffy.genes.setManeColor(_randomMane.gene + _wGene.random())&gt;&gt;
-		&lt;&lt;run $activeFluffy.genes.setCoatColor(_randomCoat.gene + _wGene.random())&gt;&gt;
-		&lt;&lt;run $activeFluffy.genes.setEyeColor(_nColors.random().gene + _wGene.random())&gt;&gt;
-
-		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-
-		&lt;&lt;set $activeFluffy.mColor = $activeFluffy.genes.getManeColorObject()&gt;&gt;
-		&lt;&lt;set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorObject()&gt;&gt;
-		&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorObject()&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-*/	
 &lt;&lt;/widget&gt;&gt;
 
-/* ***
- *	Color Group
- *	Call as &lt;&lt;colorGroup $fluffy&gt;&gt;
- *
- *	Finds the name of the color group of $fluffy.
- *	Without fluffy, will simply apply to $ntcArr.
- *** */
- /*
-&lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
-	&lt;&lt;fluffyError _args[0]&gt;&gt;
-	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: ${$fluffyError}.`)&gt;&gt;
-		&lt;&lt;set $fluffyError = false&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _ntcFluffy = _args[0]&gt;&gt;
-		&lt;&lt;run
-			_ntcFluffy.colorGroup[0] = ntc.name(_ntcFluffy.cColor.hex)[3];
-			_ntcFluffy.colorGroup[1] = ntc.name(_ntcFluffy.mColor.hex)[3];
-			_ntcFluffy.colorGroup[2] = ntc.name(_ntcFluffy.eColor.hex)[3];
-		&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-*/
-/* &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
-	&lt;&lt;fluffyError _args[0]&gt;&gt;
-	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: ${$fluffyError}.`)&gt;&gt;
-		&lt;&lt;set $fluffyError = false&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if _args[0]&gt;&gt;
-			&lt;&lt;set _hslFluffy = _args[0]&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _hslFluffy = $activeFluffy&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)&gt;&gt;
-		&lt;&lt;set _hslMane = hexToHSL(_hslFluffy.mColor.hex)&gt;&gt;
-		&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
-		&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
 
-		console.log(ntc.name(State.variables.activeFluffy.cColor.hex))
-
-		&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
-			&lt;&lt;capture _i&gt;&gt;
-				&lt;&lt;if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslCoat[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslMane[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslEyes[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/capture&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
-
-		&lt;&lt;if _hslFluffy.colorGroup[0] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for coat ${_hslFluffy.cColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _hslFluffy.colorGroup[1] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for mane ${_hslFluffy.mColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _hslFluffy.colorGroup[2] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for eye ${_hslFluffy.eColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;	
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt; */
 
 /* ***
  *	Call as &lt;&lt;setFilters $fluffy&gt;&gt;
@@ -17590,7 +17514,7 @@ window.nameList = {
 
 &lt;h1&gt;Birth Event&lt;/h1&gt;
 &lt;br&gt;$mom.name is giving birth to $mom.litter foals.
-&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
+&lt;br&gt;&lt;&lt;fluffSpeech &quot;SKREEEEE BIGGGEST POOOPIES!!!&quot; $mom&gt;&gt;
 &lt;br&gt;
 &lt;hr&gt;
 
@@ -17655,6 +17579,7 @@ window.nameList = {
 
 			/* Save it */
 			&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+			&lt;&lt;set $activeFluffy.ageCategory = 0&gt;&gt;
 			&lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
 				
 			&lt;&lt;if $nameType === &quot;ordinal&quot;&gt;&gt;
@@ -17693,13 +17618,13 @@ window.nameList = {
 			&lt;&lt;set $mom.fertility--&gt;&gt;
 			&lt;&lt;set $mom.stress += 5&gt;&gt;
 			&lt;&lt;set $mom.trauma += 1&gt;&gt;
-			&lt;br&gt;@@.cyan;Why special place hurties?@@
+			&lt;&lt;fluffSpeech &quot;Why special place hurties?&quot; $mom&gt;&gt;
 		&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
 	&lt;&lt;else&gt;&gt;
 		/* 0 fertility left */
 		&lt;&lt;set $mom.stress += 50&gt;&gt;
 		&lt;&lt;set $mom.trauma += 5&gt;&gt;
-		&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+		&lt;&lt;fluffSpeech &quot;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!&quot; $mom&gt;&gt;
 	&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
 	
 	/* Update the mom: */
@@ -17945,16 +17870,45 @@ button {
 	&lt;br&gt;
 	/* Display the initial list*/
 	&lt;&lt;timed 20ms&gt;&gt;
-	&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
-	&lt;&lt;set $fluffyFilters = {
-		breed: false,
-		maturity: false,
-		gender: false,
-		coat: false,
-		mane: false,
-		eyes: false
-	}&gt;&gt;
-	&lt;&lt;resetList&gt;&gt;
+	&lt;&lt;if $customerWants != 0&gt;&gt;
+		&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
+		&lt;&lt;set $fluffyFilters = {
+			breed: false,
+			maturity: false,
+			gender: false,
+			coat: false,
+			mane: false,
+			eyes: false
+		}&gt;&gt;
+		&lt;&lt;resetList&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;capture $activeFluffy.ID, $activeFluffy.name&gt;&gt;
+			&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;
+				&lt;div class=&quot;fluffy-description&quot;&gt;
+				
+					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${$activeFluffy.ID}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;fluffy-desc-top w3-row w3-dark-grey&quot;&gt;
+						&lt;div class=&quot;fluffy-name w3-container&quot;&gt;
+							&lt;&lt;- $activeFluffy.name&gt;&gt;
+						&lt;/div&gt;
+						&lt;div class=&quot;fluffy-quickactions w3-rest w3-container&quot;&gt;
+							&lt;&lt;set _buttonString = &quot;Offer &quot; + $activeFluffy.name&gt;&gt;
+
+							&lt;&lt;button _buttonString &quot;Post Customer&quot;&gt;&gt;&lt;&lt;/button&gt;&gt;
+						&lt;/div&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+						&lt;&lt;drawSprite $activeFluffy&gt;&gt;
+						&lt;&lt;shortDesc $activeFluffy&gt;&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/capture&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/timed&gt;&gt;
 &lt;/div&gt;
 
@@ -18551,7 +18505,7 @@ button {
         &lt;&lt;if $customerWants != 0&gt;&gt;
             &lt;&lt;for _card range $customerDeck&gt;&gt;
                 /* Caculate the age values */
-                &lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
+                /*&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;*/
 
                 &lt;&lt;set _card = _card.toLowerCase()&gt;&gt;
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: card:  ${_card}`)&gt;&gt;
@@ -18566,7 +18520,6 @@ button {
                 /* Breed, value depends on what is offered*/
                 &lt;&lt;elseif _card === &quot;earthy&quot; || _card === &quot;unicorn&quot; || _card === &quot;pegasus&quot; || _card === &quot;alicorn&quot;&gt;&gt;
                     /* Pefect match, 2 points */
-&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Breed:  ${$activeFluffy.breed}`)&gt;&gt;
                     &lt;&lt;if _card === $activeFluffy.breed.toLowerCase()&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
 
@@ -18813,63 +18766,39 @@ button {
                 
                 /* Age &quot;Newborn&quot;: */
                 &lt;&lt;elseif _card === &quot;newborn&quot;&gt;&gt;
-                    &lt;&lt;if _cat == 0&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 0&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif _cat == 1&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Chirpy&quot;: */
                 &lt;&lt;elseif _card === &quot;chirpy&quot;&gt;&gt;
-                    &lt;&lt;if _cat == 1&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 1&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif _cat == 0&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Talky&quot;: */
                 &lt;&lt;elseif _card === &quot;talky&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.weaned&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 2&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Foal&quot;: */
                 &lt;&lt;elseif _card === &quot;foal&quot;&gt;&gt;
-                    &lt;&lt;if _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 3&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif $activeFluffy.weaned&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;elseif _cat &lt;= $activeFluffy.maturity&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Youth&quot;: */
                 &lt;&lt;elseif _card === &quot;youth&quot;&gt;&gt;
-                    &lt;&lt;if _cat &lt; $activeFluffy.maturity&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 4&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;elseif _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Adult&quot;: */
                 &lt;&lt;elseif _card === &quot;adult&quot;&gt;&gt;
-                    &lt;&lt;if _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 5&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;elseif _cat &lt; $activeFluffy.maturity&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;elseif _cat &gt;= Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Age &quot;Grey&quot;: */
                 &lt;&lt;elseif _card === &quot;grey&quot;&gt;&gt;
-                    &lt;&lt;if _cat &gt;= Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
+                    &lt;&lt;if $activeFluffy.ageCategory == 6&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;elseif _card === $activeFluffy.subSpeciesString.toLowerCase()&gt;&gt;
@@ -18877,7 +18806,7 @@ button {
 
                 &lt;&lt;elseif _card.includes(&quot;trait&quot;)&gt;&gt;
                     &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
-                    &lt;&lt;set _card = _card.charAt(0).toUpperCase() + _card.slice(1)&gt;&gt;
+                    &lt;&lt;set _subString = _subString.charAt(0).toUpperCase() + _subString.slice(1)&gt;&gt;
                     &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
@@ -18889,9 +18818,9 @@ button {
         /*
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number($customerWants * 2) + &quot;.@@&quot;&gt;&gt;
-        */
+        
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
-
+*/
         &lt;&lt;run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)&gt;&gt;
             
         &lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
@@ -18944,18 +18873,18 @@ button {
             &lt;&lt;run console.log(`ERROR: [postCustomer]: price was negative.`)&gt;&gt;
             &lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        
+        /* 
         &lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
-
+*/
         /* They want any fluffy */
         &lt;&lt;if $customerWants == 0&gt;&gt;
             &lt;&lt;set _priceBonus = Number(Number($rand[0]/100).toFixed(2))&gt;&gt; 
         &lt;&lt;else&gt;&gt;
             &lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        
+        /*
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
-
+*/
         &lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
 
         /* Check if they will accept the offer */
@@ -18973,9 +18902,9 @@ button {
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 &lt;&lt;/if&gt;&gt;
         &lt;&lt;else&gt;&gt;
-
+/* 
             &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$activeFluffy.name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
-            
+  */          
             &lt;&lt;if $activeFluffy.ID != $activeFluffy.ID&gt;&gt;
                 &lt;&lt;run console.log(`ERROR: [postCustomer]: Invalid ID found: ${$activeFluffy.ID}, Should be ${$activeFluffy.ID}.`)&gt;&gt;
                 &lt;&lt;set $activeFluffy.ID = $activeFluffy.ID&gt;&gt;
@@ -19004,6 +18933,7 @@ button {
 
             &lt;&lt;= _msgString&gt;&gt;
             &lt;br&gt;Sold &lt;&lt;- $activeFluffy.name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
+            &lt;&lt;drawSprite $activeFluffy&gt;&gt;
             &lt;&lt;removeFluffy $activeFluffy &quot;sell&quot;&gt;&gt;
             &lt;br&gt;
             &lt;br&gt;
@@ -19104,7 +19034,7 @@ button {
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 /* First, we build a customer, starting with how many wants it has, up to 6 */
-&lt;&lt;set $customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)&gt;&gt;
+&lt;&lt;set $customerWants = Math.clamp(Math.clamp(random(-6, 6), 0, $customerCards.length), 0, 6)&gt;&gt;
 
 /* How picky the customer is and how many fails they will put up with */
 &lt;&lt;set $customerTolerance = random(0, 3)&gt;&gt;
@@ -19113,10 +19043,15 @@ button {
 
 /* For each &quot;want&quot; pluck a random card from our deck and assign it to this customer: */
 &lt;&lt;run $customerDeck = $customerCards.pluckMany($customerWants)&gt;&gt;
-
-&lt;&lt;set $customerDeck = [ &quot;Earthy&quot; ]&gt;&gt;
+/*
+&lt;&lt;set $customerDeck = [ &quot;trait slow&quot; ]&gt;&gt;
 &lt;&lt;set $customerWants = 1&gt;&gt;
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)&gt;&gt;
+*/
+&lt;&lt;if $customerWants == 0&gt;&gt;
+    &lt;&lt;set _anyFluffy = $ourStore.fluffies.random()&gt;&gt;
+    &lt;&lt;set $activeFluffy = $globalFluffies[_anyFluffy]&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
 /* pre run random numbers for the event: */
 &lt;&lt;set $rand = []&gt;&gt;
@@ -19319,7 +19254,7 @@ button {
 
 /* pre run random numbers for the event: */
 &lt;&lt;set $rand = []&gt;&gt;
-&lt;&lt;set $rand.push($rand[0])&gt;&gt;  /* sucess rate; if eventDifficulty is higher than this, we can prevent the smarty */
+&lt;&lt;set $rand.push(random(0, 199)&gt;&gt;  /* success rate; if eventDifficulty is higher than this, we can prevent the smarty */
 
 
 &lt;&lt;goto &quot;Event Smarty&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Pre Starvation" tags="nobr" position="850,225" size="100,100">/* **********
@@ -20070,6 +20005,10 @@ Genes       Height multiplier
 		&lt;&lt;set $globalFluffies[_ef].age++&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
+	&lt;&lt;set $activeFluffy = $globalFluffies[_ef]&gt;&gt;
+	
+	&lt;&lt;checkAgeCategory&gt;&gt;
+
 	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
 		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
 			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
@@ -20084,7 +20023,7 @@ Genes       Height multiplier
 	&lt;&lt;/switch&gt;&gt;
 
 	/* &lt; 1 year old */
-	&lt;&lt;if Number($globalFluffies[_ef].age) == 0 &amp;&amp; Number($globalFluffies[_ef].ageWeeks) &lt;= $globalFluffies[_ef].maturity&gt;&gt;
+	&lt;&lt;if $globalFluffies[_ef].ageCategory &lt;= 4&gt;&gt;
 		&lt;&lt;set $ourStore.foals++&gt;&gt;
 
 	&lt;&lt;elseif $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
@@ -20143,7 +20082,8 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;br&gt;
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 5&gt;&gt;
@@ -20159,7 +20099,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20173,7 +20113,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20181,7 +20121,7 @@ Genes       Height multiplier
 	 * 120 - No healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 120&gt;&gt;
-		&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+		&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 	/*
@@ -20230,7 +20170,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 2&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
@@ -20246,7 +20186,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20260,7 +20200,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20268,7 +20208,7 @@ Genes       Height multiplier
 	 * 120 - No healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 120&gt;&gt;
-		&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+		&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 	/*
 	 * 100 - Stress decays into Trauma
 	 */
@@ -20312,7 +20252,7 @@ Genes       Height multiplier
 
 	&lt;&lt;set _smartyBase = Number(Number(130) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase&gt;&gt;
+	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase &amp;&amp; $globalFluffies[_ef].ageCategory &gt;= 3&gt;&gt;
 
 		/* Random chance to not fire at all: */
 		&lt;&lt;if $smartySyndrom &gt; random(0, 10)&gt;&gt;
@@ -20455,23 +20395,22 @@ Genes       Height multiplier
 									&lt;&lt;set _push = `Eye Group ${$globalFluffies[_ef].eColor.group}`&gt;&gt;
 								&lt;&lt;/if&gt;&gt;
 							&lt;&lt;case &quot;Age&quot;&gt;&gt;
-								&lt;&lt;set _cat = Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks)&gt;&gt;
-		
-								&lt;&lt;if _cat == 0&gt;&gt;
-									&lt;&lt;set _push = &quot;Newborn&quot;&gt;&gt;
-								&lt;&lt;elseif _cat == 1&gt;&gt;
-									&lt;&lt;set _push = &quot;Chirpy&quot;&gt;&gt;
-								&lt;&lt;elseif $globalFluffies[_ef].weaned === false&gt;&gt;
-									&lt;&lt;set _push = &quot;Talky&quot;&gt;&gt;
-								&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maturity/2)&gt;&gt;
-									&lt;&lt;set _push = &quot;Foal&quot;&gt;&gt;
-								&lt;&lt;elseif _cat &lt;= $globalFluffies[_ef].maturity&gt;&gt;
-									&lt;&lt;set _push = &quot;Youth&quot;&gt;&gt;
-								&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maxAge * 52 * 0.75)&gt;&gt;
-									&lt;&lt;set _push = &quot;Adult&quot;&gt;&gt;
-								&lt;&lt;else&gt;&gt;
-									&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
-								&lt;&lt;/if&gt;&gt;
+								&lt;&lt;switch $globalFluffies[_ef].ageCategory&gt;&gt;
+									&lt;&lt;case 0&gt;&gt;
+										&lt;&lt;set _push = &quot;Newborn&quot;&gt;&gt;
+									&lt;&lt;case 1&gt;&gt;
+										&lt;&lt;set _push = &quot;Chirpy&quot;&gt;&gt;
+									&lt;&lt;case 2&gt;&gt;
+										&lt;&lt;set _push = &quot;Talky&quot;&gt;&gt;
+									&lt;&lt;case 3&gt;&gt;
+										&lt;&lt;set _push = &quot;Foal&quot;&gt;&gt;
+									&lt;&lt;case 4&gt;&gt;
+										&lt;&lt;set _push = &quot;Youth&quot;&gt;&gt;
+									&lt;&lt;case 5&gt;&gt;
+										&lt;&lt;set _push = &quot;Adult&quot;&gt;&gt;
+									&lt;&lt;default&gt;&gt;
+										&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
+								&lt;&lt;/switch&gt;&gt;
 							&lt;&lt;default&gt;&gt;
 								&lt;&lt;set _push = $globalFluffies[_ef].breed&gt;&gt;
 						&lt;&lt;/switch&gt;&gt;
@@ -20602,7 +20541,7 @@ Genes       Height multiplier
 	/* ***
 	 *	Grow foals.
 	 *** */
-	&lt;&lt;if $globalFluffies[_ef].age == 0 &amp;&amp; Number($globalFluffies[_ef].ageWeeks) &lt;= 44&gt;&gt;
+	&lt;&lt;if $globalFluffies[_ef].ageCategory &lt; 6&gt;&gt;
 
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
@@ -20683,7 +20622,7 @@ Genes       Height multiplier
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
-	 &lt;&lt;if $globalFluffies[_ef].age == 0 &amp;&amp; Number($globalFluffies[_ef].ageWeeks) &gt;= $globalFluffies[_ef].maturity&gt;&gt;
+	 &lt;&lt;if $globalFluffies[_ef].ageCategory &gt;= 5&gt;&gt;
 			&lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
 				&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
 					&lt;&lt;if random(0, 1) == 0&gt;&gt;
@@ -22363,7 +22302,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;2f83434&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;50d2143&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22722,7 +22661,7 @@ profitsTotal: 0
 										&lt;&lt;set $globalFluffies[_rID].name = ($ordinalString + &quot; &quot; + $globalFluffies[_rID].ID)&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 						
-									&lt;&lt;if ($globalFluffies[_rID].ageWeeks + ($globalFluffies[_rID].age * 52) &lt; $globalFluffies[_rID].maturity)&gt;&gt;
+									&lt;&lt;if $globalFluffies[_rID].ageCategory &lt;= 4&gt;&gt;
 										&lt;&lt;set $ourStore.foals++&gt;&gt;
 									&lt;&lt;elseif $globalFluffies[_rID].gender == &quot;male&quot;&gt;&gt;
 										&lt;&lt;set $ourStore.stallions++&gt;&gt;
@@ -22775,7 +22714,7 @@ profitsTotal: 0
 								&lt;&lt;set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + &quot; &quot; + $randomFluffies[0])&gt;&gt;
 							&lt;&lt;/if&gt;&gt;
 				
-							&lt;&lt;if ($globalFluffies[$randomFluffies[0]].ageWeeks + ($globalFluffies[$randomFluffies[0]].age * 52) &lt; $globalFluffies[$randomFluffies[0]].maturity)&gt;&gt;
+							&lt;&lt;if $globalFluffies[$randomFluffies[0]].ageCategory &lt;= 4&gt;&gt;
 								&lt;&lt;set $ourStore.foals++&gt;&gt;
 							&lt;&lt;elseif $globalFluffies[$randomFluffies[0]].gender == &quot;male&quot;&gt;&gt;
 								&lt;&lt;set $ourStore.stallions++&gt;&gt;
@@ -22873,9 +22812,9 @@ profitsTotal: 0
 				
 				&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 					&lt;&lt;if $shop == &quot;feral&quot;&gt;&gt;
-						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
-						&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_id}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				&lt;/div&gt;
 			
@@ -22917,7 +22856,7 @@ profitsTotal: 0
 					
 					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_id].age == 0 &amp;&amp; $globalFluffies[_id].ageWeeks &lt; 45&gt;&gt;
+					&lt;&lt;if $globalFluffies[_id].ageCategory &lt; 5&gt;&gt;
 						&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 
@@ -22936,7 +22875,7 @@ profitsTotal: 0
 				&lt;div class=&quot;w3-container&quot;&gt;
 					&lt;&lt;timed 5ms&gt;&gt;
 
-						&lt;&lt;if $globalFluffies[_id].age &gt; 0 || $globalFluffies[_id].ageWeeks &gt; 2&gt;&gt;
+						&lt;&lt;if $globalFluffies[_id].ageCategory &gt;= 2&gt;&gt;
 							
 							&lt;&lt;personalityFix $globalFluffies[_id]&gt;&gt;
 							&lt;&lt;set $activeFluffy = $globalFluffies[_id]&gt;&gt;
@@ -23522,7 +23461,7 @@ Upgrades:
 	&lt;&lt;link [[Break up |Fluffy Breeding]]&gt;&gt;
 		/* Clear both special friends flag, ending breeding*/
 		&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		&lt;br&gt;&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 		
 		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
@@ -23596,25 +23535,6 @@ Upgrades:
 	&lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
-
-/*
-&lt;&lt;if _cat == 0&gt;&gt;
-	&lt;&lt;set _push = &quot;Newborn&quot;&gt;&gt;
-&lt;&lt;elseif _cat == 1&gt;&gt;
-	&lt;&lt;set _push = &quot;Chirpy&quot;&gt;&gt;
-&lt;&lt;elseif $globalFluffies[_ef].weaned === false&gt;&gt;
-	&lt;&lt;set _push = &quot;Talky&quot;&gt;&gt;
-&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maturity/2)&gt;&gt;
-	&lt;&lt;set _push = &quot;Foal&quot;&gt;&gt;
-&lt;&lt;elseif _cat &lt;= $globalFluffies[_ef].maturity&gt;&gt;
-	&lt;&lt;set _push = &quot;Youth&quot;&gt;&gt;
-&lt;&lt;elseif _cat &lt; Number($globalFluffies[_ef].maxAge * 52 * 0.75)&gt;&gt;
-	&lt;&lt;set _push = &quot;Adult&quot;&gt;&gt;
-&lt;&lt;else&gt;&gt;
-	&lt;&lt;set _push = &quot;Grey&quot;&gt;&gt;
-&lt;&lt;/if&gt;&gt;
- */
 
 &lt;meta name=&quot;viewport&quot; content=&quot;width=device-width, initial-scale=1.0&quot;&gt;
 
@@ -23998,7 +23918,7 @@ Upgrades:
 				&lt;&lt;button &quot;Break Up&quot;&gt;&gt;
 				/* Clear both special friends flag, ending breeding*/
 				&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-				&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+				&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 
 				&lt;&lt;set _specialName = &quot;friend&quot;&gt;&gt;
 				
@@ -24812,7 +24732,7 @@ Upgrades:
 	/* Clear both special friends flag, ending breeding*/
 	&lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
 		&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt; and $activeFluffy.name are no longer special friends.
-		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 
 		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
@@ -26022,6 +25942,7 @@ Subspecies:
                     &lt;&lt;newFromGene $testChild&gt;&gt;
                     &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
                     &lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
+                    &lt;&lt;checkAgeCategory&gt;&gt;
                     &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
@@ -26210,6 +26131,7 @@ Subspecies:
                         &lt;&lt;breedFluffies $mom $dad&gt;&gt;
                         &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
+                        &lt;&lt;checkAgeCategory&gt;&gt;
 
                         &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
 
@@ -26275,7 +26197,15 @@ Subspecies:
         /* Force generate angora */
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
         &lt;&lt;newFromGene $testChild 2&gt;&gt;
+
+        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
+
         &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
+        &lt;&lt;set $activeFluffy.ageWeeks = random(0, 30)&gt;&gt;
+        &lt;&lt;checkAgeCategory&gt;&gt;
 
         &lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
         /* The boolean test above sets the gene if it&#39;s valid, so we have to save the new string */
@@ -26290,8 +26220,12 @@ Subspecies:
     &lt;&lt;else&gt;&gt;
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
         &lt;&lt;newFromGene $testChild&gt;&gt;
-    &lt;&lt;/if&gt;&gt;
 
+        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
+        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
+        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
+        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
 
     /* Don&#39;t generate alicorns at a shop or mill*/
     &lt;&lt;if $shop == &quot;mill&quot; || $shop == &quot;mart&quot;&gt;&gt;
@@ -26301,13 +26235,6 @@ Subspecies:
         &lt;&lt;/for&gt;&gt;
     &lt;&lt;/if&gt;&gt;
     
-    &lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-        &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
-        &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
-        &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
-        &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-    &lt;&lt;/if&gt;&gt;
-
     /* We may have generated one or a family, so run the checks on all of them in turn. */
     &lt;&lt;for _rID range $randomFluffies&gt;&gt;
 
@@ -26353,9 +26280,9 @@ Subspecies:
             &lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
             &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
             &lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
+            &lt;&lt;checkAgeCategory&gt;&gt;
             &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60))&gt;&gt;
 
-            &lt;&lt;limitColor 1 2&gt;&gt;
         &lt;&lt;elseif $shop == &quot;feral&quot;&gt;&gt;
             /* young fluffies get no names */
             &lt;&lt;if $activeFluffy.age != 0&gt;&gt;
@@ -26396,6 +26323,7 @@ Subspecies:
                      &lt;&lt;set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)&gt;&gt;
+                    &lt;&lt;checkAgeCategory&gt;&gt;
                     &lt;&lt;setName&gt;&gt;
                     &lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
                     &lt;&lt;limitColor 1 2 3 4&gt;&gt;
@@ -26469,7 +26397,6 @@ Subspecies:
         &lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
         
         &lt;&lt;colorValue&gt;&gt;
-        /*&lt;&lt;colorGroup $activeFluffy&gt;&gt;*/
         &lt;&lt;statValue&gt;&gt;
 
         &lt;&lt;set $activeFluffy.isChecked = false&gt;&gt;
@@ -26551,7 +26478,7 @@ button {
 			&lt;&lt;set $globalFluffies[_fl].preOwned = true&gt;&gt;
 			/*&lt;&lt;fixColors $globalFluffies[_fl]&gt;&gt;*/
 			&lt;&lt;if _args[0] === &quot;breeding&quot;&gt;&gt;
-				&lt;&lt;if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &amp;&amp;  Number($globalFluffies[$activeFluffy.ID].ageWeeks) &lt;= $globalFluffies[$activeFluffy.ID].maturity&gt;&gt;
+				&lt;&lt;if $activeFluffy.ID == _fl || $globalFluffies[$activeFluffy.ID].ageCategory &lt;= 4&gt;&gt;
 					&lt;&lt;continue&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
@@ -26607,9 +26534,7 @@ button {
 				
 					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 						&lt;&lt;if _args[0] != &quot;customer&quot; &amp;&amp; _args[0] != &quot;breeding&quot;&gt;&gt;
-						&lt;&lt;print
-							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
-						&gt;&gt;
+						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${_fl}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 						&lt;&lt;/if&gt;&gt;
 					&lt;/div&gt;
 			
@@ -26720,14 +26645,10 @@ button {
 		&lt;&lt;set _background = &quot;lightgray&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt;= 1&gt;&gt;
-			&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`
-			${&quot;cheep... cheep...&quot;}
-		`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;if $activeFluffy.ageCategory &lt; 2&gt;&gt;
+		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${&quot;cheep... cheep...&quot;}`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`
-			${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, _args[1].name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}
-		`+&#39;&quot;&#39;&gt;&gt;
+		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, _args[1].name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}`+&#39;&quot;&#39;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
@@ -26931,7 +26852,7 @@ button {
 				
 	&lt;&lt;set _ageMulti = 1&gt;&gt;
 			
-	&lt;&lt;if $globalFluffies[_thisFluffy.ID].age == 0 &amp;&amp; $globalFluffies[_thisFluffy.ID].ageWeeks &lt; 45&gt;&gt;
+	&lt;&lt;if $globalFluffies[_thisFluffy.ID].ageCategory &lt; 5&gt;&gt;
 		&lt;&lt;set _ageMulti = Number(($globalFluffies[_thisFluffy.ID].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 		
@@ -27846,6 +27767,7 @@ button {
 		&lt;&lt;set _rAge = Math.clamp(Number(_rAge), 52, 96)&gt;&gt;
 		&lt;&lt;set $activeFluffy.age = Math.trunc(Number(_rAge / 52))&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)&gt;&gt;
+		&lt;&lt;checkAgeCategory&gt;&gt;
 
 		&lt;&lt;switch $alicornRarity&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
@@ -28431,6 +28353,7 @@ button {
 
 	&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 	&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+	&lt;&lt;checkAgeCategory&gt;&gt;
 	&lt;&lt;set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)&gt;&gt;
 	&lt;&lt;set $activeFluffy.weight = Number($activeFluffy.maxWeight * 0.0286).toFixed(3)&gt;&gt;
@@ -28581,7 +28504,7 @@ button {
 
 		&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ID].ID)&gt;&gt;
 
-		&lt;&lt;if Number($globalFluffies[_ID].age) == 0 &amp;&amp; Number($globalFluffies[_ID].ageWeeks) &lt;= $globalFluffies[_ID].maturity&gt;&gt;
+		&lt;&lt;if $globalFluffies[_ID].ageCategory &lt;= 3&gt;&gt;
 			&lt;&lt;set $ourStore.foals--&gt;&gt;
 		&lt;&lt;elseif $globalFluffies[_ID].gender == &quot;male&quot;&gt;&gt;
 			&lt;&lt;set $ourStore.stallions--&gt;&gt;
@@ -30347,19 +30270,19 @@ button {
 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;switch $fluffyFilters.maturity&gt;&gt;
 		&lt;&lt;case &quot;newborn&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 0)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 0)&gt;&gt;
 		&lt;&lt;case &quot;baby&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks == 1)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 1)&gt;&gt;
 		&lt;&lt;case &quot;talky&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt; 1 &amp;&amp; fluffy.weaned == false)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 2)&gt;&gt;
 		&lt;&lt;case &quot;foal&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 5 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; (fluffy.maturity/2))&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 3)&gt;&gt;
 		&lt;&lt;case &quot;youth&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= 20 &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maturity)&gt;&gt;	
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 4)&gt;&gt;	
 		&lt;&lt;case &quot;adult&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maturity &amp;&amp; fluffy.age * 52 + fluffy.ageWeeks &lt; fluffy.maxAge * 52 * 0.75)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 5)&gt;&gt;
 		&lt;&lt;case &quot;elder&quot;&gt;&gt;
-			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.age * 52 + fluffy.ageWeeks &gt;= fluffy.maxAge * 52 * 0.75)&gt;&gt;
+			&lt;&lt;set $filterFluffies = $filterFluffies.filter(fluffy =&gt; fluffy.ageCategory == 6)&gt;&gt;
 		&lt;&lt;default&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;if $fluffyFilters.gender != false&gt;&gt;
@@ -30398,6 +30321,28 @@ button {
 
 	&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;&lt;&lt;FluffyList _type _replaceFluffies&gt;&gt;&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;run pageLoad();&gt;&gt;
+&lt;&lt;/widget&gt;&gt;
+
+
+&lt;&lt;widget &quot;checkAgeCategory&quot;&gt;&gt;
+
+	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
+		
+	&lt;&lt;if _cat == 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 0&gt;&gt;
+	&lt;&lt;elseif _cat == 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 2&gt;&gt;
+	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 3&gt;&gt;
+	&lt;&lt;elseif _cat &lt;= $activeFluffy.maturity&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 4&gt;&gt;
+	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 5&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageCategory = 6&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;</tw-passagedata><tw-passagedata pid="53" name="pronoun widgets" tags="widget nobr" position="350,725" size="100,100">/* **********
  * pronounWidgets.tw
  *
