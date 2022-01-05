@@ -46,7 +46,6 @@ button {
                 /* Breed, value depends on what is offered*/
                 <<elseif _card === "earthy" || _card === "unicorn" || _card === "pegasus" || _card === "alicorn">>
                     /* Pefect match, 2 points */
-<<run console.log(`DEBUG: [eventCustomer]: Breed:  ${$activeFluffy.breed}`)>>
                     <<if _card === $activeFluffy.breed.toLowerCase()>>
                         <<set _needsMatch += 2>>
 
@@ -357,7 +356,7 @@ button {
 
                 <<elseif _card.includes("trait")>>
                     <<set _subString = _card.substring(6).trim()>>
-                    <<set _card = _card.charAt(0).toUpperCase() + _card.slice(1)>>
+                    <<set _subString = _subString.charAt(0).toUpperCase() + _subString.slice(1)>>
                     <<if $activeFluffy.traits.includes(String(_subString))>>
                         <<set _needsMatch += 2>>
                     <</if>>
@@ -369,9 +368,9 @@ button {
         /*
         <<set _msgString += "<br>@@.orange;Match points = " + _needsMatch + ".@@">>
         <<set _msgString += "<br>@@.orange;Possible points = " + Number($customerWants * 2) + ".@@">>
-        */
+        
         <<set _msgString += "<br>@@.orange;Match % = " + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + ".@@">>
-
+*/
         <<run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)>>
             
         <<set _price = Number($activeFluffy.training)>>
@@ -424,18 +423,18 @@ button {
             <<run console.log(`ERROR: [postCustomer]: price was negative.`)>>
             <<set _price = Number($earthPrice.mart)>>
         <</if>>
-        
+        /* 
         <br>@@.orange;Base price = <<- _price>>.@@
-
+*/
         /* They want any fluffy */
         <<if $customerWants == 0>>
             <<set _priceBonus = Number(Number($rand[0]/100).toFixed(2))>> 
         <<else>>
             <<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))>>
         <</if>>
-        
+        /*
         <<set _msgString += "<br>@@.orange;Price Bonus = "+ _priceBonus + ".@@">>
-
+*/
         <<set _price = Number(_price * _priceBonus).toFixed(2)>>
 
         /* Check if they will accept the offer */
@@ -453,9 +452,9 @@ button {
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 <</if>>
         <<else>>
-
+/* 
             <<set _msgString += "<br>@@.orange;They would pay = " + _price + " for " +$activeFluffy.name + ".@@<br>">>
-            
+  */          
             <<if $activeFluffy.ID != $activeFluffy.ID>>
                 <<run console.log(`ERROR: [postCustomer]: Invalid ID found: ${$activeFluffy.ID}, Should be ${$activeFluffy.ID}.`)>>
                 <<set $activeFluffy.ID = $activeFluffy.ID>>
@@ -484,6 +483,7 @@ button {
 
             <<= _msgString>>
             <br>Sold <<- $activeFluffy.name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New reputation <<- $reputation>>.
+            <<drawSprite $activeFluffy>>
             <<removeFluffy $activeFluffy "sell">>
             <br>
             <br>

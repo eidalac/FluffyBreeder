@@ -17945,16 +17945,47 @@ button {
 	&lt;br&gt;
 	/* Display the initial list*/
 	&lt;&lt;timed 20ms&gt;&gt;
-	&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
-	&lt;&lt;set $fluffyFilters = {
-		breed: false,
-		maturity: false,
-		gender: false,
-		coat: false,
-		mane: false,
-		eyes: false
-	}&gt;&gt;
-	&lt;&lt;resetList&gt;&gt;
+	&lt;&lt;if $customerWants != 0&gt;&gt;
+		&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
+		&lt;&lt;set $fluffyFilters = {
+			breed: false,
+			maturity: false,
+			gender: false,
+			coat: false,
+			mane: false,
+			eyes: false
+		}&gt;&gt;
+		&lt;&lt;resetList&gt;&gt;
+	&lt;&lt;else&gt;&gt;
+		&lt;&lt;capture $activeFluffy.ID, $activeFluffy.name&gt;&gt;
+			&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;
+				&lt;div class=&quot;fluffy-description&quot;&gt;
+				
+					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
+						&lt;&lt;print
+							`&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${$activeFluffy.ID}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`
+						&gt;&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;fluffy-desc-top w3-row w3-dark-grey&quot;&gt;
+						&lt;div class=&quot;fluffy-name w3-container&quot;&gt;
+							&lt;&lt;- $activeFluffy.name&gt;&gt;
+						&lt;/div&gt;
+						&lt;div class=&quot;fluffy-quickactions w3-rest w3-container&quot;&gt;
+							&lt;&lt;set _buttonString = &quot;Offer &quot; + $activeFluffy.name&gt;&gt;
+
+							&lt;&lt;button _buttonString &quot;Post Customer&quot;&gt;&gt;&lt;&lt;/button&gt;&gt;
+						&lt;/div&gt;
+					&lt;/div&gt;
+
+					&lt;div class=&quot;fluffy-desc-bottom w3-row w3-dark-grey&quot;&gt;
+						&lt;&lt;drawSprite $activeFluffy&gt;&gt;
+						&lt;&lt;shortDesc $activeFluffy&gt;&gt;
+					&lt;/div&gt;
+				&lt;/div&gt;
+			&lt;&lt;/replace&gt;&gt;
+		&lt;&lt;/capture&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/timed&gt;&gt;
 &lt;/div&gt;
 
@@ -18566,7 +18597,6 @@ button {
                 /* Breed, value depends on what is offered*/
                 &lt;&lt;elseif _card === &quot;earthy&quot; || _card === &quot;unicorn&quot; || _card === &quot;pegasus&quot; || _card === &quot;alicorn&quot;&gt;&gt;
                     /* Pefect match, 2 points */
-&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Breed:  ${$activeFluffy.breed}`)&gt;&gt;
                     &lt;&lt;if _card === $activeFluffy.breed.toLowerCase()&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
 
@@ -18877,7 +18907,7 @@ button {
 
                 &lt;&lt;elseif _card.includes(&quot;trait&quot;)&gt;&gt;
                     &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
-                    &lt;&lt;set _card = _card.charAt(0).toUpperCase() + _card.slice(1)&gt;&gt;
+                    &lt;&lt;set _subString = _subString.charAt(0).toUpperCase() + _subString.slice(1)&gt;&gt;
                     &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
@@ -18889,9 +18919,9 @@ button {
         /*
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number($customerWants * 2) + &quot;.@@&quot;&gt;&gt;
-        */
+        
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
-
+*/
         &lt;&lt;run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)&gt;&gt;
             
         &lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
@@ -18944,18 +18974,18 @@ button {
             &lt;&lt;run console.log(`ERROR: [postCustomer]: price was negative.`)&gt;&gt;
             &lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        
+        /* 
         &lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
-
+*/
         /* They want any fluffy */
         &lt;&lt;if $customerWants == 0&gt;&gt;
             &lt;&lt;set _priceBonus = Number(Number($rand[0]/100).toFixed(2))&gt;&gt; 
         &lt;&lt;else&gt;&gt;
             &lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        
+        /*
         &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
-
+*/
         &lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
 
         /* Check if they will accept the offer */
@@ -18973,9 +19003,9 @@ button {
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 &lt;&lt;/if&gt;&gt;
         &lt;&lt;else&gt;&gt;
-
+/* 
             &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$activeFluffy.name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
-            
+  */          
             &lt;&lt;if $activeFluffy.ID != $activeFluffy.ID&gt;&gt;
                 &lt;&lt;run console.log(`ERROR: [postCustomer]: Invalid ID found: ${$activeFluffy.ID}, Should be ${$activeFluffy.ID}.`)&gt;&gt;
                 &lt;&lt;set $activeFluffy.ID = $activeFluffy.ID&gt;&gt;
@@ -19004,6 +19034,7 @@ button {
 
             &lt;&lt;= _msgString&gt;&gt;
             &lt;br&gt;Sold &lt;&lt;- $activeFluffy.name&gt;&gt; for &lt;&lt;- _price&gt;&gt;@@.yellowgreen;¤@@.&lt;br&gt;New reputation &lt;&lt;- $reputation&gt;&gt;.
+            &lt;&lt;drawSprite $activeFluffy&gt;&gt;
             &lt;&lt;removeFluffy $activeFluffy &quot;sell&quot;&gt;&gt;
             &lt;br&gt;
             &lt;br&gt;
@@ -19104,7 +19135,7 @@ button {
 &lt;&lt;set $activeFluffy = $globalFluffies[$currentEvent.target]&gt;&gt;
 
 /* First, we build a customer, starting with how many wants it has, up to 6 */
-&lt;&lt;set $customerWants = Math.clamp(Math.clamp(random(-2, 6), 0, $customerCards.length), 0, 6)&gt;&gt;
+&lt;&lt;set $customerWants = Math.clamp(Math.clamp(random(-6, 6), 0, $customerCards.length), 0, 6)&gt;&gt;
 
 /* How picky the customer is and how many fails they will put up with */
 &lt;&lt;set $customerTolerance = random(0, 3)&gt;&gt;
@@ -19114,9 +19145,14 @@ button {
 /* For each &quot;want&quot; pluck a random card from our deck and assign it to this customer: */
 &lt;&lt;run $customerDeck = $customerCards.pluckMany($customerWants)&gt;&gt;
 
-&lt;&lt;set $customerDeck = [ &quot;Earthy&quot; ]&gt;&gt;
+&lt;&lt;set $customerDeck = [ &quot;trait slow&quot; ]&gt;&gt;
 &lt;&lt;set $customerWants = 1&gt;&gt;
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)&gt;&gt;
+
+&lt;&lt;if $customerWants == 0&gt;&gt;
+    &lt;&lt;set _anyFluffy = $ourStore.fluffies.random()&gt;&gt;
+    &lt;&lt;set $activeFluffy = $globalFluffies[_anyFluffy]&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
 /* pre run random numbers for the event: */
 &lt;&lt;set $rand = []&gt;&gt;
@@ -22363,7 +22399,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;2f83434&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;1df62cc&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********

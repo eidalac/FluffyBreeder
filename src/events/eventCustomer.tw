@@ -115,16 +115,47 @@ button {
 	<br>
 	/* Display the initial list*/
 	<<timed 20ms>>
-	<<set _type = "customer">>
-	<<set $fluffyFilters = {
-		breed: false,
-		maturity: false,
-		gender: false,
-		coat: false,
-		mane: false,
-		eyes: false
-	}>>
-	<<resetList>>
+	<<if $customerWants != 0>>
+		<<set _type = "customer">>
+		<<set $fluffyFilters = {
+			breed: false,
+			maturity: false,
+			gender: false,
+			coat: false,
+			mane: false,
+			eyes: false
+		}>>
+		<<resetList>>
+	<<else>>
+		<<capture $activeFluffy.ID, $activeFluffy.name>>
+			<<replace "#fluffy-list">>
+				<div class="fluffy-description">
+				
+					<div class="fluffy-checkbox-container">
+						<<print
+							`<input class="fluffy-checkbox" data-fluffy-id="${$activeFluffy.ID}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`
+						>>
+					</div>
+
+					<div class="fluffy-desc-top w3-row w3-dark-grey">
+						<div class="fluffy-name w3-container">
+							<<- $activeFluffy.name>>
+						</div>
+						<div class="fluffy-quickactions w3-rest w3-container">
+							<<set _buttonString = "Offer " + $activeFluffy.name>>
+
+							<<button _buttonString "Post Customer">><</button>>
+						</div>
+					</div>
+
+					<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+						<<drawSprite $activeFluffy>>
+						<<shortDesc $activeFluffy>>
+					</div>
+				</div>
+			<</replace>>
+		<</capture>>
+	<</if>>
 	<</timed>>
 </div>
 
