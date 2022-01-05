@@ -17448,121 +17448,10 @@ window.nameList = {
  *	Used to limit the colors you can get from different sources.
  *** */
 &lt;&lt;widget &quot;limitColor&quot;&gt;&gt;
-/*
-	&lt;&lt;if ndef(_args)&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;limitColor&gt;&gt;: Called with no arguments.`)&gt;&gt;
-	&lt;&lt;elseif _args.length &gt; 2&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;limitColor&gt;&gt;: Called with too many arguments.`)&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _wGene = [ &quot;W/w;&quot;, &quot;W/W;&quot;, &quot;w/W;&quot; ]&gt;&gt;
 
-		&lt;&lt;script&gt;&gt;
-			if (state.temporary.args.length == 1)
-			{
-				State.temporary.high = Number(Math.max(state.temporary.args[0], 6));
-				State.temporary.low = Number(Math.min(state.temporary.args[0], 1));
-			}
-			else
-			{
-				State.temporary.high = Number(Math.max(state.temporary.args[0], state.temporary.args[1], 6));
-				State.temporary.low = Number(Math.min(state.temporary.args[0], state.temporary.args[1], 1));
-			}
-		&lt;&lt;/script&gt;&gt;
-
-		&lt;&lt;set _nColors = clone($colors)&gt;&gt;
-
-		&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.tier &lt; _low; })&gt;&gt;
-		&lt;&lt;run _nColors.deleteWith(function (val) { 	return val.tier &gt; _high; })&gt;&gt;
-
-		&lt;&lt;set _randomCoat = _nColors.random()&gt;&gt;
-		&lt;&lt;set _randomMane = _nColors.random()&gt;&gt;
-
-		&lt;&lt;run $activeFluffy.genes.setManeColor(_randomMane.gene + _wGene.random())&gt;&gt;
-		&lt;&lt;run $activeFluffy.genes.setCoatColor(_randomCoat.gene + _wGene.random())&gt;&gt;
-		&lt;&lt;run $activeFluffy.genes.setEyeColor(_nColors.random().gene + _wGene.random())&gt;&gt;
-
-		&lt;&lt;set $activeFluffy.geneString = $activeFluffy.genes.toString()&gt;&gt;
-
-		&lt;&lt;set $activeFluffy.mColor = $activeFluffy.genes.getManeColorObject()&gt;&gt;
-		&lt;&lt;set $activeFluffy.cColor = $activeFluffy.genes.getCoatColorObject()&gt;&gt;
-		&lt;&lt;set $activeFluffy.eColor = $activeFluffy.genes.getEyeColorObject()&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-*/	
 &lt;&lt;/widget&gt;&gt;
 
-/* ***
- *	Color Group
- *	Call as &lt;&lt;colorGroup $fluffy&gt;&gt;
- *
- *	Finds the name of the color group of $fluffy.
- *	Without fluffy, will simply apply to $ntcArr.
- *** */
- /*
-&lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
-	&lt;&lt;fluffyError _args[0]&gt;&gt;
-	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: ${$fluffyError}.`)&gt;&gt;
-		&lt;&lt;set $fluffyError = false&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _ntcFluffy = _args[0]&gt;&gt;
-		&lt;&lt;run
-			_ntcFluffy.colorGroup[0] = ntc.name(_ntcFluffy.cColor.hex)[3];
-			_ntcFluffy.colorGroup[1] = ntc.name(_ntcFluffy.mColor.hex)[3];
-			_ntcFluffy.colorGroup[2] = ntc.name(_ntcFluffy.eColor.hex)[3];
-		&gt;&gt;
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt;
-*/
-/* &lt;&lt;widget &quot;colorGroup&quot;&gt;&gt;
-	&lt;&lt;fluffyError _args[0]&gt;&gt;
-	&lt;&lt;if $fluffyError&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: &lt;&lt;colorGroup&gt;&gt;: ${$fluffyError}.`)&gt;&gt;
-		&lt;&lt;set $fluffyError = false&gt;&gt;
-	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if _args[0]&gt;&gt;
-			&lt;&lt;set _hslFluffy = _args[0]&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set _hslFluffy = $activeFluffy&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;set _hslCoat = hexToHSL(_hslFluffy.cColor.hex)&gt;&gt;
-		&lt;&lt;set _hslMane = hexToHSL(_hslFluffy.mColor.hex)&gt;&gt;
-		&lt;&lt;set _hslEyes = hexToHSL(_hslFluffy.eColor.hex)&gt;&gt;
-		&lt;&lt;set _hslFluffy.colorGroup = [&quot;&quot;, &quot;&quot;, &quot;&quot;]&gt;&gt;
 
-		console.log(ntc.name(State.variables.activeFluffy.cColor.hex))
-
-		&lt;&lt;for _i = 0; _i &lt; groupList.length-2; _i++&gt;&gt;
-			&lt;&lt;capture _i&gt;&gt;
-				&lt;&lt;if inRange(_hslCoat[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslCoat[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[0] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if inRange(_hslMane[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslMane[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[1] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if inRange(_hslEyes[0].toFixed(0), groupList[_i].hue, groupList[_i+1].hue)&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[_i].name&gt;&gt;
-				&lt;&lt;elseif _hslEyes[0].toFixed(0) &gt;= groupList[groupList.length-1].hue&gt;&gt;
-					&lt;&lt;set _hslFluffy.colorGroup[2] = groupList[groupList.length-1].name&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/capture&gt;&gt;
-		&lt;&lt;/for&gt;&gt;
-
-		&lt;&lt;if _hslFluffy.colorGroup[0] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for coat ${_hslFluffy.cColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _hslFluffy.colorGroup[1] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for mane ${_hslFluffy.mColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if _hslFluffy.colorGroup[2] == &quot;&quot;&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: colorGroup: No color match found for eye ${_hslFluffy.eColor} on Fluffy ${_hslFluffy.ID}.`)&gt;&gt;
-		&lt;&lt;/if&gt;&gt;	
-	&lt;&lt;/if&gt;&gt;
-&lt;&lt;/widget&gt;&gt; */
 
 /* ***
  *	Call as &lt;&lt;setFilters $fluffy&gt;&gt;
@@ -17625,7 +17514,7 @@ window.nameList = {
 
 &lt;h1&gt;Birth Event&lt;/h1&gt;
 &lt;br&gt;$mom.name is giving birth to $mom.litter foals.
-&lt;br&gt;@@.cyan;SKREEEEE BIGGGEST POOOPIES!!@@
+&lt;br&gt;&lt;&lt;fluffSpeech &quot;SKREEEEE BIGGGEST POOOPIES!!!&quot; $mom&gt;&gt;
 &lt;br&gt;
 &lt;hr&gt;
 
@@ -17729,13 +17618,13 @@ window.nameList = {
 			&lt;&lt;set $mom.fertility--&gt;&gt;
 			&lt;&lt;set $mom.stress += 5&gt;&gt;
 			&lt;&lt;set $mom.trauma += 1&gt;&gt;
-			&lt;br&gt;@@.cyan;Why special place hurties?@@
+			&lt;&lt;fluffSpeech &quot;Why special place hurties?&quot; $mom&gt;&gt;
 		&lt;&lt;/if&gt;&gt; /* Close fertilty drop test */
 	&lt;&lt;else&gt;&gt;
 		/* 0 fertility left */
 		&lt;&lt;set $mom.stress += 50&gt;&gt;
 		&lt;&lt;set $mom.trauma += 5&gt;&gt;
-		&lt;br&gt;@@.cyan;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!@@
+		&lt;&lt;fluffSpeech &quot;WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!&quot; $mom&gt;&gt;
 	&lt;&lt;/if&gt;&gt; /* Close fertilty &gt; 0 test */
 	
 	/* Update the mom: */
@@ -19367,7 +19256,7 @@ button {
 
 /* pre run random numbers for the event: */
 &lt;&lt;set $rand = []&gt;&gt;
-&lt;&lt;set $rand.push($rand[0])&gt;&gt;  /* sucess rate; if eventDifficulty is higher than this, we can prevent the smarty */
+&lt;&lt;set $rand.push($rand[0])&gt;&gt;  /* success rate; if eventDifficulty is higher than this, we can prevent the smarty */
 
 
 &lt;&lt;goto &quot;Event Smarty&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Pre Starvation" tags="nobr" position="850,225" size="100,100">/* **********
@@ -20195,7 +20084,8 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;br&gt;
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 5&gt;&gt;
@@ -20211,7 +20101,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20225,7 +20115,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+			&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20233,7 +20123,7 @@ Genes       Height multiplier
 	 * 120 - No healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 120&gt;&gt;
-		&lt;br&gt;@@.cyan;Huhuhu &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; haz tu many hurties.@@
+		&lt;&lt;fluffSpeech &quot;huhuhu, &lt;fluffy&gt; haz tu many hurties...&quot; $globalFluffies[_ef]&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 	/*
@@ -20282,7 +20172,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].trauma += 2&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
@@ -20298,7 +20188,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20312,7 +20202,7 @@ Genes       Height multiplier
 			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+			&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20320,7 +20210,7 @@ Genes       Height multiplier
 	 * 120 - No healing
 	 */
 	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 120&gt;&gt;
-		&lt;br&gt;@@.cyan;Head hurties gu away. Weave gud fluffy &lt;&lt;- $globalFluffies[_ef].name&gt;&gt; alone!@@
+		&lt;&lt;fluffSpeech &quot;Head hurties gu away. Weave gud fluffy &lt;fluffy&gt; alone!&quot; $globalFluffies[_ef]&gt;&gt;
 	/*
 	 * 100 - Stress decays into Trauma
 	 */
@@ -22414,7 +22304,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;f3311ad&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;9c36cff&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22968,7 +22858,7 @@ profitsTotal: 0
 					
 					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
 					&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_id].ageCategory. &lt; 5&gt;&gt;
+					&lt;&lt;if $globalFluffies[_id].ageCategory &lt; 5&gt;&gt;
 						&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 
@@ -23573,7 +23463,7 @@ Upgrades:
 	&lt;&lt;link [[Break up |Fluffy Breeding]]&gt;&gt;
 		/* Clear both special friends flag, ending breeding*/
 		&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		&lt;br&gt;&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 		
 		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
@@ -24030,7 +23920,7 @@ Upgrades:
 				&lt;&lt;button &quot;Break Up&quot;&gt;&gt;
 				/* Clear both special friends flag, ending breeding*/
 				&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-				&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+				&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 
 				&lt;&lt;set _specialName = &quot;friend&quot;&gt;&gt;
 				
@@ -24846,7 +24736,7 @@ Upgrades:
 	/* Clear both special friends flag, ending breeding*/
 	&lt;&lt;if $activeFluffy.specialFriend != -1&gt;&gt;
 		&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.specialFriend].name&gt;&gt; and $activeFluffy.name are no longer special friends.
-		&lt;br&gt;@@.cyan;HUHUHU WORST SADIES.@@
+		&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
 
 		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
