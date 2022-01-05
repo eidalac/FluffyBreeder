@@ -73,7 +73,7 @@ button {
 			<<set $globalFluffies[_fl].preOwned = true>>
 			/*<<fixColors $globalFluffies[_fl]>>*/
 			<<if _args[0] === "breeding">>
-				<<if $activeFluffy.ID == _fl || Number($globalFluffies[$activeFluffy.ID].age) == 0 &&  Number($globalFluffies[$activeFluffy.ID].ageWeeks) <= $globalFluffies[$activeFluffy.ID].maturity>>
+				<<if $activeFluffy.ID == _fl || $globalFluffies[$activeFluffy.ID].ageCategory <= 4>>
 					<<continue>>
 				<</if>>
 			<</if>>
@@ -242,7 +242,7 @@ button {
 		<<set _background = "lightgray">>
 	<</if>>
 
-	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks <= 1>>
+	<<if $activeFluffy.ageCategory < 2>>
 			<<- `@@background:${_background}; color:${_color};`+'"'+`
 			${"cheep... cheep..."}
 		`+'"'>>
@@ -453,7 +453,7 @@ button {
 				
 	<<set _ageMulti = 1>>
 			
-	<<if $globalFluffies[_thisFluffy.ID].age == 0 && $globalFluffies[_thisFluffy.ID].ageWeeks < 45>>
+	<<if $globalFluffies[_thisFluffy.ID].ageCategory < 5>>
 		<<set _ageMulti = Number(($globalFluffies[_thisFluffy.ID].ageWeeks+1) / 44).toFixed(2)>>
 	<</if>>
 		

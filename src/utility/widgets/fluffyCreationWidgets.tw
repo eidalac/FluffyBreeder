@@ -222,6 +222,7 @@
 		<<set _rAge = Math.clamp(Number(_rAge), 52, 96)>>
 		<<set $activeFluffy.age = Math.trunc(Number(_rAge / 52))>>
 		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)>>
+		<<checkAgeCategory>>
 
 		<<switch $alicornRarity>>
 		<<case 0>>
@@ -807,6 +808,7 @@
 
 	<<set $activeFluffy.age = 0>>
 	<<set $activeFluffy.ageWeeks = 0>>
+	<<checkAgeCategory>>
 	<<set $activeFluffy.height = Number($activeFluffy.maxHeight * 0.22).toFixed(2)>>
 	<<set $activeFluffy.length = Number($activeFluffy.maxLength * 0.22).toFixed(2)>>
 	<<set $activeFluffy.weight = Number($activeFluffy.maxWeight * 0.0286).toFixed(3)>>
@@ -957,7 +959,7 @@
 
 		<<run $ourStore.fluffies.delete($globalFluffies[_ID].ID)>>
 
-		<<if Number($globalFluffies[_ID].age) == 0 && Number($globalFluffies[_ID].ageWeeks) <= $globalFluffies[_ID].maturity>>
+		<<if $globalFluffies[_ID].ageCategory <= 3>>
 			<<set $ourStore.foals-->>
 		<<elseif $globalFluffies[_ID].gender == "male">>
 			<<set $ourStore.stallions-->>

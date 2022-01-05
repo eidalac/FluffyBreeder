@@ -804,19 +804,19 @@
 	<</if>>
 	<<switch $fluffyFilters.maturity>>
 		<<case "newborn">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks == 0)>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 0)>>
 		<<case "baby">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks == 1)>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 1)>>
 		<<case "talky">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks > 1 && fluffy.weaned == false)>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 2)>>
 		<<case "foal">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= 5 && fluffy.age * 52 + fluffy.ageWeeks < (fluffy.maturity/2))>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 3)>>
 		<<case "youth">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= 20 && fluffy.age * 52 + fluffy.ageWeeks < fluffy.maturity)>>	
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 4)>>	
 		<<case "adult">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= fluffy.maturity && fluffy.age * 52 + fluffy.ageWeeks < fluffy.maxAge * 52 * 0.75)>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 5)>>
 		<<case "elder">>
-			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.age * 52 + fluffy.ageWeeks >= fluffy.maxAge * 52 * 0.75)>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 6)>>
 		<<default>>
 	<</switch>>
 	<<if $fluffyFilters.gender != false>>
@@ -855,4 +855,26 @@
 
 	<<replace "#fluffy-list">><<FluffyList _type _replaceFluffies>><</replace>>
 	<<run pageLoad();>>
+<</widget>>
+
+
+<<widget "checkAgeCategory">>
+
+	<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
+		
+	<<if _cat == 0>>
+		<<set $activeFluffy.ageCategory = 0>>
+	<<elseif _cat == 1>>
+		<<set $activeFluffy.ageCategory = 1>>
+	<<elseif $activeFluffy.weaned === false>>
+		<<set $activeFluffy.ageCategory = 2>>
+	<<elseif _cat < Number($activeFluffy.maturity/2)>>
+		<<set $activeFluffy.ageCategory = 3>>
+	<<elseif _cat <= $activeFluffy.maturity>>
+		<<set $activeFluffy.ageCategory = 4>>
+	<<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
+		<<set $activeFluffy.ageCategory = 5>>
+	<<else>>
+		<<set $activeFluffy.ageCategory = 6>>
+	<</if>>
 <</widget>>

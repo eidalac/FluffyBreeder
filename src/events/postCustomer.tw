@@ -31,7 +31,7 @@ button {
         <<if $customerWants != 0>>
             <<for _card range $customerDeck>>
                 /* Caculate the age values */
-                <<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
+                /*<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>*/
 
                 <<set _card = _card.toLowerCase()>>
 <<run console.log(`DEBUG: [eventCustomer]: card:  ${_card}`)>>
@@ -292,63 +292,39 @@ button {
                 
                 /* Age "Newborn": */
                 <<elseif _card === "newborn">>
-                    <<if _cat == 0>>
+                    <<if $activeFluffy.ageCategory == 0>>
                         <<set _needsMatch += 2>>
-                    <<elseif _cat == 1>>
-                        <<set _needsMatch += 0>>
-                    <</if>>
+                     <</if>>
                 /* Age "Chirpy": */
                 <<elseif _card === "chirpy">>
-                    <<if _cat == 1>>
+                    <<if $activeFluffy.ageCategory == 1>>
                         <<set _needsMatch += 2>>
-                    <<elseif _cat == 0>>
-                        <<set _needsMatch += 0>>
-                    <<elseif $activeFluffy.weaned === false>>
-                        <<set _needsMatch += 0>>
                     <</if>>
                 /* Age "Talky": */
                 <<elseif _card === "talky">>
-                    <<if $activeFluffy.weaned>>
+                    <<if $activeFluffy.ageCategory == 2>>
                         <<set _needsMatch += 2>>
-                    <<elseif $activeFluffy.weaned === false>>
-                        <<set _needsMatch += 0>>
-                    <<elseif _cat < Number($activeFluffy.maturity/2)>>
-                        <<set _needsMatch += 0>>
-                    <</if>>
+                     <</if>>
                 /* Age "Foal": */
                 <<elseif _card === "foal">>
-                    <<if _cat < Number($activeFluffy.maturity/2)>>
+                    <<if $activeFluffy.ageCategory == 3>>
                         <<set _needsMatch += 2>>
-                    <<elseif $activeFluffy.weaned>>
-                        <<set _needsMatch += 0>>
-                    <<elseif _cat <= $activeFluffy.maturity>>
-                        <<set _needsMatch += 0>>
                     <</if>>
                 /* Age "Youth": */
                 <<elseif _card === "youth">>
-                    <<if _cat < $activeFluffy.maturity>>
+                    <<if $activeFluffy.ageCategory == 4>>
                         <<set _needsMatch += 2>>
-                    <<elseif _cat < Number($activeFluffy.maturity/2)>>
-                        <<set _needsMatch += 0>>
-                    <<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<set _needsMatch += 0>>
                     <</if>>
                 /* Age "Adult": */
                 <<elseif _card === "adult">>
-                    <<if _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
+                    <<if $activeFluffy.ageCategory == 5>>
                         <<set _needsMatch += 2>>
-                    <<elseif _cat < $activeFluffy.maturity>>
-                        <<set _needsMatch += 0>>
-                    <<elseif _cat >= Number($activeFluffy.maxAge * 52 * 0.75)>>
-                        <<set _needsMatch += 0>>
                     <</if>>
 
                 /* Age "Grey": */
                 <<elseif _card === "grey">>
-                    <<if _cat >= Number($activeFluffy.maxAge * 52 * 0.75)>>
+                    <<if $activeFluffy.ageCategory == 6>>
                         <<set _needsMatch += 2>>
-                    <<else>>
-                        <<set _needsMatch += 0>>
                     <</if>>
 
                 <<elseif _card === $activeFluffy.subSpeciesString.toLowerCase()>>

@@ -150,6 +150,10 @@
 		<<set $globalFluffies[_ef].age++>>
 	<</if>>
 
+	<<set $activeFluffy = $globalFluffies[_ef]>>
+	
+	<<checkAgeCategory>>
+
 	<<switch $globalFluffies[_ef].foodType>>
 		<<case "Kibble">>
 			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
@@ -164,7 +168,7 @@
 	<</switch>>
 
 	/* < 1 year old */
-	<<if Number($globalFluffies[_ef].age) == 0 && Number($globalFluffies[_ef].ageWeeks) <= $globalFluffies[_ef].maturity>>
+	<<if $globalFluffies[_ef].ageCategory <= 4>>
 		<<set $ourStore.foals++>>
 
 	<<elseif $globalFluffies[_ef].gender == "male">>
@@ -535,23 +539,22 @@
 									<<set _push = `Eye Group ${$globalFluffies[_ef].eColor.group}`>>
 								<</if>>
 							<<case "Age">>
-								<<set _cat = Number(Number($globalFluffies[_ef].age * 52) + $globalFluffies[_ef].ageWeeks)>>
-		
-								<<if _cat == 0>>
-									<<set _push = "Newborn">>
-								<<elseif _cat == 1>>
-									<<set _push = "Chirpy">>
-								<<elseif $globalFluffies[_ef].weaned === false>>
-									<<set _push = "Talky">>
-								<<elseif _cat < Number($globalFluffies[_ef].maturity/2)>>
-									<<set _push = "Foal">>
-								<<elseif _cat <= $globalFluffies[_ef].maturity>>
-									<<set _push = "Youth">>
-								<<elseif _cat < Number($globalFluffies[_ef].maxAge * 52 * 0.75)>>
-									<<set _push = "Adult">>
-								<<else>>
-									<<set _push = "Grey">>
-								<</if>>
+								<<switch $globalFluffies[_ef].ageCategory>>
+									<<case 0>>
+										<<set _push = "Newborn">>
+									<<case 1>>
+										<<set _push = "Chirpy">>
+									<<case 2>>
+										<<set _push = "Talky">>
+									<<case 3>>
+										<<set _push = "Foal">>
+									<<case 4>>
+										<<set _push = "Youth">>
+									<<case 5>>
+										<<set _push = "Adult">>
+									<<default>>
+										<<set _push = "Grey">>
+								<</switch>>
 							<<default>>
 								<<set _push = $globalFluffies[_ef].breed>>
 						<</switch>>
@@ -682,7 +685,7 @@
 	/* ***
 	 *	Grow foals.
 	 *** */
-	<<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) <= 44>>
+	<<if $globalFluffies[_ef].ageCategory < 6>>
 
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
@@ -763,7 +766,7 @@
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
-	 <<if $globalFluffies[_ef].age == 0 && Number($globalFluffies[_ef].ageWeeks) >= $globalFluffies[_ef].maturity>>
+	 <<if $globalFluffies[_ef].ageCategory >= 5>>
 			<<switch $globalFluffies[_ef].personality>>
 				<<case "Fussy">>
 					<<if random(0, 1) == 0>>
