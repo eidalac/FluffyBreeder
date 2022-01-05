@@ -16397,11 +16397,9 @@ window.selectFluffy = function(e) {
   const fluffyBuy = $('#passage-buy-fluffies');
   if ((fluffyList[0] || fluffyBuy[0]) && $(this).hasClass('selected')) {
     $(this).removeClass('selected');
-    console.log("check1")
     State.variables.globalFluffies[fluffy_id].isChecked = false;
   } else if (fluffyList[0] || fluffyBuy[0]) {
     $(this).addClass('selected')
-    console.log("check2")
     State.variables.globalFluffies[fluffy_id].isChecked = true;
   }
 }
@@ -18504,8 +18502,6 @@ button {
         &lt;&lt;set _needsMatch = 0&gt;&gt;
         &lt;&lt;if $customerWants != 0&gt;&gt;
             &lt;&lt;for _card range $customerDeck&gt;&gt;
-                /* Caculate the age values */
-                /*&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;*/
 
                 &lt;&lt;set _card = _card.toLowerCase()&gt;&gt;
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: card:  ${_card}`)&gt;&gt;
@@ -18854,7 +18850,7 @@ button {
         
         &lt;&lt;set _ageMulti = 1&gt;&gt;
 
-        &lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; 45&gt;&gt;
+        &lt;&lt;if $activeFluffy.ageCategory &lt; 5&gt;&gt;
             &lt;&lt;set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
@@ -22302,7 +22298,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;50d2143&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;f45b857&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22689,7 +22685,7 @@ profitsTotal: 0
 										&lt;&lt;set $globalFluffies[_rID].name = ($ordinalString + &quot; &quot; + $globalFluffies[_rID].ID)&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 						
-									&lt;&lt;if ($globalFluffies[_rID].ageWeeks + ($globalFluffies[_rID].age * 52) &lt; $globalFluffies[_rID].maturity)&gt;&gt;
+									&lt;&lt;if $globalFluffies[_rID].ageCategory &lt;= 4&gt;&gt;
 										&lt;&lt;set $ourStore.foals++&gt;&gt;
 									&lt;&lt;elseif $globalFluffies[_rID].gender == &quot;male&quot;&gt;&gt;
 										&lt;&lt;set $ourStore.stallions++&gt;&gt;
@@ -22824,53 +22820,51 @@ profitsTotal: 0
 				&lt;/div&gt;
 
 				&lt;&lt;set _price = 0&gt;&gt;
-				
-				&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
-					&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
-					
-					&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
-						&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
-						&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					&lt;&lt;set _price = Number($globalFluffies[_id].training)&gt;&gt;
-
-					&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))&gt;&gt;
-
-					&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
-						&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
-							&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-						&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
-							&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-						&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
-							&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-						&lt;&lt;default&gt;&gt;
-							&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
-					&lt;&lt;/switch&gt;&gt;
-					
-					&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
-						&lt;&lt;set _ageMulti = 0.5&gt;&gt;
-					&lt;&lt;else&gt;&gt;
-						&lt;&lt;set _ageMulti = 1&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-					
-					&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
-					&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
-					&lt;&lt;if $globalFluffies[_id].ageCategory &lt; 5&gt;&gt;
-						&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
-
-					&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
-						&lt;&lt;set _price = Number(_price * 1.5).toFixed(2)&gt;&gt;
-					&lt;&lt;/if&gt;&gt;
-
-					@@.green;¤_price.@@
-					&lt;hr&gt;
-				&lt;&lt;/if&gt;&gt;
 			&lt;/div&gt;
+			&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
+				&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
+				
+				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
+					&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
+					&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
 
+				&lt;&lt;set _price = Number($globalFluffies[_id].training)&gt;&gt;
+
+				&lt;&lt;set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))&gt;&gt;
+
+				&lt;&lt;switch $globalFluffies[_id].breed&gt;&gt;
+					&lt;&lt;case &quot;unicorn&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;case &quot;pegasus&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;case &quot;alicorn&quot;&gt;&gt;
+						&lt;&lt;set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+					&lt;&lt;default&gt;&gt;
+						&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
+				&lt;&lt;/switch&gt;&gt;
+				
+				&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
+					&lt;&lt;set _ageMulti = 0.5&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;set _ageMulti = 1&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				
+				&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
+				&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
+				&lt;&lt;if $globalFluffies[_id].ageCategory &lt; 5&gt;&gt;
+					&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+
+				&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
+					&lt;&lt;set _price = Number(_price * 1.5).toFixed(2)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				@@.green;¤_price.@@
+				&lt;hr&gt;
+			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;if _c == 0&gt;&gt;
 				&lt;div class=&quot;w3-container&quot;&gt;
 					&lt;&lt;timed 5ms&gt;&gt;
@@ -24295,7 +24289,6 @@ Upgrades:
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-hide&quot;)&gt;&gt;
 							&lt;&lt;set _type = $listType&gt;&gt;	
 							&lt;&lt;resetList&gt;&gt;
-							&lt;&lt;run pageLoad();&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 						@@.sortbutton;&lt;&lt;button &quot;Show Display&quot;&gt;&gt;&lt;&lt;set $listType = &quot;Display&quot;&gt;&gt;
 							&lt;&lt;run $(&quot;#sellbutton button&quot;).removeClass(&quot;w3-show&quot;)&gt;&gt;
@@ -24304,7 +24297,6 @@ Upgrades:
 							&lt;&lt;run $(&quot;#unsellbutton button&quot;).addClass(&quot;w3-show&quot;)&gt;&gt;
 							&lt;&lt;set _type = $listType&gt;&gt;	
 							&lt;&lt;resetList&gt;&gt;
-							&lt;&lt;run pageLoad();&gt;&gt;
 						&lt;&lt;/button&gt;&gt;@@
 					&lt;/div&gt;
 				&lt;/div&gt;
@@ -26300,7 +26292,7 @@ Subspecies:
         &lt;&lt;/if&gt;&gt;
 
         /* Adjust things based on age for children/foals */
-        &lt;&lt;if ($activeFluffy.ageWeeks + ($activeFluffy.age * 52) &lt; $activeFluffy.maturity)&gt;&gt;
+        &lt;&lt;if $activeFluffy.ageCategory &lt;= 4&gt;&gt;
             &lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
             &lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
             &lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
@@ -26505,7 +26497,7 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			
 				/* immature */
-				&lt;&lt;elseif Number($globalFluffies[_fl].age) == 0 &amp;&amp;  Number($globalFluffies[_fl].ageWeeks) &lt;= $globalFluffies[_fl].maturity&gt;&gt;
+				&lt;&lt;elseif $globalFluffies[_fl].ageCategory &lt;= 4&gt;&gt;&gt;
 					&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 						&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 						&lt;&lt;continue&gt;&gt;
@@ -28530,7 +28522,7 @@ button {
  	 *  Some weight based scalling.
  	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.
  	 *** */
- 	&lt;&lt;if $activeFluffy.age == 0 &amp;&amp; $activeFluffy.ageWeeks &lt; $activeFluffy.maturity&gt;&gt;
+ 	&lt;&lt;if $activeFluffy.ageCategory &lt;= 4&gt;&gt;
 
 	 	/* ***
 	 	 *  Foals that have not yet stopped growing
@@ -28552,8 +28544,6 @@ button {
  		&lt;&lt;set _weightRatio = Number(Number($activeFluffy.weight).toFixed(3) / Number(Number(Number($activeFluffy.maxWeight) + Number(4.5)).toFixed(3) / Number(2)).toFixed(3)).toFixed(3)&gt;&gt;
  	&lt;&lt;/if&gt;&gt;
 
-	/* Get the total age, in weeks: */
-	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
 
 	&lt;&lt;set _coatFilter = $activeFluffy.cColor.filter&gt;&gt;
 	&lt;&lt;set _maneFilter = $activeFluffy.mColor.filter&gt;&gt;
@@ -28563,7 +28553,7 @@ button {
  	 *  1. newborn 
  	 *	only coat visible
  	 *** */
-	&lt;&lt;if _cat == 0&gt;&gt;
+	&lt;&lt;if $activeFluffy.ageCategory == 0&gt;&gt;
 	
 		&lt;&lt;newbornSprite $activeFluffy&gt;&gt;
 		
@@ -28584,7 +28574,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
-	&lt;&lt;elseif _cat == 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.ageCategory == 1&gt;&gt;
 	
 		&lt;&lt;chirpySprite $activeFluffy&gt;&gt;
 	
@@ -28608,7 +28598,7 @@ button {
 
 	
 	/* 3. talky babbeh (coat, eyes, mane) */
-	&lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.ageCategory == 2&gt;&gt;
 
 		&lt;&lt;talkySprite $activeFluffy&gt;&gt;
 
@@ -28635,7 +28625,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 4. foal (has hair on head) */
-	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.ageCategory == 3&gt;&gt;
 	
 		&lt;&lt;foalSprite $activeFluffy&gt;&gt;
 
@@ -28667,7 +28657,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 		
 	/* 5. colt/filly (bigger than foal) week 20-26 */
-	&lt;&lt;elseif _cat &lt;= $activeFluffy.maturity&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.ageCategory == 4&gt;&gt;
 		
 		&lt;&lt;youthSprite $activeFluffy&gt;&gt;
 
@@ -28699,7 +28689,7 @@ button {
 		&lt;&lt;/if&gt;&gt;
 
 	/* 6. adult (teats on female) week 36-47*/
-	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.ageCategory == 5&gt;&gt;
 		
 		&lt;&lt;adultSprite $activeFluffy&gt;&gt;
 

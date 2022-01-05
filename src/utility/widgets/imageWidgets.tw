@@ -16,7 +16,7 @@
  	 *  Some weight based scalling.
  	 *	The base size of the image is 160x160, so fluffies different than there expected size should be scaled.
  	 *** */
- 	<<if $activeFluffy.age == 0 && $activeFluffy.ageWeeks < $activeFluffy.maturity>>
+ 	<<if $activeFluffy.ageCategory <= 4>>
 
 	 	/* ***
 	 	 *  Foals that have not yet stopped growing
@@ -38,8 +38,6 @@
  		<<set _weightRatio = Number(Number($activeFluffy.weight).toFixed(3) / Number(Number(Number($activeFluffy.maxWeight) + Number(4.5)).toFixed(3) / Number(2)).toFixed(3)).toFixed(3)>>
  	<</if>>
 
-	/* Get the total age, in weeks: */
-	<<set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)>>
 
 	<<set _coatFilter = $activeFluffy.cColor.filter>>
 	<<set _maneFilter = $activeFluffy.mColor.filter>>
@@ -49,7 +47,7 @@
  	 *  1. newborn 
  	 *	only coat visible
  	 *** */
-	<<if _cat == 0>>
+	<<if $activeFluffy.ageCategory == 0>>
 	
 		<<newbornSprite $activeFluffy>>
 		
@@ -70,7 +68,7 @@
 		<</if>>
 
 	/* 2. chirpy babbeh (coat + eyes) week 1 */
-	<<elseif _cat == 1>>
+	<<elseif $activeFluffy.ageCategory == 1>>
 	
 		<<chirpySprite $activeFluffy>>
 	
@@ -94,7 +92,7 @@
 
 	
 	/* 3. talky babbeh (coat, eyes, mane) */
-	<<elseif $activeFluffy.weaned === false>>
+	<<elseif $activeFluffy.ageCategory == 2>>
 
 		<<talkySprite $activeFluffy>>
 
@@ -121,7 +119,7 @@
 		<</if>>
 
 	/* 4. foal (has hair on head) */
-	<<elseif _cat < Number($activeFluffy.maturity/2)>>
+	<<elseif $activeFluffy.ageCategory == 3>>
 	
 		<<foalSprite $activeFluffy>>
 
@@ -153,7 +151,7 @@
 		<</if>>
 		
 	/* 5. colt/filly (bigger than foal) week 20-26 */
-	<<elseif _cat <= $activeFluffy.maturity>>
+	<<elseif $activeFluffy.ageCategory == 4>>
 		
 		<<youthSprite $activeFluffy>>
 
@@ -185,7 +183,7 @@
 		<</if>>
 
 	/* 6. adult (teats on female) week 36-47*/
-	<<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
+	<<elseif $activeFluffy.ageCategory == 5>>
 		
 		<<adultSprite $activeFluffy>>
 
