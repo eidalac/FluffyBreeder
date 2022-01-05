@@ -18553,18 +18553,21 @@ button {
                 /* Caculate the age values */
                 &lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
 
+                &lt;&lt;set _card = _card.toLowerCase()&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [eventCustomer]: card:  ${_card}`)&gt;&gt;
                 /* Personality, +2 points if it matches, 0 otherwise */
                 &lt;&lt;if _card === $activeFluffy.personality&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                 /* Gender, +2 points if it matches, 0 otherwise */
-                &lt;&lt;elseif _card.toLowerCase() == $activeFluffy.gender.toLowerCase()&gt;&gt;
+                &lt;&lt;elseif _card == $activeFluffy.gender.toLowerCase()&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                 /* Breed, value depends on what is offered*/
-                &lt;&lt;elseif _card === &quot;Earthy&quot; || _card === &quot;Unicorn&quot; || _card === &quot;Pegasus&quot; || _card === &quot;Alicorn&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;earthy&quot; || _card === &quot;unicorn&quot; || _card === &quot;pegasus&quot; || _card === &quot;alicorn&quot;&gt;&gt;
                     /* Pefect match, 2 points */
-                    &lt;&lt;if $activeFluffy.breed === _card&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [eventCustomer]: Breed:  ${$activeFluffy.breed}`)&gt;&gt;
+                    &lt;&lt;if _card === $activeFluffy.breed.toLowerCase()&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                     /* Half matches */				
@@ -18577,19 +18580,19 @@ button {
                 /* Strength stat: */
                 &lt;&lt;elseif _card.includes(&quot;stength&quot;)&gt;&gt;
                     
-                    &lt;&lt;if _card === &quot;High strength&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high strength&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.strength &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.strength &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average strength&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average strength&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.strength &lt; 5 &amp;&amp; $activeFluffy.strength &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low strength&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low strength&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.strength &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.strength &lt; 5&gt;&gt;
@@ -18600,19 +18603,19 @@ button {
                 /* Energy stat: */
                 &lt;&lt;elseif _card.includes(&quot;energy&quot;)&gt;&gt;
                 
-                    &lt;&lt;if _card === &quot;High energy&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high energy&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.energy &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.energy &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average energy&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average energy&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.energy &lt; 5 &amp;&amp; $activeFluffy.energy &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low energy&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low energy&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.energy &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.energy &lt; 4&gt;&gt;
@@ -18622,19 +18625,19 @@ button {
 
                 /* Charm stat: */
                 &lt;&lt;elseif _card.includes(&quot;charm&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;High charm&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high charm&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.charm &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.charm &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average charm&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average charm&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.charm &lt; 5 &amp;&amp; $activeFluffy.charm &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low charm&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low charm&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.charm &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.charm &lt; 5&gt;&gt;
@@ -18644,19 +18647,19 @@ button {
 
                 /* Thinking stat: */
                 &lt;&lt;elseif _card.includes(&quot;thinking&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;High thinking&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high thinking&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.thinking &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.thinking &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average thinking&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average thinking&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.thinking &lt; 5 &amp;&amp; $activeFluffy.thinking &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low thinking&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low thinking&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.thinking &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.thinking &lt; 5&gt;&gt;
@@ -18666,19 +18669,19 @@ button {
                 
                 /* Learning stat: */
                 &lt;&lt;elseif _card.includes(&quot;learning&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;High learning&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high learning&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.learning &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.learning &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average learning&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average learning&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.learning &lt; 5 &amp;&amp; $activeFluffy.learning &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low learning&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low learning&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.learning &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.learning &lt; 5&gt;&gt;
@@ -18688,19 +18691,19 @@ button {
                 
                 /* Fertility stat: */
                 &lt;&lt;elseif _card.includes(&quot;fertility&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;High fertility&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high fertility&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.fertility &gt; 5&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.fertility &gt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average fertility&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average fertility&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.fertility &lt; 5 &amp;&amp; $activeFluffy.fertility &gt;= 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low fertility&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low fertility&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.fertility &lt; 3&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.fertility &lt; 5&gt;&gt;
@@ -18710,19 +18713,19 @@ button {
 
                 /* Temperament: */
                 &lt;&lt;elseif _card.includes(&quot;temperament&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;High temperament&quot;&gt;&gt;
+                    &lt;&lt;if _card === &quot;high temperament&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.temperament &gt; 190&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.temperament &gt; 130&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Average temperament&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;average temperament&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.temperament &lt; 130 &amp;&amp; $activeFluffy.temperament &gt;= 70&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.temperament &lt; 190 &amp;&amp; $activeFluffy.temperament &gt;= 10&gt;&gt;
                             &lt;&lt;set _needsMatch += 0&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;Low temperament&quot;&gt;&gt;
+                    &lt;&lt;elseif _card === &quot;low temperament&quot;&gt;&gt;
                         &lt;&lt;if $activeFluffy.temperament &lt; 10&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;elseif $activeFluffy.temperament &lt; 70&gt;&gt;
@@ -18731,9 +18734,9 @@ button {
                     &lt;&lt;/if&gt;&gt;
 
                 /* Coat: */
-                &lt;&lt;elseif _card.includes(&quot;Coat&quot;)&gt;&gt;
-                    &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-                        &lt;&lt;if _card.includes($activeFluffy.cColor.group)&gt;&gt;
+                &lt;&lt;elseif _card.includes(&quot;coat&quot;)&gt;&gt;
+                    &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
+                        &lt;&lt;if _card.includes($activeFluffy.cColor.group.toLowerCase())&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18742,24 +18745,24 @@ button {
                             *		Red - Green
                             *		Yellow - Purple
                             *** */
-                            &lt;&lt;if $activeFluffy.cColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-                                $activeFluffy.cColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-                                $activeFluffy.cColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-                                $activeFluffy.cColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-                                $activeFluffy.cColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-                                $activeFluffy.cColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+                            &lt;&lt;if $activeFluffy.cColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
+                                $activeFluffy.cColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
+                                $activeFluffy.cColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
+                                $activeFluffy.cColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
+                                $activeFluffy.cColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
+                                $activeFluffy.cColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
 
                                 &lt;&lt;set _needsMatch += 0&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card.includes($activeFluffy.cColor.name)&gt;&gt;
+                    &lt;&lt;elseif _card.includes($activeFluffy.cColor.name.toLowerCase())&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Mane: */
-                &lt;&lt;elseif _card.includes(&quot;Mane&quot;)&gt;&gt;
-                    &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-                        &lt;&lt;if _card.includes($activeFluffy.mColor.group)&gt;&gt;
+                &lt;&lt;elseif _card.includes(&quot;mane&quot;)&gt;&gt;
+                    &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
+                        &lt;&lt;if _card.includes($activeFluffy.mColor.group.toLowerCase())&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18768,24 +18771,24 @@ button {
                             *		Red - Green
                             *		Yellow - Purple
                             *** */
-                            &lt;&lt;if $activeFluffy.mColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-                                $activeFluffy.mColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-                                $activeFluffy.mColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-                                $activeFluffy.mColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-                                $activeFluffy.mColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-                                $activeFluffy.mColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+                            &lt;&lt;if $activeFluffy.mColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
+                                $activeFluffy.mColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
+                                $activeFluffy.mColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
+                                $activeFluffy.mColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
+                                $activeFluffy.mColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
+                                $activeFluffy.mColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
 
                                 &lt;&lt;set _needsMatch += 0&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card.includes($activeFluffy.mColor.name)&gt;&gt;
+                    &lt;&lt;elseif _card.includes($activeFluffy.mColor.name.toLowerCase())&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Eyes: */
-                &lt;&lt;elseif _card.includes(&quot;Eyes&quot;)&gt;&gt;
-                    &lt;&lt;if _card.includes(&quot;Group&quot;)&gt;&gt;
-                        &lt;&lt;if _card.includes($activeFluffy.eColor.group)&gt;&gt;
+                &lt;&lt;elseif _card.includes(&quot;eyes&quot;)&gt;&gt;
+                    &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
+                        &lt;&lt;if _card.includes($activeFluffy.eColor.group.toLowerCase())&gt;&gt;
                             &lt;&lt;set _needsMatch += 2&gt;&gt;
                         &lt;&lt;else&gt;&gt;
                             /* ***
@@ -18794,29 +18797,29 @@ button {
                             *		Red - Green
                             *		Yellow - Purple
                             *** */
-                            &lt;&lt;if $activeFluffy.eColor.group === &quot;Blue&quot; &amp;&amp; _card === &quot;Orange&quot; ||
-                                $activeFluffy.eColor.group === &quot;Orange&quot; &amp;&amp; _card === &quot;Blue&quot; ||
-                                $activeFluffy.eColor.group === &quot;Red&quot; &amp;&amp; _card === &quot;Green&quot; ||
-                                $activeFluffy.eColor.group === &quot;Green&quot; &amp;&amp; _card === &quot;Red&quot; ||
-                                $activeFluffy.eColor.group === &quot;Yellow&quot; &amp;&amp; _card === &quot;Purple&quot; ||
-                                $activeFluffy.eColor.group === &quot;Purple&quot; &amp;&amp; _card === &quot;Yellow&quot;&gt;&gt;
+                            &lt;&lt;if $activeFluffy.eColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
+                                $activeFluffy.eColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
+                                $activeFluffy.eColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
+                                $activeFluffy.eColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
+                                $activeFluffy.eColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
+                                $activeFluffy.eColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
 
                                 &lt;&lt;set _needsMatch += 0&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card.includes($activeFluffy.eColor.name)&gt;&gt;
+                    &lt;&lt;elseif _card.includes($activeFluffy.eColor.name.toLowerCase())&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 
                 /* Age &quot;Newborn&quot;: */
-                &lt;&lt;elseif _card == &quot;Newborn&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;newborn&quot;&gt;&gt;
                     &lt;&lt;if _cat == 0&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat == 1&gt;&gt;
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Chirpy&quot;: */
-                &lt;&lt;elseif _card == &quot;Chirpy&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;chirpy&quot;&gt;&gt;
                     &lt;&lt;if _cat == 1&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat == 0&gt;&gt;
@@ -18825,7 +18828,7 @@ button {
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Talky&quot;: */
-                &lt;&lt;elseif _card == &quot;Talky&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;talky&quot;&gt;&gt;
                     &lt;&lt;if $activeFluffy.weaned&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
@@ -18834,7 +18837,7 @@ button {
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Foal&quot;: */
-                &lt;&lt;elseif _card == &quot;Foal&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;foal&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif $activeFluffy.weaned&gt;&gt;
@@ -18843,7 +18846,7 @@ button {
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Youth&quot;: */
-                &lt;&lt;elseif _card == &quot;Youth&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;youth&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; $activeFluffy.maturity&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
@@ -18852,7 +18855,7 @@ button {
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 /* Age &quot;Adult&quot;: */
-                &lt;&lt;elseif _card == &quot;Adult&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;adult&quot;&gt;&gt;
                     &lt;&lt;if _cat &lt; Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;elseif _cat &lt; $activeFluffy.maturity&gt;&gt;
@@ -18862,18 +18865,19 @@ button {
                     &lt;&lt;/if&gt;&gt;
 
                 /* Age &quot;Grey&quot;: */
-                &lt;&lt;elseif _card == &quot;Grey&quot;&gt;&gt;
+                &lt;&lt;elseif _card === &quot;grey&quot;&gt;&gt;
                     &lt;&lt;if _cat &gt;= Number($activeFluffy.maxAge * 52 * 0.75)&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set _needsMatch += 0&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
-                &lt;&lt;elseif _card === $activeFluffy.subSpeciesString&gt;&gt;
+                &lt;&lt;elseif _card === $activeFluffy.subSpeciesString.toLowerCase()&gt;&gt;
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
-                &lt;&lt;elseif _card.includes(&quot;Trait&quot;)&gt;&gt;
+                &lt;&lt;elseif _card.includes(&quot;trait&quot;)&gt;&gt;
                     &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
+                    &lt;&lt;set _card = _card.charAt(0).toUpperCase() + _card.slice(1)&gt;&gt;
                     &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
                         &lt;&lt;set _needsMatch += 2&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
@@ -22359,7 +22363,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;cc12bfb&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;2f83434&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
