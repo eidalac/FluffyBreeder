@@ -19046,8 +19046,14 @@ button {
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)&gt;&gt;
 */
 &lt;&lt;if $customerWants == 0&gt;&gt;
-    &lt;&lt;set _anyFluffy = $ourStore.fluffies.random()&gt;&gt;
-    &lt;&lt;set $activeFluffy = $globalFluffies[_anyFluffy]&gt;&gt;
+    &lt;&lt;set _displayFluffies = $globalFluffies.filter(fluffy =&gt; fluffy.onDisplay);&gt;&gt;
+
+    &lt;&lt;if _displayFluffies.length == 0&gt;&gt;
+        &lt;&lt;run console.log(`ERROR: [preCustomer]: no fluffies found on display.`)&gt;&gt;
+        &lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
+    &lt;&lt;/if&gt;&gt;
+    
+    &lt;&lt;set $activeFluffy = _displayFluffies.random()&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
 /* pre run random numbers for the event: */
@@ -22299,7 +22305,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;26f07b8&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;08e44a0&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********

@@ -29,8 +29,14 @@
 <<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)>>
 */
 <<if $customerWants == 0>>
-    <<set _anyFluffy = $ourStore.fluffies.random()>>
-    <<set $activeFluffy = $globalFluffies[_anyFluffy]>>
+    <<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
+
+    <<if _displayFluffies.length == 0>>
+        <<run console.log(`ERROR: [preCustomer]: no fluffies found on display.`)>>
+        <<goto "Event Main">>
+    <</if>>
+    
+    <<set $activeFluffy = _displayFluffies.random()>>
 <</if>>
 
 /* pre run random numbers for the event: */
