@@ -11,11 +11,13 @@
  *********** */
 <<script>>UIBar.destroy();<</script>> 
 
+<<set $mom = $globalFluffies[$activeFluffy.mother]>>
+
 /* Check if this is a brown foal rejection: */
 <<if $activeFluffy.cColor.group == "Brown">>
 
     /* If the mom is brown or has the "good Mama" trait she will not reject the foal: */
-    <<if $globalFluffies[$activeFluffy.mother].cColor.group == "Brown" || $globalFluffies[$activeFluffy.mother].traits.includes("Good Mama")>>
+    <<if $mom.cColor.group == "Brown" || $mom.traits.includes("Good Mama")>>
 
         /* Skip this info for now */
         <<goto "Event Main">>
@@ -25,24 +27,24 @@
         */
         
     /* < 10 = fear/terror, so fluffy will just be terrified of the babby */
-    <<elseif $globalFluffies[$activeFluffy.mother].temperament < 10>>
+    <<elseif $mom.temperament < 10>>
         <br>
-        <<fluffSpeech "<title> hewp... miwkie thief... sabe good fwuffy mummah, <title>... hu hu hu..." $globalFluffies[$activeFluffy.mother]>>
-        <<set $globalFluffies[$activeFluffy.mother].stress += 25>>
-        <<set $globalFluffies[$activeFluffy.mother].trauma += 5>>
+        <<fluffSpeech "<title> hewp... miwkie thief... sabe good fwuffy mummah, <title>... hu hu hu..." $mom>>
+        <<set $mom.stress += 25>>
+        <<set $mom.trauma += 5>>
         <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
 
     /* The main event: */
     <<else>>
-        <br>It seems <<- $globalFluffies[$activeFluffy.mother].name>> is rejecting <<- $activeFluffy.name>>.
-        <br><<They>> is a <<inlineColor $activeFluffy.cColor.hex>> $activeFluffy.breed.
+        <br>It seems <<- $mom.name>> is rejecting <<- $activeFluffy.name>>.
+        <br><<They>> is a <<inlineColor $activeFluffy.cColor>> $activeFluffy.breed.
         <br>
 
         <br>
 		<<brownReaction>>
 
         <br> 
-        <<set _punishString = "Punish " + $globalFluffies[$activeFluffy.mother].name>>
+        <<set _punishString = "Punish " + $mom.name>>
         <<set _reactionString = "">>
         <br>
     <span id="reaction-msg">
@@ -52,19 +54,19 @@
             <<set $hugbox += 1>>
             <<set $stress += 10>>
             
-            <<set $globalFluffies[$activeFluffy.mother].stress += 5>>
-            <<set $globalFluffies[$activeFluffy.mother].trust-->>
-            <<set $globalFluffies[$activeFluffy.mother].training++>>
-            <<set $globalFluffies[$activeFluffy.mother].temperament -= 5>>
+            <<set $mom.stress += 5>>
+            <<set $mom.trust-->>
+            <<set $mom.training++>>
+            <<set $mom.temperament -= 5>>
 
             <<if Number($eventDifficulty) >= Number($rand[0])>>
-                <<set $globalFluffies[$activeFluffy.mother].traits.push("Good Mama")>>
+                <<set $mom.traits.push("Good Mama")>>
                 <<set _reactionString = "Am be gud mummah!  Wuv all Babhe!  Pomis!">>
             <<else>>
                 <<set _reactionString = "But fluffy is gud mummah!  huuhuuhuu!">>
             <</if>>
             
-            <<replace "#reaction-msg">><br>You discipline <<- $globalFluffies[$activeFluffy.mother].name>><br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+            <<replace "#reaction-msg">><br>You discipline <<- $mom.name>><br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
         <</button>>
         @@.orange;Neutral option.@@
         
@@ -72,9 +74,9 @@
         <<button "Ignore it">>
             <<set $abuse += 3>>
             
-            /*<<set $globalFluffies[$activeFluffy.mother].nursing-->>*/
-            <<set $globalFluffies[$activeFluffy.mother].nursing.delete($activeFluffy.ID)>>
-            <<set $globalFluffies[$activeFluffy.mother].temperament += 5>>
+            /*<<set $mom.nursing-->>*/
+            <<set $mom.nursing.delete($activeFluffy.ID)>>
+            <<set $mom.temperament += 5>>
             
             <<set $activeFluffy.foodType = "Nothing">>
             <<set $activeFluffy.foodQuality = 0>>
@@ -82,7 +84,7 @@
             <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
             <<set _reactionString = "Nu miwkies for bad babbeh!">>
             
-            <<replace "#reaction-msg">><br>You ignore it.<br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+            <<replace "#reaction-msg">><br>You ignore it.<br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
         <</button>>
         @@.orange;Abuse option.@@
         
@@ -91,9 +93,9 @@
             <<set $hugbox += 3>>
             <<set $training += 1>>
             
-            /*<<set $globalFluffies[$activeFluffy.mother].nursing-->>*/
-            <<set $globalFluffies[$activeFluffy.mother].nursing.delete($activeFluffy.ID)>>
-            <<set $globalFluffies[$activeFluffy.mother].temperament += 5>>
+            /*<<set $mom.nursing-->>*/
+            <<set $mom.nursing.delete($activeFluffy.ID)>>
+            <<set $mom.temperament += 5>>
             
             <<set $activeFluffy.foodType = "Formula">>
             <<set $activeFluffy.foodQuality = 2>>
@@ -102,7 +104,7 @@
 
             <<set _reactionString = "Take bad babbehs for trashies?">>
             
-            <<replace "#reaction-msg">><br>You take the foal for some formula.<br><<fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+            <<replace "#reaction-msg">><br>You take the foal for some formula.<br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
         <</button>>
         @@.orange;Hugbox option.@@
     </span>

@@ -17659,11 +17659,13 @@ window.nameList = {
  *********** */
 &lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt; 
 
+&lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
+
 /* Check if this is a brown foal rejection: */
 &lt;&lt;if $activeFluffy.cColor.group == &quot;Brown&quot;&gt;&gt;
 
     /* If the mom is brown or has the &quot;good Mama&quot; trait she will not reject the foal: */
-    &lt;&lt;if $globalFluffies[$activeFluffy.mother].cColor.group == &quot;Brown&quot; || $globalFluffies[$activeFluffy.mother].traits.includes(&quot;Good Mama&quot;)&gt;&gt;
+    &lt;&lt;if $mom.cColor.group == &quot;Brown&quot; || $mom.traits.includes(&quot;Good Mama&quot;)&gt;&gt;
 
         /* Skip this info for now */
         &lt;&lt;goto &quot;Event Main&quot;&gt;&gt;
@@ -17673,24 +17675,24 @@ window.nameList = {
         */
         
     /* &lt; 10 = fear/terror, so fluffy will just be terrified of the babby */
-    &lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &lt; 10&gt;&gt;
+    &lt;&lt;elseif $mom.temperament &lt; 10&gt;&gt;
         &lt;br&gt;
-        &lt;&lt;fluffSpeech &quot;&lt;title&gt; hewp... miwkie thief... sabe good fwuffy mummah, &lt;title&gt;... hu hu hu...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
-        &lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 25&gt;&gt;
-        &lt;&lt;set $globalFluffies[$activeFluffy.mother].trauma += 5&gt;&gt;
+        &lt;&lt;fluffSpeech &quot;&lt;title&gt; hewp... miwkie thief... sabe good fwuffy mummah, &lt;title&gt;... hu hu hu...&quot; $mom&gt;&gt;
+        &lt;&lt;set $mom.stress += 25&gt;&gt;
+        &lt;&lt;set $mom.trauma += 5&gt;&gt;
         &lt;br&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]
 
     /* The main event: */
     &lt;&lt;else&gt;&gt;
-        &lt;br&gt;It seems &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt; is rejecting &lt;&lt;- $activeFluffy.name&gt;&gt;.
-        &lt;br&gt;&lt;&lt;They&gt;&gt; is a &lt;&lt;inlineColor $activeFluffy.cColor.hex&gt;&gt; $activeFluffy.breed.
+        &lt;br&gt;It seems &lt;&lt;- $mom.name&gt;&gt; is rejecting &lt;&lt;- $activeFluffy.name&gt;&gt;.
+        &lt;br&gt;&lt;&lt;They&gt;&gt; is a &lt;&lt;inlineColor $activeFluffy.cColor&gt;&gt; $activeFluffy.breed.
         &lt;br&gt;
 
         &lt;br&gt;
 		&lt;&lt;brownReaction&gt;&gt;
 
         &lt;br&gt; 
-        &lt;&lt;set _punishString = &quot;Punish &quot; + $globalFluffies[$activeFluffy.mother].name&gt;&gt;
+        &lt;&lt;set _punishString = &quot;Punish &quot; + $mom.name&gt;&gt;
         &lt;&lt;set _reactionString = &quot;&quot;&gt;&gt;
         &lt;br&gt;
     &lt;span id=&quot;reaction-msg&quot;&gt;
@@ -17700,19 +17702,19 @@ window.nameList = {
             &lt;&lt;set $hugbox += 1&gt;&gt;
             &lt;&lt;set $stress += 10&gt;&gt;
             
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].stress += 5&gt;&gt;
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].trust--&gt;&gt;
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].training++&gt;&gt;
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament -= 5&gt;&gt;
+            &lt;&lt;set $mom.stress += 5&gt;&gt;
+            &lt;&lt;set $mom.trust--&gt;&gt;
+            &lt;&lt;set $mom.training++&gt;&gt;
+            &lt;&lt;set $mom.temperament -= 5&gt;&gt;
 
             &lt;&lt;if Number($eventDifficulty) &gt;= Number($rand[0])&gt;&gt;
-                &lt;&lt;set $globalFluffies[$activeFluffy.mother].traits.push(&quot;Good Mama&quot;)&gt;&gt;
+                &lt;&lt;set $mom.traits.push(&quot;Good Mama&quot;)&gt;&gt;
                 &lt;&lt;set _reactionString = &quot;Am be gud mummah!  Wuv all Babhe!  Pomis!&quot;&gt;&gt;
             &lt;&lt;else&gt;&gt;
                 &lt;&lt;set _reactionString = &quot;But fluffy is gud mummah!  huuhuuhuu!&quot;&gt;&gt;
             &lt;&lt;/if&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $globalFluffies[$activeFluffy.mother].name&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You discipline &lt;&lt;- $mom.name&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $mom&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Neutral option.@@
         
@@ -17720,9 +17722,9 @@ window.nameList = {
         &lt;&lt;button &quot;Ignore it&quot;&gt;&gt;
             &lt;&lt;set $abuse += 3&gt;&gt;
             
-            /*&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;*/
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing.delete($activeFluffy.ID)&gt;&gt;
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
+            /*&lt;&lt;set $mom.nursing--&gt;&gt;*/
+            &lt;&lt;set $mom.nursing.delete($activeFluffy.ID)&gt;&gt;
+            &lt;&lt;set $mom.temperament += 5&gt;&gt;
             
             &lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
             &lt;&lt;set $activeFluffy.foodQuality = 0&gt;&gt;
@@ -17730,7 +17732,7 @@ window.nameList = {
             &lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;
             &lt;&lt;set _reactionString = &quot;Nu miwkies for bad babbeh!&quot;&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You ignore it.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $mom&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Abuse option.@@
         
@@ -17739,9 +17741,9 @@ window.nameList = {
             &lt;&lt;set $hugbox += 3&gt;&gt;
             &lt;&lt;set $training += 1&gt;&gt;
             
-            /*&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;*/
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing.delete($activeFluffy.ID)&gt;&gt;
-            &lt;&lt;set $globalFluffies[$activeFluffy.mother].temperament += 5&gt;&gt;
+            /*&lt;&lt;set $mom.nursing--&gt;&gt;*/
+            &lt;&lt;set $mom.nursing.delete($activeFluffy.ID)&gt;&gt;
+            &lt;&lt;set $mom.temperament += 5&gt;&gt;
             
             &lt;&lt;set $activeFluffy.foodType = &quot;Formula&quot;&gt;&gt;
             &lt;&lt;set $activeFluffy.foodQuality = 2&gt;&gt;
@@ -17750,7 +17752,7 @@ window.nameList = {
 
             &lt;&lt;set _reactionString = &quot;Take bad babbehs for trashies?&quot;&gt;&gt;
             
-            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $globalFluffies[$activeFluffy.mother]&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
+            &lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;You take the foal for some formula.&lt;br&gt;&lt;&lt;fluffSpeech _reactionString $mom&gt;&gt;&lt;br&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
         &lt;&lt;/button&gt;&gt;
         @@.orange;Hugbox option.@@
     &lt;/span&gt;
@@ -22337,7 +22339,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;337e258&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;602bbed&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -27289,199 +27291,201 @@ button {
 *  $activeFluffy must be set as the foal, this should only be called in the foal rejection event.
 *** */
 &lt;&lt;widget &quot;brownReaction&quot;&gt;&gt;
+	&lt;&lt;set $mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
+
 	/* Temperament and personality checks*/
-	&lt;&lt;personalityFix $globalFluffies[$activeFluffy.mother]&gt;&gt;
-	&lt;&lt;switch $globalFluffies[$activeFluffy.mother].personality&gt;&gt;
+	&lt;&lt;personalityFix $mom&gt;&gt;
+	&lt;&lt;switch $mom.personality&gt;&gt;
 		&lt;&lt;case &quot;Diligent&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;miwkies onwy fow bestes&#39; babbehs! Nu miwkies fow poopie babbeh!&quot; $mom&gt;&gt;
 
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-			&lt;&lt;fluffSpeech &quot;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Miwkies fow bestes&#39; babbehs. Nu miwkies fow poopie babbeh, bestes&#39; babbehs nee miwkies!&quot; $mom&gt;&gt;
 		
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh..&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Bestes&#39; babbehs nee miwkies... nu hab miwkies fow poopie wowstes&#39; babbeh..&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu hab time… maybe gib tu wonewy mummah wifout babbehs?&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case &quot;Bossy&quot;&gt;&gt; 
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu gib miwkies and wub to wowstes&#39; poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu gib miwkies and wub to wowstes&#39; poopie babbeh&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;NU! gu way! nu wan miwkie thief&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;NU! gu way! nu wan miwkie thief&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbehs nu nee wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbehs nu nee wub ow huggies.&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan gib wub to wowstes&#39; poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan gib wub to wowstes&#39; poopie babbeh...&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 			
 		&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Why hab wowstes&#39;, ugwy poopie babbeh? Nu pwetty&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh... nu wub.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh... nu wub.&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Why nu smeww wike gud babbehs?&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Why nu smeww wike gud babbehs?&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike wowstes&#39; babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike wowstes&#39; babbeh...&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 			
 		&lt;&lt;case &quot;Timid&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;title&gt;, nu wan ugwy babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt;, nu wan ugwy babbeh.&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;title&gt;...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dis am ugwy babbeh, &lt;title&gt;...&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wub... nu smeww pwetty...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wub... nu smeww pwetty...&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dat one am mistake babbeh, mummah sowwy&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dat one am mistake babbeh, mummah sowwy&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Pensive&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu hab miwkies fow bad babbehs, poopie babbeh nu get miwkies&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan gib wub an&#39; huggies to poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan gib wub an&#39; huggies to poopie babbeh.&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Udda babbehs need miwkies a wot mowe...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Udda babbehs need miwkies a wot mowe...&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Dull&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu cawe &#39;bout poopie babbeh! Nu wub&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu cawe &#39;bout poopie babbeh! Nu wub&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh.&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Too much babbehs awready anyways...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Too much babbehs awready anyways...&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu get wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu get wub ow huggies.&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Sweet&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;hewp &lt;title&gt;, gib wowstes&#39; babbeh nu wub.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;hewp &lt;title&gt;, gib wowstes&#39; babbeh nu wub.&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Wowstes&#39; poopie babbeh nu need wub ow huggies.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Wowstes&#39; poopie babbeh nu need wub ow huggies.&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Babbeh su bad… ruin fwuffpiwe… ruin ebbyting...&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu wan... huu huu....&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh... nu wan... huu huu....&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Haughty&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wike poopie babbeh an&#39; nu gib ANY wub ow huggies&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Dis nu be mummah babbeh. Mummah onwy haf besets Babbehs&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Wub and huggies //bad// fow poopie babbehs.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Wub and huggies //bad// fow poopie babbehs.&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Ugwy, nu smeww pwetty babbeh am wowstes babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Ugwy, nu smeww pwetty babbeh am wowstes babbeh&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;case &quot;Playful&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Mummah wub babbehs... except poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Mummah wub babbehs... except poopie babbeh.&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Babbeh? wha&#39; babbeh?? mummah nu can eben see! hee hee hee&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Babbeh? wha&#39; babbeh?? mummah nu can eben see! hee hee hee&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Mummah nu wub poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Mummah nu wub poopie babbeh&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Huu huu... hab wowstes saddies... wanted pwetty babbeh... dis am poopie babbeh...&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;case &quot;Rowdy&quot;&gt;&gt;
 			/* &gt;= 190 - smarty */
-			&lt;&lt;if $globalFluffies[$activeFluffy.mother].temperament &gt;= 190&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;&lt;title&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;if $mom.temperament &gt;= 190&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;&lt;title&gt; gib poopie babbeh sowwy hoofsies fow mummah! Hatechu, poopie babbeh&quot; $mom&gt;&gt;
 			
 			/* &gt;= 130 - bratty */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 130&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 130&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Poopie babbeh am dummeh, nu smeww pwetty babbeh. Wowstes&#39;.&quot; $mom&gt;&gt;
 								
 			/* &gt;= 70 - Normal */
-			&lt;&lt;elseif $globalFluffies[$activeFluffy.mother].temperament &gt;= 70&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Sensitibe babbeh nu fun… nu gwow big an stwong.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;&lt;elseif $mom.temperament &gt;= 70&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Sensitibe babbeh nu fun… nu gwow big an stwong.&quot; $mom&gt;&gt;
 
 			/* &gt;= 10 - Meek */
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;fluffSpeech &quot;Nu wan&#39; stupi dummeh poopie babbeh.&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+				&lt;&lt;fluffSpeech &quot;Nu wan&#39; stupi dummeh poopie babbeh.&quot; $mom&gt;&gt;
 				
 			&lt;&lt;/if&gt;&gt;
 
 		&lt;&lt;default&gt;&gt;
-			&lt;br&gt;&lt;&lt;fluffSpeech &quot;Hachu poopie babhes.  Bad Babhe&quot; $globalFluffies[$activeFluffy.mother]&gt;&gt;
+			&lt;br&gt;&lt;&lt;fluffSpeech &quot;Hachu poopie babhes.  Bad Babhe&quot; $mom&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
