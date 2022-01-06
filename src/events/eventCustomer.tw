@@ -81,12 +81,19 @@ button {
 	<div class="header">
 		<h1>Customer</h1>
 		<br>A customer comes into <<- $ourStore.name>>. 
-		<br>They are looking for 
+		
 
 		<<if $customerWants == 0>>
+			<br>They are looking at 
 			/* This customer will accept any fluffy */
-			@@.coral; Any Fluffy.@@
+			<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>>.
+
+			<<if $autoSell>>
+				<<goto "Post Customer">>
+			<</if>>
+
 		<<else>>
+			<br>They are looking for 
 			/* This customer has specific needs */
 			@@.coral; 
 			<<for _need range $customerDeck>>
@@ -102,7 +109,20 @@ button {
 		<</if>>
 		<br>
 		<br>
-		[[Decline this request|Event Main][$encyclopedia = 0]]
+		<<button [[Decline this request|Event Main]]>><<set $encyclopedia = 0>><</button>>
+		<br>
+		<br>
+		<<if $autoSell>>
+			<<button "Disable Auto Sell">><<set $autoSell = false>><</button>>
+		<<else>>
+			<<button "Enable Auto Sell This Week">>
+				<<set $autoSell = true>>
+				<<if $customerWants == 0>>
+					<<goto "Post Customer">>
+				<</if>>
+			<</button>>
+		<</if>>
+		/*[[Decline this request|Event Main][$encyclopedia = 0]]*/
 	</div>	
 
 	<div id="fluffy-list"></div>
@@ -130,7 +150,7 @@ button {
 		<<capture $activeFluffy.ID, $activeFluffy.name>>
 			<<replace "#fluffy-list">>
 				<div class="fluffy-description">
-				
+					
 					<div class="fluffy-checkbox-container">
 						<<print `<input class="fluffy-checkbox" data-fluffy-id="${$activeFluffy.ID}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
 					</div>

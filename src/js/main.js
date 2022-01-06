@@ -48,6 +48,11 @@ Save.onLoad.add(function (save)
     save.state.history[save.state.index].variables.grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
   }
 
+  if (typeof save.state.history[save.state.index].variables.autoSell == 'undefined')
+  {
+    save.state.history[save.state.index].variables.autoSell = false;
+  }
+
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 

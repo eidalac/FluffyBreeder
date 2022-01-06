@@ -16208,6 +16208,11 @@ Save.onLoad.add(function (save)
     save.state.history[save.state.index].variables.grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
   }
 
+  if (typeof save.state.history[save.state.index].variables.autoSell == 'undefined')
+  {
+    save.state.history[save.state.index].variables.autoSell = false;
+  }
+
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 
@@ -17834,12 +17839,19 @@ button {
 	&lt;div class=&quot;header&quot;&gt;
 		&lt;h1&gt;Customer&lt;/h1&gt;
 		&lt;br&gt;A customer comes into &lt;&lt;- $ourStore.name&gt;&gt;. 
-		&lt;br&gt;They are looking for 
+		
 
 		&lt;&lt;if $customerWants == 0&gt;&gt;
+			&lt;br&gt;They are looking at 
 			/* This customer will accept any fluffy */
-			@@.coral; Any Fluffy.@@
+			&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt;.
+
+			&lt;&lt;if $autoSell&gt;&gt;
+				&lt;&lt;goto &quot;Post Customer&quot;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
 		&lt;&lt;else&gt;&gt;
+			&lt;br&gt;They are looking for 
 			/* This customer has specific needs */
 			@@.coral; 
 			&lt;&lt;for _need range $customerDeck&gt;&gt;
@@ -17855,7 +17867,20 @@ button {
 		&lt;&lt;/if&gt;&gt;
 		&lt;br&gt;
 		&lt;br&gt;
-		[[Decline this request|Event Main][$encyclopedia = 0]]
+		&lt;&lt;button [[Decline this request|Event Main]]&gt;&gt;&lt;&lt;set $encyclopedia = 0&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;br&gt;
+		&lt;br&gt;
+		&lt;&lt;if $autoSell&gt;&gt;
+			&lt;&lt;button &quot;Disable Auto Sell&quot;&gt;&gt;&lt;&lt;set $autoSell = false&gt;&gt;&lt;&lt;/button&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;button &quot;Enable Auto Sell This Week&quot;&gt;&gt;
+				&lt;&lt;set $autoSell = true&gt;&gt;
+				&lt;&lt;if $customerWants == 0&gt;&gt;
+					&lt;&lt;goto &quot;Post Customer&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+		/*[[Decline this request|Event Main][$encyclopedia = 0]]*/
 	&lt;/div&gt;	
 
 	&lt;div id=&quot;fluffy-list&quot;&gt;&lt;/div&gt;
@@ -17883,7 +17908,7 @@ button {
 		&lt;&lt;capture $activeFluffy.ID, $activeFluffy.name&gt;&gt;
 			&lt;&lt;replace &quot;#fluffy-list&quot;&gt;&gt;
 				&lt;div class=&quot;fluffy-description&quot;&gt;
-				
+					
 					&lt;div class=&quot;fluffy-checkbox-container&quot;&gt;
 						&lt;&lt;print `&lt;input class=&quot;fluffy-checkbox&quot; data-fluffy-id=&quot;${$activeFluffy.ID}&quot; name=&quot;fluffy-checkbox&quot; type=&quot;hidden&quot; tabindex=&quot;0&quot; class=&quot;macro-checkbox&quot;&gt;`&gt;&gt;
 					&lt;/div&gt;
@@ -19916,6 +19941,8 @@ Genes       Height multiplier
 &lt;&lt;set $eventStarvation = []&gt;&gt;
 &lt;&lt;set $customerCards = []&gt;&gt;
 
+
+&lt;&lt;set $autoSell = false&gt;&gt;
 
 /* ***
  *	Update counts for the sidebar
@@ -22305,7 +22332,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;08e44a0&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;433d7c9&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -26504,7 +26531,7 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			
 				/* immature */
-				&lt;&lt;elseif $globalFluffies[_fl].ageCategory &lt;= 4&gt;&gt;&gt;
+				&lt;&lt;elseif $globalFluffies[_fl].ageCategory &lt;= 4&gt;&gt;
 					&lt;&lt;if $listType != &quot;Foals&quot; &amp;&amp; $listType != &quot;All&quot; &amp;&amp; $listType != &quot;Display&quot;&gt;&gt;
 						&lt;&lt;set $globalFluffies[_fl].isChecked = false&gt;&gt;
 						&lt;&lt;continue&gt;&gt;
