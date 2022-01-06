@@ -1840,6 +1840,7 @@ window.groupList = [
 ["7a744d", "Steel Legion Drab", "Brown"],
 ["B94278", "Emperors Children", "Red"],
 ["7761AB", "Genestealer Purple", "Violet"],
+["44362F", "Van Dyke Brown", "Brown"],
 ]
 
 };
