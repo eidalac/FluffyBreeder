@@ -112,16 +112,7 @@ button {
 		<<button [[Decline this request|Event Main]]>><<set $encyclopedia = 0>><</button>>
 		<br>
 		<br>
-		<<if $autoSell>>
-			<<button "Disable Auto Sell">><<set $autoSell = false>><</button>>
-		<<else>>
-			<<button "Enable Auto Sell This Week">>
-				<<set $autoSell = true>>
-				<<if $customerWants == 0>>
-					<<goto "Post Customer">>
-				<</if>>
-			<</button>>
-		<</if>>
+		<div id="sell-buttons"></div>
 		/*[[Decline this request|Event Main][$encyclopedia = 0]]*/
 	</div>	
 
@@ -135,6 +126,20 @@ button {
 	<br>
 	/* Display the initial list*/
 	<<timed 20ms>>
+	<<replace "#sell-buttons">>
+		<<if $autoSell>>
+			<<button "Disable Auto Sell">>
+				<<set $autoSell = false>>
+			<</button>>
+		<<else>>
+			<<button "Enable Auto Sell This Week">>
+			<<set $autoSell = true>>
+				<<if $customerWants == 0>>
+					<<goto "Post Customer">>
+				<</if>>
+			<</button>>
+		<</if>>
+	<</replace>>
 	<<if $customerWants != 0>>
 		<<set _type = "customer">>
 		<<set $fluffyFilters = {

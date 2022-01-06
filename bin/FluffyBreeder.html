@@ -17870,16 +17870,7 @@ button {
 		&lt;&lt;button [[Decline this request|Event Main]]&gt;&gt;&lt;&lt;set $encyclopedia = 0&gt;&gt;&lt;&lt;/button&gt;&gt;
 		&lt;br&gt;
 		&lt;br&gt;
-		&lt;&lt;if $autoSell&gt;&gt;
-			&lt;&lt;button &quot;Disable Auto Sell&quot;&gt;&gt;&lt;&lt;set $autoSell = false&gt;&gt;&lt;&lt;/button&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;button &quot;Enable Auto Sell This Week&quot;&gt;&gt;
-				&lt;&lt;set $autoSell = true&gt;&gt;
-				&lt;&lt;if $customerWants == 0&gt;&gt;
-					&lt;&lt;goto &quot;Post Customer&quot;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/button&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;div id=&quot;sell-buttons&quot;&gt;&lt;/div&gt;
 		/*[[Decline this request|Event Main][$encyclopedia = 0]]*/
 	&lt;/div&gt;	
 
@@ -17893,6 +17884,20 @@ button {
 	&lt;br&gt;
 	/* Display the initial list*/
 	&lt;&lt;timed 20ms&gt;&gt;
+	&lt;&lt;replace &quot;#sell-buttons&quot;&gt;&gt;
+		&lt;&lt;if $autoSell&gt;&gt;
+			&lt;&lt;button &quot;Disable Auto Sell&quot;&gt;&gt;
+				&lt;&lt;set $autoSell = false&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;button &quot;Enable Auto Sell This Week&quot;&gt;&gt;
+			&lt;&lt;set $autoSell = true&gt;&gt;
+				&lt;&lt;if $customerWants == 0&gt;&gt;
+					&lt;&lt;goto &quot;Post Customer&quot;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/button&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+	&lt;&lt;/replace&gt;&gt;
 	&lt;&lt;if $customerWants != 0&gt;&gt;
 		&lt;&lt;set _type = &quot;customer&quot;&gt;&gt;
 		&lt;&lt;set $fluffyFilters = {
@@ -22332,7 +22337,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;433d7c9&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;62a276b&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -28521,7 +28526,7 @@ button {
 		&lt;&lt;set $globalFluffies[_ID].onDisplay = false&gt;&gt;
 
 		&lt;&lt;if $globalFluffies[_ID].foodType == &quot;Nursing&quot;&gt;&gt;
-			&lt;&lt;set $globalFluffies[$globalFluffies[_fl].mother].nursing.delete(_ID)&gt;&gt;
+			&lt;&lt;set $globalFluffies[$globalFluffies[_ID].mother].nursing.delete(_ID)&gt;&gt;
 		&lt;&lt;/if&gt;&gt; /* Close nursing check */
 
 		&lt;&lt;if $globalFluffies[_ID].nursing.length &gt; 0&gt;&gt;
