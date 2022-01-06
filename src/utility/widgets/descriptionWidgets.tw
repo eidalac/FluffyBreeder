@@ -231,19 +231,31 @@ button {
  * 	Replaces '<fluffy>' with actual name.
  *** */
 <<widget "fluffSpeech">>
-	<<set _msg = _args[0] ? _args[0] : "">>
-	<<set _color = _args[1].cColor.hex>>
-	<<set _luminance = getLuminance(_color)>>
-	<<if _luminance > 64 >>
-		<<set _background = "var(--text-dark)">>
+
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<fluffSpeech>>: called with no text.`)>>
+		<<set _msg = "">>
 	<<else>>
-		<<set _background = "lightgray">>
+		<<set _msg = _args[0]>>
 	<</if>>
 
-	<<if $activeFluffy.ageCategory < 2>>
-		<<- `@@background:${_background}; color:${_color};`+'"'+`${"cheep... cheep..."}`+'"'>>
+	<<if ndef _args[1]>>
+		<<run console.log(`ERROR: <<fluffSpeech>>: called with no fluffy.`)>>
 	<<else>>
-		<<- `@@background:${_background}; color:${_color};`+'"'+`${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, _args[1].name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}`+'"'>>
+
+		<<set _color = _args[1].cColor.hex>>
+		<<set _luminance = getLuminance(_color)>>
+		<<if _luminance > 64 >>
+			<<set _background = "var(--text-dark)">>
+		<<else>>
+			<<set _background = "lightgray">>
+		<</if>>
+
+		<<if _args[1].ageCategory < 2>>
+			<<- `@@background:${_background}; color:${_color};`+'"'+`${"cheep... cheep..."}`+'"'>>
+		<<else>>
+			<<- `@@background:${_background}; color:${_color};`+'"'+`${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, _args[1].name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}`+'"'>>
+		<</if>>
 	<</if>>
 <</widget>>
 

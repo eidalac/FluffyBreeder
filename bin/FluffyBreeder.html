@@ -22298,7 +22298,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;f45b857&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;5537f84&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -26630,19 +26630,31 @@ button {
  * 	Replaces &#39;&lt;fluffy&gt;&#39; with actual name.
  *** */
 &lt;&lt;widget &quot;fluffSpeech&quot;&gt;&gt;
-	&lt;&lt;set _msg = _args[0] ? _args[0] : &quot;&quot;&gt;&gt;
-	&lt;&lt;set _color = _args[1].cColor.hex&gt;&gt;
-	&lt;&lt;set _luminance = getLuminance(_color)&gt;&gt;
-	&lt;&lt;if _luminance &gt; 64 &gt;&gt;
-		&lt;&lt;set _background = &quot;var(--text-dark)&quot;&gt;&gt;
+
+	&lt;&lt;if ndef _args[0]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffSpeech&gt;&gt;: called with no text.`)&gt;&gt;
+		&lt;&lt;set _msg = &quot;&quot;&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _background = &quot;lightgray&quot;&gt;&gt;
+		&lt;&lt;set _msg = _args[0]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $activeFluffy.ageCategory &lt; 2&gt;&gt;
-		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${&quot;cheep... cheep...&quot;}`+&#39;&quot;&#39;&gt;&gt;
+	&lt;&lt;if ndef _args[1]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: &lt;&lt;fluffSpeech&gt;&gt;: called with no fluffy.`)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, _args[1].name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}`+&#39;&quot;&#39;&gt;&gt;
+
+		&lt;&lt;set _color = _args[1].cColor.hex&gt;&gt;
+		&lt;&lt;set _luminance = getLuminance(_color)&gt;&gt;
+		&lt;&lt;if _luminance &gt; 64 &gt;&gt;
+			&lt;&lt;set _background = &quot;var(--text-dark)&quot;&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;set _background = &quot;lightgray&quot;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;if _args[1].ageCategory &lt; 2&gt;&gt;
+			&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${&quot;cheep... cheep...&quot;}`+&#39;&quot;&#39;&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;- `@@background:${_background}; color:${_color};`+&#39;&quot;&#39;+`${_msg.replaceAll(/(?:&lt;title&gt;)/gmi, $title).replaceAll(/(?:&lt;fluffy&gt;)/gmi, _args[1].name).replaceAll(/(?:&lt;store&gt;)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, &quot;w&quot;).replaceAll(/[L]|[R]/gm, &quot;W&quot;).replaceAll(/[v]/gm, &quot;b&quot;).replaceAll(/[V]/gm, &quot;B&quot;)}`+&#39;&quot;&#39;&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;
 
