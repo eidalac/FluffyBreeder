@@ -1634,15 +1634,15 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 
 	let geneObject;
 	const colorFilter = hexToFilter(hexString);
-	const genHex = hexString;
-	const genFilter = colorFilter;
+	const geneFilter = colorFilter;
 
 	// Check which existing color most matches generated color
 	const ntcObject = ntc.name(hexString);
-	const genName = ntcObject[1];
-	const genGroup = ntcObject[3];
+	const geneHex = ntcObject[0];
+	const geneName = ntcObject[1];
+	const geneGroup = ntcObject[3];
 
-	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter), group: String(genGroup)};
+	geneObject = { name: String(geneName), hex: String(geneHex), filter: String(geneFilter), group: String(geneGroup)};
 
 	return geneObject;
 }

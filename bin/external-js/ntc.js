@@ -818,7 +818,7 @@ window.groupList = [
 ["7B948C", "Granny Smith", "Green"],
 ["9DE093", "Granny Smith Apple", "Green"],
 ["413D4B", "Grape", "Violet"],
-["383428", "Graphite", "Yellow"],
+["383428", "Graphite", "Black"],
 ["4A4B46", "Gravel", "Grey"],
 ["008000", "Green", "Green"],
 ["3E6334", "Green House", "Green"],
