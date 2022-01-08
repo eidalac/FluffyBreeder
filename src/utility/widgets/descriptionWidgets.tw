@@ -476,7 +476,7 @@ button {
 	<<if  $debugMode>>
 		@@.orange;_price@@
 	<<else>>
-		<<- $training >= 100 ? _price < _low ? "@@.red;_price@@" : _price < _mid ? "@@.yellow;_price@@" : "@@.green;_price@@" : $training >= 50 ? _price < _low ? "@@.red;Low@@" : _price < _mid ? "@@.yellow;Average@@" : "@@.green;High@@" : "@@.yellow;??@@">>
+		<<- $training >= 100 ? _price < _low ? "@@.stat-low.stat-value;_price@@" : _price < _mid ? "@@.stat-average.stat-value;_price@@" : "@@.stat-high.stat-value;_price@@" : $training >= 50 ? _price < _low ? "@@.stat-low.stat-value;Low@@" : _price < _mid ? "@@.stat-average.stat-value;Average@@" : "@@.stat-high.stat-value;High@@" : "@@.stat-average.stat-value;??@@">>
 	<</if>>
 <</widget>>
 
@@ -692,7 +692,7 @@ button {
 	<</if>>
 	
 	<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is a <<print $activeFluffy.personality>> $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
-	<br><<They>> has a <<inlineColor $activeFluffy.cColor.hex>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<inlineColor $activeFluffy.mColor.hex>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<inlineColor $activeFluffy.eColor.hex>> eyes<</if>>. 
+	<br><<They>> has a <<colorizeText $activeFluffy.cColor.hex $activeFluffy.cColor.name>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<colorizeText $activeFluffy.mColor.hex $activeFluffy.mColor.name>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<colorizeText $activeFluffy.eColor.hex $activeFluffy.eColor.name>> eyes<</if>>. 
 	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
 	<br><<They>> weighs $activeFluffy.weight <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxWeight)" : "">> KG.  <<They>> is $activeFluffy.length cm long <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxLength)" : "">> and is $activeFluffy.height cm tall <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxHeight)" : "">>.  
 	<br><<They>> fluff is $activeFluffy.coatLength cm long, has a density of $activeFluffy.coatDensity and has a curl of $activeFluffy.coatCurl.
