@@ -186,25 +186,103 @@
 	<<elseif $activeFluffy.ageCategory == 5>>
 		
 		<<adultSprite $activeFluffy>>
-
-		/* Eyes */
-		<<if $activeFluffy.subSpecies == 2>>
-			<<if $activeFluffy.furStage >= 167>>
-				/* Nothing */
-			<<elseif $activeFluffy.furStage > 100>>
-				<<= '<img src="' + _sixColorEyes + '" style="' + _eyeFilter + '">'>>
-			<<elseif $activeFluffy.furStage > 67>>
-				<<= '<img src="' + _sixColorEyesTrimmed + '" style="' + _eyeFilter + '">'>>
-			<<else>>
-				<<= '<img src="' + _sixColorEyesShaved + '" style="' + _eyeFilter + '">'>>
-			<</if>>
-		<<else>>
-			<<= '<img src="' + _sixColorEyes + '" style="' + _eyeFilter + '">'>>
-			<<= '<img src="' + _sixColorEyes + '" class="eyefilter">'>>
-		<</if>>
 		
-		/* Coat */
-		<<if $activeFluffy.subSpecies == 2>>
+		/* Body */
+		<<switch $activeFluffy.subSpecies>>
+		<<case 0>>
+			<<if $activeFluffy.furStage < 67>>
+				<<= '<img src="' + _sixColorBasePart + '" style="' + _coatFilter + '">'>>
+				<<= '<img src="' + _sixLinesBasePart + '" class="blackfilter">'>>
+				<<= '<img src="' + _sixLinesBaseShavedPart + '" class="blackfilter">'>>
+
+				/* Wings */
+				<<= '<img src="' + _sixColorWingPart + '" style="' + _coatFilter + '">'>>
+				<<= '<img src="' + _sixLinesWingPart + '" class="blackfilter">'>>
+				<<= '<img src="' + _sixLinesWingShavedPart + '" class="blackfilter">'>>
+
+				/* Mane */
+				<<= '<img src="' + _sixColorEarsDownPart + '" style="' + _coatFilter + '">'>>
+				<<= '<img src="' + _sixLinesEarsDownPart + '" class="blackfilter">'>>
+				<<= '<img src="' + _sixLinesEarsDownShavedPart + '" class="blackfilter">'>>
+
+				/* Tail */
+				<<= '<img src="' + _sixColorManeTailShavedPart + '" style="' + _maneFilter + '">'>>
+				<<= '<img src="' + _sixColorManeTailShavedPart + '" class="manefilter">'>>
+				<<= '<img src="' + _sixLinesManeTailShavedPart + '" class="blackfilter">'>>
+			<<else>>
+				/* Body */
+				<<= '<img src="' + _sixColorBasePart + '" style="' + _coatFilter + '">'>>
+				<<= '<img src="' + _sixLinesBasePart + '" class="blackfilter">'>>
+
+				/* Tail */
+				<<= '<img src="' + _sixColorManeTailPart + '" style="' + _maneFilter + '">'>>
+				<<= '<img src="' + _sixColorManeTailPart + '" class="manefilter">'>>
+				<<= '<img src="' + _sixLinesManeTailPart + '" class="blackfilter">'>>
+
+				/* Legs */ /* TODO: Implement pillowing */
+				<<= '<img src="' + _sixColorLegsPart + '" style="' + _coatFilter + '">'>>
+				<<= '<img src="' + _sixLinesLegsPart + '" class="blackfilter">'>>
+
+				/* Wings */
+				<<if _args[0] === "pegasus" || _args[0] === "alicorn">>
+					<<= '<img src="' + _sixColorWingPart + '" style="' + _coatFilter + '">'>>
+					<<= '<img src="' + _sixLinesWingPart + '" class="blackfilter">'>>
+				<</if>>
+				<<if $activeFluffy.happy > 167>>
+					/* Mane & Ears */
+					<<= '<img src="' + _sixColorManePart + '" style="' + _maneFilter + '">'>>
+					<<= '<img src="' + _sixColorManePart + '" class="manefilter">'>>
+					<<= '<img src="' + _sixColorEarsUpPart + '" style="' + _coatFilter + '">'>>
+					<<= '<img src="' + _sixLinesManeEarsUpPart + '" class="blackfilter">'>>
+
+					/* Eyes */
+					<<= '<img src="' + _sixColorEyesPart + '" style="' + _eyeFilter + '">'>>
+					<<= '<img src="' + _sixColorEyesPart + '" class="eyefilter">'>>
+					<<= '<img src="' + _sixLinesEyesPart + '" class="blackfilter">'>>
+
+					/* Mouth */
+					<<= '<img src="' + _sixLinesMouthSmilePart + '" class="blackfilter">'>>
+				<<elseif $activeFluffy.happy > 100>>
+					/* Mane & Ears */
+					<<= '<img src="' + _sixColorManePart + '" style="' + _maneFilter + '">'>>
+					<<= '<img src="' + _sixColorManePart + '" class="manefilter">'>>
+					<<= '<img src="' + _sixColorEarsUpPart + '" style="' + _coatFilter + '">'>>
+					<<= '<img src="' + _sixLinesManeEarsUpPart + '" class="blackfilter">'>>
+
+					/* Eyes */
+					<<= '<img src="' + _sixColorEyesPart + '" style="' + _eyeFilter + '">'>>
+					<<= '<img src="' + _sixColorEyesPart + '" class="eyefilter">'>>
+					<<= '<img src="' + _sixLinesEyesPart + '" class="blackfilter">'>>
+
+					/* Mouth */
+					<<= '<img src="' + _sixLinesMouthPart + '" class="blackfilter">'>>
+				<<else>>
+					/* Mane & Ears */
+					<<= '<img src="' + _sixColorManePart + '" style="' + _maneFilter + '">'>>
+					<<= '<img src="' + _sixColorManePart + '" class="manefilter">'>>
+					<<= '<img src="' + _sixColorEarsDownPart + '" style="' + _coatFilter + '">'>>
+					<<= '<img src="' + _sixLinesManeEarsDownPart + '" class="blackfilter">'>>
+
+					/* Eyes */
+					<<= '<img src="' + _sixColorEyesSadPart + '" style="' + _eyeFilter + '">'>>
+					<<= '<img src="' + _sixColorEyesSadPart + '" class="eyefilter">'>>
+					<<= '<img src="' + _sixLinesEyesSadPart + '" class="blackfilter">'>>
+				<</if>>
+
+				<<= '<img src="' + _sixColorEyewhitesPart + '"  class="whitefilter">'>>
+
+				/* Horns */
+				<<if _args[0] === "unicorn" || _args[0] === "alicorn">>
+					<<= '<img src="' + _sixColorHornPart + '" class="whitefilter">'>>
+					<<= '<img src="' + _sixLinesHornPart + '" class="blackfilter">'>>
+				<</if>>
+				
+				/* Teats */
+				<<if $activeFluffy.gender === "female">>
+					<<= '<img src="' + _sixLinesTeatsPart + '"  class="blackfilter">'>>
+				<</if>>
+			<</if>>
+		<<case 2>>
 			<<if $activeFluffy.furStage > 167>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
 					<<= '<img src="' + _sixColorCoatWingOvergrown + '" style="' + _coatFilter + '">'>>
@@ -230,24 +308,11 @@
 					<<= '<img src="' + _sixColorCoatShaved + '"  class="pinkfilter">'>>
 				<</if>>
 			<</if>>
-		<<else>>
-			<<if $activeFluffy.furStage < 67>>
-				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWingShaved + '"  class="pinkfilter">'>>
-				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoatShaved + '"  class="pinkfilter">'>>
-				<</if>>
-			<<else>>
-				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
-					<<= '<img src="' + _sixColorCoatWing + '" style="' + _coatFilter + '">'>>
-				<<elseif _args[0] === "earthie" || _args[0] === "unicorn" || $activeFluffy.subSpecies == undefined>>
-					<<= '<img src="' + _sixColorCoat + '" style="' + _coatFilter + '">'>>
-				<</if>>
-			<</if>>
-		<</if>>
+		<</switch>>
 
 		/* Mane */
-		<<if $activeFluffy.subSpecies == 2>>
+		<<switch $activeFluffy.subSpecies>>
+		<<case 2>>
 			<<if $activeFluffy.furStage > 167>>
 				<<if _args[0] === "alicorn" ||  _args[0] === "pegasus">>
 					<<= '<img src="' + _sixColorManeWingOvergrown + '" style="' + _maneFilter + '">'>>
@@ -270,41 +335,23 @@
 			<<else>>
 				<<= '<img src="' + _sixColorManeShaved + '" style="' + _maneFilter + '">'>>
 			<</if>>
-		<<else>>
-			<<if $activeFluffy.furStage < 67>>
-				<<= '<img src="' + _sixColorManeShaved + '" style="' + _maneFilter + '">'>>
-			<<else>>
-				<<= '<img src="' + _sixColorMane + '" style="' + _maneFilter + '">'>>
-				<<= '<img src="' + _sixColorMane + '" class="manefilter">'>>
-			<</if>>
-		<</if>>
-
-		/* Eyewhites */
-		<<if $activeFluffy.subSpecies == 2>>
-			<<if $activeFluffy.furStage >= 167>>
-				/* Nothing */
-			<<else>>
-				<<= '<img src="' + _sixColorEyewhites + '"  class="whitefilter">'>>
-			<</if>>
-		<<else>>
-			<<= '<img src="' + _sixColorEyewhites + '"  class="whitefilter">'>>
-		<</if>>
+		<</switch>>
 		
 		/* Horns */
 		<<if _args[0] === "unicorn" || _args[0] === "alicorn">>
-			<<if $activeFluffy.subSpecies == 2>>
+			<<switch $activeFluffy.subSpecies>>
+			<<case 2>>
 				<<if $activeFluffy.furStage > 167>>
 					<<= '<img src="' + _sixColorHornOvergrown + '" class="whitefilter">'>>
 				<<else>>
 					<<= '<img src="' + _sixColorHorn + '" class="whitefilter">'>>
 				<</if>>
-			<<else>>
-				<<= '<img src="' + _sixColorHorn + '" class="whitefilter">'>>
-			<</if>>
+			<</switch>>
 		<</if>>
 
 		/* Outlines */
-		<<if $activeFluffy.subSpecies == 2>>
+		<<switch $activeFluffy.subSpecies>>
+		<<case 2>>
 			<<if $activeFluffy.furStage >= 167>>
 				<<if _args[0] === "alicorn">>
 					<<= '<img src="' + _sixLinesAlicornOvergrown + '" class="blackfilter">'>>
@@ -346,33 +393,38 @@
 					<<= '<img src="' + _sixLinesEarthieShaved + '" class="blackfilter">'>>
 				<</if>>
 			<</if>>
-		<<else>>
-			<<if $activeFluffy.furStage < 67>>
-				<<if _args[0] === "alicorn">>
-					<<= '<img src="' + _sixLinesAlicornShaved + '" class="blackfilter">'>>
-				<<elseif _args[0] === "pegasus">>
-					<<= '<img src="' + _sixLinesPegasusShaved + '" class="blackfilter">'>>
-				<<elseif _args[0] === "unicorn">>
-					<<= '<img src="' + _sixLinesUnicornShaved + '" class="blackfilter">'>>
-				<<else>>
-					<<= '<img src="' + _sixLinesEarthieShaved + '" class="blackfilter">'>>
-				<</if>>
-			<<else>>
-				<<if _args[0] === "alicorn">>
-					<<= '<img src="' + _sixLinesAlicorn + '" class="blackfilter">'>>
-				<<elseif _args[0] === "pegasus">>
-					<<= '<img src="' + _sixLinesPegasus + '" class="blackfilter">'>>
-				<<elseif _args[0] === "unicorn">>
-					<<= '<img src="' + _sixLinesUnicorn + '" class="blackfilter">'>>
-				<<else>>
-					<<= '<img src="' + _sixLinesEarthie + '" class="blackfilter">'>>
-				<</if>>
-			<</if>>
-		<</if>>
+		<</switch>>
 
-		<<if $activeFluffy.gender === "female">>
-			<<= '<img src="' + _sixLinesTeats + '"  class="blackfilter">'>>
-		<</if>>
+		/* Eyes */
+		<<switch $activeFluffy.subSpecies>>
+		<<case 2>>
+			<<if $activeFluffy.furStage >= 167>>
+				/* Nothing */
+			<<elseif $activeFluffy.furStage > 100>>
+				<<= '<img src="' + _sixColorEyes + '" style="' + _eyeFilter + '">'>>
+			<<elseif $activeFluffy.furStage > 67>>
+				<<= '<img src="' + _sixColorEyesTrimmed + '" style="' + _eyeFilter + '">'>>
+			<<else>>
+				<<= '<img src="' + _sixColorEyesShaved + '" style="' + _eyeFilter + '">'>>
+			<</if>>
+		<</switch>>
+
+		/* Eyewhites */
+		<<switch $activeFluffy.subSpecies>>
+		<<case 2>>
+			<<if $activeFluffy.furStage >= 167>>
+				/* Nothing */
+			<<else>>
+				<<= '<img src="' + _sixColorEyewhites + '"  class="whitefilter">'>>
+			<</if>>
+		<</switch>>
+		
+		<<switch $activeFluffy.subSpecies>>
+		<<case 2>>
+			<<if $activeFluffy.gender === "female">>
+				<<= '<img src="' + _sixLinesTeats + '"  class="blackfilter">'>>
+			<</if>>
+		<</switch>>
 
 	/* 7. grey (droopy eyes and greying fur) week 208-364 (4-7 years)*/
 	<<else>>
@@ -388,7 +440,7 @@
 			<<elseif $activeFluffy.furStage > 67>>
 				<<= '<img src="' + _sevenColorEyesTrimmed + '" style="' + _eyeFilter + '">'>>
 			<<else>>
-				<<= '<img src="' + _seveColorEyesShaved + '" style="' + _eyeFilter + '">'>>
+				<<= '<img src="' + _sevenColorEyesShaved + '" style="' + _eyeFilter + '">'>>
 			<</if>>
 		<<else>>
 			<<= '<img src="' + _sevenColorEyes + '" style="' + _eyeFilter + '">'>>
