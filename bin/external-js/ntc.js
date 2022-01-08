@@ -1237,7 +1237,7 @@ window.groupList = [
 ["DA70D6", "Orchid", "Violet"],
 ["F1EBD9", "Orchid White", "Yellow"],
 ["255B77", "Orient", "Blue"],
-["C28E88", "Oriental Pink", "Red"],
+["C28E88", "Oriental Pink", "Brown"],
 ["D2D3B3", "Orinoco", "Green"],
 ["818988", "Oslo Grey", "Grey"],
 ["D3DBCB", "Ottoman", "Green"],
