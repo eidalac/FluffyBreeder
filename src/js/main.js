@@ -338,7 +338,7 @@ window.getInfo = function($target) {
       case 'trait_breathless':
         return `<b class="info-highlight">Breathless</b> fluffies have a hard time breathing.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_stertorous':
-        return `<b class="info-highlight">Asthmatic</b> fluffies have difficulty breathing, cough, and wheeze.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
+        return `<b class="info-highlight">Stertorous</b> fluffies have difficulty breathing, cough, and wheeze.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
       case 'trait_exhausted':
         return `<b class="info-highlight">Exhausted</b> fluffies are unable to get anything done.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
