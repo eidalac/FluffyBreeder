@@ -22387,7 +22387,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;1e28849&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4314ccf&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -26426,48 +26426,61 @@ Subspecies:
                         &lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.learning++&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 60&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.charm--&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 50&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
+                    
                 &lt;&lt;case 1&gt;&gt;
                     &lt;&lt;if random(0, 1) == 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.energy++&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 90&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.strength--&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 70&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
+                    
                 &lt;&lt;case 2&gt;&gt;
                     &lt;&lt;if random(0, 1) == 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.learning++&gt;&gt;
+                         &lt;&lt;set $activeFluffy.happy = 80&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.energy--&gt;&gt;
+                         &lt;&lt;set $activeFluffy.happy = 90&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
+                   
                 &lt;&lt;case 3&gt;&gt;
                     &lt;&lt;if random(0, 1) == 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.charm++&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.charm--&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = 110&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
               &lt;&lt;default&gt;&gt; /* &quot;Cute&quot; */
                     &lt;&lt;if random(0, 1) == 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.learning++&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+                         &lt;&lt;set $activeFluffy.happy = 130&gt;&gt;
                     &lt;&lt;else&gt;&gt;
                         &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
                         &lt;&lt;set $activeFluffy.learning--&gt;&gt;
                         &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                         &lt;&lt;set $activeFluffy.happy = 110&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;                   
             &lt;&lt;/switch&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
@@ -29733,8 +29746,13 @@ button {
  *	Displays fluffies for the sidebar
  *** */
 &lt;&lt;widget &quot;SidebarFluffies&quot;&gt;&gt;
-	@@.coral;[[Total Fluffies|Fluffy List][$listType = &quot;All&quot;]]@@ | &lt;&lt;print $ourStore.foals + $ourStore.mares + $ourStore.stallions&gt;&gt; /  $ourStore.shelter
-	&lt;br&gt;($ourStore.foals @@.lightcoral;Foals@@ $ourStore.mares @@.lightcoral;Mares@@ $ourStore.stallions @@.lightcoral;Stallions@@)
+	&lt;&lt;set _displayFluffies = $globalFluffies.filter(fluffy =&gt; fluffy.onDisplay);&gt;&gt;
+	
+	@@.coral;[[Total Fluffies|Fluffy List][$listType = &quot;All&quot;]]@@
+	&lt;br&gt;
+	&lt;&lt;- $ourStore.fluffies.length&gt;&gt; Store | &lt;&lt;- _displayFluffies.length&gt;&gt; Display
+	&lt;br&gt;
+	$ourStore.foals @@.lightcoral;Foals@@ $ourStore.mares @@.lightcoral;Mares@@ $ourStore.stallions @@.lightcoral;Stallions@@
 &lt;&lt;/widget&gt;&gt;
 
 /* ***
@@ -29742,10 +29760,14 @@ button {
  *	Displays store info for the sidebar
  *** */
 &lt;&lt;widget &quot;SidebarStore&quot;&gt;&gt;
+	&lt;&lt;set _displayFluffies = $globalFluffies.filter(fluffy =&gt; fluffy.onDisplay);&gt;&gt;
 	@@.coral;Store@@
-	&lt;br&gt;$ourStore.shelter @@.lightcoral;Shelter@@ |
-	$ourStore.display @@.lightcoral;Display@@ |
-	$ourStore.space @@.lightcoral;Space@@
+	&lt;br&gt;
+	@@.lightcoral;Shelter@@ $ourStore.shelter (&lt;&lt;- $ourStore.fluffies.length&gt;&gt; used) |
+	@@.lightcoral;Display@@  $ourStore.display (&lt;&lt;- _displayFluffies.length&gt;&gt; used) |
+	@@.lightcoral;Space@@ $ourStore.space 
+	&lt;br&gt;
+
 &lt;&lt;/widget&gt;&gt;
 
 
@@ -30421,13 +30443,13 @@ button {
 
 &lt;&lt;widget &quot;checkAgeCategory&quot;&gt;&gt;
 
-	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + $activeFluffy.ageWeeks)&gt;&gt;
+	&lt;&lt;set _cat = Number(Number($activeFluffy.age * 52) + Number($activeFluffy.ageWeeks))&gt;&gt;
 		
 	&lt;&lt;if _cat == 0&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageCategory = 0&gt;&gt;
 	&lt;&lt;elseif _cat == 1&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageCategory = 1&gt;&gt;
-	&lt;&lt;elseif $activeFluffy.weaned === false&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.weaned == false&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageCategory = 2&gt;&gt;
 	&lt;&lt;elseif _cat &lt; Number($activeFluffy.maturity/2)&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageCategory = 3&gt;&gt;
