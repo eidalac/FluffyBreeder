@@ -1,0 +1,125 @@
+:: Event Bonding [nobr]
+
+/* **********
+ * eventBonding.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Run event for setting up 2 fluffies as special friends.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+/* This should be called direcly from "Fluffy Breeding", not the standard event stack as there are 2 differnt fluffies involved*/
+<<if ndef $breedStal>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedStal not defined.`)>>
+    <<set $breedStal = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif ndef $breedMare>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedMare not defined.`)>>
+    <<set $breedMare = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif $ourStore.fluffies.includes($breedMare) == false>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedMare not in store.`)>>
+    <<set $breedMare = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif $ourStore.fluffies.includes($breedStal) == false>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedStal not in store.`)>>
+    <<set $breedStal = -1>>
+	<<goto "Fluffy Breeding">>
+<</if>>
+
+<<set _mare = $globalFluffies[$breedMare]>>
+<<set _stall = $globalFluffies[$breedStal]>>
+
+/* Todo: this needs to be another event: */
+<<if _mare.specialFriend != -1>>
+    /* Clear both special friends flag, ending breeding */
+    <<if def $globalFluffies[_mare.specialFriend]>>
+        <<set $globalFluffies[_mare.specialFriend].specialFriend = -1>>
+    <</if>>
+
+    <<set $globalFluffies[_mare.ID].specialFriend = -1>>
+<</if>>
+
+<<if _stall.specialFriend != -1>>
+    /* Clear both special friends flag, ending breeding */
+    <<if def $globalFluffies[_stall.specialFriend]>>
+        <<set $globalFluffies[_stall.specialFriend].specialFriend = -1>>
+    <</if>>
+
+    <<set $globalFluffies[_stall.ID].specialFriend = -1>>
+<</if>>
+
+
+
+/* Just some place holders for possible rejection based on breed/color/etc: */
+<<if _stall.colorBonus > _mare.colorBonus>>
+	<<run console.log(`DEBUG: [Event Bonding]: Dad color ${_stall.colorBonus} higher than moms ${_mare.colorBonus}.`)>>
+<<elseif _mare.colorBonus > _stall.colorBonus>>
+	<<run console.log(`DEBUG: [Event Bonding]: Mom color ${_mare.colorBonus} higher than dad ${_stall.colorBonus}.`)>>
+<</if>>
+
+<<if _stall.cColor.group == "Brown" && _mare.cColor.group != "Brown">>
+	<<run console.log(`DEBUG: [Event Bonding]: Dad brown, mom not.`)>>
+<<elseif _mare.cColor.group == "Brown" && _stall.cColor.group != "Brown">>
+	<<run console.log(`DEBUG: [Event Bonding]: Mom brown, dad not.`)>>
+<</if>>
+
+<<if _stall.breed != _mare.breed>>
+	<<run console.log(`DEBUG: [Event Bonding]: Breeds do not match.`)>>
+
+	<<if _stall.breed == "alicorn">>
+		<<run console.log(`DEBUG: [Event Bonding]: Dad alicorn, mom not.`)>>
+	<<elseif _mare.breed == "Alicorn">>
+		<<run console.log(`DEBUG: [Event Bonding]: mom alicorn, dad not.`)>>
+	<</if>>
+
+	<<if _stall.breed == "earthy">>
+		<<run console.log(`DEBUG: [Event Bonding]: Dad Earthy, mom not.`)>>
+	<<elseif _mare.breed == "Earthy">>
+		<<run console.log(`DEBUG: [Event Bonding]: mom Earthy, dad not.`)>>
+	<</if>>
+
+	<<if _stall.breed == "unicorn">>
+		<<run console.log(`DEBUG: [Event Bonding]: Dad Unicorn, mom not.`)>>
+	<<elseif _mare.breed == "Unicorn">>
+		<<run console.log(`DEBUG: [Event Bonding]: mom Unicorn, dad not.`)>>
+	<</if>>
+
+	<<if _stall.breed == "pegasus">>
+		<<run console.log(`DEBUG: [Event Bonding]: Dad Pegasus, mom not.`)>>
+	<<elseif _mare.breed == "Pegasus">>
+		<<run console.log(`DEBUG: [Event Bonding]: mom Pegasus, dad not.`)>>
+	<</if>>
+
+<</if>>
+
+<<if _stall.subSpecies != _mare.subSpecies>>
+	<<run console.log(`DEBUG: [Event Bonding]: subSpecies do not match.`)>>
+<</if>>
+
+<br>
+<<fluffSpeech  "hewwo pwetty mawe, wan' be speshaw fwens wid' <fluffy>?" $globalFluffies[$breedStal]>>
+<br>
+<<fluffSpeech  "yus, <fluffy> wan' be speshaw fwens!" $globalFluffies[$breedMare]>>
+<br>
+<<colorizeText $globalFluffies[$breedStal].cColor.hex $globalFluffies[$breedStal].name>> and <<colorizeText $globalFluffies[$breedMare].cColor.hex $globalFluffies[$breedMare].name>> are now special friends.
+
+<<set $globalFluffies[$breedStal].specialFriend = $breedMare>>
+<<set $globalFluffies[$breedMare].specialFriend = $breedStal>>
+
+<<set $globalFluffies[$breedStal] = $globalFluffies[$breedStal]>>
+<<set $globalFluffies[$breedMare] = $globalFluffies[$breedMare]>>
+<<set $breedStal = -1, $breedMare = -1>>
+<br>
+<br>
+[[CONTINUE|Fluffy List][$encyclopedia = 0]]
