@@ -16216,6 +16216,20 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 
+    // Update birth date
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
+    {
+      var date = new Date(State.variables.gameDate);
+      var days = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks) * Number(7));
+    
+			date.setDate(date.getDate() - days);
+			date.setYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
+
+      date.setDate(date.getDate() - days);
+
+      save.state.history[save.state.index].variables.globalFluffies[i].birthDate = date.toString();
+    }
+
     // Update age category
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
     {
@@ -22387,7 +22401,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4314ccf&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;7621807&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -22907,7 +22921,7 @@ profitsTotal: 0
 					&lt;&lt;drawSprite $globalFluffies[_id]&gt;&gt;
 					&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;
 				&lt;/div&gt;
-
+&lt;&lt;run console.log(`Debug: &lt;&lt;fluffyList&gt;&gt;: Birthdate: ${$globalFluffies[_id].birthDate}, age: ${$globalFluffies[_id].age}, weeks: ${$globalFluffies[_id].ageWeeks}.`)&gt;&gt;
 				&lt;&lt;set _price = 0&gt;&gt;
 			&lt;/div&gt;
 			&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
@@ -26025,6 +26039,16 @@ Subspecies:
                     &lt;&lt;newFromGene $testChild&gt;&gt;
                     &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
                     &lt;&lt;set $activeFluffy.ageWeeks = random(2, 12)&gt;&gt;
+
+                    &lt;&lt;script&gt;&gt;
+                        var date = new Date(State.variables.gameDate);
+                        var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                        
+                        date.setDate(date.getDate() - days);
+
+                        State.variables.activeFluffy.birthDate = date.toString();
+                    &lt;&lt;/script&gt;&gt;
+
                     &lt;&lt;checkAgeCategory&gt;&gt;
                     &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
@@ -26214,6 +26238,16 @@ Subspecies:
                         &lt;&lt;breedFluffies $mom $dad&gt;&gt;
                         &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
                         &lt;&lt;set $activeFluffy.ageWeeks = random(1, 6)&gt;&gt;
+
+                        &lt;&lt;script&gt;&gt;
+                            var date = new Date(State.variables.gameDate);
+                            var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                            
+                            date.setDate(date.getDate() - days);
+
+                            State.variables.activeFluffy.birthDate = date.toString();
+                        &lt;&lt;/script&gt;&gt;
+
                         &lt;&lt;checkAgeCategory&gt;&gt;
 
                         &lt;&lt;run $randomFluffies.push($activeFluffy.ID)&gt;&gt;
@@ -26288,6 +26322,16 @@ Subspecies:
 
         &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
         &lt;&lt;set $activeFluffy.ageWeeks = random(0, 30)&gt;&gt;
+
+        &lt;&lt;script&gt;&gt;
+            var date = new Date(State.variables.gameDate);
+            var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+            
+            date.setDate(date.getDate() - days);
+
+            State.variables.activeFluffy.birthDate = date.toString();
+        &lt;&lt;/script&gt;&gt;
+
         &lt;&lt;checkAgeCategory&gt;&gt;
 
         &lt;&lt;run $activeFluffy.genes.setSubSpecies(&quot;2/6&quot;)&gt;&gt;
@@ -26363,6 +26407,14 @@ Subspecies:
             &lt;&lt;set $activeFluffy.name = &quot;Fluffy No. &quot;+Number(random(1, 999))&gt;&gt;
             &lt;&lt;set $activeFluffy.age = 0&gt;&gt;
             &lt;&lt;set $activeFluffy.ageWeeks = random(6, 16)&gt;&gt;
+            &lt;&lt;script&gt;&gt;
+                var date = new Date(State.variables.gameDate);
+                var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                
+                date.setDate(date.getDate() - days);
+
+                State.variables.activeFluffy.birthDate = date.toString();
+            &lt;&lt;/script&gt;&gt;
             &lt;&lt;checkAgeCategory&gt;&gt;
             &lt;&lt;set $activeFluffy.furStage = Number(random(20, 60))&gt;&gt;
 
@@ -27311,8 +27363,40 @@ button {
 					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_stress&quot;&gt;Stress &lt;&lt;displayFlippedAttribute _fluffy.stress&gt;&gt;&lt;/span&gt;
 					&lt;span class=&quot;attribute-entry info-toggle&quot; data-info=&quot;attribute_trauma&quot;&gt;Trauma &lt;&lt;displayFlippedAttribute _fluffy.trauma&gt;&gt;&lt;/span&gt;
 				&lt;/div&gt;
+
+				&lt;&lt;set _daysOld = 0&gt;&gt;
+				&lt;&lt;set _weeksOld = 0&gt;&gt;
+				&lt;&lt;set _yearsOld = 0&gt;&gt;
+				&lt;&lt;script&gt;&gt;
+					var today = new Date(State.variables.gameDate);
+					var birth = new Date(State.temporary.fluffy.birthDate);
+
+					var dif = today - birth;
+					var dif = Number(Number(dif) / Number(1000*60*60*24));
+
+					State.temporary.daysOld = Math.floor(Number(dif));
+					State.temporary.weeksOld = Math.floor(Number(State.temporary.daysOld / 7));
+					State.temporary.yearsOld = Math.floor(Number(State.temporary.daysOld / 365.4));
+
+					while (State.temporary.weeksOld &gt; 52)
+					{
+						State.temporary.weeksOld = Math.floor(Number(State.temporary.weeksOld - 52));
+					}
+
+					while (State.temporary.daysOld &gt; 365)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 365));
+					}
+
+					while (State.temporary.daysOld &gt; 7)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 7));
+					}
+				&lt;&lt;/script&gt;&gt;
+
 				&lt;div class=&quot;fluffy-age&quot;&gt;
 					&lt;span&gt;Age: _fluffy.age years and _fluffy.ageWeeks weeks&lt;/span&gt;
+					&lt;span&gt;Age:  _yearsOld years, _weeksOld weeks and _daysOld days old&lt;/span&gt;
 					&lt;span&gt;Maximum age: _fluffy.maxAge years&lt;/span&gt;
 					&lt;span&gt;Weight: _fluffy.weight KG &lt;/span&gt;
 					&lt;span&gt;Length: _fluffy.length cm &lt;/span&gt;
@@ -27874,10 +27958,46 @@ button {
 		&lt;&lt;set $activeFluffy.preWeight = $activeFluffy.weight&gt;&gt;
 
 		&lt;&lt;set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2)))&gt;&gt;
-		&lt;&lt;set _rAge = Math.clamp(Number(_rAge), 52, 96)&gt;&gt;
+		&lt;&lt;set _rAge = Math.clamp(Number(_rAge * 7), 364, 672)&gt;&gt;
+
+		&lt;&lt;script&gt;&gt;
+			var date = new Date(State.variables.gameDate);
+			var daysOld = Number(State.temporary.rAge);
+			var weeksOld = 0;
+			var yearsOld = 0;
+
+			date.setDate(date.getDate() - daysOld);
+
+			State.variables.activeFluffy.birthDate = date.toString();
+
+			weeksOld = Math.floor(Number(daysOld / 7));
+			yearsOld = Math.floor(Number(daysOld / 365.4));
+
+			while (weeksOld &gt; 52)
+			{
+				weeksOld = Math.floor(Number(weeksOld - 52));
+/*
+				if (yearsOld &lt; 1)
+				{
+					yearsOld++;
+				}
+			*/
+			}
+
+			console.log(`Birthday: daysOld ${daysOld}, yearsOld ${yearsOld}, weeksOld ${weeksOld}`);
+
+			State.variables.activeFluffy.age = yearsOld;
+			State.variables.activeFluffy.ageWeeks = weeksOld;
+		&lt;&lt;/script&gt;&gt;
+
+&lt;&lt;run console.log(`Debug: Birthday: age: ${$activeFluffy.ageWeeks} weeks ${$activeFluffy.age} years; birthDate: ${$activeFluffy.birthDate}, today: ${new Date(State.variables.gameDate)}.`)&gt;&gt;
+/*
 		&lt;&lt;set $activeFluffy.age = Math.trunc(Number(_rAge / 52))&gt;&gt;
 		&lt;&lt;set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)&gt;&gt;
+*/
 		&lt;&lt;checkAgeCategory&gt;&gt;
+
+
 
 		&lt;&lt;switch $alicornRarity&gt;&gt;
 		&lt;&lt;case 0&gt;&gt;
@@ -28461,6 +28581,7 @@ button {
 	&lt;&lt;set $activeFluffy.mother = _mom.ID&gt;&gt;
 	&lt;&lt;set $activeFluffy.father = _dad.ID&gt;&gt;
 
+	&lt;&lt;set $activeFluffy.birthDate = new Date($gameDate).toString()&gt;&gt;
 	&lt;&lt;set $activeFluffy.age = 0&gt;&gt;
 	&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
 	&lt;&lt;checkAgeCategory&gt;&gt;

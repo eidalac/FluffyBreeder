@@ -810,8 +810,40 @@ button {
 					<span class="attribute-entry info-toggle" data-info="attribute_stress">Stress <<displayFlippedAttribute _fluffy.stress>></span>
 					<span class="attribute-entry info-toggle" data-info="attribute_trauma">Trauma <<displayFlippedAttribute _fluffy.trauma>></span>
 				</div>
+
+				<<set _daysOld = 0>>
+				<<set _weeksOld = 0>>
+				<<set _yearsOld = 0>>
+				<<script>>
+					var today = new Date(State.variables.gameDate);
+					var birth = new Date(State.temporary.fluffy.birthDate);
+
+					var dif = today - birth;
+					var dif = Number(Number(dif) / Number(1000*60*60*24));
+
+					State.temporary.daysOld = Math.floor(Number(dif));
+					State.temporary.weeksOld = Math.floor(Number(State.temporary.daysOld / 7));
+					State.temporary.yearsOld = Math.floor(Number(State.temporary.daysOld / 365.4));
+
+					while (State.temporary.weeksOld > 52)
+					{
+						State.temporary.weeksOld = Math.floor(Number(State.temporary.weeksOld - 52));
+					}
+
+					while (State.temporary.daysOld > 365)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 365));
+					}
+
+					while (State.temporary.daysOld > 7)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 7));
+					}
+				<</script>>
+
 				<div class="fluffy-age">
 					<span>Age: _fluffy.age years and _fluffy.ageWeeks weeks</span>
+					<span>Age:  _yearsOld years, _weeksOld weeks and _daysOld days old</span>
 					<span>Maximum age: _fluffy.maxAge years</span>
 					<span>Weight: _fluffy.weight KG </span>
 					<span>Length: _fluffy.length cm </span>

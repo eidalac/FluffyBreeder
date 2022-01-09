@@ -56,6 +56,20 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 
+    // Update birth date
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
+    {
+      var date = new Date(State.variables.gameDate);
+      var days = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks) * Number(7));
+    
+			date.setDate(date.getDate() - days);
+			date.setYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
+
+      date.setDate(date.getDate() - days);
+
+      save.state.history[save.state.index].variables.globalFluffies[i].birthDate = date.toString();
+    }
+
     // Update age category
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
     {

@@ -75,6 +75,16 @@
                     <<newFromGene $testChild>>
                     <<set $activeFluffy.age = 0>>
                     <<set $activeFluffy.ageWeeks = random(2, 12)>>
+
+                    <<script>>
+                        var date = new Date(State.variables.gameDate);
+                        var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                        
+                        date.setDate(date.getDate() - days);
+
+                        State.variables.activeFluffy.birthDate = date.toString();
+                    <</script>>
+
                     <<checkAgeCategory>>
                     <<set $activeFluffy.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($activeFluffy)>>
@@ -264,6 +274,16 @@
                         <<breedFluffies $mom $dad>>
                         <<set $activeFluffy.age = 0>>
                         <<set $activeFluffy.ageWeeks = random(1, 6)>>
+
+                        <<script>>
+                            var date = new Date(State.variables.gameDate);
+                            var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                            
+                            date.setDate(date.getDate() - days);
+
+                            State.variables.activeFluffy.birthDate = date.toString();
+                        <</script>>
+
                         <<checkAgeCategory>>
 
                         <<run $randomFluffies.push($activeFluffy.ID)>>
@@ -338,6 +358,16 @@
 
         <<set $activeFluffy.age = 0>>
         <<set $activeFluffy.ageWeeks = random(0, 30)>>
+
+        <<script>>
+            var date = new Date(State.variables.gameDate);
+            var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+            
+            date.setDate(date.getDate() - days);
+
+            State.variables.activeFluffy.birthDate = date.toString();
+        <</script>>
+
         <<checkAgeCategory>>
 
         <<run $activeFluffy.genes.setSubSpecies("2/6")>>
@@ -413,6 +443,14 @@
             <<set $activeFluffy.name = "Fluffy No. "+Number(random(1, 999))>>
             <<set $activeFluffy.age = 0>>
             <<set $activeFluffy.ageWeeks = random(6, 16)>>
+            <<script>>
+                var date = new Date(State.variables.gameDate);
+                var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                
+                date.setDate(date.getDate() - days);
+
+                State.variables.activeFluffy.birthDate = date.toString();
+            <</script>>
             <<checkAgeCategory>>
             <<set $activeFluffy.furStage = Number(random(20, 60))>>
 
