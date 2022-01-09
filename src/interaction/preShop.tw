@@ -494,6 +494,17 @@
                      <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
                 <<else>>
                     <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
+
+                    <<script>>
+                        var date = new Date(State.variables.gameDate);
+                        var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                        
+                        date.setDate(date.getDate() - days);
+                        date.setDate(date.getFullYear() - State.variables.activeFluffy.age);
+
+                        State.variables.activeFluffy.birthDate = date.toString();
+                    <</script>>
+
                     <<checkAgeCategory>>
                     <<setName>>
                     <<set $activeFluffy.hasName = true>>
