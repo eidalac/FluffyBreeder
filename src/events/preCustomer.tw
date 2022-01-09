@@ -14,7 +14,7 @@
 <<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
 
 /* First, we build a customer, starting with how many wants it has, up to 6 */
-<<set $customerWants = Math.clamp(Math.clamp(random(-6, 6), 0, $customerCards.length), 0, 6)>>
+<<set $customerWants = Math.clamp(Math.clamp(random(-1, 6), 0, $customerCards.length), 0, 6)>>
 
 /* How picky the customer is and how many fails they will put up with */
 <<set $customerTolerance = random(0, 3)>>
@@ -22,7 +22,80 @@
 <<set $customerDeck = []>>
 
 /* For each "want" pluck a random card from our deck and assign it to this customer: */
-<<run $customerDeck = $customerCards.pluckMany($customerWants)>>
+/*<<run $customerDeck = $customerCards.pluckMany($customerWants)>>*/
+<<set _tempDeck = $customerCards>>
+
+<<run console.log(`Debug: [preCustomer]: _tempDeck: ${_tempDeck.length}, customerWants: ${$customerWants}.`)>>
+
+<<for $customerDeck.length < $customerWants>>
+
+    /* We've run out of cards and haven't filled the deck: */
+    <<if _tempDeck.length < 1>>
+        <<if $customerDeck.length > 0>>
+            /* Run with what has already been picked*/
+            <<set $customerWants = $customerDeck.length>>
+        <<else>>
+            /* empty deck: */
+            <<set $customerWants = 0>>
+            <<set $customerDeck = []>>
+        <</if>>
+
+        <<break>>
+    
+    <<else>>
+        /* We still have cards to check, pick a card */
+        <<run _randomCard = _tempDeck.pluck().toLowerCase()>>
+
+        <<if _randomCard == "male" || _randomCard == "female">>
+            <<if $customerDeck.includes("male") || $customerDeck.includes("female")>>
+                <<continue>>
+             <</if>>
+
+        <<elseif _randomCard.includes("stength") &&
+            $customerDeck.includes("high stength") || $customerDeck.includes("low stength")  || $customerDeck.includes("average stength")>>
+            
+            <<continue>>
+        
+        <<elseif _randomCard.includes("energy") && 
+            $customerDeck.includes("high energy") || $customerDeck.includes("low energy")  || $customerDeck.includes("average energy")>>
+           
+            <<continue>>
+
+        <<elseif _randomCard.includes("charm") &&
+            $customerDeck.includes("high charm") || $customerDeck.includes("low charm")  || $customerDeck.includes("average charm")>>
+            
+            <<continue>>
+
+        <<elseif _randomCard.includes("thinking") && 
+            $customerDeck.includes("high thinking") || $customerDeck.includes("low thinking")  || $customerDeck.includes("average thinking")>>
+            
+            <<continue>>
+
+        <<elseif _randomCard.includes("learning") &&
+            $customerDeck.includes("high learning") || $customerDeck.includes("low learning")  || $customerDeck.includes("average learning")>>
+            
+            <<continue>>
+
+        <<elseif _randomCard.includes("fertility") &&
+            $customerDeck.includes("high fertility") || $customerDeck.includes("low fertility")  || $customerDeck.includes("average fertility")>>
+            
+            <<continue>>
+
+        <<elseif _randomCard.includes("temperament") &&
+            $customerDeck.includes("high temperament") || $customerDeck.includes("low temperament")  || $customerDeck.includes("average temperament")>>
+            
+            <<continue>>
+
+        <<else>>
+            /* No rejections hit, push it to the deck: */
+            <<run $customerDeck.push(_randomCard)>>
+
+            <<continue>>
+        <</if>>
+    <</if>>
+
+<</for>>
+
 /*
 <<set $customerDeck = [ "trait slow" ]>>
 <<set $customerWants = 1>>
