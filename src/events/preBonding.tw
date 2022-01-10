@@ -1,0 +1,145 @@
+:: Pre Bonding [nobr]
+
+/* **********
+ * Pre Bonding.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Run event for setting up 2 fluffies as special friends.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+/* This should be called direcly from "Fluffy Breeding", not the standard event stack as there are 2 differnt fluffies involved*/
+<<if ndef $breedStal>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedStal not defined.`)>>
+    <<set $breedStal = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif ndef $breedMare>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedMare not defined.`)>>
+    <<set $breedMare = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif $ourStore.fluffies.includes($breedMare) == false>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedMare not in store.`)>>
+    <<set $breedMare = -1>>
+	<<goto "Fluffy Breeding">>
+
+<<elseif $ourStore.fluffies.includes($breedStal) == false>>
+	<<run console.log(`ERROR: [Event Bonding]: $breedStal not in store.`)>>
+    <<set $breedStal = -1>>
+	<<goto "Fluffy Breeding">>
+<</if>>
+
+<<set $mom = $globalFluffies[$breedMare]>>
+<<set $dad = $globalFluffies[$breedStal]>>
+
+/* Todo: this needs to be another event: */
+<<if $mom.specialFriend != -1>>
+    /* Clear both special friends flag, ending breeding */
+    <<if def $globalFluffies[$mom.specialFriend]>>
+        <<set $globalFluffies[$mom.specialFriend].specialFriend = -1>>
+    <</if>>
+
+    <<set $globalFluffies[$mom.ID].specialFriend = -1>>
+<</if>>
+
+<<if $dad.specialFriend != -1>>
+    /* Clear both special friends flag, ending breeding */
+    <<if def $globalFluffies[$dad.specialFriend]>>
+        <<set $globalFluffies[$dad.specialFriend].specialFriend = -1>>
+    <</if>>
+
+    <<set $globalFluffies[$dad.ID].specialFriend = -1>>
+<</if>>
+
+
+<<run console.log(`DEBUG: [Event Bonding]: 0.  dad: ${($dad.temperament - $dad.training)}, mom: ${($mom.temperament - $mom.training)}`)>>
+
+<<run console.log(`DEBUG: [Event Bonding]: 1.  dad: ${$dad.cColor.group}, mom: ${$mom.cColor.group}`)>>
+
+<<if $dad.cColor.group == "Brown" && $mom.cColor.group != "Brown" && ($mom.temperament - $mom.training) > 50>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Brown">>
+
+<<elseif $mom.cColor.group == "Brown" && $dad.cColor.group != "Brown" && ($dad.temperament - $dad.training) > 50>>
+	<<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Brown">>
+
+<<elseif $dad.colorBonus > $mom.colorBonus && ($dad.temperament - $dad.training) < 50>>
+    <<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Color">>
+	
+<<elseif $mom.colorBonus > $dad.colorBonus && ($mom.temperament - $mom.training) < 50>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Color">>
+
+<<elseif $dad.breed == "alicorn" && $dad.breed != $mom.breed && ($dad.temperament - $dad.training) < 30>>
+    <<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Alicorn">>
+
+<<elseif $mom.breed == "alicorn" && $mom.breed != $mom.breed && ($mom.temperament - $mom.training) < 30>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Alicorn">>
+
+<<elseif $dad.breed == "earthy"  && $dad.breed != $mom.breed && ($dad.temperament - $dad.training) < 80>>
+    <<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Earthy">>
+
+<<elseif $mom.breed == "earthy"  && $mom.breed != $mom.breed && ($mom.temperament - $mom.training) < 80>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Earthy">>
+
+<<elseif $dad.breed == "unicorn"  && $dad.breed != $mom.breed && ($dad.temperament - $dad.training) < 80>>
+    <<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Unicorn">>
+
+<<elseif $mom.breed == "unicorn"  && $mom.breed != $mom.breed && ($mom.temperament - $mom.training) < 80>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Unicorn">>
+
+<<elseif $dad.breed == "pegasus"  && $dad.breed != $mom.breed && ($dad.temperament - $dad.training) < 80>>
+    <<set $activeFluffy = $dad>>
+    <<goto "Bonding Rejection Pegasus">>
+
+<<elseif $mom.breed == "pegasus"  && $mom.breed != $mom.breed && ($mom.temperament - $mom.training) < 80>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Pegasus">>
+
+<<elseif $dad.subSpecies != $mom.subSpecies && ($dad.temperament - $dad.training) < 50>>
+    <<set $activeFluffy = $dad>>
+    <<<goto "Bonding Rejection Species">>
+
+<<elseif $dad.subSpecies != $mom.subSpecies && ($mom.temperament - $mom.training) < 50>>
+    <<run console.log(`DEBUG: [Event Bonding]: subSpecies do not match.`)>>
+    <<set $activeFluffy = $mom>>
+    <<goto "Bonding Rejection Species">>
+
+<<else>>
+    /* No rejection, pair is made*/
+    <br>
+    <<fluffSpeech  "hewwo pwetty mawe, wan' be speshaw fwens wid' <fluffy>?" $globalFluffies[$breedStal]>>
+    <br>
+    <<fluffSpeech  "yus, <fluffy> wan' be speshaw fwens!" $globalFluffies[$breedMare]>>
+    <br>
+    <<colorizeText $globalFluffies[$breedStal].cColor.hex $globalFluffies[$breedStal].name>> and <<colorizeText $globalFluffies[$breedMare].cColor.hex $globalFluffies[$breedMare].name>> are now special friends.
+
+    <<set $globalFluffies[$breedStal].specialFriend = $breedMare>>
+    <<set $globalFluffies[$breedMare].specialFriend = $breedStal>>
+
+    <<set $globalFluffies[$breedStal] = $globalFluffies[$breedStal]>>
+    <<set $globalFluffies[$breedMare] = $globalFluffies[$breedMare]>>
+    <<set $breedStal = -1, $breedMare = -1>>
+
+    <br>
+    <br>
+    [[CONTINUE|Fluffy List][$encyclopedia = 0]]
+<</if>>
+
+

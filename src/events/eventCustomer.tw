@@ -9,6 +9,10 @@
  * Event a random customer looking for a fluffy
  *
  *********** */
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
 
 <style>
 button {
@@ -82,19 +86,18 @@ button {
 		<h1>Customer</h1>
 		<br>A customer comes into <<- $ourStore.name>>. 
 		
-
+		/* This customer will accept any fluffy */
 		<<if $customerWants == 0>>
-			<br>They are looking at 
-			/* This customer will accept any fluffy */
-			<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>>.
+			<br>They are looking at <<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>>.
 
+			/* If we toggled autosell, just sell this one: */
 			<<if $autoSell>>
 				<<goto "Post Customer">>
 			<</if>>
 
+		/* This customer has specific needs */
 		<<else>>
 			<br>They are looking for 
-			/* This customer has specific needs */
 			@@.coral; 
 			<<for _need range $customerDeck>>
 				<<if _need == $customerDeck.last()>>
@@ -105,7 +108,6 @@ button {
 			<</for>>
 			@@
 
-			<br>if you meet all <<- $customerWants>> of these requests, you may get a <<- Number(1 + Number($customerWants / 5))>>x price bonus.
 		<</if>>
 		<br>
 		<br>

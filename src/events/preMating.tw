@@ -10,7 +10,11 @@
  *
  *********** */
  
- 
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
 /* Each mating event target is the mare being mated */
 <<set $mom = $globalFluffies[$currentEvent.target]>>
 
@@ -49,52 +53,6 @@
 	<<run console.log(`ERROR: [preMating]: invalid dad ID: ${$dad.ID} Should be ${$globalFluffies[$dad.ID].ID}.`)>>
 	<<set $dad.ID = $globalFluffies[$dad.ID].ID>>
 	<<set $globalFluffies[$dad.ID] = $dad>>
-<</if>>
-
-/* Just some place holders for possible rejection based on breed/color/etc: */
-<<if $dad.colorBonus > $mom.colorBonus>>
-	<<run console.log(`DEBUG: [preMating]: Dad color ${$dad.colorBonus} higher than moms ${$mom.colorBonus}.`)>>
-<<elseif $mom.colorBonus > $dad.colorBonus>>
-	<<run console.log(`DEBUG: [preMating]: Mom color ${$mom.colorBonus} higher than dad ${$dad.colorBonus}.`)>>
-<</if>>
-
-<<if $dad.cColor.group == "Brown" && $mom.cColor.group != "Brown">>
-	<<run console.log(`DEBUG: [preMating]: Dad brown, mom not.`)>>
-<<elseif $mom.cColor.group == "Brown" && $dad.cColor.group != "Brown">>
-	<<run console.log(`DEBUG: [preMating]: Mom brown, dad not.`)>>
-<</if>>
-
-<<if $dad.breed != $mom.breed>>
-	<<run console.log(`DEBUG: [preMating]: Breeds do not match.`)>>
-
-	<<if $dad.breed == "alicorn">>
-		<<run console.log(`DEBUG: [preMating]: Dad alicorn, mom not.`)>>
-	<<elseif $mom.breed == "Alicorn">>
-		<<run console.log(`DEBUG: [preMating]: mom alicorn, dad not.`)>>
-	<</if>>
-
-	<<if $dad.breed == "earthy">>
-		<<run console.log(`DEBUG: [preMating]: Dad Earthy, mom not.`)>>
-	<<elseif $mom.breed == "Earthy">>
-		<<run console.log(`DEBUG: [preMating]: mom Earthy, dad not.`)>>
-	<</if>>
-
-	<<if $dad.breed == "unicorn">>
-		<<run console.log(`DEBUG: [preMating]: Dad Unicorn, mom not.`)>>
-	<<elseif $mom.breed == "Unicorn">>
-		<<run console.log(`DEBUG: [preMating]: mom Unicorn, dad not.`)>>
-	<</if>>
-
-	<<if $dad.breed == "pegasus">>
-		<<run console.log(`DEBUG: [preMating]: Dad Pegasus, mom not.`)>>
-	<<elseif $mom.breed == "Pegasus">>
-		<<run console.log(`DEBUG: [preMating]: mom Pegasus, dad not.`)>>
-	<</if>>
-
-<</if>>
-
-<<if $dad.subSpecies != $mom.subSpecies>>
-	<<run console.log(`DEBUG: [preMating]: subSpecies do not match.`)>>
 <</if>>
 
 /* Setup any random values for the event: */

@@ -234,10 +234,46 @@
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 
 		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2)))>>
-		<<set _rAge = Math.clamp(Number(_rAge), 52, 96)>>
+		<<set _rAge = Math.clamp(Number(_rAge * 7), 364, 672)>>
+
+		<<script>>
+			var date = new Date(State.variables.gameDate);
+			var daysOld = Number(State.temporary.rAge);
+			var weeksOld = 0;
+			var yearsOld = 0;
+
+			date.setDate(date.getDate() - daysOld);
+
+			State.variables.activeFluffy.birthDate = date.toString();
+
+			weeksOld = Math.floor(Number(daysOld / 7));
+			yearsOld = Math.floor(Number(daysOld / 365.4));
+
+			while (weeksOld > 52)
+			{
+				weeksOld = Math.floor(Number(weeksOld - 52));
+/*
+				if (yearsOld < 1)
+				{
+					yearsOld++;
+				}
+			*/
+			}
+
+			console.log(`Birthday: daysOld ${daysOld}, yearsOld ${yearsOld}, weeksOld ${weeksOld}`);
+
+			State.variables.activeFluffy.age = yearsOld;
+			State.variables.activeFluffy.ageWeeks = weeksOld;
+		<</script>>
+
+<<run console.log(`Debug: Birthday: age: ${$activeFluffy.ageWeeks} weeks ${$activeFluffy.age} years; birthDate: ${$activeFluffy.birthDate}, today: ${new Date(State.variables.gameDate)}.`)>>
+/*
 		<<set $activeFluffy.age = Math.trunc(Number(_rAge / 52))>>
 		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)>>
+*/
 		<<checkAgeCategory>>
+
+
 
 		<<switch $alicornRarity>>
 		<<case 0>>
@@ -821,6 +857,7 @@
 	<<set $activeFluffy.mother = _mom.ID>>
 	<<set $activeFluffy.father = _dad.ID>>
 
+	<<set $activeFluffy.birthDate = new Date($gameDate).toString()>>
 	<<set $activeFluffy.age = 0>>
 	<<set $activeFluffy.ageWeeks = 0>>
 	<<checkAgeCategory>>

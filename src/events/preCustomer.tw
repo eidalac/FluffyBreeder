@@ -10,44 +10,245 @@
  *
  *********** */
 
-/* Each customer is 'generated' per fluffy on display.  Don't do anything with this, but in the future want to make the customer lean towards wanting traits this fluffy has */
-<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
-/* First, we build a customer, starting with how many wants it has, up to 6 */
-<<set $customerWants = Math.clamp(Math.clamp(random(-6, 6), 0, $customerCards.length), 0, 6)>>
+<<script>>UIBar.destroy();<</script>>
 
-/* How picky the customer is and how many fails they will put up with */
-<<set $customerTolerance = random(0, 3)>>
 
-<<set $customerDeck = []>>
+<<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
 
-/* For each "want" pluck a random card from our deck and assign it to this customer: */
-<<run $customerDeck = $customerCards.pluckMany($customerWants)>>
-/*
-<<set $customerDeck = [ "trait slow" ]>>
-<<set $customerWants = 1>>
-<<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}`)>>
-*/
-<<if $customerWants == 0>>
-    <<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
+<<set _visibleCards = [ "Species", "Gender", "Breed", "Coat", "Mane", "Eyes", "Age" ]>>
+<<set _nonvisibleCards = [ "Personality", "Stat", "Temperament", "Trait" ]>>
 
-    <<if _displayFluffies.length == 0>>
-        <<run console.log(`ERROR: [preCustomer]: no fluffies found on display.`)>>
-        <<goto "Event Main">>
+<<if _displayFluffies.length == 0>>
+    <<run console.log(`ERROR: [preCustomer]: no fluffies found on display.`)>>
+    <<goto "Event Main">>
+<<else>>
+
+    /* First, we build a customer, starting with how many wants it has, up to 6 */
+    <<set $customerWants = random(-3, 6)>>
+
+    /* 40% chance the customer will take any fluffy: */
+    <<set $customerWants = Math.clamp($customerWants, 0, 6)>>
+
+    /* How picky the customer is and how many fails they will put up with */
+    <<set $customerTolerance = random(0, 3)>>
+
+    /* Clear the deck of any cards: */
+    <<set $customerDeck = []>>
+
+    /* pre run random numbers for the event: */
+    <<set $rand = []>>
+    <<run $rand.push(random(70,110))>>
+    <<run $rand.push(random(0,80))>>
+    <<run $rand.push(random(15,20))>>
+    <<run $rand.push(random(0,90))>>
+    <<run $rand.push(random(10,15))>>
+    <<run $rand.push(random(0,94))>>
+    <<run $rand.push(random(5,10))>>
+
+    /*
+    <<set $customerDeck = [ "trait slow" ]>>
+    <<set $customerWants = 1>>
+    <<run console.log(`DEBUG: [eventCustomer]: Deck forced to ${$customerDeck}.`)>>
+    */
+    <<run console.log(`DEBUG: [eventCustomer]: customerWants = ${$customerWants}.`)>>
+
+    <<if $customerWants == 0>>
+        /* Any fluffy, pick one at random the customer wants: */
+        <<set $activeFluffy = _displayFluffies.random()>>
+    <<else>>
+        <<run console.log(`DEBUG: [eventCustomer]: building deck.`)>>
+
+        <<for _c = 0; _c <= $customerWants; _c++>>
+
+            <<set _push = "">>
+
+            /* Ran out of possible cards (should not be possible as there are 11 of these and max we can pick is 6)*/
+            <<if _nonvisibleCards.length < 1 && _visibleCards.length < 1>>
+                <<break>>
+            <</if>>
+
+            /* Pick a random fluffy on display to get a card from: */
+            <<set $activeFluffy = _displayFluffies.random()>>
+
+            <<run console.log(`DEBUG: [eventCustomer]: picked fluffy for card ${_c}.`)>>
+
+            /* Pick a trait for this card, favouring more visible ones (color, breed, age) over non visible ones */
+            <<set _cardType = random(0,10)>>
+
+            /* Used all picks (only 4 so could be possible)*/
+            <<if _nonvisibleCards.length < 1>>
+                /* Pick a vissible card since all non vissible are used up: */
+                <<set _cardType = 4>>
+            <</if>>
+            
+            <<switch _cardType>>
+
+                /* Pick a non-visible trait (4/10) */	
+                <<case 0 1 2 3>>
+                    /* Pluck the option so there are no repeats: */
+                    <<switch _nonvisibleCards.pluck()>>
+                        <<case "Personality">>
+                            <<set _push = $activeFluffy.personality.toLowerCase()>>
+                        <<case "Stat">>
+                            <<switch random(0, 16)>>
+                                <<case 0 1>>
+                                    <<if $activeFluffy.strength > 5 >>
+                                        <<set _push = "high strength">>
+                                    <<elseif $activeFluffy.strength < 3>>
+                                        <<set _push = "low strength">>
+                                    <<else>>
+                                        <<set _push = "average strength">>
+                                    <</if>>
+                                <<case 2 3>>
+                                    <<if $activeFluffy.energy > 5 >>
+                                        <<set _push = "high energy">>
+                                    <<elseif $activeFluffy.energy < 3>>
+                                        <<set _push = "low energy">>
+                                    <<else>>
+                                        <<set _push = "average energy">>
+                                    <</if>>
+                                <<case 8 9>>
+                                    <<if $activeFluffy.thinking > 5 >>
+                                        <<set _push = "high thinking">>
+                                    <<elseif $activeFluffy.thinking < 3>>
+                                        <<set _push = "low thinking">>
+                                    <<else>>
+                                        <<set _push = "average thinking">>
+                                    <</if>>
+                                <<case 10 11>>
+                                    <<if $activeFluffy.learning > 5 >>
+                                        <<set _push = "high learning">>
+                                    <<elseif $activeFluffy.learning < 3>>
+                                        <<set _push = "low learning">>
+                                    <<else>>
+                                        <<set _push = "average learning">>
+                                    <</if>>
+                                <<case 12>>
+                                    <<if $activeFluffy.fertility > 5 >>
+                                        <<set _push = "high fertility">>
+                                    <<elseif $activeFluffy.fertility < 3>>
+                                        <<set _push = "low fertility">>
+                                    <<else>>
+                                        <<set _push = "average fertility">>
+                                    <</if>>
+                                <<default>>
+                                    <<if $activeFluffy.charm > 5 >>
+                                        <<set _push = "high charm">>
+                                    <<elseif $activeFluffy.charm < 3>>
+                                        <<set _push = "low charm">>
+                                    <<else>>
+                                        <<set _push = "average charm">>
+                                    <</if>>
+                            <</switch>>
+                        <<case "Temperament">>
+                            <<if $activeFluffy.temperament > 190 >>
+                                <<set _push = "high temperament">>
+                            <<elseif $activeFluffy.temperament < 130>>
+                                <<set _push = "low temperament">>
+                            <<else>>
+                                <<set _push = "average temperament">>
+                            <</if>>
+                        <<case "Trait">>
+                            <<set _push = "trait " + $activeFluffy.traits.random().toLowerCase()>>
+                        <<default>>
+                            <<set _push = $activeFluffy.personality.toLowerCase()>>
+                    <</switch>>
+
+                /* Pick a visible trait (6/10) */
+                <<default>>
+                    
+                    /* Shouldn't be possible, but just in case: */
+                    <<if _visibleCards.length < 1>>
+                        <<continue>>
+                    <</if>>
+
+                    /* Pluck the option so there are no repeats: */
+                    <<switch _visibleCards.pluck()>>
+                        <<case "Species">>
+                            <<set _push = $activeFluffy.subSpeciesString.toLowerCase()>>
+                        <<case "Gender">>
+                            <<set _push = $activeFluffy.gender.toLowerCase()>>
+                        <<case "Breed">>
+                            <<set _push = $activeFluffy.breed.toLowerCase()>>
+                        <<case "Coat">>
+                            <<if random(0,6) == 6>>
+                                <<set _push = `${$activeFluffy.cColor.name} coat`>>
+                            <<else>>
+                                <<set _push = `coat group ${$activeFluffy.cColor.group}`>>
+                            <</if>>
+                        <<case "Mane">>
+                            /* Can't see mane on this young */
+                            <<if $activeFluffy.ageCategory <= 2>>
+                                <<continue>>
+                            <<else>>
+                                <<if random(0,6) == 6>>
+                                    <<set _push = `${$activeFluffy.mColor.name} mane`>>
+                                <<else>>
+                                    <<set _push = `mane group ${$activeFluffy.mColor.group}`>>
+                                <</if>>
+                            <</if>>
+                        <<case "Eyes">>
+                            /* Can't see eyes on chirpies */
+                            <<if $activeFluffy.ageCategory <= 1>>
+                                <<continue>>
+                            <<else>>
+                                <<if random(0,6) == 6>>
+                                    <<set _push = `${$activeFluffy.eColor.name} eye`>>
+                                <<else>>
+                                    <<set _push = `eye group ${$activeFluffy.eColor.group}`>>
+                                <</if>>
+                            <</if>>
+                        <<case "Age">>
+                            <<switch $activeFluffy.ageCategory>>
+                                <<case 0>>
+                                    <<set _push = "newborn">>
+                                <<case 1>>
+                                    <<set _push = "chirpy">>
+                                <<case 2>>
+                                    <<set _push = "talky">>
+                                <<case 3>>
+                                    <<set _push = "foal">>
+                                <<case 4>>
+                                    <<set _push = "youth">>
+                                <<case 5>>
+                                    <<set _push = "adult">>
+                                <<default>>
+                                    <<set _push = "grey">>
+                            <</switch>>
+                        <<default>>
+                            <<set _push = $activeFluffy.breed.toLowerCase()>>
+                    <</switch>>
+            <</switch>>
+
+            <<run console.log(`DEBUG: [eventCustomer]: card picked is "${_push}".`)>>
+
+            /* Should not be possible: */
+            <<if ndef _push>>
+                <<run console.log(`ERROR: [endWeek]: customer card is undefined.`)>>
+            <<else>>
+                /* Should not be possible, but just in case skip an empty card: */
+                <<if _push != "">>
+                    <<set _push = _push.toLowerCase()>>
+                    <<run $customerDeck.pushUnique(_push)>>
+                <</if>>
+
+                <<if $customerDeck.length >= $customerWants>>
+                    <<break>>
+                <</if>>
+            <</if>>
+        <</for>>
     <</if>>
-    
-    <<set $activeFluffy = _displayFluffies.random()>>
 <</if>>
 
-/* pre run random numbers for the event: */
-<<set $rand = []>>
-<<run $rand.push(random(70,110))>>
-<<run $rand.push(random(0,80))>>
-<<run $rand.push(random(15,20))>>
-<<run $rand.push(random(0,90))>>
-<<run $rand.push(random(10,15))>>
-<<run $rand.push(random(0,94))>>
-<<run $rand.push(random(5,10))>>
+<<run console.log(`DEBUG: [eventCustomer]: going to event with ${$customerDeck.length} cards.`)>>
+
+/* Just in case the wants are off, reset them to the length: */
+<<if $customerDeck.length != $customerWants>>
+    <<set $customerWants = $customerDeck.length>>
+<</if>>
 
 /* Once all the caculations are done we display the event: */
 <<goto "Event Customer">>

@@ -172,8 +172,13 @@
  *	Displays fluffies for the sidebar
  *** */
 <<widget "SidebarFluffies">>
-	@@.coral;[[Total Fluffies|Fluffy List][$listType = "All"]]@@ | <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> /  $ourStore.shelter
-	<br>($ourStore.foals @@.lightcoral;Foals@@ $ourStore.mares @@.lightcoral;Mares@@ $ourStore.stallions @@.lightcoral;Stallions@@)
+	<<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
+	
+	@@.coral;[[Total Fluffies|Fluffy List][$listType = "All"]]@@
+	<br>
+	<<- $ourStore.fluffies.length>> Store | <<- _displayFluffies.length>> Display
+	<br>
+	$ourStore.foals @@.lightcoral;Foals@@ $ourStore.mares @@.lightcoral;Mares@@ $ourStore.stallions @@.lightcoral;Stallions@@
 <</widget>>
 
 /* ***
@@ -181,10 +186,14 @@
  *	Displays store info for the sidebar
  *** */
 <<widget "SidebarStore">>
+	<<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
 	@@.coral;Store@@
-	<br>$ourStore.shelter @@.lightcoral;Shelter@@ |
-	$ourStore.display @@.lightcoral;Display@@ |
-	$ourStore.space @@.lightcoral;Space@@
+	<br>
+	@@.lightcoral;Shelter@@ $ourStore.shelter (<<- $ourStore.fluffies.length>> used) |
+	@@.lightcoral;Display@@  $ourStore.display (<<- _displayFluffies.length>> used) |
+	@@.lightcoral;Space@@ $ourStore.space 
+	<br>
+
 <</widget>>
 
 

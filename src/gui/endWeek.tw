@@ -463,8 +463,6 @@
 	<</if>>
 
 
-	 
-
 	/* ***
 	 *	Create a deck of 'cards' for customer wants, based on the fluffies we have on display.
 	 *** */
@@ -472,103 +470,8 @@
 
 		/* Random chance based on repuation, higher rep better odds of getting a customer. */
 		<<if random(-8, 8) <= Number($reputation/100)>>
-			/* Push to event stack  */
-			<<run $eventCustomer.push($globalFluffies[_ef].ID)>>
-
-			<<set _visibleCards = [ "Species", "Gender", "Breed", "Coat", "Mane", "Eyes", "Age" ]>>
-			<<set _nonvisibleCards = [ "Personality", "Stat", "Temperament", "Trait" ]>>
-
-			/* Generate 1-3 customer cards for each fluffy on display */
-			<<for _c = random(0,3); _c >= 0; _c-->>
-				/* Pick a trait for this card, favouring more visible ones (color, breed, age) over non visible ones */
-				
-				<<switch random(0,10)>>
-					<<case 0 1 2 3>>
-						/* Pick a non-visible trait */	
-						<<switch _nonvisibleCards.random()>>
-							<<case "Personality">>
-								<<set _push = $globalFluffies[_ef].personality>>
-							<<case "Stat">>
-								<<switch random(0, 16)>>
-									<<case 0 1>>
-										<<set _push = $globalFluffies[_ef].strength > 5 ? "High strength" : $globalFluffies[_ef].strength < 3 ? "Low strength" : "Average strength">>
-									<<case 2 3>>
-										<<set _push = $globalFluffies[_ef].energy > 5 ? "High energy" : $globalFluffies[_ef].energy < 3 ? "Low energy" : "Average energy">>
-									<<case 4 5 6 7>>
-										<<set _push = $globalFluffies[_ef].charm > 5 ? "High charm" : $globalFluffies[_ef].charm < 3 ? "Low charm" : "Average charm">>
-									<<case 8 9>>
-										<<set _push = $globalFluffies[_ef].thinking > 5 ? "High thinking" : $globalFluffies[_ef].thinking < 3 ? "Low thinking" : "Average thinking">>
-									<<case 10 11>>
-										<<set _push = $globalFluffies[_ef].learning > 5 ? "High learning" : $globalFluffies[_ef].learning < 3 ? "Low learning" : "Average learning">>
-									<<case 12>>
-										<<set _push = $globalFluffies[_ef].fertility > 5 ? "High fertility" : $globalFluffies[_ef].fertility < 3 ? "Low fertility" : "Average fertility">>
-									<<default>>
-										<<set _push = $globalFluffies[_ef].charm > 5 ? "High charm" : $globalFluffies[_ef].charm < 3 ? "Low charm" : "Average charm">>
-								<</switch>>
-							<<case "Temperament">>
-								<<set _push = $globalFluffies[_ef].temperament > 190 ? "High temperament" : $globalFluffies[_ef].temperament < 130 ? "Low temperament" : "Average temperament">>
-							<<case "Trait">>
-								<<set _push = "Trait " + $globalFluffies[_ef].traits.random()>>
-							<<default>>
-								<<set _push = $globalFluffies[_ef].personality>>
-						<</switch>>
-					<<default>>
-						/* Pick a visible trait */
-						/*<<colorGroup $globalFluffies[_ef]>>*/
-
-						<<switch _visibleCards.random()>>
-							<<case "Species">>
-								<<set _push = $globalFluffies[_ef].subSpeciesString>>
-							<<case "Gender">>
-								<<set _push = $globalFluffies[_ef].gender>>
-							<<case "Breed">>
-								<<set _push = $globalFluffies[_ef].breed>>
-							<<case "Coat">>
-								<<if random(0,6) == 6>>
-									<<set _push = `${$globalFluffies[_ef].cColor.name} Coat`>>
-								<<else>>
-									<<set _push = `Coat Group ${$globalFluffies[_ef].cColor.group}`>>
-								<</if>>
-							<<case "Mane">>
-								<<if random(0,6) == 6>>
-									<<set _push = `${$globalFluffies[_ef].mColor.name} Mane`>>
-								<<else>>
-									<<set _push = `Mane Group ${$globalFluffies[_ef].mColor.group}`>>
-								<</if>>
-							<<case "Eyes">>
-								<<if random(0,6) == 6>>
-									<<set _push = `${$globalFluffies[_ef].eColor.name} Coat`>>
-								<<else>>
-									<<set _push = `Eye Group ${$globalFluffies[_ef].eColor.group}`>>
-								<</if>>
-							<<case "Age">>
-								<<switch $globalFluffies[_ef].ageCategory>>
-									<<case 0>>
-										<<set _push = "Newborn">>
-									<<case 1>>
-										<<set _push = "Chirpy">>
-									<<case 2>>
-										<<set _push = "Talky">>
-									<<case 3>>
-										<<set _push = "Foal">>
-									<<case 4>>
-										<<set _push = "Youth">>
-									<<case 5>>
-										<<set _push = "Adult">>
-									<<default>>
-										<<set _push = "Grey">>
-								<</switch>>
-							<<default>>
-								<<set _push = $globalFluffies[_ef].breed>>
-						<</switch>>
-				<</switch>>
-
-				<<if ndef _push>>
-					<<run console.log(`ERROR: [endWeek]: customer card is undefined.`)>>
-				<<else>>
-					<<run $customerCards.push(_push)>>
-				<</if>>
-			<</for>>
+			/* Push to event stack */
+			<<run $eventCustomer.push( { target: -1, type: "Customer" } )>>
 		<</if>>
 	<</if>>
 
