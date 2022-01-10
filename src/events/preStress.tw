@@ -1,0 +1,97 @@
+:: Pre Stress [nobr]
+
+/* **********
+ * preStress.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Pre processing for character stress events.
+ *
+ *********** */
+ 
+<<set $nextButton = " ">>
+
+/* 0-10 outcomes 0 is pure hugbox, 1-5 are non abuse, 6-10 are abusive.  Higher the number the worse the outcome. */
+<<set $subEvent = 0>>
+
+/* Each stress event is the 'level' that generated it, in increments of 10 (20,30,50,100,140, etc) */
+<<set $stressLevel = $currentEvent.target>>
+
+/* Special case: if the player has no abuse points, we will not force an abuse type event on them, only do a hugbox or neutral event */
+<<if $abuse == 0>>
+	<<set $subEvent = random(0, 4)>>
+<<else>>
+
+	/* How much do we lean to hubox vs abuse? */
+	<<set _leaning = Number($hugbox - $abuse)>>
+	/* More hugbox */
+	<<if _leaning > 0>>
+		<<set $subEvent = random(1, 5)>>
+	/* More abuse */
+	<<elseif _leaning < 0>>
+		<<set $subEvent = random(6, 10)>>
+	/* Filthy neutral! (= 0) */
+	<<else>>
+		<<set _subEvent = random(3, 7)>>
+	<</if>> /* Close leaning check*/
+
+ 	/* Now a random chance to raise/lower the event number based on player xp and stress */
+ 	
+ 	/* Higher the stress trigger, more likely for a bad event. */
+ 	<<if _stressLevel >= random(0,199)>>
+ 		<<set $subEvent++>>
+ 	<</if>>
+
+ 	/* Better results from higher hubox stat */
+ 	<<if $hugbox >= random(0,199)>>
+  		<<set _subEvent-->>
+ 	<</if>>
+
+ 	/* Worse events from higher abuse stat: */
+ 	<<if $abuse >= random(0,199)>>
+  		<<set $subEvent-->>
+ 	<</if>>
+
+	/* Clamp in the existing range*/
+	<<set $subEvent = Math.clamp(Math.trunc($subEvent), 0, 10)>>
+ 	
+<</if>> /* Close abuse 0 check */
+
+
+/* Pick some random fluffies to target*/
+<<set $stressCount = random(1, $ourStore.fluffies.length)>>
+
+/* cap at 5 as a sanity limit */ 
+<<set $stressCount = Math.clamp(Math.trunc($stressCount), 0, 5)>>
+
+/* Random chance to drop if there are more than 2 or 4: */
+<<if $stressCount > 4 && random(0,1) == 1>>
+	<<set $stressCount-->>
+<</if>>
+
+<<if $stressCount > 2 && random(0,1) == 1>>
+	<<set $stressCount-->>
+<</if>>
+
+/* We now have 1-5 random fluffies to use for the event */
+<<set $eventFluffies = $ourStore.fluffies.randomMany($stressCount)>>
+
+/* pre run random numbers for the event: */
+<<set $rand = []>>
+<<run $rand.push(random(0,4))>>
+<<run $rand.push(random(1,5))>>
+<<run $rand.push(random(2,4))>>
+<<run $rand.push(random(1,2))>>
+<<run $rand.push(random(2,5))>>
+<<run $rand.push(random(1,3))>>
+<<run $rand.push(random(0,5))>>
+<<run $rand.push(random(0,2))>>
+<<run $rand.push(random(3,6))>>
+<<run $rand.push(random(4,7))>>
+<<run $rand.push(random(3,5))>>
+<<run $rand.push(random(5,10))>>
+<<run $rand.push(random(4,8))>>
+
+/* Now run the event*/
+<<goto "Event Stress">>

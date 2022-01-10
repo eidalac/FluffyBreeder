@@ -1,0 +1,158 @@
+:: Event Smarty [nobr]
+
+/* **********
+ * eventSmarty.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event(s) for smarties.
+ *
+ *********** */
+
+<<script>>UIBar.destroy();<</script>>
+
+<h1>Smarty Event</h1>
+	
+<<- $activeFluffy.name>> is acting up...
+<br>
+<<personalityFix $activeFluffy>>
+<<if $globalFluffies[$activeFluffy.ID].personality.includes("Smarty")>>
+	<<switch $globalFluffies[$activeFluffy.ID].personality>>
+		/* These would be the worst personalities*/
+		<<case "Bossy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Bossy acts a smarty.@@
+		<<case "Haughty">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Haughty acts a smarty.@@
+		<<case "Rowdy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Rowdy acts a smarty.@@
+		
+		/* These are progressivly less 'hellgremlin' (and rare) */
+		<<case "Diligent">>
+			Placeholder - <<- $activeFluffy.name>> - Diligent acts a smarty
+			<<colorizeText $activeFluffy.cColor.hex "Smawty wan nyu homesies! Gib nyu dummeh mummah an' daddeh!">>
+		<<case "Curious">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Curious acts a smarty.@@
+		<<case "Playful">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Playful acts a smarty.@@
+		<<case "Dull">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Dull acts a smarty.@@
+		<<case "Timid">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Timid acts asmarty.@@
+		<<case "Pensive">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Pensive acts a smarty.@@
+		<<case "Sweet">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Sweet acts a smarty.@@
+
+		/* Foal traits, so these would be 'best babies'*/
+		
+		/* Worst combo */
+		<<case "Fussy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Fussy acts a smarty.@@
+		
+		/* Progressivly less nasty results */
+		<<case "Peppy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Peppy acts a smarty.@@
+		<<case "Lazy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Lazy acts a smarty.@@
+		<<case "Cute">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Cute acts a smarty.@@
+		<<case "Shy">>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - Shy acts a smarty.@@
+		<<default>>
+			@@.cyan;Placeholder - <<- $activeFluffy.name>> - acts a smarty.@@
+	<</switch>>
+<<else>>
+	<<turnSmarty>>
+	
+<</if>> /* Smarty trait check */
+	
+	<br>
+	<br>You need to do something about this.
+	<br>
+	
+	<<set _punishString = "Displine " + $globalFluffies[$activeFluffy.ID].name>>
+	<<set _reactionString = "">>
+	<br>
+	<span id="reaction-msg">
+			
+	<<button _punishString>>
+		<<set $training += 3>>
+		<<set $hugbox++>>
+		<<set $stress += 10>>
+		
+		<<set $globalFluffies[$activeFluffy.ID].stress += 5>>
+		<<set $globalFluffies[$activeFluffy.ID].trust-->>
+		<<set $globalFluffies[$activeFluffy.ID].training++>>
+		<<set $globalFluffies[$activeFluffy.ID].temperament -= 2>>
+			
+		<<if $eventDifficulty >= $rand[0]>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
+			<<set _reactionString = "@@.cyan;Otay, " + $title + "." + $globalFluffies[$activeFluffy.ID].name + " sowwy. Won’ be smawty no mowe. Wiww wet " + $title + " be weadew of " + $ourStore.name + " hewd…@@">>
+		
+		<<else>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.pushUnique("Smarty")>>
+			<<set _reactionString = "@@.cyan;Dummeh " + $title + "! Smarty no need ou twaining!@@">>
+		<</if>>
+				
+		<<replace "#reaction-msg">><br>You discipline <<- $globalFluffies[$activeFluffy.ID].name>><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Neutral option.@@
+			
+	<br><br>
+	<<button "Beat it">>
+		<<set $stress -= 50>>
+		<<set $abuse += 3>>
+		<<set $globalFluffies[$activeFluffy.ID].trauma += 10>>
+		<<set $globalFluffies[$activeFluffy.ID].stress += 30>>
+		<<set $globalFluffies[$activeFluffy.ID].temperament -= 10>>
+		<<set $globalFluffies[$activeFluffy.ID].happy-->>
+		<<set $globalFluffies[$activeFluffy.ID].trust-->>
+		
+		<<set $eventDifficulty = 0>>
+				
+		<<if $smartySyndrom == 0>>
+			<<set $eventDifficulty = Number(2 * $training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<elseif $smartySyndrom == 1>>
+			<<set $eventDifficulty = Number($training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+		<<else>>
+			<<set $eventDifficulty = Number($training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
+			<<set $eventDifficulty = Number($eventDifficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
+		<</if>>
+		
+		<<if $eventDifficulty >= random(0, 199)>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.delete("Smarty")>>
+			<<set _reactionString = "@@.cyan;Place holder - " + $globalFluffies[$activeFluffy.ID].name + " is no longer a smarty.@@">>
+		<<else>>
+			<<set $globalFluffies[$activeFluffy.ID].traits.pushUnique("Smarty")>>
+			<<set _reactionString = "@@.cyan;SSSSCRRRRRRREEEEEEEEEEEEEE!@@">>
+		<</if>>
+				
+		<<replace "#reaction-msg">><br>You beat <<- $globalFluffies[$activeFluffy.ID].name>><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Abuse option.@@
+			
+	<br><br>
+	<<button "Kill it">>
+		<<removeFluffy $globalFluffies[$activeFluffy.ID] true>>
+		<<set $abuse++>>
+		<<set _reactionString = "You snap " + $globalFluffies[$activeFluffy.ID].name + "'s neck.">>
+		
+		<<replace "#reaction-msg">><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Neutral option?@@
+
+	<<button "Release it">>
+		<<set $hugbox++>>
+		<<removeFluffy $globalFluffies[$activeFluffy.ID]>>
+		<<set _reactionString = "You release " + $globalFluffies[$activeFluffy.ID].name + " into the wild.">>
+		
+		<<replace "#reaction-msg">><br><<- _reactionString>><br><br><<set $nextButton = "CONTINUE">>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
+	<</button>>
+	@@.orange;Hugbox option@@
+</span>

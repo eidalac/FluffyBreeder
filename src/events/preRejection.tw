@@ -1,0 +1,93 @@
+:: Pre Rejection [nobr]
+
+/* **********
+ * preRejection.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Pre processing for rejection events
+ *
+ *********** */
+
+<<script>>UIBar.destroy();<</script>>
+
+/* Each rejection event is the foal being rejected */
+<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
+<<set $nextButton = " ">>
+
+<<if ndef $activeFluffy>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log(`ERROR: [Pre Rejection]: activeFluffy undefined.`)>>
+	<<goto "Event Main">>
+	
+<<elseif ndef $activeFluffy.mother>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log(`ERROR: [Pre Rejection]: mother undefined.`)>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes($activeFluffy.mother) == false>>
+	/* Mother was removed in a prior event. */
+	<<run console.log(`ERROR: [Pre Rejection]: mother not in store.`)>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes($activeFluffy.ID) == false>>
+	/* foal was removed in a prior event. */
+	<<run console.log(`ERROR: [Pre Rejection]: activeFluffy not in store.`)>>
+	<<goto "Event Main">>
+<</if>>
+
+/* Difficulty */
+<<set $eventDifficulty = 0>>
+
+<<if $activeFluffy.cColor.group == "Brown">>
+    <<if $pooBaby == 0>>
+        <<set $eventDifficulty = Number(2 * $training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<elseif $pooBaby == 1>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<else>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number($eventDifficulty) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
+    <</if>>
+<<elseif $activeFluffy.breed == "Alicorn">>
+    <<switch Number(Number($alicornRarity) + Number($alicornMonster)>>
+    <<case 0>>
+        <<set $eventDifficulty = Number(Number(2) * Number($training))>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<case 1>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number(2 * $globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<case 2>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<case 3>>
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number($globalFluffies[$activeFluffy.mother].temperament)>>
+    <<default>> /* 4 */
+        <<set $eventDifficulty = Number($training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) + Number($globalFluffies[$activeFluffy.mother].training)>>
+        <<set $eventDifficulty = Number(Number($eventDifficulty)) - Number(2 * $globalFluffies[$activeFluffy.mother].temperament)>>
+    <</switch>>
+<</if>>
+
+<<if $activeFluffy.ID != $globalFluffies[$activeFluffy.ID].ID>> 
+    <<run console.log(`ERROR: [Pre Rejection]: invalid $activeFluffy ID ${$activeFluffy.ID} should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
+    <<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+    <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+<</if>>
+
+/* pre run random numbers for the event: */
+<<set $rand = []>>
+<<set $rand.push(random(0, 199))>>  /* success rate; if rejectionDifficulty is higher than this, we can train the mother to accept the foal */
+
+/* Run the event: */
+<<goto "Event Birth Rejection">>

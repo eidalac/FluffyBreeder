@@ -1,0 +1,271 @@
+:: Event Stress [nobr]
+
+/* **********
+ * eventStress.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Player stress events
+ *
+ *********** */
+
+<h1>Stress Event</h1>
+
+<<switch $subEvent>>
+
+	/* Hubox: Play time */
+	<<case 1>>
+		<br>You close <<- $ourStore.name>> early one day and take some time to play with 
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+			<<set $globalFluffies[_eFluff].trust++>>
+			<<set $globalFluffies[_eFluff].happy++>>
+			<<set $globalFluffies[_eFluff].temperament++>>
+			<<set $globalFluffies[_eFluff].stress-->>
+		<</for>>
+		<br>
+		
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[1]>>
+			<br>You feel @@.mediumorchid;much better@@!
+			<<set $stress -= Number($rand[4] * $stressCount)>>
+			<<set $stress -= 10>>
+			<<set $hugbox++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;better@@!
+			<<set $stress -= Number($rand[5] * $stressCount)>>
+			<<set $stress -= 5>>
+		<</if>>
+
+	/* Hubox: Training */
+	<<case 2>>
+		<br>You close <<- $ourStore.name>> early one day to train 
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+			<<set $globalFluffies[_eFluff].training++>>
+			<<set $globalFluffies[_eFluff].trust++>>
+			<<set $globalFluffies[_eFluff].temperament-->>
+		<</for>>
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[1]>>
+			<br>You feel @@.mediumorchid;very good@@ about the results.
+			<<set $stress -= Number($rand[2] * $stressCount)>>
+			<<set $stress -= 5>>
+			<<set $hugbox++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;satisfied@@ with the results. 
+			<<set $stress -= Number($rand[3] * $stressCount)>>
+			<<set $stress -= 2>>
+		<</if>>
+
+	/* Neutral: Netflix */
+	<<case 3>>
+		<br>You spend the weekend on a Neflix binge.
+		<br>
+		<<if $rand[6] == 0>>
+			<br>It was terrible, but you could not stop watching.  You feel @@.hotpink;sleep deprived@@ all week.
+			<<set $stress++>>
+		<<elseif $rand[7] == 0>>
+			<br>It was fantastic.  You feel @@.mediumorchid;amazing@@ this week.
+			<<set $stress -= 10>>
+		<<else>>
+			<br>It was nice.  You feel @@.mediumorchid;pretty good@@ this week.
+			<<set $stress -= 5>>
+		<</if>> 
+
+	/* Neutral: Date */
+	<<case 4>>
+		<br>You go out on date on the weekend.
+		<br>
+		<<if $rand[6] == 0>>
+			<br>It was a disaster.  You feel @@.hotpink;unhappy@@ all week.
+			<<set $stress++>>
+		<<elseif $rand[7] == 0>>
+			<br>It was fantastic.  You feel @@.mediumorchid;amazing@@ this week.
+			<<set $stress -= 20>>
+		<<else>>
+			<br>It was nice.  You feel @@.mediumorchid;pretty good@@ this week.
+			<<set $stress -= 10>>
+		<</if>> 
+
+	/* Neutral: hang with friends */
+	<<case 5>>
+		<br>You hung out with some friends over the weekend.
+		<br>
+		<<if $rand[6] == 0>>
+			<br>It was a disaster.  You feel @@.hotpink;unhappy@@ all week.
+			<<set $stress++>>
+		<<elseif $rand[7] == 0>>
+			<br>You really got to blow off some steam.  You feel @@.mediumorchid;amazing@@ this week.
+			<<set $stress -= 10>>
+		<<else>>
+			<br>It was a nice time to relax.  You feel @@.mediumorchid;pretty good@@ this week.
+			<<set $stress -= 5>>
+		<</if>> 
+	
+	/* Abuse: Displine */
+	<<case 6>>
+		<br>You are forced to <<- $ourStore.name>> early one day to discipline some problem fluffies.   
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+			<<set $globalFluffies[_eFluff].training++>>
+			<<set $globalFluffies[_eFluff].trust-->>
+			<<set $globalFluffies[_eFluff].temperament-->>
+			<<set $globalFluffies[_eFluff].stress++>>
+			<<set $globalFluffies[_eFluff].happy-->>
+		<</for>>
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[1]>>
+			<br>You feel @@.mediumorchid;very good@@ about the results.
+			<<set $stress -= Number($rand[2] * $stressCount)>>
+			<<set $stress -= 6>>
+			<<set $abuse++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;satisfied@@ with the results. 
+			<<set $stress -= Number($rand[3] * $stressCount)>>
+			<<set $stress -= 3>>
+		<</if>>
+
+
+	/* Abuse: Stress */
+	<<case 7>>
+		<br>You have had enough, and grab
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : ''>>
+			<<set $globalFluffies[_eFluff].stress++>>
+			<<set $globalFluffies[_eFluff].trust-->>
+			<<set $globalFluffies[_eFluff].temperament-->>
+			<<set $globalFluffies[_eFluff].happy-->>
+		<</for>>
+		as some 'stress balls'
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[1]>>
+			<br>You feel @@.mediumorchid;very good@@ about the results.
+			<<set $stress -= Number($rand[2] * $stressCount)>>
+			<<set $stress -= 7>>
+			<<set $abuse++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;satisfied@@ with the results. 
+			<<set $stress -= Number($rand[3] * $stressCount)>>
+			<<set $stress -= 4>>
+		<</if>>
+	
+	/* Abuse: Trauma */
+	<<case 8>>
+		<br>Enraged, you attempt to beat the stupid out of
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+			<<set $globalFluffies[_eFluff].stress += 4>>
+			<<set $globalFluffies[_eFluff].trama += 2>>
+			<<set $globalFluffies[_eFluff].trust -= 2>>
+			<<set $globalFluffies[_eFluff].temperament -= 2>>
+			<<set $globalFluffies[_eFluff].happy -= 2>>
+		<</for>>
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[1]>>
+			<br>You feel @@.mediumorchid;very good@@ about the results.
+			<<set $stress -= Number($rand[8] * $stressCount)>>
+			<<set $stress -= 8>>
+			<<set $abuse++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;satisfied@@ with the results. 
+			<<set $stress -= Number($rand[2] * $stressCount)>>
+			<<set $stress -= 5>>
+		<</if>>
+	
+	/* Abuse: Injury */
+	<<case 9>>
+		<br>You black out.  When you come to, you find a bloody mess around
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+			<<set $globalFluffies[_eFluff].stress += 6>>
+			<<set $globalFluffies[_eFluff].trama += 3>>
+			<<set $globalFluffies[_eFluff].trust -= 3>>
+			<<set $globalFluffies[_eFluff].temperament -= 3>>
+			<<set $globalFluffies[_eFluff].happy -= 3>>
+		<</for>>
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[2]>>
+			<br>You feel @@.mediumorchid;strangely pleased@@.
+			<<set $stress -= Number($rand[9] * $stressCount)>>
+			<<set $stress -= 8>>
+			<<set $abuse += 2>>
+		<<else>>
+			<br>You feel @@.mediumorchid;very little@@ about it. 
+			<<set $stress -= Number($rand[10] * $stressCount)>>
+			<<set $stress -= 5>>
+			<<set $abuse += 1>>
+		<</if>>
+	
+	/* Abuse: Murder */
+	<<case 10>>
+		<br>Your world fades to shades of red and black.  You have a vague sense of ripping and tearing.  When it is done you stand over the remains of 
+
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : '.'>>
+				<<set $globalFluffies[_eFluff].dead = true>>
+				<<set $globalFluffies[_eFluff].onDisplay = false>>
+				<<set $globalFluffies[_eFluff].pregnant = false>>
+				<<set $globalFluffies[_eFluff].nursing = []>>
+			
+				<<if $globalFluffies[_eFluff].specialFriend != -1>>
+					<<set $globalFluffies[$globalFluffies[_eFluff].specialFriend].specialFriend = -1>>
+					<<set $globalFluffies[_eFluff].specialFriend = -1>>
+				<</if>>
+	
+			<<removeFluffy $globalFluffies[_eFluff] true>>
+		<</for>>
+		<br>
+
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[2]>>
+			<br>You feel @@.mediumorchid;strangely pleased@@.
+			<<set $stress -= Number($rand[11] * $stressCount)>>
+			<<set $stress -= 10>>
+			<<set $abuse += 3>>
+		<<else>>
+			<br>You feel @@.mediumorchid;very little@@ about it. 
+			<<set $stress -= Number($rand[12] * $stressCount)>>
+			<<set $stress -= 8>>
+			<<set $abuse += 2>>
+		<</if>>
+	
+	
+	/* Default/0: rare hugbox */
+	<<default>>
+		<br>After a long and stressful day, you close up <<- $ourStore.name>> and just collapse from exhaustion.
+		<br>  
+		<br>As you lay there 
+		<<for _i, _eFluff range $eventFluffies>>
+			<<- $globalFluffies[_eFluff].name>><<- (_i < $eventFluffies.length - 1) ? (_i < $eventFluffies.length - 2) ? ',' : ', and' : ''>>
+		<</for>> all form a makeshift 'fluff pile' to try and comfort you.
+		<br>
+		
+		<<if $stressCount >= $rand[0] && $stressCount >= $rand[2]>>
+			<br>You feel @@.mediumorchid;much better@@!
+			<<set $stress -= Number($rand[4] * $stressCount)>>
+			<<set $stress -= 10>>
+			<<set $hugbox++>>
+		<<else>>
+			<br>You feel @@.mediumorchid;better@@!
+			<<set $stress -= Number($rand[5] * $stressCount)>>
+			<<set $stress -= 5>>
+		<</if>>
+		
+<</switch>>
+
+ 	<<set $nextButton = "Continue">>
+	<<set $nextLink = "Event Main">>
+	
+	<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
+ 

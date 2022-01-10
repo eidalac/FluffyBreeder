@@ -1,0 +1,477 @@
+:: Fluffy List [nobr]
+
+/* **********
+ * fluffyList.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Lists all the store fluffies
+ *
+ *	Todo: sorting options.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<<set $ui = "main">>
+<<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
+
+<style>
+.responsive {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+}
+</style>
+
+
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+
+	<<sidebarTop>>
+
+	<div>
+
+		<div class="w3-dropdown-hover">
+		  	@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+	
+		<div class="w3-dropdown-hover">
+			<span data-function="check-none" class="selectbutton"><<button "Check None">>
+				<<for _bf range $ourStore.fluffies>>
+					<<set $globalFluffies[_bf].isChecked = false>>
+				<</for>>
+				<<set _type = $listType>>	
+				<<resetList>>
+			<</button>></span>
+		</div>
+		<div class="w3-dropdown-hover">
+			<span data-function="check-all" class="selectbutton"><<button "Check All">>
+				<<for _bf range $ourStore.fluffies>>
+					<<set $globalFluffies[_bf].isChecked = true>>
+				<</for>>
+				<<set _type = $listType>>	
+				<<resetList>>
+			<</button>></span>
+		</div>
+	  
+			<div class="w3-dropdown-hover">
+		
+				<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
+					<button class="dropdown-btn w3-button"><span>Show</span><i class="fa fa-caret-down"></i></button>
+					<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+					
+						@@.sortbutton;<<button "Show Store">><<set $listType = "All">>
+							<<run $("#sellbutton button").removeClass("w3-hide")>>
+							<<run $("#sellbutton button").addClass("w3-show")>>
+							<<run $("#unsellbutton button").removeClass("w3-show")>>
+							<<run $("#unsellbutton button").addClass("w3-hide")>>
+							<<set _type = $listType>>	
+							<<resetList>>
+						<</button>>@@
+						@@.sortbutton;<<button "Show Display">><<set $listType = "Display">>
+							<<run $("#sellbutton button").removeClass("w3-show")>>
+							<<run $("#sellbutton button").addClass("w3-hide")>>
+							<<run $("#unsellbutton button").removeClass("w3-hide")>>
+							<<run $("#unsellbutton button").addClass("w3-show")>>
+							<<set _type = $listType>>	
+							<<resetList>>
+						<</button>>@@
+					</div>
+				</div>
+			</div>
+	
+			<div class="w3-dropdown-hover">
+	        	<<sortButtons>>
+				<<filterButtons>>
+			</div>
+
+	        <div class="w3-dropdown-hover">
+				<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
+					<button class="dropdown-btn w3-button"><span>Bulk Actions</span><i class="fa fa-caret-down"></i></button>
+					<div class="dropdown-inner-container w3-hide w3-white w3-card">
+						@@#sellbutton;<<button "Bulk Sell">>
+						<<for _bf range $ourStore.fluffies>>
+							<<if $globalFluffies[_bf].isChecked == true && $ourStore.onDisplay < $ourStore.display>>
+				
+								<<if $globalFluffies[_bf].pregnant == false && $globalFluffies[_bf].nursing.length < 1 && $globalFluffies[_bf].weaned == true>>
+
+									<<if $globalFluffies[_bf].specialFriend != -1>>
+										<<set $globalFluffies[$globalFluffies[_bf].specialFriend].specialFriend = -1>>
+										<<set $globalFluffies[_bf].specialFriend = -1>>
+									<</if>>
+				
+									<<set $globalFluffies[_bf].onDisplay = true>>
+									<<set $globalFluffies[_bf].isChecked = false>>
+								<</if>>
+							<</if>>
+						<</for>>
+						<<set _type = "None">>	
+						<<resetList>>
+						<</button>>@@
+						
+						@@#unsellbutton;<<button "Remove from Sale">>
+							<<for _bf range $ourStore.fluffies>>
+								<<if $globalFluffies[_bf].isChecked == true>>
+									<<set $globalFluffies[_bf].onDisplay = false>>	
+									<<set $globalFluffies[_bf].isChecked = false>>				
+								<</if>>
+							<</for>>
+							<<set _type = "None">>	
+							<<resetList>>
+						<</button>>@@
+						
+
+						<div class="dropdown-container w3-left-align w3-grey">
+							<button class="dropdown-btn w3-button"><span>Remove/Kill</span><i class="fa fa-caret-down"></i></button>
+							<div class="dropdown-inner-container w3-hide w3-white w3-card" data-type="kill">
+								@@.sortbutton;<<button "Euthanize">>
+									<<for _bf range $ourStore.fluffies>>
+										<<if $globalFluffies[_bf].isChecked == true>>
+											<<removeFluffy $globalFluffies[_bf] "kill">>
+										<</if>>
+									<</for>>
+								
+									<<set _type = $listType>>	
+									<<resetList>>
+									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+								<</button>>@@
+								@@.sortbutton;<<button "Release">>
+									<<for _bf range $ourStore.fluffies>>
+										<<if $globalFluffies[_bf].isChecked == true>>
+											<<set $hugbox++>>
+											<<removeFluffy $globalFluffies[_bf]>>
+										<</if>>
+									<</for>>
+
+									<<set _type = $listType>>	
+									<<resetList>>
+									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+								<</button>>@@
+								@@.sortbutton;<<button "Murder">>
+									<<for _bf range $ourStore.fluffies>>
+										<<if $globalFluffies[_bf].isChecked == true>>
+											<<set $abuse++>>
+											<<removeFluffy $globalFluffies[_bf] "kill">>
+										<</if>>
+									<</for>>
+
+									<<set _type = $listType>>	
+									<<resetList>>
+									<<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+								<</button>>@@
+							</div>
+						</div>
+
+
+						<div class="dropdown-container w3-left-align w3-grey">
+							<button class="dropdown-btn w3-button"><span>Bulk Feeding</span><i class="fa fa-caret-down"></i></button>
+							<div class="dropdown-inner-container w3-hide w3-white w3-card">
+								<div class="dropdown-container w3-left-align w3-grey">
+								<button class="dropdown-btn w3-button"><span>Kibble</span><i class="fa fa-caret-down"></i></button>
+									<div class="dropdown-inner-container w3-hide w3-white w3-card">
+										@@.sortbutton;<<button "Trash">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>> 
+														<<set $globalFluffies[_bf].foodType = "Kibble">>
+														<<set $globalFluffies[_bf].foodQuality = 0>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+												<<resetList>>
+											<</button>>@@
+										@@.sortbutton;<<button "Cheap">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Kibble">>
+														<<set $globalFluffies[_bf].foodQuality = 1>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+												<<resetList>>
+											<</button>>@@
+										@@.sortbutton;<<button "Basic">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Kibble">>
+														<<set $globalFluffies[_bf].foodQuality = 2>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+												<<resetList>>
+											<</button>>@@
+										@@.sortbutton;<<button "Good">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Kibble">>
+														<<set $globalFluffies[_bf].foodQuality = 3>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+												<<resetList>>
+											<</button>>@@
+										@@.sortbutton;<<button "Premium">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Kibble">>
+														<<set $globalFluffies[_bf].foodQuality = 4>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+												<<resetList>>
+											<</button>>@@
+									</div>
+								</div>
+								
+								<div class="dropdown-container w3-left-align w3-grey">
+									<button class="dropdown-btn w3-button"><span>Greens</span><i class="fa fa-caret-down"></i></button>
+									<div class="dropdown-inner-container w3-hide w3-white w3-card">
+										@@.sortbutton;<<button "Trash">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>> 
+													<<set $globalFluffies[_bf].foodType = "Greens">>
+													<<set $globalFluffies[_bf].foodQuality = 0>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Cheap">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Greens">>
+														<<set $globalFluffies[_bf].foodQuality = 1>>
+													<</if>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Basic">>
+												<<for _bf range $ourStore.fluffies>>
+													<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+														<<set $globalFluffies[_bf].foodType = "Greens">>
+														<<set $globalFluffies[_bf].foodQuality = 2>>
+													<</if>>
+												<</for>> 
+												<<set _type = $listType>>	
+											<<resetList>>
+											<</button>>@@
+										@@.sortbutton;<<button "Good">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Greens">>
+													<<set $globalFluffies[_bf].foodQuality = 3>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Premium">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Greens">>
+													<<set $globalFluffies[_bf].foodQuality = 4>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+									</div>
+								</div>
+
+
+								<div class="dropdown-container w3-left-align w3-grey">
+									<button class="dropdown-btn w3-button"><span>Sketti</span><i class="fa fa-caret-down"></i></button>
+									<div class="dropdown-inner-container w3-hide w3-white w3-card">
+										@@.sortbutton;<<button "Trash">>
+											<<for _bf range $ourStore.fluffies>>
+											<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>> 
+											<<set $globalFluffies[_bf].foodType = "Sketti">>
+											<<set $globalFluffies[_bf].foodQuality = 0>>
+											<</if>>
+											<</for>> 
+										<<set _type = $listType>>	
+										<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Cheap">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Sketti">>
+													<<set $globalFluffies[_bf].foodQuality = 1>>
+												<</if>>
+											<</for>> 
+										<<set _type = $listType>>	
+										<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Basic">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Sketti">>
+													<<set $globalFluffies[_bf].foodQuality = 2>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Good">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Sketti">>
+													<<set $globalFluffies[_bf].foodQuality = 3>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Premium">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true && $globalFluffies[_bf].weaned == true>>
+													<<set $globalFluffies[_bf].foodType = "Sketti">>
+													<<set $globalFluffies[_bf].foodQuality = 4>>
+												<</if>>
+											<</for>> 
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+									</div>
+								</div>
+
+
+								<div class="dropdown-container w3-left-align w3-grey">
+									<button class="dropdown-btn w3-button"><span>Formula</span><i class="fa fa-caret-down"></i></button>
+									<div class="dropdown-inner-container w3-hide w3-white w3-card">
+										@@.sortbutton;<<button "Trash">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == false>> 
+														<<set $globalFluffies[_bf].foodType = "Formula">>
+														<<set $globalFluffies[_bf].foodQuality = 0>>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
+													<</if>>
+												<</if>>
+											<</for>>
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Cheap">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == false>> 
+														<<set $globalFluffies[_bf].foodType = "Formula">>
+														<<set $globalFluffies[_bf].foodQuality = 1>>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
+													<</if>>
+												<</if>>
+											<</for>>
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Basic">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == false>> 
+														<<set $globalFluffies[_bf].foodType = "Formula">>
+														<<set $globalFluffies[_bf].foodQuality = 2>>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
+													<</if>>
+												<</if>>
+											<</for>>
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Good">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == false>> 
+														<<set $globalFluffies[_bf].foodType = "Formula">>
+														<<set $globalFluffies[_bf].foodQuality = 3>>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
+													<</if>>
+												<</if>>
+											<</for>>
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+										@@.sortbutton;<<button "Premium">>
+											<<for _bf range $ourStore.fluffies>>
+												<<if $globalFluffies[_bf].isChecked == true>>
+													<<if $globalFluffies[_bf].weaned == false>> 
+														<<set $globalFluffies[_bf].foodType = "Formula">>
+														<<set $globalFluffies[_bf].foodQuality = 4>>
+														<<set $globalFluffies[$globalFluffies[_bf].mother].nursing.delete(_bf)>>
+													<</if>>
+												<</if>>
+											<</for>>
+											<<set _type = $listType>>	
+											<<resetList>>
+										<</button>>@@
+
+									</div>
+								</div>
+								
+								@@.sortbutton;<<button "Nothing">>
+									<<for _bf range $ourStore.fluffies>>
+										<<if $globalFluffies[_bf].isChecked == true>>
+											<<set $globalFluffies[_bf].foodType = "Nothing">>
+											<<set $globalFluffies[_bf].foodQuality = 0>>
+										<</if>>
+									<</for>>
+									<<set _type = $listType>>	
+									<<resetList>>
+								<</button>>@@
+
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<<systemButtons>>
+
+		</div>
+	</nav>
+
+<header class="w3-bar w3-card" id="header">
+  <button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+  <h1 id="navHead" class="w3-bar-item">Store Fluffies</h1>
+</header>
+
+<div class="w3-container" id="main">
+
+	<div class="w3-container w3-col l12 s12">
+		<<timed 5ms>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
+		
+		<<run $(".selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+		<<run $("#sellbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $("#unsellbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey w3-hide")>>
+		<</timed>>
+
+		/* Upate this after the list is counted, there is a timmer at the bottom of the page for this */ 
+		<div id="list-count"></div>
+		<hr>
+		<div id="fluffy-list">
+			<<FluffyList>>
+		</div>
+	</div>
+</div>
+
+
+
+<<timed 10ms>><<replace "#list-count">><br>The store has <<print $ourStore.foals + $ourStore.mares + $ourStore.stallions>> fluffies total ($ourStore.foals @@.coral;Foals@@ | $ourStore.mares @@.coral;Mares@@ | $ourStore.stallions @@.coral;Stallions@@) <</replace>>
+
+<</timed>>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

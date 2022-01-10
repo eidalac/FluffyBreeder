@@ -1,0 +1,54 @@
+:: Pre Smarty [nobr]
+
+/* **********
+ * preSmarty.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * pre processing for smarty events.
+ *
+ *********** */
+
+<<set $nextButton = " ">>
+
+/* Each rejection event is the foal being rejected */
+<<set $activeFluffy = $globalFluffies[$currentEvent.target]>>
+
+<<if ndef $activeFluffy>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log(`ERROR: [eventSmarty.tw]: fluffy undefined.`)>>
+	<<goto "Event Main">>
+	
+<<elseif $ourStore.fluffies.includes($activeFluffy.ID) == false>>
+	/* Removed in a prior event. */
+	<<run console.log(`ERROR: [eventSmarty.tw]: fluffy not in store.`)>>
+	<<goto "Event Main">>
+<</if>>
+
+<<set $eventDifficulty = 0>>
+        
+<<if $smartySyndrom == 0>>
+    <<set $eventDifficulty = Number(2 * $training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) + Number(4 * $globalFluffies[$activeFluffy.ID].training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+<<elseif $smartySyndrom == 1>>
+    <<set $eventDifficulty = Number($training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) + Number(2 * $globalFluffies[$activeFluffy.ID].training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) - Number($globalFluffies[$activeFluffy.ID].temperament)>>
+<<else>>
+    <<set $eventDifficulty = Number($training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) + Number($globalFluffies[$activeFluffy.ID].training)>>
+    <<set $eventDifficulty = Number($eventDifficulty) - Number(2 * $globalFluffies[$activeFluffy.ID].temperament)>>
+<</if>>
+
+/* pre run random numbers for the event: */
+<<set $rand = []>>
+<<set $rand.push(random(0, 199))>>  /* success rate; if eventDifficulty is higher than this, we can prevent the smarty */
+
+
+<<goto "Event Smarty">>
+	
+
+
+

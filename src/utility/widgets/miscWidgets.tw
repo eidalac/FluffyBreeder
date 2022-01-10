@@ -1,0 +1,889 @@
+:: misc widgets [nobr widget]
+
+/* **********
+ * miscWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Various Widgets
+ *
+ *********** */
+
+/* ***
+ *	Call as <<UpdateNextButton>>
+ *	Allows for dynamic updating of the next button in the storyCaption (left side-bar) for events that disable the button until user makes a selection
+ *** */
+<<widget "UpdateNextButton">>
+	<<replace "#nextButton">>
+		<strong><<link "$nextButton">> /* must use link so spacebar shortcut will work */
+			<<if $nextButton != " ">> /* but no effect if nextButton is set to a blank space */
+				<<set $ui = "main">>
+				<<goto $nextLink>>
+			<</if>>
+		<</link>></strong>
+		<<if $nextButton != " ">>@@.cyan;@@<</if>>
+	<</replace>>
+<</widget>>
+
+
+<<widget "CreateSimpleTabs">>
+
+	<head>
+	<style>
+
+	div.tab {
+		overflow: hidden;
+		border: 1px solid #ccc;
+		background-color: transparent;
+	}
+
+	div.tab button {
+		background-color: inherit;
+		float: left;
+		border: none;
+		outline: none;
+		cursor: pointer;
+		padding: 14px 16px;
+		transition: 0.3s;
+		font-size: 19px;
+	}
+
+	div.tab button:hover {
+		background-color: #444;
+	}
+
+	div.tab button.active {
+		background-color: #777;
+	}
+
+	.tabcontent {
+		display: none;
+		padding: 6px 12px;
+		-webkit-animation: fadeEffect 1s;
+		animation: fadeEffect 1s;
+	}
+
+	@-webkit-keyframes fadeEffect {
+		from {opacity: 0;}
+		to {opacity: 1;}
+	}
+
+	@keyframes fadeEffect {
+		from {opacity: 0;}
+		to {opacity: 1;}
+	}
+	</style>
+	</head>
+
+<</widget>>
+
+/* ***
+ *	Call as <<SidebarDate>>
+ *	Displays date for the sidebar
+ *** */
+<<widget "SidebarDate">>
+	<<if $cheatMode>>_Pass<br><</if>>
+	<span id="week">''Week $week''</span>
+	<br>Week of $month $day, $year
+	<<if (_Pass == "Main") && ($cheatMode)>>
+		<<set _TWeek = $week>>
+		<<textbox "$week" $week>>
+		<<link "Apply">>
+		<<set $week = Math.trunc(Number($week) || _TWeek)>>
+		<<if $week < 1>><<set $week = 1>><</if>>
+		<<replace "#week">>''Week $week''<</replace>>
+		<</link>>
+	<</if>>
+	<br>
+<</widget>>
+
+/* ***
+ *	Call as <<SidebarWeather>>
+ *	Displays weather for the sidebar
+ *** */
+<<widget "SidebarWeather">>
+	<<if $weatherToday.severity == 1>>
+		//@@.cyan;$weatherToday.name@@//
+	<<elseif $weatherToday.severity == 2>>
+		//@@.yellow;$weatherToday.name@@//
+	<<elseif $weatherToday.severity == 3>>
+		//@@.orange;$weatherToday.name@@//
+	<<else>>
+		//@@.red;$weatherToday.name@@//
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<SidebarCash>>
+ *	Displays case for the sidebar
+ *** */
+<<widget "SidebarCash">>
+
+	<<cashClamp>>
+	<<script>>
+		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+	<</script>>
+
+	<span id="cash">
+	<<if $cash > 0>>
+		@@.yellowgreen;Cash@@
+	<<else>>
+		__@@.red;Cash@@__
+	<</if>>
+	| ''¤''$cash
+	</span>
+	<br>Upkeep | ¤$costs
+	<<if def _feedCost>>
+	(Rent: ¤<<- Number(Number($costs) - Number(_feedCost)).toFixed(2)>>, Feeding: ¤_feedCost)
+	<</if>>
+	<br>
+<</widget>>
+
+
+/* ***
+ *  Call as <<fluffyError $fluffy>>
+ *
+ *	Error handler for fluffies.
+ *** */
+<<widget "fluffyError">>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: called with no Fluffy.`)>>
+		<<set $fluffyError = true>>
+	<<elseif ndef _args[0].ID>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: ID is not defined.`)>>
+		<<set $fluffyError = true>>
+	<<elseif ndef $globalFluffies[_args[0].ID]>>
+		<<run console.log(`ERROR: <<fluffyError _args>>: Fluffy ID ${_args[0].ID} is not defined in globalFluffies.`)>>
+		<<set $fluffyError = true>>
+	<<else>>
+		<<if _args[0].ID != $globalFluffies[_args[0].ID].ID>>
+			<<run console.log(`ERROR: <<fluffyError _args>>: Fluffy ID ${_args[0].ID} does not match global ID ${$globalFluffies[_args[0].ID].ID}.`)>>
+
+			<<set _args[0].ID = Number($globalFluffies[_args[0].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[0].ID] = _args[0]>>
+		<</if>>
+		<<set $fluffyError = false>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<SidebarFluffies>>
+ *	Displays fluffies for the sidebar
+ *** */
+<<widget "SidebarFluffies">>
+	<<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
+	
+	@@.coral;[[Total Fluffies|Fluffy List][$listType = "All"]]@@
+	<br>
+	<<- $ourStore.fluffies.length>> Store | <<- _displayFluffies.length>> Display
+	<br>
+	$ourStore.foals @@.lightcoral;Foals@@ $ourStore.mares @@.lightcoral;Mares@@ $ourStore.stallions @@.lightcoral;Stallions@@
+<</widget>>
+
+/* ***
+ *	Call as <<SidebarStore>>
+ *	Displays store info for the sidebar
+ *** */
+<<widget "SidebarStore">>
+	<<set _displayFluffies = $globalFluffies.filter(fluffy => fluffy.onDisplay);>>
+	@@.coral;Store@@
+	<br>
+	@@.lightcoral;Shelter@@ $ourStore.shelter (<<- $ourStore.fluffies.length>> used) |
+	@@.lightcoral;Display@@  $ourStore.display (<<- _displayFluffies.length>> used) |
+	@@.lightcoral;Space@@ $ourStore.space 
+	<br>
+
+<</widget>>
+
+
+<<widget "SidebarButton">>
+	<<if $nextButton == "END WEEK">>
+		<span id="endWeekButton"><strong><<link $nextButton $nextLink>><</link>></strong></span> @@.cyan;@@
+	<<else>>
+		<span id="nextButton"> /* target for miscWidgets' <<UpdateNextButton>> */
+			<strong><<link "$nextButton">> /* must use link so spacebar shortcut will work */
+				<<if $nextButton != " ">> /* but no effect if nextButton is set to a blank space */
+					<<set $ui = "main">>
+					<<goto $nextLink>>
+				<</if>>
+			<</link>></strong>
+			<<if $nextButton != " ">>@@.cyan;@@<</if>>
+		</span>
+	<</if>>
+<</widget>>
+
+
+<<widget flipCase>>
+	<<if _args[0] == _args[0].toUpperCase()>><<set _args[0] = _args[0].toLowerCase()>><<else>><<set _args[0] = _args[0].toUpperCase()>><</if>>
+<</widget>>
+
+
+/* ***
+ *	Call as <<PlayerStatus>>
+ *	Displays player status
+ *** */
+<<widget "PlayerStatus">>
+	<div class="player-status">
+		<span style="color:coral;">Owner Status</span>
+
+		<<script>>
+			State.variables.actions = Math.clamp(Math.trunc(State.variables.actions), 0, 10);
+		<</script>>
+
+		<div id="stamina-container">
+			<span style="color:lightcoral;">Stamina</span>
+			<div id="stamina-amount">
+			<<switch $actions>>
+				<<case 10>>
+					<span class="stat-high">■■■■■■■■■■</span>
+				<<case 9>>
+					<span class="stat-high">■■■■■■■■■</span><span>□</span>
+				<<case 8>>
+					<span class="stat-high">■■■■■■■■</span><span>□□</span>
+				<<case 7>>
+					<span class="stat-high">■■■■■■■</span><span>□□□</span>
+				<<case 6>>
+					<span class="stat-average">■■■■■■</span><span>□□□□</span>
+				<<case 5>>
+					<span class="stat-average">■■■■■</span><span>□□□□□</span>
+				<<case 4>>
+					<span class="stat-average">■■■■</span><span>□□□□□□</span>
+				<<case 3>>
+					<span class="stat-average">■■■</span><span>□□□□□□□</span>
+				<<case 2>>
+					<span class="stat-low">■■</span><span>□□□□□□□□</span>
+				<<case 1>>
+					<span class="stat-low">■</span><span>□□□□□□□□□</span>
+				<<case 0>>
+					<span class="stat-low">□□□□□□□□□□</span>
+			<</switch>>
+			</div>
+		</div>
+		<div id="stress-container">
+			<span style="color:lightcoral;">Stress</span>
+			<<script>>
+				State.variables.stress = Math.clamp(Math.trunc(State.variables.stress), 0, 200);
+			<</script>>
+			<div id="stress-amount">
+				<<if $stress < 20>>
+					<span class="stat-high">□□□□□□□□□□</span>
+				<<elseif $stress < 40>>
+					<span class="stat-high">■</span><span>□□□□□□□□□</span>
+				<<elseif $stress < 60>>
+					<span class="stat-high">■■</span><span>□□□□□□□□</span>
+				<<elseif $stress < 80>>
+					<span class="stat-high">■■■</span><span>□□□□□□□</span>
+				<<elseif $stress < 100>>
+					<span class="stat-average">■■■■</span><span>□□□□□□</span>
+				<<elseif $stress < 120>>
+					<span class="stat-average">■■■■■</span><span>□□□□□</span>
+				<<elseif $stress < 140>>
+					<span class="stat-average">■■■■■■</span><span>□□□□</span>
+				<<elseif $stress < 160>>
+					<span class="stat-average">■■■■■■■</span><span>□□□</span>
+				<<elseif $stress < 180>>
+					<span class="stat-low">■■■■■■■■</span><span>□□</span>
+				<<elseif $stress < 200>>
+					<span class="stat-low">■■■■■■■■■</span><span>□</span>
+				<<else>>
+					<span class="stat-low">■■■■■■■■■■</span>
+				<</if>>
+			</div>
+		</div>
+		<span style="color:lightcoral;">Reputation</span>
+		
+		<<script>>
+			State.variables.reputation = Math.clamp(Math.trunc(State.variables.reputation), 0, 1000);
+		<</script>>
+
+		<<if $reputation > 900>>
+			@@color:rgb(0,145,0);prestigious@@ ($reputation)
+		<<elseif $reputation > 800>>
+			@@color:rgb(0,150,0);renowned@@ ($reputation)
+		<<elseif $reputation > 700>>
+			@@color:rgb(0,155,0);famed@@ ($reputation)
+		<<elseif $reputation > 600>>
+			@@color:rgb(0,160,0);celebrated@@ ($reputation)
+		<<elseif $reputation > 500>>
+			@@color:rgb(0,165,0);honored@@ ($reputation)
+		<<elseif $reputation > 400>>
+			@@color:rgb(0,170,0);acclaimed@@ ($reputation)
+		<<elseif $reputation > 300>>
+			@@color:rgb(0,175,0);eminent@@ ($reputation)
+		<<elseif $reputation > 200>>
+			@@color:rgb(0,180,0);prominent@@ ($reputation)
+		<<elseif $reputation > 100>>
+			@@color:rgb(0,185,0);respected@@ ($reputation)
+		<<elseif $reputation > 90>>
+			@@color:rgb(0,190,0);recognized@@ ($reputation)
+		<<elseif $reputation > 80>>
+			@@color:rgb(0,195,0);known@@ ($reputation)
+		<<elseif $reputation > 70>>
+			@@color:rgb(0,200,0);rumored@@ ($reputation)
+		<<elseif $reputation > 60>>
+			@@color:rgb(0,205,0);envied@@ ($reputation)
+		<<elseif $reputation > 50>>
+			@@color:rgb(0,210,0);minor@@ ($reputation)
+		<<elseif $reputation > 40>>
+			@@color:rgb(0,215,0);obscure@@ ($reputation)
+		<<elseif $reputation > 30>>
+			@@color:rgb(0,220,0);reprobate@@ ($reputation)
+		<<elseif $reputation > 20>>
+			@@color:rgb(0,225,0);resented@@ ($reputation)
+		<<elseif $reputation > 10>>
+			@@color:rgb(0,230,0);disliked@@ ($reputation)
+		<<else>>
+			@@color:rgb(0,240,0);unknown@@ ($reputation)
+		<</if>>
+
+		<<script>>
+			State.variables.training = Math.clamp(Math.trunc(State.variables.training), 0, 200);
+			State.variables.hugbox = Math.clamp(Math.trunc(State.variables.hugbox), 0, 200);
+			State.variables.abuse = Math.clamp(Math.trunc(State.variables.abuse), 0, 200);
+		<</script>>
+
+		<span style="color:lightcoral;">Experience</span>
+		$training ( Hugbox $hugbox | Abuse $abuse )
+	</div>
+<</widget>>
+
+<<widget "OptionsWidget">>
+	<div class="w3-modal-content">
+		<header class="w3-bar w3-card" id="modal-header">
+			<span onclick="document.getElementById('id01').style.display='none'" class="w3-button w3-display-topright">&times;</span>
+			<h1>Settings</h1>
+		</header>
+		<div class="w3-container w3-dark-grey" id="modal-content">
+			<<if ndef $nameType>><<set $nameType = "ordinal">><</if>>
+			
+			<<if ndef $ordinalString>><<set $ordinalString = "Fluffy">><</if>>
+			
+			<br>
+			<div class="w3-container w3-padding">
+				<h2>Auto Naming</h2>
+				<div class="w3-container w3-padding">
+	
+				<label><<radiobutton "$nameType" "ordinal" autocheck>> Ordinal</label>
+				<<textbox "_tempString" $ordinalString>>
+				<<button "Confirm">>
+					<<set _tempString to _tempString.trim()>>
+
+					<<if _tempString is "">>
+						<<replace "#textbox-error">>Please enter a string.<</replace>>
+					<<elseif _tempString.length > 20>>
+						<<replace "#textbox-error">>Text can be no more than 20 characters long.<</replace>>
+					<<elseif _tempString.match(/[^0-9]{1,20}/) == null>>
+						<<replace "#textbox-error">>Names must have only letters and characters.<</replace>>
+					<<else>>
+						<<set $ordinalString = _tempString>>
+						<<replace "#textbox-error">>Ok, oridnal name set to "<<- $ordinalString>> #".<</replace>>
+					<</if>>
+				<</button>>
+				<span id="textbox-error"></span>
+				<br>
+				<label disabled>@@#listbutton;<<radiobutton "$nameType" "list" autocheck>>@@ nameList</label>
+
+	        	</div>      	
+        	</div>
+
+				<p><<button "Display Variables">><<checkvars>><</button>></p>
+				<p><<button "Bug Report">><<bugreport>><</button>></p>
+
+			<div id="jscolor-container">
+				<input id="modal-jscolor" data-jscolor="{}" value="#3399FF">
+				<button id="jscolor-save" type="button">Save</button>
+			</div>
+        	
+			<<timed 5ms>>
+				<<run $("#radiobutton-nametype-1").prop( "disabled", true )>>
+			<</timed>>
+        </div>
+	</div>
+<</widget>>
+
+
+<<widget "systemButtons">>
+	@@.sortbutton;<<button '<i class="fa fa-save"></i> Saves'>><<script>>UI.saves()<</script>><</button>>@@
+	
+	@@.sortbutton;<<button '<i class="fa fa-power-off"></i> Restart'>><<script>>UI.restart()<</script>><</button>>@@
+
+
+	<div class="w3-dropdown-hover" id="options-btn">
+		<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i> Options</button>
+	</div>
+	<div id="id01" class="w3-modal">
+		<<OptionsWidget>>
+	</div>
+<</widget>>
+
+<<widget "sidebarTop">>
+	<<script>>UIBar.destroy();<</script>>
+	<div class="w3-container">
+		<span id="close-dropdown-btn" class="w3-button w3-display-topright w3-large">X</span>
+		<br>
+		<div class="w3-padding w3-center">
+			<span id="app-name">Fluffy Breeder</span>
+			<<iconSprite>>
+			<<= '<img class="w3-circle responsive" src="' + _iconSprite + '"  alt="avatar" style="width:100px">'>>
+		</div>
+	</div>
+<</widget>>
+
+
+
+<<widget "filterButtons">>
+	<<set _type = _args[0] || "None">>
+	<<set $filterFluffies = []>>
+	<<for _id range $ourStore.fluffies>>
+		<<set $filterFluffies.push($globalFluffies[_id])>>
+	<</for>>
+	<<set $fluffyFilters = {
+		breed: false,
+		maturity: false,
+		gender: false,
+		coat: false,
+		mane: false,
+		eyes: false
+	}>>
+	
+	<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
+		<button class="dropdown-btn w3-button"><span>Filter</span><i class="fa fa-caret-down"></i></button>
+		<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+			@@#filter-reset-btn;.sortbutton;<<button 'Remove Filter <i class="fa fa-window-close"></i>'>>
+				/* Reset sorted filters */
+				<<set $fluffyFilters = {
+					breed: false,
+					maturity: false,
+					gender: false,
+					coat: false,
+					mane: false,
+					eyes: false
+				}>>
+				<<resetList>>
+			<</button>>@@
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Breed</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					@@.sortbutton;<<button 'Alicorn <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "alicorn">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Earthy <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "earthy">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Pegasus <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "pegasus">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Unicorn <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.breed = "unicorn">>
+						<<resetList>>
+					<</button>>@@
+				</div>
+			</div>
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Maturity</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Newborn <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "newborn">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Baby <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "baby">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Talky <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "talky">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					<<if _type != "breeding">>
+						@@.sortbutton;<<button 'Foal <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.maturity = "foal">>
+							<<resetList>>
+						<</button>>@@
+					<</if>>
+					@@.sortbutton;<<button 'Youth <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "youth">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Adult <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "adult">>
+						<<resetList>>
+					<</button>>@@
+					@@.sortbutton;<<button 'Elder <i class="fa fa-sort"></i>'>>
+						<<set $fluffyFilters.maturity = "elder">>
+						<<resetList>>
+					<</button>>@@
+				</div>
+			</div>
+			<<if _type != "breeding">>
+				<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+					<button class="dropdown-btn w3-button"><span>Gender</span><i class="fa fa-caret-down"></i></button>
+					<div class="dropdown-inner-container w3-hide w3-white w3-card">
+						@@.sortbutton;<<button 'Male <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.gender = "male">>
+							<<resetList>>
+						<</button>>@@
+						@@.sortbutton;<<button 'Female <i class="fa fa-sort"></i>'>>
+							<<set $fluffyFilters.gender = "female">>
+							<<resetList>>
+						<</button>>@@
+					</div>
+				</div>
+			<</if>>
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Color</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Coat</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.coat = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < ntc.shades.length; _i++>>
+								<<set _colorGroup = ntc.shades[_i][1]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.coat = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Mane</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.mane = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < ntc.shades.length; _i++>>
+								<<set _colorGroup = ntc.shades[_i][1]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.mane = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+					<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+						<button class="dropdown-btn w3-button"><span>Eyes</span><i class="fa fa-caret-down"></i></button>
+						<div class="dropdown-inner-container w3-hide w3-white w3-card">
+							@@.sortbutton;<<button 'All Colors'>>
+								<<set $fluffyFilters.eyes = false>>
+								<<resetList>>
+							<</button>>@@
+							<<for _i = 0; _i < ntc.shades.length; _i++>>
+								<<set _colorGroup = ntc.shades[_i][1]>>
+								<<capture _colorGroup>>
+									<<set _btnTitle = `${_colorGroup} <i class="fa fa-sort"></i>`>>
+									@@.sortbutton;<<button _btnTitle>>
+										<<set $fluffyFilters.eyes = _colorGroup>>
+										<<resetList>>
+									<</button>>@@
+								<</capture>>
+							<</for>>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "sortButtons">>
+	<<set _type = _args[0] || "None">>
+
+	<div class="dropdown-container w3-left-align w3-hover-cyan w3-grey">
+		<button class="dropdown-btn w3-button"><span>Sort</span><i class="fa fa-caret-down"></i></button>
+		<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+			@@#sort-reset-btn;.sortbutton;<<button 'Remove Sort <i class="fa fa-window-close"></i>'>>
+				/* Reset sorted filters */
+				<<set $filterFluffies = []>>
+				<<for _id range $ourStore.fluffies>>
+					<<if _type != "breeding">>
+						<<set $filterFluffies.push($globalFluffies[_id])>>
+					<<else>>
+						<<run $globalFluffies[_id].gender != $activeFluffy.gender ? $filterFluffies.push($globalFluffies[_id]) : console.log()>>
+					<</if>>
+				<</for>>
+				<<replaceFluffies _type $filterFluffies>>
+			<</button>>@@
+			@@.sortbutton;<<button 'Age <i class="fa fa-sort"></i>'>>
+				<<if _ageUp == false>>
+					<<run $filterFluffies.sort((a, b) => (a.ageWeeks + (a.age * 52)) - (b.ageWeeks + (b.age * 52))) >>
+					<<replaceFluffies _type $filterFluffies>>
+					<<set _ageUp = true>>
+				<<else>>
+					<<run $filterFluffies.sort((a, b) => (b.ageWeeks + (b.age * 52)) - (a.ageWeeks + (a.age * 52))) >> 
+					<<replaceFluffies _type $filterFluffies>>
+					<<set _ageUp = false>>
+				<</if>>
+			<</button>>@@
+
+			<div class="dropdown-container w3-left-align w3-grey">
+				<button class="dropdown-btn w3-button"><span>Stats</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					@@.sortbutton;<<button 'Strength <i class="fa fa-sort"></i>'>>
+						<<if _strUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.strength - b.strength))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _strUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.strength - a.strength))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _strUp = false>>
+						<</if>>
+					<</button>>@@
+					
+					@@.sortbutton;<<button 'Energy <i class="fa fa-sort"></i>'>>
+						<<if _engUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.energy - b.energy))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _engUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.energy - a.energy))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _engUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Charm <i class="fa fa-sort"></i>'>>
+						<<if _chaUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.charm - b.charm))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _chaUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.charm - a.charm))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _chaUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Thinking <i class="fa fa-sort"></i>'>>
+						<<if _thiUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.thinking - b.thinking))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _thiUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.thinking - a.thinking))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _thiUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Learning <i class="fa fa-sort"></i>'>>
+						<<if _leaUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.learning - b.learning))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _leaUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.learning - a.learning))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _leaUp = false>>
+						<</if>>
+					<</button>>@@
+					
+					@@.sortbutton;<<button 'Fertility <i class="fa fa-sort"></i>'>>
+						<<if _ferUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.fertility - b.fertility))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _ferUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.fertility - a.fertility))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _ferUp = false>>
+						<</if>>
+					<</button>>@@
+				</div>
+			</div>
+
+			<div class="dropdown-container w3-left-align w3-grey subsort-btn">
+				<button class="dropdown-btn w3-button"><span>Attributes</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-white w3-card">
+					@@.sortbutton;<<button 'Trust <i class="fa fa-sort"></i>'>>
+						<<if _trustUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.trust - b.trust))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _trustUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.trust - a.trust))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _trustUp = false>>
+						<</if>>
+					<</button>>@@
+					
+					@@.sortbutton;<<button 'Training <i class="fa fa-sort"></i>'>>
+						<<if _trainingUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.training - b.training))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _trainingUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.training - a.training))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _trainingUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Temperament <i class="fa fa-sort"></i>'>>
+						<<if _temperamentUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.temperament - b.temperament))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _temperamentUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.temperament - a.temperament))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _temperamentUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Happiness <i class="fa fa-sort"></i>'>>
+						<<if _happyUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.happy - b.happy))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _happyUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.happy - a.happy))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _happyUp = false>>
+						<</if>>
+					<</button>>@@
+
+					@@.sortbutton;<<button 'Stress <i class="fa fa-sort"></i>'>>
+						<<if _stressUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.stress - b.stress))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _stressUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.stress - a.stress))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _stressUp = false>>
+						<</if>>
+					<</button>>@@
+					
+					@@.sortbutton;<<button 'Trauma <i class="fa fa-sort"></i>'>>
+						<<if _traumaUp == false>>
+							<<run $filterFluffies.sort((a, b) => ((a.trauma - b.trauma))) >>
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _traumaUp = true>>
+						<<else>>
+							<<run $filterFluffies.sort((a, b) => ((b.trauma - a.trauma))) >> 
+							<<replaceFluffies _type $filterFluffies>>
+							<<set _traumaUp = false>>
+						<</if>>
+					<</button>>@@
+				</div>
+			</div>
+		</div>
+	</div>
+<</widget>>
+
+<<widget "resetList">>
+	/* Get fresh list of fluffies */
+	<<set $filterFluffies = []>>
+	<<for _id range $ourStore.fluffies>>
+		<<if _type != "breeding">>
+			<<set $filterFluffies.push($globalFluffies[_id])>>
+		<<else>>
+			<<run $globalFluffies[_id].gender != $activeFluffy.gender ? $filterFluffies.push($globalFluffies[_id]) : console.log()>>
+		<</if>>
+	<</for>>
+
+	/* Check for filters */
+	<<if $fluffyFilters.breed != false>>
+		<<if _type != "breeding">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed)>>
+		<<else>>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.breed == $fluffyFilters.breed && fluffy.gender != $activeFluffy.gender)>>
+		<</if>>
+	<</if>>
+	<<switch $fluffyFilters.maturity>>
+		<<case "newborn">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 0)>>
+		<<case "baby">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 1)>>
+		<<case "talky">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 2)>>
+		<<case "foal">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 3)>>
+		<<case "youth">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 4)>>	
+		<<case "adult">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 5)>>
+		<<case "elder">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.ageCategory == 6)>>
+		<<default>>
+	<</switch>>
+	<<if $fluffyFilters.gender != false>>
+		<<if _type != "breeding">>
+			<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.gender == $fluffyFilters.gender)>>
+		<</if>>
+	<</if>>
+	<<if $fluffyFilters.coat != false>>
+		<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.cColor.group == $fluffyFilters.coat)>>
+	<</if>>
+	<<if $fluffyFilters.mane != false>>
+		<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.mColor.group == $fluffyFilters.mane)>>
+	<</if>>
+	<<if $fluffyFilters.eyes != false>>
+		<<set $filterFluffies = $filterFluffies.filter(fluffy => fluffy.eColor.group == $fluffyFilters.eyes)>>
+	<</if>>
+
+	<<replaceFluffies _type $filterFluffies>>
+<</widget>>
+
+/* ***
+ *	Call as <<replaceFluffies $args>>
+ *	Replaces a list of fluffies and reloads jQuery
+ *** */
+<<widget "replaceFluffies">>
+	<<if def _args[0]>>
+		<<set _type = _args[0]>>
+	<<else>>
+		<<set _type = "">>
+	<</if>>
+	<<if def _args[1]>>
+		<<set _replaceFluffies = _args[1]>>
+	<<else>>
+		<<set _replaceFluffies = []>>
+	<</if>>
+
+	<<replace "#fluffy-list">><<FluffyList _type _replaceFluffies>><</replace>>
+	<<run pageLoad();>>
+<</widget>>
+
+
+<<widget "checkAgeCategory">>
+
+	<<set _cat = Number(Number($activeFluffy.age * 52) + Number($activeFluffy.ageWeeks))>>
+		
+	<<if _cat == 0>>
+		<<set $activeFluffy.ageCategory = 0>>
+	<<elseif _cat == 1>>
+		<<set $activeFluffy.ageCategory = 1>>
+	<<elseif $activeFluffy.weaned == false>>
+		<<set $activeFluffy.ageCategory = 2>>
+	<<elseif _cat < Number($activeFluffy.maturity/2)>>
+		<<set $activeFluffy.ageCategory = 3>>
+	<<elseif _cat <= $activeFluffy.maturity>>
+		<<set $activeFluffy.ageCategory = 4>>
+	<<elseif _cat < Number($activeFluffy.maxAge * 52 * 0.75)>>
+		<<set $activeFluffy.ageCategory = 5>>
+	<<else>>
+		<<set $activeFluffy.ageCategory = 6>>
+	<</if>>
+<</widget>>

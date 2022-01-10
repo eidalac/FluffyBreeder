@@ -1,0 +1,312 @@
+:: init [nobr]
+
+/* **********
+ *	Fluffy Breeder
+ *  a text-based fluffy management game
+ *	Current code copied from Free Cities (Copyright (C) 2017  freecitiesdev)
+ * This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+ *	This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU General Public License for more details.
+ *	You should have received a copy of the GNU General Public License along with this program.  If not, see <http://www.gnu.org/licenses/>.
+  *********** */
+
+/* **********
+ *	init.tw
+ *
+ *	Package: FluffyBreeder
+ *	Format: Twine2 (Sugarcube 2)
+ *
+ *	Initialiation of default values for most variables.
+  *
+ *********** */
+ 
+ 
+<<script>>UIBar.destroy();<</script>>
+/* **********
+ *	Version/Release information
+ *********** */
+<<unset $releaseID>>
+<<set $ver = "1.41.384-beta", $releaseID = "COMMIT">>
+<<if ndef $releaseID>><<set $releaseID = 1>><</if>>
+
+/* **********
+ *	Enables debug mode
+ *********** */
+<<set $debugMode = false>>
+<<set $unlockGeneLab = true>>
+
+/* **********
+ *	Default gene strings:
+ *********** */
+<<set $grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+<<set $grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;1/1;C/c;L/l;C/c;D/d;C/c;C/c;0/0">>
+
+
+/* **********
+ *	Sets the starting week, month, day and year.
+ *********** */
+<<set $week = 1>>
+<<set $month = random(1, 12)>>
+<<set $day = random(9, 21)>>
+<<set $year = random(2030, 2056)>>
+
+<<set $gameDate to new Date($year, $month, $day).toString()>>
+
+<<set $gameDays = ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday", "Saturday", "Sunday"]>>
+<<set $gameMonths = ["January", "February", "March", "April", "May", "June", "July", "August", "September", "October", "November", "December"] >>
+
+/* **********
+ *	Default encyclopedia entry.
+ *********** */
+<<set $encyclopedia = "About">>
+
+/* **********
+ *	Default difficulty settings
+ *	Used in introSummary.tw
+ *********** */
+<<script>>
+	State.variables.cash = Number(1000).toFixed(2);
+<</script>>
+<<set $economy = 1>>
+<<set $alicornRarity = 1>> 
+<<set $alicornMonster = 1>> 
+<<set $pooBaby = 1>>
+<<set $smartySyndrom = 1>>
+
+/* **********
+ *	Default player stats
+ *********** */
+<<set $stress = 0>>
+<<set $training = 0>>
+<<set $hugbox = 0>>
+<<set $abuse = 0>>
+<<set $reputation = 0>>
+<<set $title = "Ownah">>
+<<set $titleList = ["Ownah", "Mistah", "Wady", "Daddeh", "Hoomin", "Mummah" ]>>
+
+
+/* **********
+ *	Default fluffy settings
+ *	Used in fluffy.tw
+ *	May be depreciated with current setup.
+ *********** */
+<<set $showStartingExplanation = 1>>
+<<set $customDad = "">>
+<<set $customMom = "">>
+<<set $outShopping = false>> 
+
+
+/* default store information */
+<<set $fID = 0>>
+<<set $globalFluffies = []>>
+<<set $storeMales = 0>>
+<<set $storeFemales = 0>>
+<<set $storeFoals = 0>>
+<<set $fluffyChecks = []>>
+<<set $tempList = []>>
+
+<<set $storePoints = 111>>
+<<set $ourStore = {
+	name: "The Store",
+	space: 0,
+	shelter: 4,
+	display: 1,
+	onDisplay: 0,
+	fluffies: [],
+	stallions: 0,
+	mares: 0,
+	foals: 0,
+	upgrades: [],
+	inventory: []
+}
+>>
+
+
+/* Default food prices */
+<<set $foodPrice = {
+	kibble: [ 0.05, .5, 2, 7, 14 ],
+	formula: [ 0.2, 2, 6, 10, 21 ],
+	greens: [ 0.01, .1, 1, 5, 10 ],
+	sketti: [ 2, 5, 10, 15, 20 ]
+}
+>>
+
+/* Used when setting a breeding pair up */
+<<set $breedMare = -1>>
+<<set $breedStal = -1>>
+
+/* All personality types */
+<<set $fluffyPersonalities = [ "Fussy", "Shy", "Lazy", "Cute", "Peppy", "Diligent", "Bossy", "Curious", "Timid", "Pensive", "Dull", "Sweet", "Haughty", "Playful", "Rowdy"] >>
+
+ /* ***
+  *
+  *	In this system, fluffies have 81 possible gene configuration, with 63 possible colors at present.
+  *
+  *	Colors have a Tier (S,A,B,C,D,E,F) and a group (Blue,Yellow,Red,Green,Orange,Purple,Brown and Special)
+  *
+  *	The colors value is deterimed by the Tier, part (coat, mane, eyes), and if the groups are coplementary or not.
+  *
+  *	Complimentary pairs:
+  *	Blue - Orange
+  * Red - Green
+  * Yellow - Purple
+  *
+  *
+  *** */
+  
+/* [ Name, Tier, Group ]*/
+
+<<set $colors = [
+ 	{	Name: "White", tier: 6, group: "White", gene: "b/b;y/y;r/r;o/o;" },
+ 	{	Name: "Black", tier: 6, group: "Brown", gene: "B/B;Y/Y;R/R;o/o;" },
+ 	
+ 	{	Name: "Gold", tier: 5, group: "Yellow", gene: "b/B;y/y;r/R;o/O;" },
+ 	{	Name: "Lavender", tier: 5, group: "White", gene: "b/B;Y/Y;r/r;o/o;" },
+ 	{	Name: "CornflowerBlue", tier: 5, group: "Blue", gene: "b/B;y/y;r/r;o/O;" },
+ 	{	Name: "MidnightBlue", tier: 5, group: "Blue", gene: "b/B;y/Y;R/R;O/O;" },
+ 	{	Name: "Orchid", tier: 5, group: "Purple", gene: "b/B;Y/Y;R/R;o/o;" },
+ 	{	Name: "SeaGreen", tier: 5, group: "Green", gene: "b/b;Y/Y;r/r;o/O;" },
+ 	{	Name: "BlueViolet", tier: 5, group: "Purple", gene: "b/B;y/y;r/r;O/O;);" },
+ 	{	Name: "RoyalBlue", tier: 5, group: "Blue", gene: "B/B;y/Y;r/r;o/O;" },
+
+ 	{	Name: "Violet", tier: 5, group: "Purple", gene: "b/B;y/Y;r/R;o/O;" },
+ 	{	Name: "SkyBlue", tier: 5, group: "Blue", gene: "b/B;y/y;R/R;O/O;" },
+ 	
+ 	{	Name: "PeachPuff", tier: 5, group: "White", gene: "b/b;y/y;r/R;O/O;" },
+ 	{	Name: "Crimson", tier: 5, group: "Red", gene: "B/B;Y/Y;r/R;o/o;" },
+ 	{	Name: "Plum", tier: 4, group: "Purple", gene: "b/B;Y/Y;r/r;o/O;" },
+ 	{	Name: "Indigo", tier: 4, group: "Purple", gene: "b/B;y/Y;r/r;O/O;" },
+ 	{	Name: "Purple", tier: 4, group: "Purple", gene: "b/B;y/Y;r/R;o/o;" },
+ 	{	Name: "Coral", tier: 4, group: "Orange", gene: "b/b;y/y;r/R;o/O;" },
+ 	{	Name: "Blue", tier: 4, group: "Blue", gene: "b/B;y/Y;R/R;o/O;" },
+ 	{	Name: "SteelBlue", tier: 4, group: "Blue", gene: "b/B;y/y;R/R;o/O;" },
+ 	{	Name: "Navy", tier: 4, group: "Blue", gene: "B/B;Y/Y;r/R;O/O;" },
+ 	{	Name: "Cornsilk", tier: 4, group: "White", gene: "b/b;Y/Y;R/R;o/o;" },
+ 	{	Name: "Fuchsia", tier: 4, group: "Purple", gene: "b/B;Y/Y;R/R;O/O;" },
+ 
+  	{	Name: "MediumVioletRed", tier: 3, group: "Red", gene: "B/B;Y/Y;R/R;O/O;" },
+ 	{	Name: "Red", tier: 3, group: "Red", gene: "b/B;Y/Y;r/R;o/o;" },
+	{	Name: "BlanchedAlmond", tier: 3, group: "White", gene: "b/b;Y/Y;R/R;O/O;" },
+	{	Name: "ForestGreen", tier: 3, group: "Green", gene: "b/b;y/Y;r/r;O/O;" },
+	{	Name: "SpringGreen", tier: 3, group: "Green", gene: "b/B;y/Y;r/R;O/O;" },
+	{	Name: "RebeccaPurple", tier: 3, group: "Purple", gene: "b/B;Y/Y;r/R;O/O;" },
+	{	Name: "PaleGoldenRod", tier: 3, group: "Yellow", gene: "b/b;Y/Y;r/r;o/o;" },
+	{	Name: "SlateBlue", tier: 3, group: "Blue", gene: "b/B;y/Y;r/r;o/O;" },
+	{	Name: "Maroon", tier: 3, group: "Red", gene: "B/B;y/y;R/R;o/O;" },
+	{	Name: "Pink", tier: 3, group: "Purple", gene: "B/B;y/y;R/R;o/o;" },
+	{	Name: "MediumPurple", tier: 3, group: "Purple", gene: "B/B;y/y;r/r;O/O;" },
+	{	Name: "DeepPink", tier: 3, group: "Purple", gene: "B/B;Y/Y;R/R;o/o;" },
+	
+	{	Name: "HotPink", tier: 2, group: "Red", gene: "B/B;y/y;R/R;O/O;" },
+	{	Name: "Green", tier: 2, group: "Green", gene: "b/b;Y/Y;r/r;O/O;" },
+	{	Name: "Chocolate", tier: 2, group: "Brown", gene: "b/b;Y/Y;r/R;o/o;" },
+	{	Name: "LightCoral", tier: 2, group: "Red", gene: "B/B;y/Y;R/R;o/O;" },
+	{	Name: "Sienna", tier: 2, group: "Brown", gene: "b/B;Y/Y;r/r;o/o;" },
+	{	Name: "Tan", tier: 2, group: "Brown", gene: "B/B;Y/Y;r/r;o/o;" },
+	{	Name: "DarkGoldenRod", tier: 2, group: "Brown", gene: "b/b;y/Y;R/R;o/o;" },
+	{	Name: "OrangeRed", tier: 2, group: "Orange", gene: "b/B;Y/Y;r/R;o/O;" }, 
+	{	Name: "Thistle", tier: 2, group: "Purple", gene: "b/B;y/y;r/R;o/o;" },
+	{	Name: "Salmon", tier: 2, group: "Red", gene: "B/B;y/y;r/R;o/O;" },
+	{	Name: "DodgerBlue", tier: 2, group: "Blue", gene: "b/B;y/y;R/R;o/o;" },
+	{	Name: "GreenYellow", tier: 2, group: "Green", gene: "B/B;y/Y;r/R;o/O;" },
+	{	Name: "PaleVioletRed", tier: 2, group: "Red", gene: "b/B;Y/Y;R/R;o/O;" },
+
+	{	Name: "Brown", tier: 1, group: "Brown", gene: "b/B;y/Y;r/r;o/o;" },
+	{	Name: "BurlyWood", tier: 1, group: "Brown", gene: "B/B;y/Y;r/r;o/o;" },
+	{	Name: "SandyBrown", tier: 1, group: "Brown", gene: "b/B;y/y;r/r;o/o;" },
+	{	Name: "IndianRed", tier: 1, group: "Red", gene: "B/B;y/y;r/R;o/o;" },
+	{	Name: "FireBrick", tier: 1, group: "Red", gene: "B/B;y/Y;r/R;o/o;" },
+	{	Name: "Yellow", tier: 1, group: "Yellow", gene: "B/B;y/y;r/R;O/O;" },
+	{	Name: "Tomato", tier: 1, group: "Orange", gene: "b/b;y/y;r/R;o/o;" },
+	{	Name: "RosyBrown", tier: 1, group: "Brown", gene: "b/b;Y/Y;R/R;o/O;" },
+	{	Name: "Chartreuse", tier: 1, group: "Green", gene: "b/b;y/y;r/r;o/O;" },
+	{	Name: "Orange", tier: 1, group: "Orange", gene: "B/B;y/Y;R/R;o/o;" },
+	{	Name: "Khaki", tier: 1, group: "Yellow", gene: "b/b;y/Y;r/r;o/o;" },
+	{	Name: "OliveDrab", tier: 1, group: "Green", gene: "b/b;y/Y;r/r;O/O;" },
+	{	Name: "Moccasin", tier: 1, group: "White", gene: "b/b;y/Y;r/R;o/O;" },
+	{	Name: "DarkSalmon", tier: 1, group: "Red", gene: "B/B;Y/Y;R/R;o/O;" },	 
+	{	Name: "YellowGreen", tier: 1, group: "Green", gene: "b/B;y/y;r/R;O/O;" } 
+ ]>>
+
+
+/* **********
+ *	All things imported from Freecities
+ *	mostly do not do anything but will be used for future development
+ *********** */
+
+<<if ndef $saveImported>>
+	<<set $saveImported = 0>>
+<</if>>
+
+<<set $cheater = 0>>
+<<set $actions = 10>>
+<<set $normalizedEvents = 0>>
+<<set $autosave = 1>>
+<<set $seeAge = 1>>
+<<set $seeImages = 0>>
+<<set $imageChoice = 0>>
+<<set $seeVectorArtHighlights = 1>>
+
+/* <<include "Init Rules">>*/
+
+<<set $lastWeeksFinances = {
+incomeSales: 0,
+expensesRents: 0,
+profitsTotal: 0
+}>>
+
+<<set $niceWeather = [
+	{name: "Sunny", severity: 1},
+	{name: "Cloudy", severity: 1},
+	{name: "Partly Cloudy", severity: 1},
+	{name: "Overcast", severity: 1},
+	{name: "Light Wind", severity: 1},
+	{name: "Clear and Calm", severity: 1},
+	{name: "Light Rain", severity: 1},
+	{name: "Heavy Rain", severity: 1},
+	{name: "Smoke warning", severity: 1},
+]>>
+
+<<set $lightWeather = [
+	{name: "High Winds", severity: 2},
+	{name: "Acid Rain", severity: 2},
+	{name: "T-Storm Warning", severity: 2},
+	{name: "Flood Warning", severity: 2},
+	{name: "Tornado Warning", severity: 2},
+	{name: "Light Sandstorm", severity: 2},
+	{name: "High Heat", severity: 2},
+	{name: "Smoky", severity: 2},
+]>>
+
+<<set $heavyWeather = [
+	{name: "Extreme Winds", severity: 3},
+	{name: "Heavy Acid Rain", severity: 3},
+	{name: "Extreme T-storm", severity: 3},
+	{name: "Flooding", severity: 3},
+	{name: "Tornadoes", severity: 3},
+	{name: "Sandstorm", severity: 3},
+	{name: "Extreme Heat", severity: 3},
+	{name: "Dense Smoke", severity: 3},
+]>>
+
+<<set $extremeWeather = [
+	{name: "Solar Flare", severity: 4},
+	{name: "Ion Storm", severity: 4},
+	{name: "Cataclysmic Rains", severity: 4},
+	{name: "Cat 6 Hurricane", severity: 4},
+	{name: "Abrasive Sandstorm", severity: 4},
+	{name: "Radiological Warning", severity: 4},
+]>>
+
+<<set $weatherToday = $niceWeather.random()>>
+
+<<set $returnTo = "Week Start">>
+<<set $nextButton = "END WEEK">>
+<<set $nextLink = "EW Fluffies">>
+
+
+<<set $cheatMode = 0>>
+
+/* HACKY EVENT WORKAROUNDS */
+<<set $eventID = -1>>
+
+<<goto "Disclaimer">>

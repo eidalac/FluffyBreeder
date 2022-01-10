@@ -1,0 +1,94 @@
+:: Fluffy Selling [nobr]
+
+/* **********
+ * fluffyselling.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Set a fluffy as being on sale.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<div class="w3-row w3-container w3-mobile">
+
+<<set $ui = "main">>
+<br>
+<br>
+
+<<FluffyDesc>>
+<br>
+<<if $ourStore.onDisplay >= $ourStore.display>>
+	<br>You have no space to put more fluffies on display right now.
+<<elseif $activeFluffy.pregnant == true>>
+	<br>You will have to wait till $activeFluffy.name is not rearing foals.
+<<elseif $activeFluffy.nursing.length != 0>>
+	<br>You will have to wait till $activeFluffy.name is finished nursing foals.
+<<elseif $activeFluffy.weaned == false>>
+	<br>You will have to wait till $activeFluffy.name is weaned!
+<<else>>
+
+	/* Clear both special friends flag, ending breeding*/
+	<<if $activeFluffy.specialFriend != -1>>
+		<br><<print $globalFluffies[$activeFluffy.specialFriend].name>> and $activeFluffy.name are no longer special friends.
+		<<fluffSpeech "HUHUHU WORST SADIES!" $activeFluffy>>
+
+		<<if def $globalFluffies[$activeFluffy.specialFriend]>>
+			<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<</if>>
+	
+		<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<<set $activeFluffy.specialFriend = -1>>
+	<</if>>
+	
+	<br>You move $activeFluffy.name to the display area for sale.
+	<<set $activeFluffy.onDisplay = true>>
+	
+	<<statValue>>
+
+	<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<<else>>
+		<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${$activeFluffy.ID} Should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
+		<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+		<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+	<</if>>
+<</if>>
+
+<<capture _fl>>
+<br>
+<br>Fluffies on display:
+<hr>
+<<for _fl to 0; _fl lt $ourStore.fluffies.length; _fl++>>
+	<<set _listFluffy = $globalFluffies[$ourStore.fluffies[_fl]]>>
+
+	<<if _listFluffy.onDisplay != true>>
+		<<continue>>
+	<<else>>
+		[[_listFluffy.name|Fluffy Interact]] <<shortDesc _listFluffy>>
+		<br>&nbsp;&nbsp;&nbsp;&nbsp;<<link [[Remove from Display|Fluffy List]]>>
+			<<set _listFluffy.onDisplay = false>>
+			<<set $globalFluffies[_listFluffy.ID] = _listFluffy>>
+		<</link>>
+		<hr>
+	<</if>>
+<</for>>
+
+<</capture>>
+
+/* Sidebar link for mobile users */
+<<SidebarButton>>
+
+
+</div>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

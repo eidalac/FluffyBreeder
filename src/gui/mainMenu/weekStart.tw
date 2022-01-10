@@ -1,0 +1,268 @@
+:: Week Start [nobr]
+
+/* **********
+ * weekStart.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * This is the primary game loop - after setup you can select options and progress time here
+ *
+ *	TODO: ALPHA:  several items
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<<if ndef $saveVer>>
+	<<set $saveVer = $ver>>
+<</if>>
+
+/* Clear any checkboxes */
+<<for _f range $ourStore.fluffies>>
+	<<set $globalFluffies[_f].isChecked = false>>
+<</for>>
+
+/* ***
+ *	Base expenses
+ *** */
+<<set $costs = 0>>
+<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+
+<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Fancy Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Basic Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+
+<<set _feedCost = 0>>
+
+<<for _ef range $ourStore.fluffies>>
+	<<switch $globalFluffies[_ef].foodType>>
+		<<case "Kibble">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Greens">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Sketti">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Formula">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Default">>
+			<<set _feedCost = 0>>
+	<</switch>>
+<</for>>
+
+<<script>>
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+<</script>>
+
+/* Round the cash to 2 decimal places */
+<<cashClamp>>
+
+
+
+/* Set the UI info and the sidebar buttons*/
+<<set $ui = "main">>
+<<set $nextButton = "END WEEK", $nextLink = "End Week", $showEncyclopedia = 1, $encyclopedia = "Running your Store">>
+
+<<set $colors = [
+ 	{	name: "White", tier: 6, group: "White", gene: "b/b;y/y;r/r;o/o;" },
+ 	{	name: "Black", tier: 6, group: "Brown", gene: "B/B;Y/Y;R/R;o/o;" },
+ 	
+ 	{	name: "Gold", tier: 5, group: "Yellow", gene: "b/B;y/y;r/R;o/O;" },
+ 	{	name: "Lavender", tier: 5, group: "White", gene: "b/B;Y/Y;r/r;o/o;" },
+ 	{	name: "CornflowerBlue", tier: 5, group: "Blue", gene: "b/B;y/y;r/r;o/O;" },
+ 	{	name: "MidnightBlue", tier: 5, group: "Blue", gene: "b/B;y/Y;R/R;O/O;" },
+ 	{	name: "Orchid", tier: 5, group: "Purple", gene: "b/B;Y/Y;R/R;o/o;" },
+ 	{	name: "SeaGreen", tier: 5, group: "Green", gene: "b/b;Y/Y;r/r;o/O;" },
+ 	{	name: "BlueViolet", tier: 5, group: "Purple", gene: "b/B;y/y;r/r;O/O;);" },
+ 	{	name: "RoyalBlue", tier: 5, group: "Blue", gene: "B/B;y/Y;r/r;o/O;" },
+
+ 	{	name: "Violet", tier: 5, group: "Purple", gene: "b/B;y/Y;r/R;o/O;" },
+ 	{	name: "SkyBlue", tier: 5, group: "Blue", gene: "b/B;y/y;R/R;O/O;" },
+ 	
+ 	{	name: "PeachPuff", tier: 5, group: "White", gene: "b/b;y/y;r/R;O/O;" },
+ 	{	name: "Crimson", tier: 5, group: "Red", gene: "B/B;Y/Y;r/R;o/o;" },
+ 	{	name: "Plum", tier: 4, group: "Purple", gene: "b/B;Y/Y;r/r;o/O;" },
+ 	{	name: "Indigo", tier: 4, group: "Purple", gene: "b/B;y/Y;r/r;O/O;" },
+ 	{	name: "Purple", tier: 4, group: "Purple", gene: "b/B;y/Y;r/R;o/o;" },
+ 	{	name: "Coral", tier: 4, group: "Orange", gene: "b/b;y/y;r/R;o/O;" },
+ 	{	name: "Blue", tier: 4, group: "Blue", gene: "b/B;y/Y;R/R;o/O;" },
+ 	{	name: "SteelBlue", tier: 4, group: "Blue", gene: "b/B;y/y;R/R;o/O;" },
+ 	{	name: "Navy", tier: 4, group: "Blue", gene: "B/B;Y/Y;r/R;O/O;" },
+ 	{	name: "Cornsilk", tier: 4, group: "White", gene: "b/b;Y/Y;R/R;o/o;" },
+ 	{	name: "Fuchsia", tier: 4, group: "Purple", gene: "b/B;Y/Y;R/R;O/O;" },
+ 
+  	{	name: "MediumVioletRed", tier: 3, group: "Red", gene: "B/B;Y/Y;R/R;O/O;" },
+ 	{	name: "Red", tier: 3, group: "Red", gene: "b/B;Y/Y;r/R;o/o;" },
+	{	name: "BlanchedAlmond", tier: 3, group: "White", gene: "b/b;Y/Y;R/R;O/O;" },
+	{	name: "ForestGreen", tier: 3, group: "Green", gene: "b/b;y/Y;r/r;O/O;" },
+	{	name: "SpringGreen", tier: 3, group: "Green", gene: "b/B;y/Y;r/R;O/O;" },
+	{	name: "RebeccaPurple", tier: 3, group: "Purple", gene: "b/B;Y/Y;r/R;O/O;" },
+	{	name: "PaleGoldenRod", tier: 3, group: "Yellow", gene: "b/b;Y/Y;r/r;o/o;" },
+	{	name: "SlateBlue", tier: 3, group: "Blue", gene: "b/B;y/Y;r/r;o/O;" },
+	{	name: "Maroon", tier: 3, group: "Red", gene: "B/B;y/y;R/R;o/O;" },
+	{	name: "Pink", tier: 3, group: "Purple", gene: "B/B;y/y;R/R;o/o;" },
+	{	name: "MediumPurple", tier: 3, group: "Purple", gene: "B/B;y/y;r/r;O/O;" },
+	{	name: "DeepPink", tier: 3, group: "Purple", gene: "B/B;Y/Y;R/R;o/o;" },
+	
+	{	name: "HotPink", tier: 2, group: "Red", gene: "B/B;y/y;R/R;O/O;" },
+	{	name: "Green", tier: 2, group: "Green", gene: "b/b;Y/Y;r/r;O/O;" },
+	{	name: "Chocolate", tier: 2, group: "Brown", gene: "b/b;Y/Y;r/R;o/o;" },
+	{	name: "LightCoral", tier: 2, group: "Red", gene: "B/B;y/Y;R/R;o/O;" },
+	{	name: "Sienna", tier: 2, group: "Brown", gene: "b/B;Y/Y;r/r;o/o;" },
+	{	name: "Tan", tier: 2, group: "Brown", gene: "B/B;Y/Y;r/r;o/o;" },
+	{	name: "DarkGoldenRod", tier: 2, group: "Brown", gene: "b/b;y/Y;R/R;o/o;" },
+	{	name: "OrangeRed", tier: 2, group: "Orange", gene: "b/B;Y/Y;r/R;o/O;" }, 
+	{	name: "Thistle", tier: 2, group: "Purple", gene: "b/B;y/y;r/R;o/o;" },
+	{	name: "Salmon", tier: 2, group: "Red", gene: "B/B;y/y;r/R;o/O;" },
+	{	name: "DodgerBlue", tier: 2, group: "Blue", gene: "b/B;y/y;R/R;o/o;" },
+	{	name: "GreenYellow", tier: 2, group: "Green", gene: "B/B;y/Y;r/R;o/O;" },
+	{	name: "PaleVioletRed", tier: 2, group: "Red", gene: "b/B;Y/Y;R/R;o/O;" },
+
+	{	name: "Brown", tier: 1, group: "Brown", gene: "b/B;y/Y;r/r;o/o;" },
+	{	name: "BurlyWood", tier: 1, group: "Brown", gene: "B/B;y/Y;r/r;o/o;" },
+	{	name: "SandyBrown", tier: 1, group: "Brown", gene: "b/B;y/y;r/r;o/o;" },
+	{	name: "IndianRed", tier: 1, group: "Red", gene: "B/B;y/y;r/R;o/o;" },
+	{	name: "FireBrick", tier: 1, group: "Red", gene: "B/B;y/Y;r/R;o/o;" },
+	{	name: "Yellow", tier: 1, group: "Yellow", gene: "B/B;y/y;r/R;O/O;" },
+	{	name: "Tomato", tier: 1, group: "Orange", gene: "b/b;y/y;r/R;o/o;" },
+	{	name: "RosyBrown", tier: 1, group: "Brown", gene: "b/b;Y/Y;R/R;o/O;" },
+	{	name: "Chartreuse", tier: 1, group: "Green", gene: "b/b;y/y;r/r;o/O;" },
+	{	name: "Orange", tier: 1, group: "Orange", gene: "B/B;y/Y;R/R;o/o;" },
+	{	name: "Khaki", tier: 1, group: "Yellow", gene: "b/b;y/Y;r/r;o/o;" },
+	{	name: "OliveDrab", tier: 1, group: "Green", gene: "b/b;y/Y;r/r;O/O;" },
+	{	name: "Moccasin", tier: 1, group: "White", gene: "b/b;y/Y;r/R;o/O;" },
+	{	name: "DarkSalmon", tier: 1, group: "Red", gene: "B/B;Y/Y;R/R;o/O;" },	 
+	{	name: "YellowGreen", tier: 1, group: "Green", gene: "b/B;y/y;r/R;O/O;" } 
+ ]>>
+ <<set $Colors = $colors>>
+
+ <<set $colorGroups = [
+	"White",
+	"Yellow",
+	"Red",
+	"Blue",
+	"Green",
+	"Brown",
+	"Orange",
+	"Purple"
+ ]>>
+
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+	<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+		<<sidebarTop>>
+
+		<div>
+			<div class="w3-dropdown-hover">
+				@@.sortbutton;<<button "End Week">><<goto $nextLink>><</button>>@@
+			</div>
+		
+			<div class="w3-dropdown-hover">
+				<span data-function="store-upgrades" class="selectbutton"><<button [[Store Upgrades|Buy Upgrades]]>><</button>></span>
+			</div>
+
+			<div class="w3-dropdown-hover">
+				<span data-function="store-list" class="selectbutton"><<button [[Store Fluffies|Fluffy List]]>>
+					<<set $listType = "All", $encyclopedia = "Fluffy List">>
+				<</button>></span>
+			</div>
+
+			<div class="dropdown-container w3-left-align w3-hover-cyan w3-dark-grey">
+				<button class="dropdown-btn w3-button"><span>Get Fluffies</span><i class="fa fa-caret-down"></i></button>
+				<div class="dropdown-inner-container w3-hide w3-grey w3-card">
+				
+					@@.sortbutton;<<button [[Fluffy Mart|Pre Shop]]>>
+						<<set $shop = "mart">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Shelter|Pre Shop]]>>
+						<<set $shop = "shelter">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Mill|Pre Shop]]>>
+						<<set $shop = "mill">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Fluffy Breeder|Pre Shop]]>>
+						<<set $shop = "breeder">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Hunt Ferals|Pre Shop]]>>
+						<<set $shop = "feral">>
+						<<set $actions-->>
+					<</button>>@@
+					@@.sortbutton;<<button [[Angora Shop|Pre Shop]]>>
+						<<set $shop = "angora">>
+						<<set $actions-->>
+					<</button>>@@
+				</div>
+			</div>
+
+			<div class="w3-dropdown-hover">
+				<span data-function="show-encyclopedia" class="selectbutton"><<button [[Encyclopedia|Encyclopedia]]>><</button>></span>
+				<<set $encyclopedia = "Fluffy Statistics">>
+			</div>
+			
+			<<systemButtons>>
+		</div>
+	</nav>
+
+	<header class="w3-bar w3-card" id="header">
+		<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+		<h1 id="navHead" class="w3-bar-item"><<- $ourStore.name>></h1>
+	</header>
+
+	<<timed 5ms>>
+	<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+	<<run $(".selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<</timed>>
+
+	<div class="w3-container" id="main">
+
+		<br>
+		<br>
+		<br>
+		<br>
+
+		Open for business for the week
+
+		<br>Current Version: $ver / Save version: $saveVer
+			
+		<br>
+		<br>
+		<<print String.format("{0} {1} {2}, {3}",
+			$gameDays[new Date($gameDate).getDay()],
+			$gameMonths[new Date($gameDate).getMonth()],
+			new Date($gameDate).getDate(),
+			new Date($gameDate).getFullYear()
+		)>>
+		<br>
+		<br><<PlayerStatus>>
+		<br>
+		<br><<SidebarCash>>
+		<br><<SidebarStore>>
+		<br>
+		<br><span id="fluffy-count"><<SidebarFluffies>></span>
+		<br>
+		<br><<showInventory>>
+</div>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

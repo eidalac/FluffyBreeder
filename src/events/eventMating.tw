@@ -1,0 +1,51 @@
+:: Event Mating [nobr]
+
+/* **********
+ * eventMating.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for two fluffies breeding.
+ *
+ *********** */
+<<script>>UIBar.destroy();<</script>>
+
+<h1>Mating Event</h1>
+
+/* Check this here for now, may want to add events if the male is forcefull */
+<h1>Mating</h1>
+<<if $mom.pregnant || $mom.nursing.length > 0>>
+	<<goto "Event Main">>
+<<elseif _count > $ourStore.shelter>>
+	<br>
+	<<colorizeText $dad.cColor.hex $dad.name>> and <<colorizeText $mom.cColor.hex $mom.name>> wanted to have special hugs, but there is no room for more foals, so you have to separate them.
+	<br><<fluffSpeech "huhu... bu' babbehs am bestes' fing..." $mom>>
+	<<set $mom.pregnant = false>>
+<<else>>
+	<br>
+	<<colorizeText $dad.cColor.hex $dad.name>> and <<colorizeText $mom.cColor.hex $mom.name>> are having special hugs.
+	<br>
+	<<fluffSpeech "enf... enf... ENF..." $dad>>
+	<br>
+	<<fluffSpeech "GUD FEEWS!!" $dad>> 
+
+	<<set _litter = Number(Math.round((Number($mom.fertility) + Number($dad.fertility)) / 2))>>
+	<<set _litter = Number(Number(_litter) + Number(+ $rand[1]))>>
+	<<set _litter = Math.clamp(_litter, 1, 8)>>
+
+	<<set $mom.pregnant = true>>
+	<<set $mom.pregnantBy = $dad.ID>>
+	<<set $mom.dueDate = $rand[0]>>
+	<<set $mom.litter = _litter>>
+	<<set $mom.preWeight = $mom.weight>>
+<</if>> /* Close pregant/nursing check 
+
+/* Save changes to mom and dad*/ 
+<<set $globalFluffies[$mom.ID] = $mom>>
+<<set $globalFluffies[$dad.ID] = $dad>>
+
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]

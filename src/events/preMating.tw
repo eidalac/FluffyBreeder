@@ -1,0 +1,63 @@
+:: Pre Mating [nobr]
+
+/* **********
+ * preMating.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Pre processing for mating event
+ *
+ *********** */
+ 
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+/* Each mating event target is the mare being mated */
+<<set $mom = $globalFluffies[$currentEvent.target]>>
+
+<<set $dad = $globalFluffies[$mom.specialFriend]>>
+<<set _count = $ourStore.mares + $ourStore.foals + $ourStore.stallions>>
+
+<<if ndef $dad>>
+	/* Father was removed in a prior event. */
+	<<run console.log(`ERROR: [preMating]: $dad not defined.`)>>
+	<<goto "Event Main">>
+
+<<elseif ndef $mom>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log(`ERROR: [preMating]: $mom not defined.`)>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes($mom.ID) == false>>
+	/* Mother was removed in a prior event. */
+	<<run console.log(`ERROR: [preMating]: $mom not in store.`)>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes($dad.ID) == false>>
+	/* Mother was removed in a prior event. */
+	<<run console.log(`ERROR: [preMating]: $dad not in store.`)>>
+	<<goto "Event Main">>
+<</if>>
+
+/* Some sanity checks:*/
+<<if $mom.ID != $globalFluffies[$mom.ID].ID>> 
+	<<run console.log(`ERROR: [preMating]: invalid mom ID: ${$mom.ID} Should be ${$globalFluffies[$mom.ID].ID}.`)>>
+	<<set $mom.ID = $globalFluffies[$mom.ID].ID>>
+	<<set $globalFluffies[$mom.ID] = $mom>>
+<</if>>
+
+<<if $dad.ID != $globalFluffies[$dad.ID].ID>> 
+	<<run console.log(`ERROR: [preMating]: invalid dad ID: ${$dad.ID} Should be ${$globalFluffies[$dad.ID].ID}.`)>>
+	<<set $dad.ID = $globalFluffies[$dad.ID].ID>>
+	<<set $globalFluffies[$dad.ID] = $dad>>
+<</if>>
+
+/* Setup any random values for the event: */
+<<set $rand = []>>
+<<run $rand.push(random(4, 6))>> /* Term, in weeks */
+<<run $rand.push(random(-1, 3))>> /* Random value in litter size*/
+
+<<goto "Event Mating">>

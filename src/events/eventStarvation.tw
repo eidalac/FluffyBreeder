@@ -1,0 +1,45 @@
+:: Event Starvation [nobr]
+
+/* **********
+ * eventStarvation.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for fluffy starving.
+ *
+ *********** */
+<<script>>UIBar.destroy();<</script>>
+
+<h1>Starvation</h1>
+<br>
+
+<<switch $eventStarve>>
+	<<case 0>>
+		<<colorizeText $actFluffy.cColor.hex $actFluffy.name>> has died of starvation.
+	<<case 1>>
+		<<colorizeText $actFluffy.cColor.hex $actFluffy.name>> has lost some weight due to starvation.
+		<br>
+		<<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." $actFluffy>>
+	<<case 2>>
+		<<colorizeText $actFluffy.cColor.hex $actFluffy.name>> is starving.
+		<br>
+		<<fluffSpeech  "huu huu... <fluffy> hab wowstes\' tummy huwties..." $actFluffy>>
+	<<case 3>>
+		<<colorizeText $actFluffy.cColor.hex $actFluffy.name>> is no longer starving.
+		<br>
+		<<fluffSpeech  "tank \'ou fow nummies, <title>..." $actFluffy>>
+<</switch>>
+
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>
+<<button [[CONTINUE|Event Main]]>>
+	<<set $encyclopedia = 0>>
+
+	/* Doing this as a post step to ensure no weirdness referencing a removed fluffy: */
+	<<if $eventStarve == 0>>
+		<<removeFluffy $actFluffy true>>
+	<</if>>
+<</button>>

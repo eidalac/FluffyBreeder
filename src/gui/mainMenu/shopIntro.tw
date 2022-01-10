@@ -1,0 +1,289 @@
+:: Shop Intro [nobr]
+
+/* **********
+ * shopIntro.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Setup configuration for the player store
+ *
+ *********** */
+
+
+/* ***
+ *	Configure prices based on the difficulty settings selected on the prior card.
+ *** */
+<<switch $economy>>
+	<<case 0>>
+	<<set _cosMulti = 1>>
+	<<case 1>>
+	<<set _cosMulti = 1.25>>
+	<<case 2>>
+	<<set _cosMulti = 1.75>>
+	
+<</switch>>
+
+<<set $basePrice = { earthy: 0.50, unicorn: 0.75, pegasus: 0.75, alicorn: Number(2 + (($alicornMonster + $alicornRarity) / 4)).toFixed(2) }>>
+<<set $priceTeir = { mill: Number(1*_cosMulti).toFixed(2), mart: Number(40*_cosMulti).toFixed(2), deluxe: Number(800*_cosMulti).toFixed(2) }>>
+<<set $earthPrice = { mill: Number($basePrice.earthy*$priceTeir.mill).toFixed(2), mart: Number($basePrice.earthy*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.earthy*$priceTeir.deluxe).toFixed(2) }>>
+<<set $unicornPrice = { mill: Number($basePrice.unicorn*$priceTeir.mill).toFixed(2), mart: Number($basePrice.unicorn*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.unicorn*$priceTeir.deluxe).toFixed(2) }>>
+<<set $pegasusPrice = { mill: Number($basePrice.pegasus*$priceTeir.mill).toFixed(2), mart: Number($basePrice.pegasus*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.pegasus*$priceTeir.deluxe).toFixed(2) }>>
+<<set $alicornPrice = { mill: Number($basePrice.alicorn*$priceTeir.mill).toFixed(2), mart: Number($basePrice.alicorn*$priceTeir.mart).toFixed(2), deluxe: Number($basePrice.alicorn*$priceTeir.deluxe).toFixed(2) }>>
+<h1>Shop Setup</h1>
+<div class="w3-row w3-container w3-mobile">
+
+<br>You will need a location to house, breed and sell fluffies.
+<br>What kind of shop will you start with?
+<br>
+
+/* Add 100 cash so it's impossible to start with 0, so you can always buy at least a few fluffies. */
+<br>You have @@.cyan; <span id = "shop_points"><<- $storePoints>></span>@@ points left.
+<br>
+<br>Remaining points will become @@.yellowgreen;¤<span id = "shop_cash"><<- $storePoints+100>></span>@@.
+<br>Weekly upkeep will be @@.yellowgreen;¤<span id = "shop_upkeep">
+											<<set $costs = 0>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+											<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+											<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+											<<print $costs>>
+										</span>@@.
+<br>
+
+
+/* Set a name for the store. */
+<br>
+
+<span id="shop-name">
+	Your store is named @@.coral;<<- $ourStore.name>>@@.
+</span>
+
+<div id="name-form">
+	<br><<textbox "$ourStore.name" $ourStore.name "Shop Intro">>
+	<<button "Rename">>
+		<<set $ourStore.name to $ourStore.name.trim()>>
+		<<replace "#shop-name">>Your store is named @@.coral;<<- $ourStore.name>>@@.<</replace>>
+<</button>>
+/* Form for error message to display*/
+<span id="form-error"></span>
+</div>
+
+/* Set a name for the player. */
+<br>
+
+<<set $title = $titleList.random()>>
+
+<span id="player-name">
+	Fluffies will call you @@.coral;<<- $title>>@@.
+</span>
+
+<div id="title-form">
+	<br><<textbox "$title" $title "Shop Intro">>
+	<<button "Rename">>
+		<<set $title to $title.trim()>>
+		<<replace "#player-name">>Fluffies will call you @@.coral;<<- $title>>@@.<</replace>>
+<</button>>
+/* Form for error message to display*/
+<span id="title-error"></span>
+</div>
+
+
+
+/* ***
+ *	Store stat selection
+ *	Could not find a way to macro this due to the different variables/names - probably can be cleaned up but I couldn't figure that out.
+ *
+ *	Has options to buy/sell 1 or 10 units at a time in each stat and updates the display to show the selected value.
+ *
+ * TODO: BETA:  Place some sanity limits on how high any stat can go.
+ *
+  *	Limit to 750 for the time being.
+ *** */
+ 
+<hr>
+ /* Space, used for upgrade to the store */
+<br>
+<br>Space: <span id="stats-space"><<- $ourStore.space>></span> How much space you have for upgrades. 
+<br>
+@@#space_plus;<<button "[+]">>
+	<<set $storePoints-->>
+	<<set $ourStore.space++>>
+	<<shopUpdate>>
+<</button>>@@
+@@#space_minus;<<button "[-]">>
+	<<set $storePoints++>>
+	<<set $ourStore.space-->>
+	<<shopUpdate>>
+<</button>>@@
+@@#space_plus_ten;<<button "[+10]">>
+	<<set $storePoints -= 10>>
+	<<set $ourStore.space += 10>>
+	<<shopUpdate>>
+<</button>>@@
+@@#space_minus_ten;<<button "[-10]">>
+	<<set $storePoints += 10>>
+	<<set $ourStore.space -= 10>>
+	<<shopUpdate>>
+<</button>>@@
+
+
+/* Shelter, controls the maximum fluffy population you can support */
+<br>
+<br>Shelter: <span id="stats-shelter"><<- $ourStore.shelter>></span> How many adult fluffies you can hold.
+<br>
+<span id="shelter_plus">
+	<<button "[+]">>
+		<<set $storePoints-->>
+		<<set $ourStore.shelter++>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+<span id="shelter_minus">
+	<<button "[-]">>
+		<<set $storePoints++>>
+		<<set $ourStore.shelter-->>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+<span id="shelter_plus_ten">
+	<<button "[+10]">>
+		<<set $storePoints -= 10>>
+		<<set $ourStore.shelter += 10>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+<span id = "shelter_minus_ten">
+	<<button "[-10]">>
+		<<set $storePoints += 10>>
+		<<set $ourStore.shelter -= 10>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+
+/* Display, controls how many fluffies you can have for sale during a week */
+<br>
+<br>Display: <span id="stats-display"><<- $ourStore.display>></span> How many fluffies you can have for sale at once.
+<br>
+<span id="display_plus">
+	<<button "[+]">>
+		<<set $storePoints-->>
+		<<set $ourStore.display++>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+<span id="display_minus">
+	<<button "[-]">>
+		<<set $storePoints++>>
+		<<set $ourStore.display-->>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+<span id="display_plus_ten">
+	<<button "[+10]">>
+		<<set $storePoints -= 10>>
+		<<set $ourStore.display += 10>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+<span id = "display_minus_ten">
+	<<button "[-10]">>
+		<<set $storePoints += 10>>
+		<<set $ourStore.display -= 10>>
+		<<shopUpdate>>
+	<</button>>
+</span>
+
+/* ***
+ *	Move to the next card, setting cash remaining
+ *** */
+/*<br><br>[[Get Fluffies|Fluffy Intro][$cash = Number($storePoints + 100)]]*/
+
+<hr>
+<br>
+<<button [[Open the Shop|Week Start]]>>
+	<<script>>
+		State.variables.cash = State.variables.storePoints + 100;
+		State.variables.costs = Number((State.variables.ourStore.display + State.variables.ourStore.shelter + State.variables.ourStore.space) / 5).toFixed(2);
+		State.variables.cash = Number(Math.clamp(State.variables.cash, 0, 10000000000)).toFixed(2);
+		State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+	<</script>>
+
+	<<cashClamp>>
+
+	<<set $encyclopedia = "Running your Store">>
+<</button>>
+
+</div>
+
+
+
+
+<<widget "shopUpdate">>
+	<<replace "#stats-space">><<- $ourStore.space>><</replace>>
+	<<replace "#stats-shelter">><<- $ourStore.shelter>><</replace>>
+	<<replace "#stats-display">><<- $ourStore.display>><</replace>>
+	<<replace "#shop_points">><<- $storePoints>><</replace>>
+	<<replace "#shop_cash">><<- $storePoints+100>><</replace>>
+	<<replace "#shop_upkeep">><<print $costs = Number(($ourStore.display+$ourStore.shelter+$ourStore.space) / 5).toFixed(2)>><</replace>>
+ 
+	<<if $storePoints < 1>>
+		<<run $("#space_plus button").prop("disabled", true)>>
+		<<run $("#shelter_plus button").prop("disabled", true)>>
+		<<run $("#display_plus button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#space_plus button").prop("disabled", false)>>
+		<<run $("#shelter_plus button").prop("disabled", false)>>
+		<<run $("#display_plus button").prop("disabled", false)>>
+	<</if>>
+
+	<<if $storePoints < 10>>
+		<<run $("#space_plus_ten button").prop("disabled", true)>>
+		<<run $("#shelter_plus_ten button").prop("disabled", true)>>
+		<<run $("#display_plus_ten button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#space_plus_ten button").prop("disabled", false)>>
+		<<run $("#shelter_plus_ten button").prop("disabled", false)>>
+		<<run $("#display_plus_ten button").prop("disabled", false)>>
+	<</if>>
+	
+	<<if $ourStore.space < 1>>
+		<<run $("#space_minus button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#space_minus button").prop("disabled", false)>>
+	<</if>>
+	<<if $ourStore.space < 10>>
+		<<run $("#space_minus_ten button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#space_minus_ten button").prop("disabled", false)>>
+	<</if>>
+	<<if $ourStore.shelter < 1>>
+		<<run $("#shelter_minus button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#shelter_minus button").prop("disabled", false)>>
+	<</if>>
+	<<if $ourStore.shelter < 10>>
+		<<run $("#shelter_minus_ten button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#shelter_minus_ten button").prop("disabled", false)>>
+	<</if>>
+	<<if $ourStore.display < 1>>
+		<<run $("#display_minus button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#display_minus button").prop("disabled", false)>>
+	<</if>>
+	<<if $ourStore.display < 10>>
+		<<run $("#display_minus_ten button").prop("disabled", true)>>
+	<<else>>
+		<<run $("#display_minus_ten button").prop("disabled", false)>>
+	<</if>>
+<</widget>>
+
+<<timed 10ms>>
+	<<shopUpdate>>
+<</timed>>

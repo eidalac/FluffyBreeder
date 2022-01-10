@@ -1,0 +1,409 @@
+:: Buy Fluffies [nobr]
+
+/* **********
+ * Buy Fluffies.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Buys fluffies at a fluffy mart.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<<set $nextButton to "End Shopping", $nextLink to "Week Start">>
+<<set _rID = 0>>
+
+<<for _rID range $randomFluffies>>
+	<<set $globalFluffies[_rID].isChecked = false>>
+<</for>>
+
+<div class="w3-row w3-container w3-mobile">
+	<div class="w3-top w3-col l11 s11">
+		<div id="navbar" class="w3-bar w3-dark-grey">
+			<div class="w3-dropdown-hover">
+			  	@@.sortbutton;<<button "Back">>
+			  		<<goto $nextLink>>
+			  	<</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+			  	@@#shopbutton;<<button [[Keep Looking|Pre Shop]] >>
+			  		<<set $actions-->>
+			  	<</button>>@@
+			</div>
+
+			<div class="w3-dropdown-hover">
+				<<if $randomFluffies.length == 1>>
+					<<set _buyText = "Take this Fluffy">>
+				<<else>>
+					<<set _buyText = "Take Fluffies">>
+				<</if>>
+			  	@@#buybutton;<<button _buyText>>
+					<<set _listCheck = 0>>
+					<<set _rID = 0>>
+					<<for _rID range $randomFluffies>>
+						<<if $globalFluffies[_rID].isChecked>>
+							<<run _listCheck++>>
+						<</if>>
+					<</for>>
+
+				  	<<if Number($randomFluffies.length) <= 1 && $actions < 1>>
+					  	<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this fluffy.")>><<run Dialog.open()>>
+					<<elseif Number($randomFluffies.length) > 1 && _listCheck < 1>>
+						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("No fluffies are selected. " + _listCheck)>><<run Dialog.open()>>
+					<<elseif Number($randomFluffies.length) > 1 && _listCheck > $actions>>
+						<<run Dialog.setup("Dialog title")>><<run Dialog.wiki("You don't have enough energy to take this may fluffies." + _listCheck)>><<run Dialog.open()>>
+					<<else>>
+						<<cashMinus _price>>
+
+						/* More than 1 fluffy present and selected */
+						<<if _listCheck > 0>>
+							<<set $actions -= _listCheck>>
+						
+							<<set _rID = 0>>
+							<<for _rID range $randomFluffies>>
+								<<if $globalFluffies[_rID].isChecked>>
+									<<run $ourStore.fluffies.push($globalFluffies[_rID].ID)>>
+				
+									/* only rename unnamed fluffies */
+									<<if $nameType === "ordinal" && $globalFluffies[_rID].hasName == false>>
+										<<set $globalFluffies[_rID].name = ($ordinalString + " " + $globalFluffies[_rID].ID)>>
+									<</if>>
+						
+									<<if $globalFluffies[_rID].ageCategory <= 4>>
+										<<set $ourStore.foals++>>
+									<<elseif $globalFluffies[_rID].gender == "male">>
+										<<set $ourStore.stallions++>>
+									<<else>>
+										<<set $ourStore.mares++>>
+									<</if>>
+
+									/* clear the checkmark */
+									<<set $globalFluffies[_rID].isChecked = false>>
+								<<else>>
+									<<deadFluffy $globalFluffies[_rID]>>
+								<</if>>
+							<</for>>
+
+						/* More than 1 fluffy present, only 1 selected */
+						<<elseif Number($randomFluffies.length) > 1 && _listCheck == 1>>
+							<<set $actions-->>
+							
+							<<for _rFluffy range $randomFluffies>>
+
+								<<if $globalFluffies[_rID].isChecked>>
+									<<run $ourStore.fluffies.push($globalFluffies[_rID].ID)>>
+									/* only rename unnamed fluffies */
+									<<if $nameType === "ordinal" && $globalFluffies[_rID].hasName == false>>
+										<<set $globalFluffies[_rID].name = ($ordinalString + " " + $globalFluffies[_rID].ID)>>
+									<</if>>
+						
+									<<if $globalFluffies[_rID].ageCategory <= 4>>
+										<<set $ourStore.foals++>>
+									<<elseif $globalFluffies[_rID].gender == "male">>
+										<<set $ourStore.stallions++>>
+									<<else>>
+										<<set $ourStore.mares++>>
+									<</if>>
+
+									/* clear the checkmark */
+									<<set $globalFluffies[_rID].isChecked = false>>
+								<<else>>
+									<<deadFluffy $globalFluffies[_rID]>>
+								<</if>>
+							<</for>>
+
+						/* Only 1 fluffy present, selected or not */
+						<<else>>
+							<<set $actions-->>
+
+							<<run $ourStore.fluffies.push($randomFluffies[0])>>
+							/* only rename unnamed fluffies */
+							<<if $nameType === "ordinal" && $globalFluffies[$randomFluffies[0]].hasName == false>>
+								<<set $globalFluffies[$randomFluffies[0]].name = ($ordinalString + " " + $randomFluffies[0])>>
+							<</if>>
+				
+							<<if $globalFluffies[$randomFluffies[0]].ageCategory <= 4>>
+								<<set $ourStore.foals++>>
+							<<elseif $globalFluffies[$randomFluffies[0]].gender == "male">>
+								<<set $ourStore.stallions++>>
+							<<else>>
+								<<set $ourStore.mares++>>
+							<</if>>
+							<<set $globalFluffies[$randomFluffies[0]].isChecked = false>>
+						<</if>>
+
+						<<goto "Pre Shop">>
+					<</if>>
+
+			  	<</button>>@@
+			</div>
+			
+			<div class="w3-dropdown-hover w3-right">
+				<button onclick="document.getElementById('id01').style.display='block'" class="w3-button  w3-hover-cyan w3-grey"><i class="fa fa-cogs"></i></button>
+			</div>
+
+			<div id="id01" class="w3-modal">
+				<<OptionsWidget>>
+			</div>
+		</div>
+	</div>  
+
+	<<timed 5ms>>
+	<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+	<<run $("#shopbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<<run $("#buybutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+	<</timed>>
+	
+	<<timed 10ms>>
+
+		<<if Number(_price) >  Number($cash) && Number(_price) != 0>>
+			<<run $("#buybutton button").addClass("w3-disabled")>>
+			<<run $("#buybutton button").prop("disabled", true)>>
+			<br>//You lack the necessary funds to buy this fluffy//.
+			<br>
+		<</if>>
+		<<if $count >= $ourStore.shelter>>
+			<<run $("#buybutton button").addClass("w3-disabled")>>
+			<<run $("#buybutton button").prop("disabled", true)>>
+			<br>//You don't have enough room to take this fluffy//.			 
+			<br>
+		<</if>>
+	<</timed>>
+
+	<br><<PlayerStatus>>
+	<hr>
+
+	<<if $shop == "mart">>
+		<br>"Welcome to fluffy mart, do you see anything you like?"
+	<<elseif $shop == "shelter">>
+		<br>An old lady brings you to an enclosure filled with fluffies.
+	<<elseif $shop == "mill">>
+		<br>The mill operator hands you a carboard box.
+	<<elseif $shop == "breeder" && $reputation >= 50>>
+		<br>The breeder has an opening to see you...
+	<<elseif $shop == "breeder" && $reputation < 50>>
+		<br>You're reputation is to low, the breeder doesn't want to sell to you.
+	<<elseif $shop == "feral">>
+		<br>You check down a nearby alley...
+	<<elseif $shop == "angora">>
+		<br>You enter the Angora Shop.
+	<<else>>
+		<br>@@.red;Invalid fluffy shop type called [ $shop ].@@
+	<</if>>
+
+	<br><span id="cash-line">You have ¤$cash to spend.</span>
+	<br>
+	<<if $count == 1>>
+		You have one fluffy already.
+	<<elseif $count> 1>>
+		You have $count fluffies.
+	<</if>>
+
+	<br>
+	<<if $randomFluffies.length == 1>>
+		<br>You find this fluffy:
+	<<else>>
+		<br>You find these fluffies:
+	<</if>>
+	<hr>
+
+
+	
+	/* ***
+	*	Display the fluffies we have found (1 or more)
+	*** */
+	<<for _c, _id range $randomFluffies>>
+
+		<<capture _id>>
+
+			<div class="fluffy-description">
+				
+				<div class="fluffy-checkbox-container">
+					<<if $shop == "feral">>
+						<<print `<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
+					<<else>>
+						<<print `<input class="fluffy-checkbox" data-fluffy-id="${_id}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
+					<</if>>
+				</div>
+			
+				<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+					<<drawSprite $globalFluffies[_id]>>
+					<<shortDesc $globalFluffies[_id]>>
+				</div>
+<<run console.log(`Debug: <<fluffyList>>: Birthdate: ${$globalFluffies[_id].birthDate}, age: ${$globalFluffies[_id].age}, weeks: ${$globalFluffies[_id].ageWeeks}.`)>>
+				<<set _price = 0>>
+			</div>
+			<<if $shop != "feral">>
+				<br><<They>> would cost 
+
+				<<if $shop == "breeder">>
+					<<set $globalFluffies[_id].training = 50>>
+					<<set $globalFluffies[_id].trust = 50>>
+				<</if>>
+
+				<<set _price = Number($globalFluffies[_id].training)>>
+
+				<<set _price = Number(_price) + Number(Number($globalFluffies[_id].trust/10))>>
+
+				<<switch $globalFluffies[_id].breed>>
+					<<case "unicorn">>
+						<<set _price = Number(Number($unicornPrice.mart) + Number(_price)).toFixed(2)>>
+					<<case "pegasus">>
+						<<set _price = Number(Number($pegasusPrice.mart) + Number(_price)).toFixed(2)>>
+					<<case "alicorn">>
+						<<set _price = Number(Number($alicornPrice.mart) + Number(_price)).toFixed(2)>>
+					<<default>>
+						<<set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)>>
+				<</switch>>
+				
+				<<set _priceMulti = 1>>
+				<<if $shop == "shelter">>
+					<<set _priceMulti = _priceMulti*0.5>>
+				<</if>>
+				<<for _i, _status range $activeFluffy.limbs['earthy']>>
+                    <<capture _i>>
+                        <<if $activeFluffy.limbs['earthy'][_i] === 'missing'>>
+							<<set _priceMulti = _priceMulti*0.9>>
+                        <</if>>
+                    <</capture>>
+                <</for>>
+				
+				<<set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)>>
+				<<set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)>>
+				<<if $globalFluffies[_id].ageCategory < 5>>
+					<<set _priceMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
+				<</if>>
+
+				<<set _price = Number(_price * _priceMulti).toFixed(2)>>
+
+				<<if $shop == "angora">>
+					<<set _price = Number(_price * 1.5).toFixed(2)>>
+				<</if>>
+
+				@@.yellowgreen;¤_price.@@
+				<hr>
+			<</if>>
+			<<if _c == 0>>
+				<div class="w3-container">
+					<<timed 5ms>>
+
+						<<if $globalFluffies[_id].ageCategory >= 2>>
+							
+							<<personalityFix $globalFluffies[_id]>>
+							<<set $activeFluffy = $globalFluffies[_id]>>
+
+							<<run console.log(`DEBUT: <<talking>>: ${$activeFluffy.name}, ${$activeFluffy.personality}, ${_id}.`)>>
+							<<switch $globalFluffies[_id].personality>>
+								<<case "Fussy">>
+									<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' nyu housie fow bestest babbeh?" $globalFluffies[_id]>><</replace>>
+								<<case "Shy">>
+									<<replace "#greet-msg">><<fluffSpeech "eep... h-hewwo... nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id]>><</replace>>
+								<<case "Lazy">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo... <fluffy> get nyu housie?" $globalFluffies[_id]>><</replace>>
+								<<case "Cute">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin, <fluffy> am gud babbeh, gib\' nyu housie pwease?" $globalFluffies[_id]>><</replace>>
+								<<case "Peppy">>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo hoomin! wan'\ pway wid fwuffy? an\' mebbeh be nyu daddeh ow mummah?" $globalFluffies[_id]>><</replace>>
+								<<case "Diligent">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy> an\ babbehs'?" $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy>?" $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Bossy">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie to <fluffy> an\' babbehs." $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "dummeh hoomin! gib nyu housie nao." $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Curious">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy> an\' babbehs?" $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nice hoomin, mebbeh gib\' nyu housie to <fluffy>?" $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Timid">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties... hab\' babbehs..." $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "h-hewwo nice hoomin... pwease no huwties..." $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Pensive">>
+									<<if $shop == "feral">>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?  babbehs am hungwy" $globalFluffies[_id]>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin hab\' nummies?" $globalFluffies[_id]>><</replace>>
+										<</if>>
+									<<else>>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy> an\' babbehs?" $globalFluffies[_id]>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "wha\' hoomin want fwom <fluffy>?" $globalFluffies[_id]>><</replace>>
+										<</if>>
+									<</if>>
+								<<case "Dull">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> an\' babbehs awone, nu wan\' any twouble..." $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "pwease weabe <fluffy> awone, nu wan\' any twouble..." $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Sweet">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> an\' babbehs need nyu homesie fow wawmsies!" $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "hewwo nicest hoomin!! <fluffy> need nyu homesie fow wawmsies!" $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Haughty">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> an\' bestest babbehs nyu homesie?" $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "ah, hoomin hewe fow gib\' <fluffy> nyu homesie?" $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Playful">>
+									<<if  $randomFluffies.length > 2>>
+										<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy> an\' babbehs?" $globalFluffies[_id]>><</replace>>
+									<<else>>
+										<<replace "#greet-msg">><<fluffSpeech "nyu fwen? nice hoomin wan\' pway wid <fluffy>?" $globalFluffies[_id]>><</replace>>
+									<</if>>
+								<<case "Rowdy">>
+									<<if $shop == "feral">>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies fow babbehs?" $globalFluffies[_id]>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "<fluffy> wookin\' fow nummies, hoomin gib <fluffy> nummies?" $globalFluffies[_id]>><</replace>>
+										<</if>>
+									<<else>>
+										<<if  $randomFluffies.length > 2>>
+											<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy, hab gud' babbehs." $globalFluffies[_id]>><</replace>>
+										<<else>>
+											<<replace "#greet-msg">><<fluffSpeech "hoomin gib\' <fluffy> nyu homesie, am gud fwuffy." $globalFluffies[_id]>><</replace>>
+										<</if>>
+									<</if>>
+								<<default>>
+									<<replace "#greet-msg">><<fluffSpeech "hewwo... nyu daddeh ow mummah?" $globalFluffies[_id]>><</replace>>
+							<</switch>>
+						<<else>>
+							<<replace "#greet-msg">><<fluffSpeech "cheep... cheep..." $globalFluffies[_id]>><</replace>>
+						<</if>>
+					<</timed>>
+					<span id="greet-msg"></span>
+				</div>
+			<</if>>
+		<</capture>>
+	<</for>>
+
+</div>
+
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

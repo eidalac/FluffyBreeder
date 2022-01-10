@@ -1,0 +1,296 @@
+:: Post Customer [nobr]
+
+/* **********
+ * postCustomer.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Post processing for offering a fuffy to a customer.
+ *
+ *********** */
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+ 
+<style>
+button {
+  background: coral;
+ }
+</style>
+
+
+<header class="w3-bar w3-card" id="header">
+  <button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+  <h1 id="navHead" class="w3-bar-item">Customer</h1>
+</header>
+
+<div class="w3-container" id="main">
+	<div class="header">
+		<h1>Customer</h1>
+        
+        <<set _needsMatch = 0>>
+        <<if $customerWants != 0>>
+            <<for _card range $customerDeck>>
+
+                <<set _card = _card.toLowerCase()>>
+
+                <<if _card === $activeFluffy.personality.toLowerCase()>>
+                    <<set _needsMatch += 1>>
+
+                <<elseif _card == $activeFluffy.gender.toLowerCase()>>
+                    <<set _needsMatch += 1>>
+
+                <<elseif _card === $activeFluffy.breed.toLowerCase()>>
+                    /* 2 points since this is a major factor */
+                    <<set _needsMatch += 2>>
+
+                /* Strength stat: */
+                <<elseif _card === "high strength" && $activeFluffy.strength > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average strength" && $activeFluffy.strength < 5 && $activeFluffy.strength >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low strength" && $activeFluffy.strength < 3>>
+                    <<set _needsMatch += 1>>
+
+                /* Energy stat: */
+                <<elseif _card === "high energy" && $activeFluffy.energy > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average energy" && $activeFluffy.energy < 5 && $activeFluffy.energy >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low energy" && $activeFluffy.energy < 3>>
+                    <<set _needsMatch += 1>>
+
+                /* Charm stat: */
+                <<elseif _card === "high charm" && $activeFluffy.charm > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average charm" && $activeFluffy.charm < 5 && $activeFluffy.charm >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low charm" && $activeFluffy.charm < 3>>
+                    <<set _needsMatch += 1>>
+
+                /* Thinking stat: */
+                <<elseif _card === "high thinking" && $activeFluffy.thinking > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average thinking" && $activeFluffy.thinking < 5 && $activeFluffy.thinking >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low thinking" && $activeFluffy.thinking < 3>>
+                    <<set _needsMatch += 1>>
+                
+                /* Learning stat: */
+                <<elseif _card === "high learning" && $activeFluffy.learning > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average learning" && $activeFluffy.learning < 5 && $activeFluffy.learning >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low learning" && $activeFluffy.learning < 3>>
+                    <<set _needsMatch += 1>>
+                
+                /* Fertility stat: */
+                <<elseif _card === "high fertility" && $activeFluffy.fertility > 5>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average fertility" && $activeFluffy.fertility < 5 && $activeFluffy.fertility >= 3>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low fertility" && $activeFluffy.fertility < 3>>
+                    <<set _needsMatch += 1>>
+
+                /* Temperament: */
+                <<elseif _card === "high temperament" && $activeFluffy.temperament > 190>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "average temperament" && $activeFluffy.temperament < 130 && $activeFluffy.temperament >= 70>>
+                    <<set _needsMatch += 1>>
+                <<elseif _card === "low temperament" && $activeFluffy.temperament < 10>>
+                    <<set _needsMatch += 1>>
+
+                /* Coat: */
+                <<elseif _card.includes("coat")>>
+                    <<if _card.includes("group")>>
+                        <<if _card.includes($activeFluffy.cColor.group.toLowerCase())>>
+                            <<set _needsMatch += 1>>
+                        <</if>>
+                    <<elseif _card.includes($activeFluffy.cColor.name.toLowerCase())>>
+                        <<set _needsMatch += 1>>
+                    <</if>>
+
+                /* Mane: */
+                <<elseif _card.includes("mane")>>
+                    <<if _card.includes("group")>>
+                        <<if _card.includes($activeFluffy.mColor.group.toLowerCase())>>
+                            <<set _needsMatch += 1>>
+                        <</if>>
+                    <<elseif _card.includes($activeFluffy.mColor.name.toLowerCase())>>
+                        <<set _needsMatch += 1>>
+                    <</if>>
+
+                /* Eyes: */
+                <<elseif _card.includes("eye")>>
+                    <<if _card.includes("group")>>
+                        <<if _card.includes($activeFluffy.eColor.group.toLowerCase())>>
+                            <<set _needsMatch += 1>>
+                        <</if>>
+                    <<elseif _card.includes($activeFluffy.eColor.name.toLowerCase())>>
+                        <<set _needsMatch += 1>>
+                    <</if>>
+                
+                /* Age "Newborn": */
+                <<elseif _card === "newborn" && $activeFluffy.ageCategory == 0>>
+                    <<set _needsMatch += 1>>
+
+                /* Age "Chirpy": */
+                <<elseif _card === "chirpy" && $activeFluffy.ageCategory == 1>>
+                    <<set _needsMatch += 1>>
+
+                /* Age "Talky": */
+                <<elseif _card === "talky" && $activeFluffy.ageCategory == 2>>
+                    <<set _needsMatch += 1>>
+
+                /* Age "Foal": */
+                <<elseif _card === "foal" && $activeFluffy.ageCategory == 3>>
+                     <<set _needsMatch += 1>>
+
+                /* Age "Youth": */
+                <<elseif _card === "youth" && $activeFluffy.ageCategory == 4>>
+                    <<set _needsMatch += 1>>
+
+                /* Age "Adult": */
+                <<elseif _card === "adult" && $activeFluffy.ageCategory == 5>>
+                    <<set _needsMatch += 1>>
+
+                /* Age "Grey": */
+                <<elseif _card === "grey" && $activeFluffy.ageCategory == 6>>
+                    <<set _needsMatch += 1>>
+
+                <<elseif _card === $activeFluffy.subSpeciesString.toLowerCase()>>
+                    /* 2 points since this is a major factor */
+                    <<set _needsMatch += 2>>
+
+                <<elseif _card.includes("trait")>>
+                    <<set _subString = _card.substring(6).trim()>>
+                    <<set _subString = _subString.charAt(0).toUpperCase() + _subString.slice(1)>>
+                    <<if $activeFluffy.traits.includes(String(_subString))>>
+                        <<set _needsMatch += 1>>
+                    <</if>>
+                <</if>>	
+            <</for>>
+        <</if>>
+
+        <<set _msgString = "">>
+
+        <<set _price = Number($activeFluffy.training)>>
+        <<set _price = Number(_price) + Number(Number($activeFluffy.trust/10))>>
+
+        <<switch $activeFluffy.breed>>
+            <<case "unicorn">>
+                <<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+            <<case "pegasus">>
+                <<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+            <<case "alicorn">>
+                <<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+            <<default>>
+                <<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+        <</switch>>
+        
+        <<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
+        
+        <<set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)>>
+
+        <<set $activeFluffy = $activeFluffy>>
+        <<colorValue>>
+            
+        <<set _price = Number(Number(_price) * Number($activeFluffy.statBonus)).toFixed(2)>>
+        <<set _price = Number(_price * $activeFluffy.colorBonus).toFixed(2)>>
+        
+        <<if _price == 0>>
+            <<run console.log(`ERROR: [postCustomer]: price was 0.`)>>
+            <<set _price = Number($earthPrice.mart)>>
+        <</if>>
+        
+        <<set _ageMulti = 1>>
+
+        <<if $activeFluffy.ageCategory < 5>>
+            <<set _ageMulti = Number(($activeFluffy.ageWeeks+1) / 44).toFixed(2)>>
+        <</if>>
+
+        <<set _price = Number(_price * _ageMulti).toFixed(2)>>
+
+        <<if $activeFluffy.traits.includes("Feral") == true>>
+            <<set _price = Number(_price / 4).toFixed(2)>>
+        <</if>>
+
+        <<if $activeFluffy.subSpecies == 2>>
+            <<set _price = Number(_price * 1.3).toFixed(2)>>
+        <</if>>	
+
+        /* Debug flag since I can't track down this issue yet. */
+        <<if _price <= 0>>
+            <<run console.log(`ERROR: [postCustomer]: price was negative.`)>>
+            <<set _price = Number($earthPrice.mart)>>
+        <</if>>
+
+        /* They want any fluffy */
+        <<if $customerWants == 0>>
+            <<set _priceBonus = Number(Number($rand[0]/100).toFixed(2))>> 
+        <<else>>
+            <<set _priceBonus = Number(1 + Number(Number(_needsMatch) / 5))>>
+        <</if>>
+
+        <<set _price = Number(_price * _priceBonus).toFixed(2)>>
+
+        /* Check if they will accept the offer */
+        <<if $customerWants > 0 && Number(100 * Number(_needsMatch / Number($customerWants)).toFixed(2)) <= 33>>
+
+                <<if $customerTolerance > 0>>
+                    <<set $customerTolerance-->>
+                    <<set _msgString += "<br>@@.orange;They are not at all pleased with " + $activeFluffy.name + ".@@">>
+                    <<= _msgString>>
+                    [[CONTINUE|Event Customer][$encyclopedia = 0]]
+                <<else>>
+                    <<set _msgString += "<br>@@.orange;This customer is fed up.@@">>
+                    <<= _msgString>>
+                    /*<<run pageLoad()>>*/
+                    [[CONTINUE|Event Main][$encyclopedia = 0]]
+                <</if>>
+        <<else>>
+ 
+            <<if $activeFluffy.ID != $activeFluffy.ID>>
+                <<run console.log(`ERROR: [postCustomer]: Invalid ID found: ${$activeFluffy.ID}, Should be ${$activeFluffy.ID}.`)>>
+                <<set $activeFluffy.ID = $activeFluffy.ID>>
+            <</if>> 
+
+            <<set $reputation = Number(Number($reputation) + Number(_priceBonus)).toFixed(0)>>
+
+            /* Random chance to 'upsell'*/
+            <<set _chance = Number(($training + $reputation) / 4).toFixed(2)>>
+        
+            <<if $ourStore.upgrades.includes("Deluxe Toys") && _chance > $rand[1]>>
+                <br>You add some deluxe toys to the sale.
+                <br> 				
+                <<set _price = Number(Number(_price) + Number($rand[2]))>>
+            <<elseif $ourStore.upgrades.includes("Fancy Toys") && _chance > $rand[3]>>
+                <br>You add some fancy toys to the sale.
+                <br> 				
+                <<set _price = Number(Number(_price) + Number($rand[4]))>>
+            <<elseif $ourStore.upgrades.includes("Basic Toys") && _chance > $rand[5]>>
+                <br>You add some basic toys to the sale.
+                <br> 				
+                <<set _price = Number(Number(_price) + Number($rand[6]))>>
+            <</if>>
+
+            <<cashAdd _price>>
+
+            <<= _msgString>>
+            <br>Sold <<- $activeFluffy.name>> for <<- _price>>@@.yellowgreen;¤@@.<br>New reputation <<- $reputation>>.
+            <<drawSprite $activeFluffy>>
+            <<removeFluffy $activeFluffy "sell">>
+            <br>
+            <br>
+            [[CONTINUE|Event Main][$encyclopedia = 0]]
+        <</if>> /* Close needs check */
+    </div>
+</div>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

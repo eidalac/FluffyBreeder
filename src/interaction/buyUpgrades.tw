@@ -1,0 +1,409 @@
+:: Buy Upgrades [nobr]
+
+/* **********
+ * shopIntro.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Show show upgrades for the player.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+/* ***
+ *	Base expenses
+ *** */
+<<set $costs = 0>>
+<<set $costs = Number(Number($costs) + Number($ourStore.display))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.shelter))>>
+<<set $costs = Number(Number($costs) + Number($ourStore.space))>>
+<<set $costs = Number(Number($costs) / Number(50)).toFixed(2)>>
+
+<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Fancy Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+<<if $ourStore.upgrades.includes("Basic Toys")>>
+	<<set $costs = Number(Number($costs) + Number(1))>>
+<</if>>
+
+<<set _feedCost = 0>>
+
+<<for _ef range $ourStore.fluffies>>
+	<<switch $globalFluffies[_ef].foodType>>
+		<<case "Kibble">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Greens">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Sketti">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Formula">>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+		<<case "Default">>
+			<<set _feedCost = 0>>
+	<</switch>>
+<</for>>
+
+<<script>>
+	State.variables.costs = Number(Number(State.variables.costs) + Number(State.temporary.feedCost)).toFixed(2);
+	State.variables.costs = Number(Math.clamp(State.variables.costs, 0, 10000000000)).toFixed(2);
+<</script>>
+
+
+<<set $nextButton to "Back to the Store", $nextLink to "Week Start">>
+
+
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+
+	<<sidebarTop>>
+
+	<div>
+		<div class="w3-dropdown-hover">
+			@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+		
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card" id="header">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item">Store Upgrades</h1>
+</header>
+
+<<timed 5ms>>
+<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $(".selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main">
+
+/* Validate data added in recent update: */
+<<if ndef $ourStore.upgrades>>
+	<<set $ourStore.upgrades = []>>
+<</if>>
+
+<br>
+<br>
+<br>
+<br>
+<br>What improvements do you want to make to your store?
+<br>
+<span id = "shop_cash"><br>@@.stat-high.stat-value;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs>>.<br><<SidebarStore>>
+<br>
+Upgrades:
+<<for _i, _upgrade range $ourStore.upgrades>>
+	<<- _upgrade>><<- (_i < $ourStore.upgrades.length - 1) ? (_i < $ourStore.upgrades.length - 2) ? ',' : ', and' : ''>>
+<</for>>
+</span>
+<hr>
+<h1>Physical Space</h1>
+
+/* Space, used for upgrade to the store */
+Space: <span id="stats-space"><<print $ourStore.space>></span> How much space you have for upgrades.
+<div id="space-form">
+	<<button "Buy 1 (cost ¤100)">>
+		<<if $cash < 100>>
+			<<replace "#space-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.space > 749>>
+			<<replace "#space-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>> 
+			<<cashAdd -100>>
+			<<set $ourStore.space += 1>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 10 (cost ¤1000)">>
+		<<if $cash < 1000>>
+			<<replace "#space-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.space > 740>>
+			<<replace "#space-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -1000>>
+			<<set $ourStore.space += 10>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 100 (cost ¤10000)">>
+		<<if $cash < 10000>>
+			<<replace "#space-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.space > 650>>
+			<<replace "#space-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>> 
+			<<cashAdd -10000>>
+			<<set $ourStore.space += 100>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-space">><<print $ourStore.space>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+/* Form for error message to display*/
+<span id="space-form-error"></span>
+</div>
+
+
+
+/* Shelter, controls the maximum fluffy population you can support */
+<br>
+Shelter: <span id="stats-shelter"><<print $ourStore.shelter>></span> How many adult fluffies you can hold.
+<div id="shelter-form">
+	<<button "Buy 1 (cost ¤100)">>
+		<<if $cash < 100>>
+			<<replace "#shelter-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.shelter > 749>>
+			<<replace "#shelter-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>> 
+			<<cashAdd -100>>
+			<<set $ourStore.shelter += 1>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 10 (cost ¤1000)">>
+		<<if $cash < 1000>>
+			<<replace "#shelter-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.shelter > 740>>
+			<<replace "#shelter-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -1000>>
+			<<set $ourStore.shelter += 10>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 100 (cost ¤10000)">>
+		<<if $cash < 10000>>
+			<<replace "#shelter-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.shelter > 650>>
+			<<replace "#shelter-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -10000>>
+			<<set $ourStore.shelter += 100>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-shelter">><<print $ourStore.shelter>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+/* Form for error message to display*/
+<span id="shelter-form-error"></span>
+</div>
+
+
+/* Display, controls the maximum fluffy population you can support */
+<br>
+Display: <span id="stats-display"><<print $ourStore.display>></span> How many adult fluffies you can put on display for sale.
+<div id="display-form">
+	<<button "Buy 1 (cost ¤100)">>
+		<<if $cash < 100>>
+			<<replace "#display-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.display > 749>>
+			<<replace "#display-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -100>>
+			<<set $ourStore.display += 1>>
+			<<set _adding = Number(Number(1) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 10 (cost ¤1000)">>
+		<<if $cash < 1000>>
+			<<replace "#display-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.display > 740>>
+			<<replace "#display-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -1000>>
+			<<set $ourStore.display += 10>>
+			<<set _adding = Number(Number(10) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+	
+	<<button "Buy 100 (cost ¤10000)">>
+		<<if $cash < 10000>>
+			<<replace "#display-form-error">>@@.orange;You can't afford this!@@<</replace>>
+		<<elseif $ourStore.display > 640>>
+			<<replace "#display-form-error">>@@.orange;750 max!@@<</replace>>
+		<<else>>
+			<<cashAdd -10000>>
+			<<set $ourStore.display += 100>>
+			<<set _adding = Number(Number(100) / Number(50)).toFixed(2)>>
+			<<set $costs = Number(Number($costs) + Number(_adding)).toFixed(2)>>
+			<<replace "#stats-display">><<print $ourStore.display>><</replace>>
+			<<updateStoreButtons>>
+		<</if>>
+	<</button>>
+/* Form for error message to display*/
+<span id="display-form-error"></span>
+</div>
+<br>
+<hr>
+<h1>Upgrades and Improvements</h1>
+
+<p class="hang">Add some @@.coral;Basic Toys@@ to <<- $ourStore.name>>. 
+<br>Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.</p>
+@@#basic_toys;<<button "Buy Basic Toys">>	
+	<<cashAdd -100>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Basic Toys")>>
+    <<run $("#basic_toys button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Fancy Toys@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.</p>
+@@#fancy_toys;<<button "Buy Fancy Toys">>	
+	<<cashAdd -500>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Fancy Toys")>>
+    <<run $("#fancy_toys button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Deluxe Toys@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.</p>
+@@#deluxe_toys;<<button "Buy Deluxe Toys">>	
+	<<cashAdd -1000>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Deluxe Toys")>>
+    <<run $("#deluxe_toys button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<br><br>
+
+<h2>Training Equipment</h2>
+<br>//Easy-carry toys for fetching, low jumps designed for stumpy legs, clickers and treats. You don't HAVE to use the sorry stick and sorry box. They can just sit there for... encouragement.//
+
+<p class="hang">Add some @@.coral;Basic Training Equipment@@ to <<- $ourStore.name>>. 
+<br>Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.</p>
+@@#basic_training;<<button "Buy Basic Training Equipment">>	
+	<<cashAdd -100>>
+	<<set $ourStore.space -= 1>>
+	<<set $costs += 1>>
+	<<run $ourStore.upgrades.pushUnique("Basic Training Equipment")>>
+    <<run $("#basic_training button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Fancy Training Equipment@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.</p>
+@@#fancy_training;<<button "Buy Fancy Training Equipment">>	
+	<<cashAdd -500>>
+	<<set $ourStore.space -= 1>>
+	<<run $ourStore.upgrades.pushUnique("Fancy Training Equipment")>>
+    <<run $("#fancy_training button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<p class="hang">Add some @@.coral;Deluxe Training Equipment@@ to <<- $ourStore.name>>.
+<br>Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
+<br>Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.</p>
+@@#deluxe_training;<<button "Buy Deluxe Training Equipment">>	
+	<<cashAdd -1000>>
+	<<set $ourStore.space -= 1>>
+	<<run $ourStore.upgrades.pushUnique("Deluxe Training Equipment")>>
+    <<run $("#deluxe_training button").prop("disabled", true)>>
+    <<updateStoreButtons>>
+<</button>>@@
+
+<br><br>
+
+
+
+<<widget "updateStoreButtons">>
+	<<if $ourStore.upgrades.includes("Basic Toys") == false && $cash >= 100 && $ourStore.space >= 1>>
+		<<run $("#basic_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#basic_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Fancy Toys") == false && $cash >= 500 && $ourStore.space >= 1>>
+		<<run $("#fancy_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#fancy_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Deluxe Toys") == false && $cash >= 1000 && $ourStore.space >= 1>>
+		<<run $("#deluxe_toys button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#deluxe_toys button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Deluxe Training Equipment") == false && $cash >= 1000 && $ourStore.space >= 1>>
+		<<run $("#deluxe_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#deluxe_training button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Basic Training Equipment") == false && $cash >= 100 && $ourStore.space >= 1>>
+		<<run $("#basic_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#basic_training button").prop("disabled", true)>>
+	<</if>>
+	
+	<<if $ourStore.upgrades.includes("Fancy Training Equipment") == false && $cash >= 500 && $ourStore.space >= 1>>
+		<<run $("#fancy_training button").prop("disabled", false)>>
+	<<else>>
+		<<run $("#fancy_training button").prop("disabled", true)>>
+	<</if>>
+	
+	
+	<<replace "#shop_cash">>
+<br>@@.stat-high.stat-value;Cash.@@ | ¤$cash<br>Weekly upkeep will be ¤<<print $costs>>.<br><<SidebarStore>>
+<br>
+Upgrades:
+<<for _i, _upgrade range $ourStore.upgrades>>
+	<<- _upgrade>><<- (_i < $ourStore.upgrades.length - 1) ? (_i < $ourStore.upgrades.length - 2) ? ',' : ', and' : ''>>
+<</for>>
+	<</replace>>
+<</widget>>
+
+</div>
+
+<<timed 100ms>>
+	<<updateStoreButtons>>
+<</timed>>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

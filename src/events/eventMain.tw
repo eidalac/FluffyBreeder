@@ -1,0 +1,51 @@
+:: Event Main [nobr]
+
+/* **********
+ * eventMain.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Checks and runs end of week events.
+ *
+ *********** */
+ 
+<<set $showEncyclopedia = 0>>
+<<script>>UIBar.destroy();<</script>>
+
+/* All events are put into this master list */
+<<if $eventList.length>>
+	
+	/* Pick a random event, remove it from the list*/
+	<<set $currentEvent = $eventList.pluck()>>
+
+	/* Run that event based on the type: */
+	<<switch $currentEvent.type>>
+		<<case "Customer">>
+			<<set $listType = "Display">>
+			<<goto "Pre Customer">>
+		<<case "Mating">>
+			<<goto "Pre Mating">>
+		<<case "Birth">>
+			<<goto "Pre Birth">>
+		<<case "Rejection">>
+			<<goto "Pre Rejection">>
+		<<case "Stress">>
+			<<goto "Pre Stress">>
+		<<case "Smarty">>
+			<<goto "Pre Smarty">>
+		<<case "Starvation">>
+			<<goto "Pre Starvation">>
+		<<default>>
+			<<run console.log(`ERROR: [eventMain]: invalid event type called: ${event.type}.`)>>
+	<</switch>>
+<<else>>
+	/* no events fired*/
+	<<goto "Week Save">>
+	
+<</if>> /* Close event list */
+
+
+
+<br><br>[[CONTINUE|Week Save][$showEncyclopedia = 1, $encyclopedia = "Running your Store"]]
+

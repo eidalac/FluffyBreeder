@@ -1,0 +1,866 @@
+:: description widgets [widget nobr]
+
+/* **********
+ * descriptionWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Widgets for info display
+ *
+ *********** */
+
+/* ***
+ *	Called as <<MainLinks>>
+ *	Displays your focus for this week and a link to change focus
+ *
+ *	Todo: Not currently enabled
+ *** */
+<<widget "MainLinks">>
+	<center>
+		<<switch $personalAttention>>
+			<<case "business">>You plan to focus on business this week.
+			<<case "trading">>This week you will learn trading.
+			<<case "warfare">>This week you will learn modern combat tactics.
+			<<case "engineering">>This week you will learn engineering.
+			<<case "medicine">>This week you will learn medicine.
+			<<default>>
+		<</switch>>
+	</center>
+	/*<span id="managePA"><strong><<link "Change plans">><<goto "Personal Attention Select">><</link>></strong></span> @@.cyan;[A]@@*/
+<</widget>>
+
+<style>
+button {
+  background: coral; 
+ }
+</style>
+
+
+
+/* ***
+ *	Called as <<FluffyList $type $list>>
+ *
+ *	Displays a list of fluffies, defaults to store
+ *** */
+<<widget "FluffyList">>
+	<<if _args[0] === "breeding">>
+		<<if $activeFluffy.gender === 'female'>>
+			<<set $listType = "Stallions">>
+		<<else>>
+			<<set $listType = "Mares">>
+		<</if>>
+		
+		<<set _breeder = $activeFluffy.ID>>
+	<</if>>
+	<<set _fluffies = []>>
+	<<if def _args[1]>>
+		<<if _args[1].length > 0>>
+			<<for _fluffy range _args[1]>>
+				<<run _fluffies.push(_fluffy.ID)>>
+			<</for>>
+		<<elseif _args[1].length == 0>>
+			<<set _fluffies = []>>
+		<<else>>
+			<<set _fluffies = $ourStore.fluffies>>
+		<</if>>
+	<<else>>
+		<<set _fluffies = $ourStore.fluffies>>
+	<</if>>
+	<<for _fl range _fluffies>>
+		<<capture _fl>>
+			/*<<colorGroup $globalFluffies[_fl]>>*/
+			<<set $globalFluffies[_fl].preOwned = true>>
+			/*<<fixColors $globalFluffies[_fl]>>*/
+			<<if _args[0] === "breeding">>
+				<<if $activeFluffy.ID == _fl || $globalFluffies[$activeFluffy.ID].ageCategory <= 4>>
+					<<continue>>
+				<</if>>
+			<</if>>
+					
+			/* Double check we are removing sold fluffies: */
+			<<if $globalFluffies[_fl].sold == true>>
+				<<run $ourStore.fluffies.delete(_fl)>>
+				<<continue>>
+			<</if>>
+			
+			/* Double check we are removing dead fluffies: */
+			<<if $globalFluffies[_fl].dead == true>>
+				<<run $ourStore.fluffies.delete(_fl)>>
+				<<continue>>
+			<</if>>
+			
+			/* Unweaned babbies */
+			<<if $globalFluffies[_fl].weaned === false>>
+				<<if $listType != "Babies" && $listType != "All" && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<</if>>
+			
+				/* immature */
+				<<elseif $globalFluffies[_fl].ageCategory <= 4>>
+					<<if $listType != "Foals" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<<elseif $globalFluffies[_fl].gender == "male">>
+					<<if $listType != "Stallions" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<<else>>
+					<<if $listType != "Mares" && $listType != "All" && $listType != "Display">>
+						<<set $globalFluffies[_fl].isChecked = false>>
+						<<continue>>
+					<</if>>
+				<</if>>
+			
+				<<if $globalFluffies[_fl].onDisplay == true && $listType != "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<<elseif $globalFluffies[_fl].onDisplay == false && $listType == "Display">>
+					<<set $globalFluffies[_fl].isChecked = false>>
+					<<continue>>
+				<<else>>
+
+				<<clampValues $globalFluffies[_fl]>>
+			
+				<div class="fluffy-description">
+				
+					<div class="fluffy-checkbox-container">
+						<<if _args[0] != "customer" && _args[0] != "breeding">>
+						<<print `<input class="fluffy-checkbox" data-fluffy-id="${_fl}" name="fluffy-checkbox" type="hidden" tabindex="0" class="macro-checkbox">`>>
+						<</if>>
+					</div>
+			
+					<div class="fluffy-desc-top w3-row w3-dark-grey">
+						<div class="fluffy-name w3-container">
+							<<if _args[0] === "customer" || _args[0] === "breeding">>
+								<<- $globalFluffies[_fl].name>>
+							<<else>>
+								[[$globalFluffies[_fl].name|Fluffy Interact][$activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Interaction"]]
+							<</if>>
+						</div>
+						<div class="fluffy-quickactions w3-rest w3-container">
+						<<if _args[0] === "customer">>
+							<<set _buttonString = "Offer " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString "Post Customer">>
+								<<set $activeFluffy = $globalFluffies[_fl]>>
+							<</button>>
+						<<elseif _args[0] === "breeding">>
+							<<set _buttonString = "Breed with " + $globalFluffies[_fl].name>>
+							
+							<<button _buttonString "Fluffy Breeding">>
+								<<set $activeFluffy = $globalFluffies[_breeder]>>
+
+								<<if $globalFluffies[_fl].gender == "male">>
+									<<set $breedStal = _fl>>
+									<<set $breedMare = _breeder>>
+								<<else>>
+									<<set $breedMare = _fl>>
+									<<set $breedStal = _breeder>>
+								<</if>>
+							<</button>>
+						<<else>>
+								[[Breeding|Fluffy Breeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $breedMare = -1, $breedStal = -1, $encyclopedia = "Fluffy Breeding"]]
+							<<if $listType != "Display">>
+								[[Put on Sale|Fluffy Selling][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl]]]
+							<<else>>
+								[[Take off Display|Fluffy List][$globalFluffies[_fl].onDisplay = false]]
+							<</if>>
+							<<set _foodType = $globalFluffies[_fl].foodType>>
+							<<set _foodTitle = "Food: ">>
+							<<switch $globalFluffies[_fl].foodQuality>>
+								<<case 0>> <<if $globalFluffies[_fl].foodType != "Nothing">><<set _foodTitle += `${_foodType} (trash)`>> <<else>><<set _foodTitle += `${_foodType}`>> <</if>>
+								<<case 1>> <<set _foodTitle += `${_foodType} (cheap)`>>
+								<<case 2>> <<set _foodTitle += `${_foodType} (basic)`>>
+								<<case 3>> <<set _foodTitle += `${_foodType} (good)`>>
+								<<case 4>> <<set _foodTitle += `${_foodType} (premium)`>>
+								<<case -1>> <<set _foodTitle += ``>>
+								
+							<</switch>>
+							[[_foodTitle|Fluffy Feeding][$nextButton = "Back.", $nextLink = passage(), $activeFluffy = $globalFluffies[_fl], $encyclopedia = "Fluffy Feeding"]]
+						<</if>>
+						</div>
+					</div>
+
+					<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+						<<drawSprite $globalFluffies[_fl]>>
+						<<shortDesc $globalFluffies[_fl]>>
+					</div>
+				</div>
+			<</if>>
+		<</capture>>
+	<</for>>
+
+	<<if _fluffies.length == 0>>
+		<br>
+		No matches found to filter.
+		<br>
+	<</if>>
+<</widget>>
+
+
+
+/* ***
+ *	Called as <<inlineColor $color>>
+ *	Returns the string colored as an HTML color.
+ *** */
+<<widget "inlineColor">><<if _args[0] != "Black">><<- "@@color:"+_args[0]+";"+_args[0]>><<else>><<- "@@background:"+_args[0]+"; color:white;"+_args[0]>><</if>><</widget>>
+
+/* ***
+ *	Called as <<colorizeText $color $message $attr>>
+ *	Returns the message in provided color.
+ *** */
+<<widget "colorizeText">>
+	<<set _msg = _args[1] ? _args[1] : "">>
+	<<set _attr = _args[2] ? _args[2] : "">>
+	<<set _luminance = getLuminance(_args[0])>>
+	<<if _luminance > 64 >>
+		<<set _background = "var(--text-dark)">>
+	<<else>>
+		<<set _background = "lightgray">>
+	<</if>>
+	<<print `<span ${_attr} style="background:${_background}; color:${_args[0]};">${_msg}</span>`>>
+<</widget>>
+
+/* ***
+ *	Called as <<fluffSpeech $message $fluffy>>
+ *	Translates message into fluffy speech. 
+ * 	Replaces '<fluffy>' with actual name.
+ *** */
+<<widget "fluffSpeech">>
+
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<fluffSpeech>>: called with no text.`)>>
+		<<set _msg = "">>
+	<<else>>
+		<<set _msg = _args[0]>>
+	<</if>>
+
+	<<if ndef _args[1]>>
+		<<run console.log(`ERROR: <<fluffSpeech>>: called with no fluffy.`)>>
+	<<else>>
+
+		<<set _color = _args[1].cColor.hex>>
+		<<set _luminance = getLuminance(_color)>>
+		<<if _luminance > 64 >>
+			<<set _background = "var(--text-dark)">>
+		<<else>>
+			<<set _background = "lightgray">>
+		<</if>>
+
+		<<if _args[1].ageCategory < 2>>
+			<<- `@@background:${_background}; color:${_color};`+'"'+`${"cheep... cheep..."}`+'"'>>
+		<<else>>
+			<<- `@@background:${_background}; color:${_color};`+'"'+`${_msg.replaceAll(/(?:<title>)/gmi, $title).replaceAll(/(?:<fluffy>)/gmi, _args[1].name).replaceAll(/(?:<store>)/gmi, $ourStore.name).replaceAll(/[l]|[r]/gm, "w").replaceAll(/[L]|[R]/gm, "W").replaceAll(/[v]/gm, "b").replaceAll(/[V]/gm, "B")}`+'"'>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	setName
+ *	Call as <<setName $fetch>>
+ *
+ *	finds appropriate name for ($activeFluffy)
+ *** */
+
+<<widget "setName">>
+	/*<<colorGroup $activeFluffy>>*/
+	<<set _colorList = window.nameList["colors"]>>
+	<<set _genderList = window.nameList["gender"]>>
+	<<set _gender = $activeFluffy.gender.charAt(0).toUpperCase() + $activeFluffy.gender.slice(1).toLowerCase()>>
+	<<set _posGendered = random(0, _genderList[_gender].length-1)>>
+	<<set _posNeutral = random(0, _genderList["Neutral"].length-1)>>
+
+	<<set _coat = $activeFluffy.cColor.group>>
+	<<set _mane = $activeFluffy.mColor.group>>
+	<<set _randomName = "Fluffy">>
+	
+	/* Get name, 75% color, 25% gender*/
+	<<switch random(0, 3)>>
+		<<case 0 1 2>>
+		/* Get name relating to color, 75% coat, 25% mane*/
+			<<switch random(0, 3)>>
+				<<case 0 1 2>>
+					<<if ndef _coat || ndef _colorList[_coat]>>
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<<elseif _coat.length != 0>>
+						<<set _posCoat = random(0, _colorList[_coat].length-1)>>
+						<<set _randomName = _colorList[_coat][_posCoat]>>
+					<<else>>	
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<</if>>
+				<<case 3>>
+					<<if ndef _mane || ndef _colorList[_mane]>>
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<<elseif _mane.length != 0>>
+						<<set _posCoat = random(0, _colorList[_mane].length-1)>>
+						<<set _randomName = _colorList[_mane][_posCoat]>>
+					<<else>>	
+						<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+					<</if>>
+			<</switch>>
+		<<case 3>>
+		/* Get name relating to gender, 50% gendered, 50% neutral */
+			<<switch random(0, 1)>>
+				<<case 0>>
+					<<set _randomName = _genderList[_gender][_posGendered]>>
+				<<case 1>>
+					<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+			<</switch>>
+		<<default>>
+			<<set _randomName = _genderList["Neutral"][_posNeutral]>>
+	<</switch>>
+	<<if _args[0] != true>>
+		<<set $activeFluffy.name = _randomName>>
+	<</if>>
+	<<set $randomName = _randomName>>
+<</widget>>
+
+/* ***
+ *	Called as <<displayStat $stat>>
+ *	Returns a display of this stat value based on the player xp level.
+ *	Normal ranges for a stat are 0-6
+ *** */
+<<widget "displayStat">>
+	<<set _value = "Unknown">>
+	<<set _color = "">>
+
+	<<if _args[0] < 3>>
+		<<set _color = `@@.stat-low.stat-value`>>
+		<<set _value = `Low`>>
+	<<elseif _args[0] < 5>>		
+		<<set _color = `@@.stat-average.stat-value`>>
+		<<set _value = `Average`>>
+	<<else>>
+		<<set _color = `@@.stat-high.stat-value`>>
+		<<set _value = `High`>>
+	<</if>>
+
+	<<if  $debugMode>>
+		<<set _value = `${_args[0]}*`>>
+	<<elseif $training >= 60>>
+		<<set _value = `${_args[0]}`>>
+	<<elseif $training <= 40>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
+		<<set _value = `Unknown`>>	
+	<</if>>
+
+	<<- `${_color};${_value}`>>
+<</widget>>
+
+
+/* ***
+ *	Called as <<displayFlippedAttribute  $attribute>>
+ *	Returns a display of this atrributed value based on the player xp level.
+ *	Attributes can range from 0 to 200.
+ *  This reverses the high/low ranges (ie 0 is green, 200 is red.)
+ *** */
+<<widget "displayFlippedAttribute">>
+	<<set _value = "Unknown">>
+	<<set _color = "">>
+
+	<<if _args[0] < 67>>
+		<<set _color = `@@.stat-high.stat-value`>>
+		<<set _value = `Low`>>
+	<<elseif _args[0] < 101>>		
+		<<set _color = `@@.stat-average.stat-value`>>
+		<<set _value = `Average`>>
+	<<else>>
+		<<set _color = `@@.stat-low.stat-value`>>
+		<<set _value = `High`>>
+	<</if>>
+
+	<<if  $debugMode>>
+		<<set _value = `${_args[0]}*`>>
+	<<elseif $training >= 100>>
+		<<set _value = `${_args[0]}`>>
+	<<elseif $training <= 50>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
+		<<set _value = `Unknown`>>	
+	<</if>>
+
+	<<- `${_color};${_value}`>>
+<</widget>>
+
+
+/* ***
+ *	Called as <<displayAttribute $attribute>>
+ *	Returns a display of this atrributed value based on the player xp level.
+ *	Attributes can range from 0 to 200.
+ *** */
+<<widget "displayAttribute">>
+	<<set _value = "Unknown">>
+	<<set _color = "">>
+
+	<<if _args[0] < 67>>
+		<<set _color = `@@.stat-low.stat-value`>>
+		<<set _value = `Low`>>
+	<<elseif _args[0] < 101>>		
+		<<set _color = `@@.stat-average.stat-value`>>
+		<<set _value = `Average`>>
+	<<else>>
+		<<set _color = `@@.stat-high.stat-value`>>
+		<<set _value = `High`>>
+	<</if>>
+
+	<<if  $debugMode>>
+		<<set _value = `${_args[0]}*`>>
+	<<elseif $training >= 100>>
+		<<set _value = `${_args[0]}`>>
+	<<elseif $training <= 50>>
+		<<set _color = `@@.stat-unknown.stat-value`>>
+		<<set _value = `Unknown`>>	
+	<</if>>
+
+	<<- `${_color};${_value}`>>
+<</widget>>
+
+/* ***
+ *	Called as <<displayPrice $fluffy>>
+ *	Returns a display of this fluffys sale price, based on the player xp level.
+  *** */
+<<widget "displayPrice">>
+	<<set _thisFluffy = _args[0]>>
+
+	<<set _price = Number($globalFluffies[_thisFluffy.ID].training)>>
+	<<set _price = Number(_price) + Number(Number($globalFluffies[_thisFluffy.ID].trust/10))>>
+										
+	<<switch $globalFluffies[_thisFluffy.ID].breed>>
+		<<case "unicorn">>
+			<<set _price = Number(Number($unicornPrice.mart) + Number(_price))>>
+			<<set _low = Number($unicornPrice.mill)>>
+			<<set _mid = Number($unicornPrice.mart)>>
+		<<case "pegasus">>
+			<<set _price = Number(Number($pegasusPrice.mart) + Number(_price))>>
+			<<set _low = Number($pegasusPrice.mill)>>
+			<<set _mid = Number($pegasusPrice.mart)>>
+		<<case "alicorn">>
+			<<set _price = Number(Number($alicornPrice.mart) + Number(_price))>>
+			<<set _low = Number($alicornPrice.mart)>>
+			<<set _mid = Number($alicornPrice.deluxe)>>
+		<<default>>
+			<<set _price = Number(Number($earthPrice.mart) + Number(_price))>>
+			<<set _low = Number($unicornPrice.mill)>>
+			<<set _mid = Number($unicornPrice.mart)>>
+	<</switch>>
+					
+	<<set _price = Math.clamp(_price, 0.05, 3*$alicornPrice.deluxe)>>
+	<<set $globalFluffies[_thisFluffy.ID].statBonus = Math.clamp($globalFluffies[_thisFluffy.ID].statBonus, 0.02, 3)>>
+
+	<<set $activeFluffy = $globalFluffies[_thisFluffy.ID]>>
+	<<colorValue>>
+
+
+	<<set _price = Number(Number(_price) * Number($globalFluffies[_thisFluffy.ID].statBonus)).toFixed(2)>>
+	<<set _price = Number(_price * $globalFluffies[_thisFluffy.ID].colorBonus).toFixed(2)>>
+				
+	<<set _ageMulti = 1>>
+			
+	<<if $globalFluffies[_thisFluffy.ID].ageCategory < 5>>
+		<<set _ageMulti = Number(($globalFluffies[_thisFluffy.ID].ageWeeks+1) / 44).toFixed(2)>>
+	<</if>>
+		
+	<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+
+	<<if $globalFluffies[_thisFluffy.ID].traits.includes("Feral") == true>>
+		<<set _price = Number(_price / 4).toFixed(2)>>
+	<</if>>
+
+	<<if $globalFluffies[_thisFluffy.ID].subSpecies == 2>>
+		<<set _price = Number(_price * 1.3).toFixed(2)>>
+	<</if>>
+
+	<<if  $debugMode>>
+		@@.orange;_price@@
+	<<else>>
+		<<- $training >= 100 ? _price < _low ? "@@.stat-low.stat-value;_price@@" : _price < _mid ? "@@.stat-average.stat-value;_price@@" : "@@.stat-high.stat-value;_price@@" : $training >= 50 ? _price < _low ? "@@.stat-low.stat-value;Low@@" : _price < _mid ? "@@.stat-average.stat-value;Average@@" : "@@.stat-high.stat-value;High@@" : "@@.stat-average.stat-value;??@@">>
+	<</if>>
+<</widget>>
+
+
+<<widget statValue>>
+	<<set _avg = $activeFluffy.strength + $activeFluffy.energy + $activeFluffy.charm + $activeFluffy.charm + $activeFluffy.thinking + $activeFluffy.learning + $activeFluffy.fertility>>
+	<<set _avg = Number(Number(_avg) / 7).toFixed(2)>>
+	<<set _avg++>>
+
+	<<if $activeFluffy.traits.includes("Bossy") || $activeFluffy.traits.includes("Timid") ||  $activeFluffy.traits.includes("Dull") ||  $activeFluffy.traits.includes("Haughty") ||  $activeFluffy.traits.includes("Rowdy")>>
+		<<set $activeFluffy.statBonus = Number(_avg / 8).toFixed(2)>>
+	<<else>>
+		<<set $activeFluffy.statBonus = Number(_avg / 6).toFixed(2)>>
+	<</if>>
+	
+	<<set $activeFluffy.statBonus = Math.clamp($activeFluffy.statBonus, 0.02, 3)>>
+<</widget>>
+
+/* ***
+ *	Called as <<addTrait $trait $fluffy>>
+ *
+ *	Adds trait to fluffy.
+ *** */
+ <<widget "addTrait">>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<addTrait>>: called with no trait.`)>>
+	<<elseif ndef _args[1]>>
+		<<run console.log(`ERROR: <<addTrait>>: called with no Fluffy.`)>>
+	<<elseif ndef _args[1].ID>>
+		<<run console.log(`ERROR: <<addTrait>>: ID not defined.`)>>
+	<<elseif ndef $globalFluffies[_args[1].ID]>>
+		<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${_args[1].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if _args[1].ID != $globalFluffies[_args[1].ID].ID>>
+			<<run console.log(`ERROR: <<addTrait>>: Fluffy ID ${_args[1].ID} does not match global ID ${$globalFluffies[_args[1].ID].ID}.`)>>
+
+			<<set _args[1].ID = Number($globalFluffies[_args[1].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[1].ID] = _args[1]>>
+		<</if>>
+
+		<<set _fluffy = _args[1]>>
+		<<set _trait = _args[0]>>
+
+		<<if _fluffy.traits.includes(_trait)>>
+			<<run console.log(`ERROR: <<addTrait>>: Did not add ${_trait} to ${_fluffy}. Reason: Duplicate trait`)>>
+		<<else>>
+			<<run _fluffy.traits.push(_trait)>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<removeTrait $trait $fluffy>>
+ *
+ *	Removes trait from fluffy.
+ *** */
+ <<widget "removeTrait">>
+	<<if ndef _args[0]>>
+		<<run console.log(`ERROR: <<removeTrait>>: called with no trait.`)>>
+	<<elseif ndef _args[1]>>
+		<<run console.log(`ERROR: <<removeTrait>>: called with no Fluffy.`)>>
+	<<elseif ndef _args[1].ID>>
+		<<run console.log(`ERROR: <<removeTrait>>: ID not defined.`)>>
+	<<elseif ndef $globalFluffies[_args[1].ID]>>
+		<<run console.log(`ERROR: <<removeTrait>>: Fluffy ID ${_args[1].ID} is not defined in globalFluffies.`)>>
+	<<else>>
+		<<if _args[1].ID != $globalFluffies[_args[1].ID].ID>>
+			<<run console.log(`ERROR: <<removeTrait>>: Fluffy ID ${_args[1].ID} does not match global ID ${$globalFluffies[_args[1].ID].ID}.`)>>
+
+			<<set _args[1].ID = Number($globalFluffies[_args[1].ID].ID).toFixed(0)>>
+			<<set $globalFluffies[_args[1].ID] = _args[1]>>
+		<</if>>
+
+		<<set _fluffy = _args[1]>>
+		<<set _trait = _args[0]>>
+
+		<<if !_fluffy.traits.includes(_trait)>>
+			<<run console.log(`ERROR: <<removeTrait>>: Could not remove ${_trait} from ${_fluffy}. Reason: No such trait.`)>>
+		<<else>>
+			<<set _fluffy.traits = _fluffy.traits.filter(e => e !== _trait)>>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<pruneTraits $fluffy>>
+ *
+ *	Prunes deprecated or duplicate traits from fluffy.
+ *** */
+<<widget "pruneTraits">>
+	<<fluffyError $args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<pruneTraits>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<set _fluffy = $args[0]>>
+		<<personalityFix _fluffy>>
+
+		/* Count occurrences, remove if duplicate */
+		<<set _countOccurrences = (arr, val) => arr.reduce((a, v) => (v === val ? a + 1 : a), 0)>>
+
+		/* List of deprecated traits */
+		<<set _deprecated = ["Infertile", "feeble1", "feeble2", "Runt 1", "Runt 2"]>>
+
+		<<for _trait range _fluffy.traits>>
+			<<if _countOccurrences(_fluffy.traits, _trait) > 1>>
+				<<removeTrait _trait _fluffy>>
+			<</if>>
+			<<if _deprecated.includes(_trait)>>
+				<<removeTrait _trait _fluffy>>
+			<</if>>
+		<</for>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<personalityFix $fluffy>>
+ *
+ *	Fixes traits[0] being personality
+ *** */
+<<widget "personalityFix">>
+	<<fluffyError _args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<personalityFix>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		<<set _fluffy = _args[0]>>
+		<<if ndef _fluffy.personality || _fluffy.personality == "">>
+			<<set _fluffy.personality = _fluffy.traits[0]>>
+			<<set _fluffy.traits.shift()>>
+		<<elseif _fluffy.personality == "Lackadaisical">>
+			<<set _fluffy.personality = "Dull">>
+		<</if>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Called as <<FluffyDesc>>
+ *	Targets $activeFluffy
+ *
+ *	Displays a detailed decription of the fluffy.
+ *** */
+<<widget "FluffyDesc">>
+
+	<<statValue>>
+	<<clampValues $activeFluffy>>
+
+	<<if def $activeFluffy.ID && $activeFluffy.ID >= 0>>
+		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<else>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: invalid $activeFluffy ID: ${$activeFluffy.ID} Should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
+			<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<</if>>
+	<</if>>
+
+	<<if ndef $activeFluffy.subSpeciesString>>
+		/* set subspecies info to default */
+		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+
+		<<if $globalFluffies[$activeFluffy.ID].genes.setSubSpecies("0/0;") == false>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing subSpeciesString and failed to reset gene to default.`)>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()>>
+			<<set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+		<</if>>
+	<</if>>
+
+	<<if ndef $activeFluffy.coatLength>>
+		/* set coat info to default */
+		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatLength("C/c;L/l;") == false>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing coatLength and failed to reset gene to default.`)>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].coatLengthAdd = random(0, 2)>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+		<</if>>
+	<</if>>
+
+	<<if ndef $activeFluffy.coatDensity>>
+		/* set coat info to default */
+		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatDensity("C/c;D/d;") == false>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing CoatDensity and failed to reset gene to default.`)>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatDensityAdd = random(0,30)>>
+			<<set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd>>
+		<</if>>
+	<</if>>
+
+	<<if ndef $activeFluffy.coatCurl>>
+		/* set coat info to default */
+		<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+		
+		<<if $globalFluffies[$activeFluffy.ID].genes.setCoatCurl("C/c;C/c;") == false>>
+			<<run console.log(`ERROR: <<FluffyDesc>>: missing CoatCurl and failed to reset gene to default.`)>>
+		<<else>>
+			/* The boolean test above sets the gene if it's valid, so we have to save the new string */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+		<</if>>
+	<</if>>
+	
+	<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is a <<print $activeFluffy.personality>> $activeFluffy.gender $activeFluffy.subSpeciesString $activeFluffy.breed.
+	<br><<They>> has a <<colorizeText $activeFluffy.cColor.hex $activeFluffy.cColor.name>> coat<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 3>>, <<colorizeText $activeFluffy.mColor.hex $activeFluffy.mColor.name>> mane<</if>><<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 1>> and <<colorizeText $activeFluffy.eColor.hex $activeFluffy.eColor.name>> eyes<</if>>. 
+	<br><<They>> is $activeFluffy.age years and $activeFluffy.ageWeeks weeks old.
+	<br><<They>> weighs $activeFluffy.weight <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxWeight)" : "">> KG.  <<They>> is $activeFluffy.length cm long <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxLength)" : "">> and is $activeFluffy.height cm tall <<- ($training >= 120 || $debugMode) ? "(max $activeFluffy.maxHeight)" : "">>.  
+	<br><<They>> fluff is $activeFluffy.coatLength cm long, has a density of $activeFluffy.coatDensity and has a curl of $activeFluffy.coatCurl.
+	<br><<They>> can live up to $activeFluffy.maxAge years and has a fertility score of <<displayStat $activeFluffy.fertility>>.
+	<br>Strength: [<<displayStat $activeFluffy.strength>>], Energy [<<displayStat $activeFluffy.energy>>], Charm [<<displayStat $activeFluffy.charm>>], Thinking [<<displayStat $activeFluffy.thinking>>], Learning [<<displayStat $activeFluffy.learning>>].
+	
+	<br>Trust [<<displayAttribute $activeFluffy.trust>>] Training [<<displayAttribute $activeFluffy.training>>] Temperament [<<displayFlippedAttribute $activeFluffy.temperament>>] Happiness [<<displayAttribute $activeFluffy.happy>>] Stress [<<displayFlippedAttribute $activeFluffy.stress>>] Trauma [<<displayFlippedAttribute $activeFluffy.trauma>>]
+	<br>Traits: 
+	<<for _i = 1; _i < $activeFluffy.traits.length; _i++>>
+		<<- $activeFluffy.traits[_i]>>
+	<</for>>
+	<br><<Their>> mother is <<if $activeFluffy.mother == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[$activeFluffy.mother].name>>@@<</if>>. 
+	 <<Their>> father is <<if $activeFluffy.father == -1>>@@.orange;Unknown@@<<else>>@@.cyan;<<print $globalFluffies[$activeFluffy.father].name>>@@<</if>>. 
+	 <<if $activeFluffy.specialFriend != -1>><<Their>> "Special Friend" is @@.cyan;<<print $globalFluffies[$activeFluffy.specialFriend].name>>@@<</if>>
+	
+	<<set _children = "">>
+	<<for _i = 0; _i < $activeFluffy.children.length; _i++>>
+		<<run _children += "@@.cyan;" + $globalFluffies[$activeFluffy.children[_i]].name + "@@">> 
+	<</for>>
+	
+	<br>Children: <<linkreplace "$activeFluffy.children.length">>_children<</linkreplace>>
+
+	<<if $activeFluffy.pregnant == true>><br><<They>> is due to give birth in <<- $activeFluffy.dueDate>> weeks<</if>>
+	<<if $activeFluffy.nursing.length > 0>><br><<They>> is nursing <<print $activeFluffy.nursing.length >> foals<</if>>
+	
+<</widget>>
+
+/* ***
+ *	Call as <<shortDesc $fluffy>>
+ *	Calling this widget will create a summary for the passed fluffy
+ *	It should be preceded by the fluffy selection link.
+ *
+ *	Displays a condensed diplay of fluffy information
+ *** */
+<<widget "shortDesc">>
+	<<capture _children>>
+		<<set _fluffy = _args[0]>>
+		<<set _children = "">>
+		<<for _i = 0; _i < _fluffy.children.length; _i++>>
+			<<run _children += "@@.cyan;" + $globalFluffies[_fluffy.children[_i]].name + "@@">> 
+		<</for>>
+		
+		<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+
+		<<if _fluffy.ID == $globalFluffies[_fluffy.ID].ID>> 
+			<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+		<<else>>
+			<<run console.log(`ERROR: <<fluffySelling>>: invalid $activeFluffy ID: ${_fluffy.ID} Should be ${$globalFluffies[_fluffy.ID].ID}.`)>>
+			<<set _fluffy.ID = $globalFluffies[_fluffy.ID].ID>>
+			<<set $globalFluffies[_fluffy.ID] = _fluffy>>
+		<</if>>
+		<<clampValues _fluffy>>
+		<<personalityFix _fluffy>>
+		
+		<div class="fluffy-details">
+			<div class="fluffy-details-left">
+				<div class="fluffy-species">
+					<span>Name: <<print `<span class="info-toggle" data-info="detail_name">${_fluffy.name}</span>`>></span>
+					<span>Personality: <<print `<span class="info-toggle" data-info="detail_personality">${_fluffy.personality}</span>`>> </span>
+					<span>Gender: <<print `<span class="info-toggle" data-info="detail_gender">${_fluffy.gender[0].toUpperCase()}${_fluffy.gender.slice(1)}</span>`>></span>
+					<span>Species: <<print `<span class="info-toggle" data-info="detail_species">${_fluffy.subSpeciesString}</span>`>></span>
+					<span>Breed: <<print `<span class="info-toggle" data-info="detail_breed">${_fluffy.breed[0].toUpperCase()}${_fluffy.breed.slice(1)}</span>`>></span>
+				</div>
+				<div class="fluffy-color">
+					<<set _infoText = `class="info-toggle" data-info="detail_color" `>>
+					<<set _infoColor = `data-color="${_fluffy.cColor.hex}" data-color-name="${_fluffy.cColor.name}" data-color-group="${_fluffy.cColor.group}"`>>
+					<span>Coat: <<colorizeText _fluffy.cColor.hex _fluffy.cColor.name _infoText+_infoColor>></span>
+					<<if _fluffy.age > 0 || _fluffy.ageWeeks > 1>>
+						<<set _infoColor = `data-color="${_fluffy.mColor.hex}" data-color-name="${_fluffy.mColor.name}" data-color-group="${_fluffy.mColor.group}"`>>
+						<span>Mane: <<colorizeText _fluffy.mColor.hex _fluffy.mColor.name _infoText+_infoColor>></span>
+					<</if>>
+					<<if _fluffy.age > 0 || _fluffy.ageWeeks >= 1>>
+						<<set _infoColor = `data-color="${_fluffy.eColor.hex}" data-color-name="${_fluffy.eColor.name}" data-color-group="${_fluffy.eColor.group}"`>>
+						<span>Eyes: <<colorizeText _fluffy.eColor.hex _fluffy.eColor.name _infoText+_infoColor>></span>
+					<</if>>
+				</div>
+				<div class="fluffy-traits">
+					<span>Traits:</span>
+					<div class="fluffy-traits-list">
+					<<for _i = 0; _i < _fluffy.traits.length; _i++>>
+						<<set _trait = _fluffy.traits[_i]>>
+						<<set _trait_id = _trait.toLowerCase().replace('-', '').replace(' ', '')>>
+						<<print "<span class='fluffy-traits-entry info-toggle' data-info='trait_" + _trait_id + "'>" + _trait + "</span>">>
+					<</for>>
+					</div>
+				</div>
+				<div class="fluffy-family">
+					<<if _fluffy.mother == -1>><span>Mother: @@.mediumorchid;Unknown@@</span><<else>><span>Mother: <<colorizeText $globalFluffies[_fluffy.mother].cColor.hex $globalFluffies[_fluffy.mother].name>></span><</if>>
+					<<if _fluffy.father == -1>><span>Father: @@.mediumorchid;Unknown@@</span><<else>><span>Father: <<colorizeText $globalFluffies[_fluffy.father].cColor.hex $globalFluffies[_fluffy.father].name>></span><</if>>
+					<<if _fluffy.specialFriend != -1>><span>Special Friend: <<colorizeText $globalFluffies[_fluffy.specialFriend].cColor.hex $globalFluffies[_fluffy.specialFriend].name>></span><</if>>
+					<span>Children: <<linkreplace "_fluffy.children.length">>_children<</linkreplace>></span>
+					<<if _fluffy.pregnant == true>><span>Is due to give birth in <<print _fluffy.dueDate>> weeks</span><</if>>
+					<<if _fluffy.nursing.length > 0>><span>Is nursing <<print _fluffy.nursing.length >> foals</span><</if>>
+				</div>
+				<div class="fluffy-price">
+					<span>Sale Price: <<displayPrice $globalFluffies[_fluffy.ID]>>
+
+					</span>
+				</div>
+			</div>
+			<div class="fluffy-details-right">
+				<div class="fluffy-stats">
+					<span class="stat-entry info-toggle" data-info="stat_strength">Strength <<displayStat _fluffy.strength>></span>
+					<span class="stat-entry info-toggle" data-info="stat_energy">Energy <<displayStat _fluffy.energy>></span>
+					<span class="stat-entry info-toggle" data-info="stat_charm">Charm <<displayStat _fluffy.charm>></span>
+					<span class="stat-entry info-toggle" data-info="stat_thinking">Thinking <<displayStat _fluffy.thinking>></span>
+					<span class="stat-entry info-toggle" data-info="stat_learning">Learning <<displayStat _fluffy.learning>></span>
+					<span class="stat-entry info-toggle" data-info="stat_fertility">Fertility <<displayStat _fluffy.fertility>></span>
+				</div>
+				<div class="fluffy-attributes">
+					<span class="attribute-entry info-toggle" data-info="attribute_trust">Trust <<displayAttribute _fluffy.trust>></span>
+					<span class="attribute-entry info-toggle" data-info="attribute_training">Training <<displayAttribute _fluffy.training>></span>
+					<span class="attribute-entry info-toggle" data-info="attribute_temperament">Temperament <<displayFlippedAttribute _fluffy.temperament>></span>
+					<span class="attribute-entry info-toggle" data-info="attribute_happiness">Happiness <<displayAttribute _fluffy.happy>></span>
+					<span class="attribute-entry info-toggle" data-info="attribute_stress">Stress <<displayFlippedAttribute _fluffy.stress>></span>
+					<span class="attribute-entry info-toggle" data-info="attribute_trauma">Trauma <<displayFlippedAttribute _fluffy.trauma>></span>
+				</div>
+
+				<<set _daysOld = 0>>
+				<<set _weeksOld = 0>>
+				<<set _yearsOld = 0>>
+				<<script>>
+					var today = new Date(State.variables.gameDate);
+					var birth = new Date(State.temporary.fluffy.birthDate);
+
+					var dif = today - birth;
+					var dif = Number(Number(dif) / Number(1000*60*60*24));
+
+					State.temporary.daysOld = Math.floor(Number(dif));
+					State.temporary.weeksOld = Math.floor(Number(State.temporary.daysOld / 7));
+					State.temporary.yearsOld = Math.floor(Number(State.temporary.daysOld / 365.4));
+
+					while (State.temporary.weeksOld > 52)
+					{
+						State.temporary.weeksOld = Math.floor(Number(State.temporary.weeksOld - 52));
+					}
+
+					while (State.temporary.daysOld > 365)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 365));
+					}
+
+					while (State.temporary.daysOld > 7)
+					{
+						State.temporary.daysOld = Math.floor(Number(State.temporary.daysOld - 7));
+					}
+				<</script>>
+
+				<div class="fluffy-age">
+					<span>Age: _fluffy.age years and _fluffy.ageWeeks weeks</span>
+					<span>Age:  _yearsOld years, _weeksOld weeks and _daysOld days old</span>
+					<span>Maximum age: _fluffy.maxAge years</span>
+					<span>Weight: _fluffy.weight KG </span>
+					<span>Length: _fluffy.length cm </span>
+					<span>Height: _fluffy.height cm </span>
+				</div>
+			</div>
+		</div>
+	<</capture>>
+<</widget>>
+
+
+
+<<widget "interactDetails">>
+	<<PlayerStatus>><hr>
+	
+	<div class="fluffy-desc-bottom w3-row w3-dark-grey">
+		<<drawSprite $activeFluffy>>
+		<<shortDesc $activeFluffy>>
+	</div>
+<</widget>>

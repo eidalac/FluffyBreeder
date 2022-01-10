@@ -1,0 +1,77 @@
+:: Pre Birth [nobr]
+
+/* **********
+ * preBirth.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * preprocessing for birth event
+ *
+ *********** */
+
+/* Each birth event target is the mother giving birth */
+<<set $mom = $globalFluffies[$currentEvent.target]>>
+
+<<set $dad = $globalFluffies[$mom.pregnantBy]>>
+
+<<if ndef $dad>>
+	<<run console.log(`ERROR: [Pre Birth]: $dad is not defined.`)>>
+	
+	<<set $globalFluffies[$mom.ID].litter = 0>>
+	<<set $globalFluffies[$mom.ID].dueDate = -1>>
+	<<set $globalFluffies[$mom.ID].pregnant = false>>
+	<<set $globalFluffies[$mom.ID].pregnantBy = -1>>
+	<<set $globalFluffies[$mom.ID].nursingTime = 0>>
+	<<set $globalFluffies[$mom.ID].nursingMax = 0>>
+	<<goto "Event Main">>
+
+<<elseif ndef $mom>>
+	/* Shouldn't happen, but just in case*/
+	<<run console.log(`ERROR: [Event Birth]: $mom is not defined.`)>>
+	<<goto "Event Main">>
+
+<<elseif $ourStore.fluffies.includes($mom.ID) == false>>
+	/* Mother was removed in a prior event. */
+	/*<<run console.log(`WARNING: [Event Birth]: $mom is not in store.`)>>*/
+	/* Not an error as fluffies can re-appear, but need to clear the birth */
+	<<set $globalFluffies[$mom.ID].litter = 0>>
+	<<set $globalFluffies[$mom.ID].dueDate = -1>>
+	<<set $globalFluffies[$mom.ID].pregnant = false>>
+	<<set $globalFluffies[$mom.ID].pregnantBy = -1>>
+	<<set $globalFluffies[$mom.ID].nursingTime = 0>>
+	<<set $globalFluffies[$mom.ID].nursingMax = 0>>
+	<<goto "Event Main">>
+
+<</if>>
+
+/* Some sanity checks:*/
+<<if $mom.ID != $globalFluffies[$mom.ID].ID>> 
+	<<run console.log(`ERROR: [preMating]: invalid mom ID: ${$mom.ID} Should be ${$globalFluffies[$mom.ID].ID}.`)>>
+	<<set $mom.ID = $globalFluffies[$mom.ID].ID>>
+	<<set $globalFluffies[$mom.ID] = $mom>>
+<</if>>
+
+<<if $dad.ID != $globalFluffies[$dad.ID].ID>> 
+	<<run console.log(`ERROR: [preMating]: invalid mom ID: ${$dad.ID} Should be ${$globalFluffies[$dad.ID].ID}.`)>>
+	<<set $dad.ID = $globalFluffies[$dad.ID].ID>>
+	<<set $globalFluffies[$dad.ID] = $dad>>
+<</if>>
+
+/* pre run random numbers for the event: */
+<<set $rand = []>>
+<<run $rand.push(random(0, 90))>>   /* checking for stillbirth from low fertililty */
+<<run $rand.push(random(0,100))>>   /* test for fertility reduction*/
+<<run $rand.push(random(0,1))>>     /* reducting in milk production */
+
+
+/* pre roll the genes for all possible children: */
+<<set $birthList = []>>
+
+<<for _fo = 0; _fo < $mom.litter; _fo++>>
+    /* Creates a new fluffy as $activeFluffy */
+    <<breedFluffies $mom $dad>>
+    <<run $birthList.push($activeFluffy)>>
+<</for>>
+
+<<goto "Event Birth">>

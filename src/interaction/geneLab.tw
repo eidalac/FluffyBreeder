@@ -1,0 +1,1083 @@
+:: Gene Lab [nobr]
+
+/* **********
+ *	geneLab.tw
+ *
+ *	Package: FluffyBreeder
+ *	Format: Twine2 (Sugarcube 2)
+ *
+ *	Debug options for directly editing a fluffies genetics.
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<div class="w3-row w3-container w3-mobile">
+ 
+/*<<set $nextButton to "Exit Lab", $nextLink to "Fluffy Interact">>*/
+<<set $nextButton to "Exit Lab", $nextLink to "Gene Test">>
+
+/* Since the Javascript elements do not save, first ensure our genome is set from the string */
+<<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+
+<<set _masterColor = "B/b;Y/y;R/r;O/o;W/w;">>
+
+You are editing the genes of:
+<br><span id="desc"><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>></span>
+
+/* ***
+ *	Gender, the easy one.  Click a link, swap gender.
+ *** */
+<hr>Gender: 
+<span id="gender">
+	<<if String($globalFluffies[$activeFluffy.ID].genes.getGender()) === "X/X">>
+		XX (Female)
+	<<elseif String($globalFluffies[$activeFluffy.ID].genes.getGender()) === "X/Y">>
+		XY (Male)
+	<<else>>
+		/* Male has been the default display, so if we have an invalid gene force it to male: */
+		<<run console.log(`ERROR: [geneLab]: invalid gender: ${$globalFluffies[$activeFluffy.ID].genes.getGender()}.`)>>
+		<<run $globalFluffies[$activeFluffy.ID].genes.setGender("male")>>
+		<<timed 10ms>>
+		<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</timed>>
+		XY (Male)
+	<</if>>
+</span>
+<<link "Female">><<run $globalFluffies[$activeFluffy.ID].genes.setGender("female")>><<set $globalFluffies[$activeFluffy.ID].gender = "female">><<replace "#gender">>XX (Female)<</replace>><<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>><</link>> |
+<<link "Male">><<run $globalFluffies[$activeFluffy.ID].genes.setGender("male")>><<set $globalFluffies[$activeFluffy.ID].gender = "male">><<replace "#gender">>XY (Male)<</replace>><<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>><</link>>
+
+/* ***
+ *	Length
+ * 
+ *	More complex, 3 genes and a random factor on top of that
+ *** */
+<br>Length: 
+<<set _lString = $globalFluffies[$activeFluffy.ID].genes.getLengthGene().toString() + ";">>
+<span id="length">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getLengthDesc()>>
+</span>
+<br>
+<div id="l-form">
+<<textbox '_lString' _lString>>
+<<button "Enter">>
+	<<set _lString to _lString.trim()>>
+
+	<<if _lString.charAt(_lString.length-1) != ";">>
+		<<set _lString  = _lString + ";">>
+	<</if>>
+
+	<<set _match = "A/a;B/b;C/c;">>
+
+	<<if _lString.length != _match.length>>
+		<<replace "#l-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _lString.match(/(A\/A;B\/B;C\/C;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#l-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setLength(_lString)>>
+
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			
+			/* Clip out the random factor from the results*/
+			<<set $globalFluffies[$activeFluffy.ID].maxLength = Number($globalFluffies[$activeFluffy.ID].genes.getLength() + $globalFluffies[$activeFluffy.ID].lengthAdd).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].length = Number(randomFloat($globalFluffies[$activeFluffy.ID].maxLength * 0.85, $globalFluffies[$activeFluffy.ID].maxLength)).toFixed(2)>>
+
+			/* Update height and weight as they are dependent on length*/
+			<<set $globalFluffies[$activeFluffy.ID].heightMulti = Number($globalFluffies[$activeFluffy.ID].genes.getHeight() + $globalFluffies[$activeFluffy.ID].heightAdd).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].maxHeight = Number($globalFluffies[$activeFluffy.ID].heightMulti * $globalFluffies[$activeFluffy.ID].length).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].height = Number(randomFloat($globalFluffies[$activeFluffy.ID].maxHeight * 0.95, $globalFluffies[$activeFluffy.ID].maxHeight)).toFixed(2)>>
+
+			<<set $globalFluffies[$activeFluffy.ID].weightMulti = $globalFluffies[$activeFluffy.ID].genes.getWeight()>>
+			<<set $globalFluffies[$activeFluffy.ID].maxWeight = Number($globalFluffies[$activeFluffy.ID].weightMulti * $globalFluffies[$activeFluffy.ID].length).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].weight = Number(randomFloat($globalFluffies[$activeFluffy.ID].maxWeight * 0.79, $globalFluffies[$activeFluffy.ID].maxWeight)).toFixed(2)>>
+
+			/* And update the page */
+			<<replace "#l-form-error">>Gene set.  Length = <<print $globalFluffies[$activeFluffy.ID].length>> cm<br> <</replace>>
+			<<replace "#length">><<print $globalFluffies[$activeFluffy.ID].genes.getLengthDesc()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="l-form-error"></span>
+</div>
+
+/* ***
+ *	Height
+ * 
+ *	much as before, only 2 genes:
+ *** */
+Height: 
+<<set _hString = $globalFluffies[$activeFluffy.ID].genes.getHeightGene().toString() + ";">>
+<span id="height">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getHeightDesc()>>
+</span>
+
+<div id="h-form">
+<<textbox '_hString' _hString>>
+<<button "Enter">>
+	<<set _hString to _hString.trim()>>
+
+	<<if _hString.charAt(_hString.length-1) != ";">>
+		<<set _hString  = _hString + ";">>
+	<</if>>
+
+	<<set _match = "e/E;f/F;">>
+
+	<<if _hString.length != _match.length>>
+		<<replace "#l-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _hString.match(/(E\/E;F\/F;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#l-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setHeight(_hString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			
+			/* Clip out the random factor from the results*/
+			<<set $globalFluffies[$activeFluffy.ID].heightMulti = Number($globalFluffies[$activeFluffy.ID].genes.getHeight() + $globalFluffies[$activeFluffy.ID].heightAdd).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].maxHeight = Number($globalFluffies[$activeFluffy.ID].heightMulti * $globalFluffies[$activeFluffy.ID].length).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].height = Number(randomFloat($globalFluffies[$activeFluffy.ID].maxHeight * 0.95, $globalFluffies[$activeFluffy.ID].maxHeight)).toFixed(2)>>
+
+			/* And update the page */
+			<<replace "#h-form-error">>Gene set.  Height = <<print $globalFluffies[$activeFluffy.ID].height>> cm<br> <</replace>>
+			<<replace "#height">><<print $globalFluffies[$activeFluffy.ID].genes.getHeightDesc()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="h-form-error"></span>
+</div>
+
+/* ***
+ *	Weight
+ * 
+ *	much as before, only 2 genes:
+ *** */
+Weight: 
+<<set _wString  = $globalFluffies[$activeFluffy.ID].genes.getWeightGene().toString() + ";">>
+<span id="weight">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getWeightDesc()>>
+</span>
+
+<div id="w-form">
+<<textbox '_wString ' _wString >>
+<<button "Enter">>
+	<<set _wString  to _wString .trim()>>
+
+	<<if _wString.charAt(_wString.length-1) != ";">>
+		<<set _wString  = _wString + ";">>
+	<</if>>
+
+	<<set _match = "G/g;H/h;">>
+
+	<<if _wString.length != _match.length>>
+		<<replace "#h-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _wString.match(/(G\/G;H\/H;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#h-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setWeight(_wString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			
+			/* Clip out the random factor from the results*/
+			<<set $globalFluffies[$activeFluffy.ID].weightMulti = $globalFluffies[$activeFluffy.ID].genes.getWeight()>>
+			<<set $globalFluffies[$activeFluffy.ID].maxWeight = Number($globalFluffies[$activeFluffy.ID].weightMulti * $globalFluffies[$activeFluffy.ID].length).toFixed(2)>>
+			<<set $globalFluffies[$activeFluffy.ID].weight = Number(randomFloat($globalFluffies[$activeFluffy.ID].maxWeight * 0.79, $globalFluffies[$activeFluffy.ID].maxWeight)).toFixed(2)>>
+
+			/* And update the page */
+			<<replace "#w-form-error">>Gene set.  Weight = <<print $globalFluffies[$activeFluffy.ID].weight>> KG<br> <</replace>>
+			<<replace "#weight">><<print $globalFluffies[$activeFluffy.ID].genes.getWeightDesc()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="w-form-error"></span>
+</div>
+
+/* ***
+ *	Age
+ * This is defined as genes 8 and 9 (J/j;K/k).
+ *** */
+Max Age: 
+<<set _aString  = $globalFluffies[$activeFluffy.ID].genes.getMaxAgeGene().toString() + ";">>
+<span id="age">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getMaxAge()>>
+</span>
+
+<div id="a-form">
+<<textbox '_aString ' _aString >>
+<<button "Enter">>
+	<<set _aString  to _aString .trim()>>
+
+	<<if _aString.charAt(_aString.length-1) != ";">>
+		<<set _aString  = _aString + ";">>
+	<</if>>
+
+	<<set _match = "J/j;K/k;">>
+
+	<<if _aString.length != _match.length>>
+		<<replace "#a-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _aString.match(/(J\/J;K\/K;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#a-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setMaxAge(_aString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			
+			<<set $globalFluffies[$activeFluffy.ID].maxAge = $globalFluffies[$activeFluffy.ID].genes.getMaxAge()>>
+
+			/* And update the page */
+			<<replace "#a-form-error">>Gene set.  Max Lifepsan = <<print $globalFluffies[$activeFluffy.ID].maxAge>> years<br> <</replace>>
+			<<replace "#age">><<print $globalFluffies[$activeFluffy.ID].genes.getMaxAge()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error messages to display*/
+<span id="a-form-error"></span>
+</div>
+
+/* ***
+ *	Fertility
+ * This is defined as genes 10 and 11 (M/n;N/n).
+ *** */
+Fertility: 
+<<set _fString  = $globalFluffies[$activeFluffy.ID].genes.getFertilityGene().toString() + ";">>
+<span id="fertility">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getFertilityDesc()>>
+</span>
+
+<div id="f-form">
+<<textbox '_fString ' _fString >>
+<<button "Enter">>
+	<<set _fString  to _fString.trim()>>
+
+	<<if _fString.charAt(_fString.length-1) != ";">>
+		<<set _fString  = _fString + ";">>
+	<</if>>
+
+	<<set _match = "m/M;n/N;">>
+
+	<<if _fString.length != _match.length>>
+		<<replace "#f-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _fString.match(/(M\/M;N\/N;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#f-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setFertility(_fString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].maxFertility = Number($globalFluffies[$activeFluffy.ID].genes.getFertility() + $globalFluffies[$activeFluffy.ID].fertilityAdd).toFixed(0)>>
+			<<set $globalFluffies[$activeFluffy.ID].fertility = Number($globalFluffies[$activeFluffy.ID].genes.getFertility()).toFixed(0)>>
+
+			/* And update the pfertility */
+			<<replace "#f-form-error">>Gene set.  Fertility = <<print $globalFluffies[$activeFluffy.ID].fertility>><br> <</replace>>
+			<<replace "#fertility">><<print $globalFluffies[$activeFluffy.ID].genes.getFertilityDesc()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="f-form-error"></span>
+</div>
+
+/* ***
+ *	Maturity
+ * This is defined as genes 12 and 13 (S/s;X/x).
+ *** */
+Maturity: 
+<<set _mString  = $globalFluffies[$activeFluffy.ID].genes.getMaturityGene().toString() + ";">>
+<span id="maturity">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getMaturityDesc()>> Months
+</span>
+
+<div id="m-form">
+<<textbox '_mString ' _mString >>
+<<button "Enter">>
+	<<set _mString  to _mString.trim()>>
+
+	<<if _mString.charAt(_mString.length-1) != ";">>
+		<<set _mString  = _mString + ";">>
+	<</if>>
+
+	<<set _match = "s/S;x/X;">>
+
+	<<if _mString.length != _match.length>>
+		<<replace "#m-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _mString.match(/(S\/S;X\/X;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#m-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setMaturity(_mString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].maxMaturity = Number($globalFluffies[$activeFluffy.ID].genes.getMaturity() + $globalFluffies[$activeFluffy.ID].maturityAdd).toFixed(0)>>
+			<<set $globalFluffies[$activeFluffy.ID].maturity = Number($globalFluffies[$activeFluffy.ID].genes.getMaturity()).toFixed(0)>>
+
+			/* And update the pmaturity */
+			<<replace "#m-form-error">>Gene set.  Maturity = <<print $globalFluffies[$activeFluffy.ID].maturity>><br> <</replace>>
+			<<replace "#maturity">><<print $globalFluffies[$activeFluffy.ID].genes.getMaturityDesc()>> Months<</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="m-form-error"></span>
+</div>
+
+
+/* ***
+ *	Breed
+* This is defined as genes 14 and 15, 16 (E/e;P/a;U/a).
+ *** */
+Breed: 
+<<set _bString  = $globalFluffies[$activeFluffy.ID].genes.getBreed().toString() + ";">>
+<span id="breed">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getBreedString()>>
+</span>
+
+<div id="b-form">
+<<textbox '_bString ' _bString >>
+<<button "Enter">>
+	<<set _bString  to _bString.trim()>>
+
+	<<if _bString.charAt(_bString.length-1) != ";">>
+		<<set _bString  = _bString + ";">>
+	<</if>>
+
+	<<set _match = "e/E;P/a;U/a;">>
+
+	<<if _bString.length != _match.length>>
+		<<replace "#b-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _bString.match(/([Ee]\/[Ee];[Ppa]\/[pPa];[Uua]\/[Uua];)/)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#b-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setBreed(_bString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].breed = $globalFluffies[$activeFluffy.ID].genes.getBreedString().toLowerCase()>>
+			
+			/* Alicorn checks: */
+			<<switch $alicornRarity>>
+			<<case 0>>
+				<<if $globalFluffies[$activeFluffy.ID].genes.getBreedString() === "SETTING_DEPENDENT_BREED">>
+					<<set $globalFluffies[$activeFluffy.ID].breed = "alicorn">>
+				<</if>>
+			<<case 1>>
+				<<if $globalFluffies[$activeFluffy.ID].genes.getBreedString() === "SETTING_DEPENDENT_BREED">>
+					<<if random(0, 1) === 0>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "unicorn">>
+					<<else>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "pegasus">>
+					<</if>>
+				<</if>>
+			<<default>>
+				<<if $globalFluffies[$activeFluffy.ID].breed.toLowerCase() === "alicorn" or $globalFluffies[$activeFluffy.ID].genes.getBreedString() === "SETTING_DEPENDENT_BREED">>
+					<<switch random(0, 5)>>
+					<<case 0 1>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "unicorn">>
+					<<case 2 3>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "pegasus">>
+					<<case 4>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "earthy">>
+					<<case 5>>
+						<<set $globalFluffies[$activeFluffy.ID].breed = "alicorn">>
+					<</switch>>
+				<</if>>
+			<</switch>>
+
+			/* And update the breed */
+			<<replace "#b-form-error">>Gene set.  Breed = <<print $globalFluffies[$activeFluffy.ID].breed>><br> <</replace>>
+			<<replace "#breed">><<print $globalFluffies[$activeFluffy.ID].genes.getBreedString()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="b-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Color
+ *** */
+Coat Color: 
+<<set _ccString  = $globalFluffies[$activeFluffy.ID].genes.getCoatColor().toString() + ";">>
+
+<span id="ccolor">
+	<<print $globalFluffies[$activeFluffy.ID].cColor.name>>
+</span>
+
+<div id="cc-form">
+<<textbox '_ccString ' _ccString >>
+<<button "Enter">>
+	<<set _ccString  to _ccString.trim()>>
+
+	<<if _ccString.charAt(_ccString.length-1) != ";">>
+		<<set _ccString  = _ccString + ";">>
+	<</if>>
+
+	<<if _ccString.length != _masterColor.length>>
+		<<replace "#cc-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _ccString.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#cc-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			/* Gene passes the regex check, save it to the genome: */
+			<<run $globalFluffies[$activeFluffy.ID].genes.setCoatColor(_ccString)>>
+
+			/* Update the gene string: */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			/* Update the color object: */
+			<<set $activeFluffy.cColor = $activeFluffy.genes.newCoatColorObject($activeFluffy.coatModifer)>>
+
+			/* Update the color groups and value bonus */
+			<<colorValue>>
+			/*<<colorGroup $activeFluffy>>*/
+
+			/* And update the pbreed */
+			<<replace "#cc-form-error">>Gene set.  Coat = <<print $globalFluffies[$activeFluffy.ID].cColor.name>><br> <</replace>>
+			<<replace "#ccolor">><<print $globalFluffies[$activeFluffy.ID].cColor.name>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cc-form-error"></span>
+</div>
+
+/* ***
+ *	Mane Color
+ *** */
+Mane Color: 
+<<set _mcString = $globalFluffies[$activeFluffy.ID].genes.getManeColor().toString() + ";">>
+
+<span id="mcolor">
+	<<print $globalFluffies[$activeFluffy.ID].mColor.name>>
+</span>
+
+<div id="mc-form">
+<<textbox '_mcString ' _mcString >>
+<<button "Enter">>
+	<<set _mcString  to _mcString.trim()>>
+
+	<<if _mcString.charAt(_mcString.length-1) != ";">>
+		<<set _mcString  = _mcString + ";">>
+	<</if>>
+
+	<<if _mcString.length != _masterColor.length>>
+		<<replace "#mc-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _mcString.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#mc-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			/* Gene passes the regex check, save it to the genome: */
+			<<run $globalFluffies[$activeFluffy.ID].genes.setManeColor(_mcString)>>
+
+			/* Update the gene string: */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			/* Update the color object: */
+			<<set $activeFluffy.mColor = $activeFluffy.genes.newManeColorObject($activeFluffy.maneModifer)>>
+
+			/* Update the color groups and value bonus */
+			<<colorValue>>
+			/*<<colorGroup $activeFluffy>>*/
+
+			/* And update the pbreed */
+			<<replace "#mc-form-error">>Gene set.  Mane Color = <<print $globalFluffies[$activeFluffy.ID].mColor.name>><br> <</replace>>
+			<<replace "#mcolor">><<print $globalFluffies[$activeFluffy.ID].mColor.name>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="mc-form-error"></span>
+</div>
+
+
+/* ***
+ *	Eye Color
+ *** */
+Eye Color: 
+<<set _ecString  = $globalFluffies[$activeFluffy.ID].genes.getEyeColor().toString() + ";">>
+<span id="ecolor">
+	<<print $globalFluffies[$activeFluffy.ID].eColor.name>>
+</span>
+
+<div id="ec-form">
+<<textbox '_ecString ' _ecString>>
+<<button "Enter">>
+	<<set _ecString to _ecString.trim()>>
+
+	<<if _ecString.charAt(_mcString.length-1) != ";">>
+		<<set _ecString  = _ecString + ";">>
+	<</if>>
+
+	<<if _ecString.length != _masterColor.length>>
+		<<replace "#ec-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _ecString.match(/(B\/B;Y\/Y;R\/R;O\/O;W\/W;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#ec-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			/* Gene passes the regex check, save it to the genome: */
+			<<run $globalFluffies[$activeFluffy.ID].genes.setEyeColor(_ecString)>>
+
+			/* Update the gene string: */
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			/* Update the color object: */
+			<<set $activeFluffy.eColor = $activeFluffy.genes.newEyeColorObject($activeFluffy.eyeModifer)>>
+
+			<<colorValue>>
+
+			/* And update the pbreed */
+			<<replace "#ec-form-error">>Gene set.  Eye Color = <<print $globalFluffies[$activeFluffy.ID].eColor.name>><br> <</replace>>
+			<<replace "#ecolor">><<print $globalFluffies[$activeFluffy.ID].eColor.name>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="ec-form-error"></span>
+</div>
+
+/* ***
+ *	Strong Gene
+ *** */
+Strong: 
+<<set _stString  = $globalFluffies[$activeFluffy.ID].genes.getStrongGene().toString() + ";">>
+<span id="stronggene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getStrong()>>
+</span>
+
+<div id="st-form">
+<<textbox '_stString ' _stString >>
+<<button "Enter">>
+	<<set _stString to _stString.trim()>>
+
+	<<if _stString.charAt(_stString.length-1) != ";">>
+		<<set _stString  = _stString + ";">>
+	<</if>>
+
+	<<set _match = "s/S;t/T;">>
+
+	<<if _stString.length != _match.length>>
+		<<replace "#st-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _stString.match(/(S\/S;T\/T;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#st-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setStrong(_stString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].strength = $globalFluffies[$activeFluffy.ID].genes.getStrong()>>
+
+			/* And update the pbreed */
+			<<replace "#st-form-error">>Gene set. Strong = <<print $globalFluffies[$activeFluffy.ID].strength>><br> <</replace>>
+			<<replace "#stronggene">><<print $globalFluffies[$activeFluffy.ID].genes.getStrong()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="st-form-error"></span>
+</div>
+
+/* ***
+ *	Energy Gene
+ *** */
+Energy: 
+<<set _enString  = $globalFluffies[$activeFluffy.ID].genes.getEnergyGene().toString() + ";">>
+<span id="energygene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getEnergy()>>
+</span>
+
+<div id="en-form">
+<<textbox '_enString ' _enString >>
+<<button "Enter">>
+	<<set _enString to _enString.trim()>>
+
+	<<if _enString.charAt(_enString.length-1) != ";">>
+		<<set _enString  = _enString + ";">>
+	<</if>>
+
+	<<set _match = "e/E;n/N;">>
+
+	<<if _enString.length != _match.length>>
+		<<replace "#en-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _enString.match(/(E\/E;N\/N;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#en-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setEnergy(_enString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].energy = $globalFluffies[$activeFluffy.ID].genes.getEnergy()>>
+
+			/* And update the pbreed */
+			<<replace "#en-form-error">>Gene set. Energy = <<print $globalFluffies[$activeFluffy.ID].energy>><br> <</replace>>
+			<<replace "#energygene">><<print $globalFluffies[$activeFluffy.ID].genes.getEnergy()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="en-form-error"></span>
+</div>
+
+/* ***
+ *	Charm Gene
+ *** */
+Charm: 
+<<set _chString  = $globalFluffies[$activeFluffy.ID].genes.getCharmGene().toString() + ";">>
+<span id="charmgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCharm()>>
+</span>
+
+<div id="ch-form">
+<<textbox '_chString ' _chString >>
+<<button "Enter">>
+	<<set _chString to _chString.trim()>>
+
+	<<if _chString.charAt(_chString.length-1) != ";">>
+		<<set _chString  = _chString + ";">>
+	<</if>>
+
+	<<set _match = "c/C;h/H;">>
+
+	<<if _chString.length != _match.length>>
+		<<replace "#ch-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _chString.match(/(C\/C;H\/H;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#ch-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setCharm(_chString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].charm = $globalFluffies[$activeFluffy.ID].genes.getCharm()>>
+
+			/* And update the pbreed */
+			<<replace "#ch-form-error">>Gene set. Charm = <<print $globalFluffies[$activeFluffy.ID].charm>><br> <</replace>>
+			<<replace "#charmgene">><<print $globalFluffies[$activeFluffy.ID].genes.getCharm()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="ch-form-error"></span>
+</div>
+
+/* ***
+ *	Thinking Gene
+ *** */
+Thinking: 
+<<set _thString  = $globalFluffies[$activeFluffy.ID].genes.getThinkingGene().toString() + ";">>
+<span id="thinkinggene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getThinking()>>
+</span>
+
+<div id="th-form">
+<<textbox '_thString ' _thString >>
+<<button "Enter">>
+	<<set _thString to _thString.trim()>>
+
+	<<if _thString.charAt(_thString.length-1) != ";">>
+		<<set _thString  = _thString + ";">>
+	<</if>>
+
+	<<set _match = "t/T;h/H;">>
+
+	<<if _thString.length != _match.length>>
+		<<replace "#th-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _thString.match(/(T\/T;H\/H;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#th-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setThinking(_thString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].thinking = $globalFluffies[$activeFluffy.ID].genes.getThinking()>>
+
+			/* And update the pbreed */
+			<<replace "#th-form-error">>Gene set. Thinking = <<print $globalFluffies[$activeFluffy.ID].thinking>><br> <</replace>>
+			<<replace "#thinkinggene">><<print $globalFluffies[$activeFluffy.ID].genes.getThinking()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="th-form-error"></span>
+</div>
+
+/* ***
+ *	Learning Gene
+ *** */
+Learning: 
+<<set _leString  = $globalFluffies[$activeFluffy.ID].genes.getLearningGene().toString() + ";">>
+<span id="learninggene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getLearning()>>
+</span>
+
+<div id="le-form">
+<<textbox '_leString ' _leString >>
+<<button "Enter">>
+	<<set _leString to _leString.trim()>>
+
+	<<if _leString.charAt(_leString.length-1) != ";">>
+		<<set _leString  = _leString + ";">>
+	<</if>>
+
+	<<set _match = "l/L;e/E;">>
+
+	<<if _leString.length != _match.length>>
+		<<replace "#le-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _leString.match(/(L\/L;E\/E;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#le-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setLearning(_leString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].learning = $globalFluffies[$activeFluffy.ID].genes.getLearning()>>
+
+			/* And update the pbreed */
+			<<replace "#le-form-error">>Gene set. Learning = <<print $globalFluffies[$activeFluffy.ID].learning>><br> <</replace>>
+			<<replace "#learninggene">><<print $globalFluffies[$activeFluffy.ID].genes.getLearning()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="le-form-error"></span>
+</div>
+
+/* ***
+ *	Inbreeding Gene
+ *** */
+Inbreeding:
+<<set _inString  = $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene().toString() + ";">>
+<span id="inbreedinggene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene()>>
+</span>
+
+<div id="in-form">
+<<textbox '_inString ' _inString >>
+<<button "Enter">>
+	<<set _inString to _inString.trim()>>
+
+	<<if _inString.charAt(_inString.length-1) != ";">>
+		<<set _inString  = _inString + ";">>
+	<</if>>
+
+	<<set _match = "#/#;">>
+
+	<<if _inString.length > 10>>
+		<<replace "#in-form-error">>@@.orange;Gene too long!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _inString.match(/(\d+\/\d+;)/)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#in-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setInbreeding(_inString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].inbreeding = $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene()>>
+
+			/* And update the pbreed */
+			<<replace "#in-form-error">>Gene set. Inbreeding = <<print $globalFluffies[$activeFluffy.ID].inbreeding>><br> <</replace>>
+			<<replace "#inbreedinggene">><<print $globalFluffies[$activeFluffy.ID].genes.getInbreedingGene()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="in-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Length Gene
+ *** */
+Coat Length: 
+<<set _clString  = $globalFluffies[$activeFluffy.ID].genes.getCoatLengthGene().toString() + ";">>
+<span id="coatlengthgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+</span>
+
+<div id="cl-form">
+<<textbox '_clString ' _clString >>
+<<button "Enter">>
+	<<set _clString to _clString.trim()>>
+
+	<<if _clString.charAt(_clString.length-1) != ";">>
+		<<set _clString  = _clString + ";">>
+	<</if>>
+
+	<<set _match = "C/c;L/L;">>
+
+	<<if _clString.length != _match.length>>
+		<<replace "#cl-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _clString.match(/(C\/C;L\/L;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#cl-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setCoatLength(_clString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength = $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatLength += $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+
+			/* And update the pbreed */
+			<<replace "#cl-form-error">>Gene set. Coat Length = <<print $globalFluffies[$activeFluffy.ID].coatLength>> (<<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>> + <<print $globalFluffies[$activeFluffy.ID].coatLengthAdd>>
+			<br> <</replace>>
+			<<replace "#coatlengthgene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatLength()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cl-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Density Gene
+ *** */
+Coat Density: 
+<<set _cdString  = $globalFluffies[$activeFluffy.ID].genes.getCoatDensityGene().toString() + ";">>
+<span id="coatdensitygene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()>>
+</span>
+
+<div id="cd-form">
+<<textbox '_cdString ' _cdString >>
+<<button "Enter">>
+	<<set _cdString to _cdString.trim()>>
+
+	<<if _cdString.charAt(_cdString.length-1) != ";">>
+		<<set _cdString  = _cdString + ";">>
+	<</if>>
+
+	<<set _match = "C/c;D/D;">>
+
+	<<if _cdString.length != _match.length>>
+		<<replace "#cd-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _cdString.match(/(C\/C;D\/D;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#cd-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setCoatDensity(_cdString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatDensity = $globalFluffies[$activeFluffy.ID].genes.getCoatDensity() + $globalFluffies[$activeFluffy.ID].coatDensityAdd>>
+
+			/* And update the pbreed */
+			<<replace "#cd-form-error">>Gene set. Coat Density = <<print $globalFluffies[$activeFluffy.ID].coatLength>><br> <</replace>>
+			<<replace "#coatdensitygene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatDensity()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cd-form-error"></span>
+</div>
+
+
+/* ***
+ *	Coat Curl Gene
+ *** */
+Coat Curl: 
+<<set _cuString  = $globalFluffies[$activeFluffy.ID].genes.getCoatCurlGene().toString() + ";">>
+<span id="coatcurlgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+</span>
+
+<div id="cu-form">
+<<textbox '_cuString ' _cuString >>
+<<button "Enter">>
+	<<set _cuString to _cuString.trim()>>
+
+	<<if _cuString.charAt(_cuString.length-1) != ";">>
+		<<set _cuString  = _cuString + ";">>
+	<</if>>
+
+	<<set _match = "C/c;c/C;">>
+
+	<<if _cuString.length != _match.length>>
+		<<replace "#cu-form-error">>@@.orange;Invalid gene length!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _cuString.match(/(C\/C;C\/C;)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#cu-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setCoatCurl(_cuString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+			<<set $globalFluffies[$activeFluffy.ID].coatCurl = $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>>
+
+			/* And update the pbreed */
+			<<replace "#cu-form-error">>Gene set. Coat Curl = <<print $globalFluffies[$activeFluffy.ID].coatCurl>><br> <</replace>>
+			<<replace "#coatcurlgene">><<print $globalFluffies[$activeFluffy.ID].genes.getCoatCurl()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="cu-form-error"></span>
+</div>
+
+/* ***
+ *	Subspecies Gene
+ *** */
+Subspecies: 
+<<set _ssString  = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesGene().toString() + ";">>
+<span id="subspeciesgene">
+	<<print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+</span>
+
+<div id="ss-form">
+<<textbox '_ssString ' _ssString >>
+<<button "Enter">>
+	<<set _ssString to _ssString.trim()>>
+
+	<<if _ssString.charAt(_ssString.length-1) != ";">>
+		<<set _ssString  = _ssString + ";">>
+	<</if>>
+
+	<<set _match = "Hex/Hex;">>
+
+	<<if _ssString.length > 10>>
+		<<replace "#ss-form-error">>@@.orange;Gene too long!@@<</replace>>
+	<<else>>
+		<<set _geneCheck = _ssString.match(/([\dA-F]\/[\dA-F];)/i)>>
+	
+		<<if _geneCheck === null>>
+			<<replace "#ss-form-error">>@@.orange;Invalid gene, does not match pattern [<<- _match>>] @@<</replace>>
+		<<else>>
+			<<run $globalFluffies[$activeFluffy.ID].genes.setSubSpecies(_ssString)>>
+			<<set $globalFluffies[$activeFluffy.ID].geneString = $globalFluffies[$activeFluffy.ID].genes.toString()>>
+
+			<<set $globalFluffies[$activeFluffy.ID].subSpecies = $globalFluffies[$activeFluffy.ID].genes.getSubSpecies()>>
+			<<set $globalFluffies[$activeFluffy.ID].subSpeciesString = $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>>
+
+			/* And update the pbreed */
+			<<replace "#ss-form-error">>Gene set. SubSpecies = <<print $globalFluffies[$activeFluffy.ID].coatCurl>><br> <</replace>>
+			<<replace "#subspeciesgene">><<print $globalFluffies[$activeFluffy.ID].genes.getSubSpeciesDesc()>><</replace>>
+			<<replace "#desc">><<FluffyDesc>><br><<print $globalFluffies[$activeFluffy.ID].genes.toString()>><</replace>>
+		<</if>>
+	<</if>>
+<</button>>
+/* Form for error message to display*/
+<span id="ss-form-error"></span>
+</div>
+
+<br> Defect Genes:  If both are recessive (lower case), we have a defect.  
+<br> For inbreeding, if both numbers match we have a big problem
+<br>
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(12,13) === $globalFluffies[$activeFluffy.ID].geneString.substring(14,15) && $globalFluffies[$activeFluffy.ID].geneString.substring(12,13) === $globalFluffies[$activeFluffy.ID].geneString.substring(12,13).toLowerCase()>>
+	<br> Joint defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(12,15)>> ]  
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(20,21) === $globalFluffies[$activeFluffy.ID].geneString.substring(22,23) && $globalFluffies[$activeFluffy.ID].geneString.substring(20,21) === $globalFluffies[$activeFluffy.ID].geneString.substring(20,21).toLowerCase()>>
+	<br> Lungs defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(20,23)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(28,29) === $globalFluffies[$activeFluffy.ID].geneString.substring(30,31) && $globalFluffies[$activeFluffy.ID].geneString.substring(28,29) === $globalFluffies[$activeFluffy.ID].geneString.substring(28,29).toLowerCase()>>
+	<br> Weight defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(28,31)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(36,37) === $globalFluffies[$activeFluffy.ID].geneString.substring(38,39) && $globalFluffies[$activeFluffy.ID].geneString.substring(36,37) === $globalFluffies[$activeFluffy.ID].geneString.substring(36,37).toLowerCase()>>
+	<br> Heart defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(36,39)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(44,45) === $globalFluffies[$activeFluffy.ID].geneString.substring(46,47) && $globalFluffies[$activeFluffy.ID].geneString.substring(44,45) === $globalFluffies[$activeFluffy.ID].geneString.substring(44,45).toLowerCase()>>
+	<br> Fertility defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(44,47)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(52,53) === $globalFluffies[$activeFluffy.ID].geneString.substring(54,55) && $globalFluffies[$activeFluffy.ID].geneString.substring(52,53) === $globalFluffies[$activeFluffy.ID].geneString.substring(52,53).toLowerCase()>>
+	<br> Growth defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(52,55)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(80,81) === $globalFluffies[$activeFluffy.ID].geneString.substring(82,83) && $globalFluffies[$activeFluffy.ID].geneString.substring(80,81) === $globalFluffies[$activeFluffy.ID].geneString.substring(80,81).toLowerCase()>>
+	<br> Stomach defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(80,83)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(100,101) === $globalFluffies[$activeFluffy.ID].geneString.substring(102,103) && $globalFluffies[$activeFluffy.ID].geneString.substring(100,101) === $globalFluffies[$activeFluffy.ID].geneString.substring(100,101).toLowerCase()>>
+	<br> Brain defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(100,103)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(120,121) === $globalFluffies[$activeFluffy.ID].geneString.substring(122,123) && $globalFluffies[$activeFluffy.ID].geneString.substring(120,121) === $globalFluffies[$activeFluffy.ID].geneString.substring(120,121).toLowerCase()>>
+	<br> Eye defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(120,123)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(84,85) === $globalFluffies[$activeFluffy.ID].geneString.substring(86,87) && $globalFluffies[$activeFluffy.ID].geneString.substring(84,85) === $globalFluffies[$activeFluffy.ID].geneString.substring(84,85).toLowerCase()>>
+	<br> Misc1 defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(84,87)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(104,105) === $globalFluffies[$activeFluffy.ID].geneString.substring(106,107) && $globalFluffies[$activeFluffy.ID].geneString.substring(104,105) === $globalFluffies[$activeFluffy.ID].geneString.substring(104,105).toLowerCase()>>
+	<br> Misc2 defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(104,107)>> ]
+<</if>>
+
+<<if $globalFluffies[$activeFluffy.ID].geneString.substring(124,125) === $globalFluffies[$activeFluffy.ID].geneString.substring(126,127) && $globalFluffies[$activeFluffy.ID].geneString.substring(124,125) === $globalFluffies[$activeFluffy.ID].geneString.substring(124,125).toLowerCase()>>
+	<br> Misc3 defect found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(124,127)>> ]
+<</if>>
+
+<<set _inbreed = $globalFluffies[$activeFluffy.ID].geneString.substring(168).split('/')>>
+<<if Number(_inbreed[0]) === Number(_inbreed[1])>>
+	<br> Inbreeding found [ <<print $globalFluffies[$activeFluffy.ID].geneString.substring(168)>> ]
+<</if>>
+
+
+<br>
+[[Exit the Lab|Gene Test]]
+
+</div>
+
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>

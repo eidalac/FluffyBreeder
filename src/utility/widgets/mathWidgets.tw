@@ -1,0 +1,147 @@
+:: math widgets [nobr widget]
+
+/* **********
+ * mathWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	Widgets for math because I can't trust TWINE to add numbers.
+ *
+ *********** */
+
+
+/* ***
+ *	Call as <<cashAdd number>>
+ *	Adds a value (or subtract if negative) to the $cash value.
+ *** */
+<<widget "cashAdd">>
+	
+	<<if ndef _args[0]>>
+		/* Ignore if there are no args. */
+		<<run console.log(`WARNING: <<cashAdd>>: called with no arguments.`)>>
+	
+	<<elseif isNaN(_args[0])>>
+		/* Ignore if the arg can't be processed as a number. */
+		<<run console.log(`WARNING: <<cashAdd>>: called with a non number ${_args[0]}.`)>>
+	
+	/* Process the math in java script. */
+	<<else>>
+		<<script>>
+			/* Upper bound check.  Number can be up to 1.8E308, this is about 1.8e50, so under by 250+ orders of magnitude: */
+			const maxCash = 180000000000000000000000000000000000000000000000000;
+
+			/* Cast the arg as a number: */
+			State.temporary.args[0] = Number(State.temporary.args[0]).toFixed(2);
+
+			/* Add the value: */
+			State.variables.cash = Number(Number(State.variables.cash) + Number(State.temporary.args[0])).toFixed(2);
+
+			/* Clamp the value from 0 to maxCash: */
+			State.variables.cash = Math.clamp(State.variables.cash, 0, maxCash);
+
+			/* Round to 2 decimal digits: */
+			State.variables.cash = Number(State.variables.cash).toFixed(2);
+			/* Log if this is somehow NaN: */
+			if (isNaN(State.variables.cash))
+			{
+				console.log(`ERROR: <<cashAdd>>: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
+				State.variables.cash = Number(10).toFixed(2);
+			}
+		<</script>>
+	<</if>>
+<</widget>>
+
+/* ***
+ *	Call as <<cashMinus number>>
+ *	Subtract a positive value from the $cash value.
+ *** */
+<<widget "cashMinus">>
+	<<if ndef _args[0]>>
+		/* Ignore if there are no args. */
+		<<run console.log(`WARNING: <<cashMinus>>: called with no arguments.`)>>
+	<<elseif isNaN(_args[0])>>
+		/* Ignore if the arg can't be processed as a number. */
+		<<run console.log(`WARNING: <<cashMinus>>: called with a non number ${_args[0]}.`)>>
+	<<elseif Number(_args[0]) < 0>>
+		/* Ignore if the arg is set negative: */
+		<<run console.log(`WARNING: <<cashMinus>>: called with a negative number ${_args[0]}.`)>>
+	<<else>>
+		<<script>>
+			State.temporary.args[0] = Number(Number(0) - Number(State.temporary.args[0])).toFixed(2);
+		<</script>>
+	<</if>>
+
+	<<cashAdd _args[0]>>
+<</widget>>
+
+
+/* ***
+ *	Call as <<cashClamp>>
+ *	does a clamp check on $cash.
+ *** */
+<<widget "cashClamp">>
+	
+	/* Process the math in java script. */
+	<<script>>
+		/* Upper bound check.  Number can be up to 1.8E308, this is about 1.8e50, so under by 250+ orders of magnitude: */
+		const maxCash = 180000000000000000000000000000000000000000000000000;
+
+		/* Clamp the value from 0 to maxCash: */
+		State.variables.cash = Math.min(Math.max(State.variables.cash, 0), maxCash);
+
+		/* Round to 2 decimal digits: */
+		State.variables.cash = Number(State.variables.cash).toFixed(2);
+
+		/* Log if this is somehow NaN: */
+		if (isNaN(State.variables.cash))
+		{
+			if (typeof State.variables.cashLastWeek !== 'undefined' && !(isNaN(State.variables.cashLastWeek)))
+			{
+				console.log(`ERROR: <<cashClamp>>: $cash is NaN after processing revert to ${State.variables.cashLastWeek}.`);
+				State.variables.cash = Number(State.variables.cashLastWeek).toFixed(2);
+			}
+			else
+			{
+				console.log(`ERROR: <<cashClamp>>: $cash is NaN after processing (revert to 10.00) ${State.variables.cash}.`);
+				State.variables.cash = Number(10).toFixed(2);
+			}
+		}
+	<</script>>
+<</widget>>
+
+
+/* ***
+ *	Call as <<clampValues $fluffy>>
+ *	Clamps fluffy stats
+ *** */
+<<widget "clampValues">>
+	<<fluffyError _args[0]>>
+	<<if $fluffyError>>
+		<<run console.log(`ERROR: <<clampValues>>: $fluffyError`)>>
+		<<set $fluffyError = false>>
+	<<else>>
+		/* Doing via script because I can't trust TWINE to do math */
+		<<script>>
+			const ID = State.temporary.args[0].ID;
+
+			/* Clamp These 0-10: */
+			State.variables.globalFluffies[ID].strength = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].strength, 0, 10));
+			State.variables.globalFluffies[ID].energy = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].energy, 0, 10));
+			State.variables.globalFluffies[ID].charm = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].charm, 0, 10));
+			State.variables.globalFluffies[ID].thinking = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].thinking, 0, 10));
+			State.variables.globalFluffies[ID].learning = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].learning, 0, 10));
+			State.variables.globalFluffies[ID].fertility = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].fertility, 0, 10));
+
+			/* Clamp these to 0-200 */
+			State.variables.globalFluffies[ID].trust = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trust, 0, 200));
+			State.variables.globalFluffies[ID].training = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].training, 0, 200));
+			State.variables.globalFluffies[ID].temperament = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].temperament, 0, 200));
+			State.variables.globalFluffies[ID].happy = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].happy, 0, 200));
+			State.variables.globalFluffies[ID].stress = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].stress, 0, 200));
+			State.variables.globalFluffies[ID].trauma = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].trauma, 0, 200));
+			State.variables.globalFluffies[ID].furStage = Math.trunc(Math.clamp(State.variables.globalFluffies[ID].furStage, 0, 200));
+			
+		<</script>>
+	<</if>>
+<</widget>>

@@ -1,0 +1,458 @@
+:: Encyclopedia [nobr]
+
+/* **********
+ * encyclopedia.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * In game enclopedia/guide, linked from the side bar.
+ *
+ * TODO:  Currently empty, need to fill this as a beta requiremnt. 
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<<set $ui = "main">>
+<<set $nextButton to "Back to the shop.", $nextLink to $returnTo>>
+
+<style>
+.responsive {
+  width: 100%;
+  max-width: 160px;
+  height: auto;
+}
+</style>
+
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+
+	<<sidebarTop>>
+
+	<div>
+		<div class="w3-dropdown-hover">
+		  	@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+	
+		<div class="w3-dropdown-hover">
+			<span data-function="store-upgrades" class="selectbutton"><<button [[Store Upgrades|Buy Upgrades]]>><</button>></span>
+		</div>
+
+		<div class="w3-dropdown-hover">
+			<span data-function="store-list" class="selectbutton"><<button [[Store Fluffies|Fluffy List]]>>
+				<<set $listType = "All", $encyclopedia = "Fluffy List">>
+			<</button>></span>
+		</div>
+		
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card" id="header">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item"><<- $ourStore.name>></h1>
+</header>
+
+<<timed 5ms>>
+<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<<run $(".selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div id="main" class="w3-row w3-container w3-mobile">
+ 
+<<switch $encyclopedia>>
+/* ***
+ *	ABOUT
+ *** */
+<<case "About">>
+<h1>About Fluffy Breeder</h1>
+Fluffy Breeder //version $ver//.
+<br>
+<br>A text baseed fluffy breeding game
+<br>
+<br>Github: https://github.com/eidalac/FluffyBreeder
+<br>
+<br>Code/Design extremely influenced by Free Cities (Copyright (C) 2017 freecitiesdev)
+<br>
+<br>Base genetic code from https://github.com/armatronic
+<br>
+<br>This program is free software: you can redistribute it and/or modify it under the terms of the GNU General Public License as published by the Free Software Foundation, either version 3 of the License, or (at your option) any later version.
+<br>
+<br>This program is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE. See the GNU General Public License for more details.
+<br>
+<br>Fluffies are //FICTIONAL// creatures - Real Life animal abuse is a serious issue, immoral and illegal.
+<br>
+<br>This is wholly a work of //FICTION//. Any resemblance to real persons, animals, places or events are coincidental.
+<br>
+<br>Nothing that takes place in this work of //FICTION// should be replicated in any form in real life.
+
+/* ***
+ *	Playing Fluffy Breeder
+ * 
+ *	Basic gameplay overview.
+ *** */
+<<case "Playing Fluffy Breeder">>
+<h1>Playing Fluffy Breeder</h1>
+This is a game about breeding, training and selling Fluffy Ponies.  You must pay weekly to cover costs of your shop and food, train/abuse your fluffies and sell them for profit - idealy.
+<br>
+<h2>Colors</h2>
+Colored text is used to highlight important details.
+<br>For consistency this will be used as the style guide for colors:
+<br>
+<br>@@.cyan;Cyan text@@ means a fluffy is saying something.
+<br>@@.stat-high.stat-value;Green text@@ means something good, like a healthy fluffy.
+<br>@@.stat-lowh.stat-value;Red text@@ means something bad, like a sick fluffy.
+<br>@@.stat-average.stat-value;Yellow text@@ means something neutral but noteworthy.
+<br>@@.yellowgreen;Yellow-green text@@ indicates a money-related event.
+<br>@@.coral;Coral text@@ is used for simple identifiers.
+<br>@@.lightcoral;Light Coral text@@ is used for identifiers for things that fall under another identifier. 
+<br>@@.orange;Orange text@@ means something is a note for the players attention.
+
+<br>@@.hotpink;Hot pink text@@ means an increase in a value.
+<br>@@.mediumorchid;Orchid text@@ means a decrease in a value.
+<br>@@.lime;Lime text@@ means something has grown, which is usually, but not always, good.
+
+<br>
+
+/* ***
+ *	World Setup
+ * 
+ *	Overview of the world setup starting options.
+ *** */
+<<case "World Setup">>
+<h1>World Setup</h1>
+World Settings lets you configure some of the conditions of your game, to make it harder or easier.  All settings start on a value of 1 "Default", but you can make them 0 "easy" or 2 "hard".
+<br>If any settings are changed a link will appear to reset defaults.
+<br>You can click to Continue at the bottom of the page once you have all settings as you like.
+<hr>
+<h2>@@.coral;Economy@@</h2>
+This setting controls the base value for fluffies.  Easier makes prices less, harder makes them higher.  
+<br>This impacts both buying and selling prices, so is a double edged sword, but in general it will be easier to get started on the easier setting but you will turn more profit latter in the game on a harder setting.
+<br>
+<br>Mechanically, "Easy" has 25% lower base price, while "Hard" increases base price by 75%.
+<hr>
+<h2>@@.coral;Alicorn Rarity@@</h2>
+This setting controls how hard it is to find and breed Alicorns and also adjust the prices for them, as the rarer they are the more value they have.
+<br>If this is set to "Hard" it will be very rare to find Alicorns and hard to breed them, but they will have a much higher price.
+<br>
+<br>Mechanically this is complicated, as it interacts with some other values, but will roughly change the basic Alicorn price by 25%, before all other modifiers.
+<br>On the genetic level there are 2 genes that can give and Alicorn (which is a recessive trait).  One combination only comes up 1.6% of the time, the other has a 14.1% rate.
+<br>On the default setting the more common gene has a 1/6 chance of being an alicorn - so the effective rate is about 4%. 
+<br>On Easy, that second gene always gives an Alicorn, so the rate is about 15%.
+<br>On Hard, the second gene never gives an Alicorn,  limiting the rate to about 1.6%.
+<br>
+<br>Keep in mind, that these numbers are based on the hard coded default parents used for new generation.  They have genes that can yield all possible outcomes, which is not going to be a realisitic situation.  
+<br>These rates represent the maximum chance - not the final chance.
+<hr>
+<h2>@@.coral;Alicorn Rejection@@</h2>
+This setting currently affects pricing for alicorns, as the Rarity setting above.
+<br>In the future it will control events/training related to alicorns.
+<hr>
+<h2>@@.coral;Color Rejection@@</h2>
+In the future it will control events/training related to "bad colors", mostly browns.
+<br>Not currently implemented.
+<hr>
+<h2>@@.coral;Smarty Syndrom@@</h2>
+In the future it will control events/training related to Smarties.
+<br>Not currently implemented.
+<hr>
+<h2>@@.coral;Cheat Mode@@</h2>
+Selecting Cheat Start will start with greatly increased starting @@.yellowgreen;¤@@, and also unlocks the Gene Lab so you can directly review/edit genes for a fluffy.
+<hr>
+
+<<case "Shop Setup">>
+<h1>Shop Setup</h1>
+The stop setup lets you configure the shop.
+<br>You start with a number of points.  Unspent points become starting @@.yellowgreen;¤@@.  You can buy shop stats with @@.yellowgreen;¤@@ later, but it's more expensive after the initial setup.
+<br>There is a base upkeep cost, representing rent and utilities, which is based on the total number of stats you have, so keep an eye on this to ensure you have enough funds left to cover costs till you can start selling fluffies.  You can increase/decrease the amounts without any loss of points.
+<h2>Shop Stats</h2>
+The shop has 3 stats: Space, Shelter and Display.  Stats are capped at 750.  
+<br>Space is used for buying updgrades in the future.  @@.orange;This feature is not yet implemented.@@
+<br>Shelter determines how many fluffies you can keep.  If your population is higher than this you cannot get more fluffies and breeding is blocked.  Part of this is due to system limitations - having more than 1000 fluffies will cause the TWINE script to fail as it can't manage a loop of that size.
+<br>Display sets the number of fluffies you can have on sale at one time.
+
+<<case "Running your Store">>
+<h1>Running your Store</h1>
+After setup you will be in the general page for the game content as well as general status information.
+<br>Most of the status information can be viewed on the sidebar to the left.  This is closed by default on mobile, so you will have to open it with the arrow on the upper left. 
+<h2>@@.coral;Owner Status@@</h2>
+The first information is the stats of the store owner - the player character.
+<br>
+<br>Stamina - this tracks the number of actions you can take in a week (currently 10).  Actions are needed to look for/buy fluffies as well as for playing, training or abuse.  If you run out of stamina you will not be able do these actions till the next week.
+<br>
+<br>Stress - This tracks the stress level of the owner.  It increases each week based on the number of fluffies you have in the store as well as when training a fluffy.  Playing and abuse will reduce stress.  There is currently no implemented effect for having high stress.
+<br>
+<br>Rep - Reputation.  This tracks the general reputation of your store, and will unlock certain events, actions and help increase your ability to sell fluffies. 
+<br>Not currently implemented.
+<br>
+<br>EXP - This is your exprience with general training (netural), hugbox actions and abuse actions.
+<br>No implemented effect yet.  In the future certain actions/events will require specific level.
+<h2>@@.coral;Cash@@</h2>
+Cash is your @@.yellowgreen;¤@@ on hand, while upkeep tracks your expenses this week.
+<br>The upkeep may not reflect the food costs of fluffies you just purchased.
+<br>There is currently no implemented effect from going negative, aside from not being able to buy things.
+<h2>@@.coral;Fluffies@@</h2>
+This tracks the fluffies you have as well as the current limit based on your shelter amount, as well as a break down of foals, mares and stallions.
+<br>
+<br>The Check Fluffies and Check Displays links will show a list of all fluffies based on if they are on sale or not.
+<br>The fluffy lists this brings up has most options for interaction with the fluffies.
+<h2>@@.coral;Store@@</h2>
+This tracks the store stats (Shelter, Display and Space) as well as a link for buying improvements.
+<h2>@@.coral;Get Fluffies@@</h2>
+These links let you buy or capture fluffies.
+<br>
+<br>Fluffy Mart offers a range of colors, but not high tier colors or alicorns.  Prices are mostly in the 20-70@@.yellowgreen;¤@@ range.
+<br>
+<br>Fluffy Mills offer very young foals in poor colors for a very low price: 3-10@@.yellowgreen;¤@@.
+<br>
+<br>Fluffy Breeders offer well trained fluffies with good colors, including Alicorns - at a very high price.  Expect to pay 100-300@@.yellowgreen;¤@@ - or 10x that much for an Alicorn.
+<br>
+<br>Hunting for ferals is free, and can even generate Alicorns, but often have bad traits.  Specifically Ferals have a Feral trait that greatly reduces resell price.
+
+<<case "Fluffy List">>
+<h1>Fluffy List</h1>
+This list shows all fluffies in your store that are not on display (up for sale).  It can be sorted by mares (adult females), stallions (adult males) and foals.
+<br>More detailed sorting options are planned.
+<br>
+<br>There are options to select/deslect all, as well as buttons to set the sale status and feeding type for all selected fluffies.
+<br>Fluffys can be selected by the checkbox to the left of there description or by clicking anywhere in the description.
+<br>
+<br>The <<button "Bulk Sell">><</button>> button will put all selected fluffies on display (for sale), but will ignore unweaned foals, nursing and pregnant mothers.
+<br>There will eventually be support for selling nursing foals/pregnant mothers. 
+<br>
+<br>The <<button "Bulk Removal">><</button>> button will remove the selected fluffies with the option picked in the box to the left.  @@.coral;Euthanize@@ is a @@.lightcoral;Hugbox@@ action, @@.coral;Murder@@ is considered  a @@.lightcoral;Abuse@@ and @@.coral;Release@@ is a neutral action.
+<br>
+<br>The <<button "Bulk Feeding">><</button>> button will set the selected food type and quality to all selected fluffies.  This will ignore nursing foals unless Formula is selected, and will ignore adults if Formula is selected.
+<h2>@@.coral;Fluffy Status@@</h2>
+The list displays a basic stat block for each fluffy.
+<br>In the future some stats will be hidden until you reach certain EXP levels.
+<br>
+<br>The default name is is "Fluffy" followed by a number for easy of tracking.  Clicking on the name will take you to the [[Fluffy Interaction|Encyclopedia][$encyclopedia = "Fluffy Interaction"]] page.
+<br>A fluffy can be renamed on the Fluffy Interaction page.
+<br>
+<br>For details of the various stats and terms, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = "Fluffy Statistics"]] page.
+
+<<case "Fluffy Statistics">>
+Fluffy statistics can be viewed in the main list or in the interaction page for each fluffy.
+
+<h3>@@.coral;Personality@@</h3>
+A newborn fluffy has one of 5 personalities that each become one of two adult personalities, so there are 10 possible adult traits.
+<br>
+<p class="hang">@@.lightcoral;Fussy@@ -  can become @@.lightcoral;Diligent@@ or @@.lightcoral;Bossy@@
+<br>These traits all increase the fluffy's Strength and temperament .  Diligent fluffies have better Learning.  Bossy fluffys have reduced Charm.</p>
+
+<p class="hang">@@.lightcoral;Shy@@ - can become @@.lightcoral;Curious@@ or @@.lightcoral;Timid@@
+<br>These traits increase Learning and reduced temperament.  Curious fluffies have more Energy, while Timid have reduced Strength.</p>  
+
+<p class="hang">@@.lightcoral;Lazy@@ - can become @@.lightcoral;Pensive@@ or @@.lightcoral;Dull@@
+<br>These fluffies are better at Thinking and have lower temperament.  Pensive fluffies have better Learning, while Dull have less Energy.</p> 
+
+<p class="hang">@@.lightcoral;Cute@@ - can become @@.lightcoral;Sweet@@ or @@.lightcoral;Haughty@@
+<br>These fluffies have more Charm.  Sweet fluffies are better at Learning.  Haughty are worse at Learning and have higher temperament.</p>
+
+<p class="hang">@@.lightcoral;Peppy@@ - can become @@.lightcoral;Playful@@ or @@.lightcoral;Rowdy@@
+<br>These fluffys have more Energy.  Playful fluffies have more Charm.  Rowdy have reduced Charm.</p>
+
+<hr>
+<h3>@@.coral;Colors@@</h3>
+Fluffies come in a number of colors, some more common or popular than others.  Fluffies have a primary Coat color, a Mane color and Eye color.
+<br>Colors fall into 6 tiers, with 1 being the least valuable and 6 the most.  Colors give a multiplier to the price of a fluffy, and get a bonus if the colors Match (same color group), are identical (same color exactly) or are in a complimentary color group.  Eyes have a minor increase in value, coat has the highest value impact.  
+<br>
+<br>
+<<link "Color Chart [Click to Expand/Collapse]">><<toggleclass "#section1" "hidden">><</link>>
+<div id="section1" class="hidden">
+	<table>
+		<tr>
+			<th>Color</th>
+			<th>Tier</th>
+		</tr>
+	<<for _i = 0; _i < $colors.length; _i++>>
+		<tr>
+			<th><<inlineColor $colors[_i].name>></th>
+			<th><<print $colors[_i].tier>></th>
+		</tr>
+	<</for>>
+	</table>
+</div>
+<hr>
+<h3>@@.coral;Gender@@</h3>
+Male or Female. Due to design limitations this game is limited to binary genders.
+<hr>
+<h3>@@.coral;Breed@@</h3>  
+Fluffies can be Earth/Earthie, Unicorns, Pegaus/Pegasi or Alicorns.
+<br>
+<p class="hang">@@.lightcoral;Earthies@@ are the most common breed and have the lowest prices.</p>
+
+<p class="hang">@@.lightcoral;Pegasi@@ have small, non funtional wings while @@.lightcoral;Unicorns@@ have small horns.  Both these breeds are less common and more valuable than Earthies.</p>
+
+<p class="hang">@@.lightcoral;Alicorns@@ have both wings and horns.  They are both rare on a genetic level and trigger a level of rejection in most fluffies as 'monsters'.
+<br>While this can be limited by game settings and training, Alicorns are always going to be far less common and more valuable.</p> 
+<hr>
+<h3>@@.coral;Abilities@@</h3>
+These represent the physical and mental abilities of the fluffy, based on genetics.   The first 5 can be between 1-6 before bonus from personality.  Fertility can be between 0-8 and is not affected by personalities, but is reduced in mares over time as they give birth.
+<br>
+<br>The scores will show as "@@.yellow;??@@" (Unknown) until your training level is at least 40.  They will display as "@@.stat-low.stat-value;Low@@", "@@.stat-average.stat-value;Average@@" or "@@.stat-high.stat-value;High@@" below training level 60.  Above 60 you will see the exact number.
+<br>
+<br>Abilities affect the @@.yellowgreen;¤@@price of the fluffy based on the average of all abilities, with Charm counted twice. 
+<p class="hang">@@.lightcoral;Strength@@ - General physical ability and coordination.  Fussy, Dilligent and Bossy fluffies have a bonus to Strength.</p>
+
+<p class="hang">@@.lightcoral;Energy@@ - Physical energy and endurance.  Peppy, Playful, Rowdy and Curious fluffies have more Energy.</p>
+
+<p class="hang">@@.lightcoral;Charm@@ - General disposition and demeanor of a fluffy.  Counts twice for caculating price.  Cute, Sweet, Haughty and Playfull fluffies have a bonus to Charm.</p>
+
+<p class="hang">@@.lightcoral;Thinking@@ - Reasoning ability.  Lazy, Pensive and Dull fluffies have better Thinking.</p>
+
+<p class="hang">@@.lightcoral;Learning@@ - Ability to learn new things.  Shy, Curious, Timid and Pensive fluffies have better Learning.</p>
+
+<p class="hang">@@.lightcoral;Fertility@@ - Controls how many foals a fluffy might have, averaged between the father and mother with a +/- 1 random factor.  This also controls how much Milk a nursing mare can produce.  This decays each time a mare gives birth and a lower Fertility increases the risk of stillbirths.</p>  
+<br>
+<h3>@@.coral;Social and Health@@</h3>
+These represent the social ability and general well being of a fluffy.  Most range from 0 to a max of 200.
+<br>@@.orange;Note - Most of these have not been fully implemented so have no affect yet.@@
+<br>
+<br>The scores will show as "@@.yellow;??@@" (Unknown) until your training level is at least 66.  They will display as "@@.stat-low.stat-value;Low@@", "@@.stat-average.stat-value;Average@@" or "@@.stat-high.stat-value;High@@" below training level 100.  Above 100 you will see the exact number.
+<br>
+<p class="hang">@@.lightcoral;Trust@@ - This represents how much the fluffy trusts humans in general and you in particular.  Every 10 points of trust raises the base price of the fluffy by +1, before multipliers due to color and other factors.</p>
+<p class="hang">@@.lightcoral;Training@@ - This indicates how much the fluffy has been trained and taught to behave and obey its owner.  This directly increases the base price by +1 per point. </p>
+<p class="hang">@@.lightcoral;Temperament@@ - How willful the fluffy is and is based on personality and treatment.  0 would indicate a fluffy that is afraid to the point of trauma.  200 would be a stubborn and willful fluffy such as a Smarty.</p>
+<p class="hang">@@.lightcoral;Happiness@@ - How happy the fluffy is.  0 would be utter misery, 200 would be ecstatic.</p>
+<p class="hang">@@.lightcoral;Stress@@ - Tracks physical and mental stress.  Increased by training and abuse, reduced with play.  High levels can be directly fatal.</p>
+<p class="hang">@@.lightcoral;Trauma@@ - Long term harm that is slow to heal.  Fatal at higher levels.</p>
+
+<h3>@@.coral;Measurements@@</h3>
+Physical measurements
+<br>Age
+<br>Weight
+<br>Length
+<br>Height
+<br>
+<h3>@@.coral;Family@@</h3>
+Mother, Father and any children
+
+<<case "Fluffy Interaction">>
+<h1>Fluffy Interaction</h1>
+This page shows some details of the selected fluffy and specific interactions you can do with them.
+<br>
+<br>For details on the owner stats, see 'Owner Status' on the [[Running your Store|Encyclopedia][$encyclopedia = "Running your Store"]] page.  For details of the various Fluffy stats, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = "Fluffy Statistics"]] page.
+<br>
+<br>If enabled (on by default currenlty), there is a link for the [[Gene Lab|Encyclopedia][$encyclopedia = "Gene Lab"]] editing tool under the fluffy information.
+<br>
+<h2>@@.coral;Interactions@@</h2>
+<p class="hang">@@.lightcoral;Name@@ - You can rename the fluffy here.  @@.orange;Currently names are only cosmetic - fluffies do not react to good/bad name@@.</p>
+<p class="hang">@@.lightcoral;Play@@ - Play with the fluffy.  This costs @@.mediumorchid;Stamina@@.  Playing reduces player and fluffy @@.mediumorchid;Stress@@ and increases fluffy @@.hotpink;Trust@@, @@.hotpink;Happiness@@ and @@.hotpink;Temperament@@.  It raises your @@.hotpink;Hugbox@@ rating. </p>
+/* 
+		<<set $stress += 1>>
+		<<set $actions-->>
+		<<set $training += 1>>
+		<<set $activeFluffy.training++>>
+		
+<br>@@.hotpink;Hot pink text@@ means an increase in a value.
+<br>@@.mediumorchid;Orchid text@@ means a decrease in a value.
+*/
+<p class="hang">@@.lightcoral;Train@@ - You spend time training the fluffy.  This costs @@.mediumorchid;Stamina@@ and raises player @@.hotpink;Stress@@.  It increases the fluffy's @@.hotpink;Trust@@ and @@.hotpink;Training@@ levels.</p>
+
+<p class="hang">@@.lightcoral;Abuse@@ - Abuse the fluffy.  This costs @@.mediumorchid;Stamina@@.  Abuse reduces player @@.mediumorchid;Stress@@ significantly.  Abuse decreases fluffy @@.mediumorchid;Trust@@, @@.mediumorchid;Happiness@@ and @@.mediumorchid;Temperament@@.  It raises your @@.hotpink;Abuse@@ rating and increases the fluffy @@.hotpink;Stress@@. </p>
+
+<p class="hang">@@.lightcoral;Remove@@ - Removes the fluffy.  @@.coral;Euthanize@@ is a @@.lightcoral;Hugbox@@ action, @@.coral;Murder@@ is considered  a @@.lightcoral;Abuse@@ and @@.coral;Release@@ is a neutral action.</p>
+
+<<case "Gene Lab">>
+<h1>Gene Lab</h1>
+
+<br>@@.orange;Notice: This is a rough draft, not well formated and incomplete.@@
+<br>
+<br>
+The Gene Lab is primarily a debugging tool, used to see and edit the genes of a fluffy directly.
+<br>
+<br>The top of the page displays the fluffies information.  For details of the various Fluffy stats, see the [[Fluffy Statistics|Encyclopedia][$encyclopedia = "Fluffy Statistics"]] page. 
+<br>
+<br>Under the information is the full gene code for this fluffy.
+<br>
+<br>Each gene has a base pair (a single letter in most cases), separated by a ‘/’.  Each pair is separated by a ‘;’.  Traits may be controlled by 1-5 genes.  With one exception all genes take the form of a ‘Dominate’ (Upper case) and ‘Recessive” (Lower Case) letter
+<br>
+<br>An example gene: <<- $grandfatherGene>>
+<br>
+<br>Gender-Length-Height-Weight-Age-Fertility-Maturity-Breed-color-color-color-sta-sta-sta-sta-sta-stat-Inbreeding
+<br>
+<br>Under this is a series of fields where you can edit the genes, separated by the feature they code for.
+<br>
+<br>You can change any letter and click the “enter” button to save the change.  If the value entered is not valid for this gene, it will return an error - ie if you enter “w/a;b/b;c/c;” for the Length it will tell you this is invalid, as the gene must be in the format "A/a;B/b;C/c;"
+<br>
+<br>The very last gene is “Inbreeding”, which is a pair of numbers rather than letters.  If both numbers are the same the fluffy is considered to be inbreed.  So long as the numbers are different they do not matter.
+<br>
+<h2>Gene Info</h2>
+
+<br>Some genes are ‘co-dominate’ - meaning if either letter is Upper Case (dominate), the other does not matter.  A/a is the same as a/A and A/A.  These can be abbreviated to just ‘A’ or ‘a’.
+<br>
+<br>Other genes have ‘incomplete dominant’, so both cases always matter (A/A is not the same as A/a or a/a).
+
+<h2>The Genes</h2>
+
+<h3>Gender</h3>
+
+This is defined as the first gene (0), X\X or X\Y.  
+<br>
+<br>X\X is Female, X\Y is Male.  Fluffies have a binary gender expression.  These are only upper case.
+
+<h3>Length</h3>
+
+This controls the adult body length, in cm.
+<br>
+<br>This is defined as genes 1, 2 and 3, and has the format "A/a;B/b;C/c;".
+<br>
+<br>All genes are ‘co-dominate’, so there are 8 phenotype combinations
+<br>
+<<link "Length Gene [Click to Expand/Collapse]">><<toggleclass "#section_length" "hidden">><</link>>
+<div id="section_length" class="hidden">
+Genes       Length (cm)
+[ A b c ]     39-40
+[ a B c ]     37-38
+[ a B C ]     35-36
+[ A B C ]     33-34
+[ A B c ]     31-32
+[ A b C ]     29-30
+[ a b C ]     27-28
+[ a b c ]     25-26
+</div>
+
+<h3>Height</h3>
+
+This gene controls the ‘height multiplier’, which is multiplied by the Length value to get the height, in cm.
+<br>
+<br>This is defined as genes 4 and 5, and has the format "E/e;F/f;".
+<br>The “E/e” gene is ‘co-dominate’, while the “F/f” gene is ‘incomplete dominant’, so there are 6 phenotype combinations.
+<br>
+<<link "Height Gene [Click to Expand/Collapse]">><<toggleclass "#section_height" "hidden">><</link>>
+<div id="section_height" class="hidden">
+Genes       Height multiplier
+[ e f  ]     0.65-0.67
+[ E F  ]     0.62-0.64
+[ E fF ]     0.59-0.61
+[ E f  ]     0.56-0.58
+[ e fF ]     0.53-0.55
+[ e F  ]     0.50-0.52
+</div>
+
+
+
+
+<<default>>
+	<br>nothing here
+
+<</switch>>
+
+
+</div>
+
+<<script>>
+	$(document).ready(function () {
+		/* Sidebar */
+		/*  Check if mobile */
+		var mq = window.matchMedia('(min-width: 767px)');
+		if (mq.matches) {openSidebar();} else {closeSidebar();}
+		$('#openNav').on("click", window.openSidebar);
+		$('#close-dropdown-btn').on("click", window.closeSidebar);
+	});
+<</script>>

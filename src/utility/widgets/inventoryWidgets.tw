@@ -1,0 +1,168 @@
+:: inventory widgets [nobr widget]
+
+/* **********
+ * inventoryWidgets.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Widgse for inventory system
+ *
+ *********** */
+
+
+/* ***
+ *	Call as <<showInventory>>
+ *	Lists the store inventory.
+ *** */
+<<widget "showInventory">>
+
+    <<set _milkCount = [0, 0, 0]>>
+    <<set _meatCount = [0, 0, 0]>>
+    <<set _woolCount = [ [], [], []]>>
+
+    <<for _i = 0; _i < ntc.shades.length; _i++>>
+        /*<<set _woolCount[0][_i].color = ntc.shades[_i][1]>>*/
+        <<set _woolCount[0][_i] = 0>>
+        /*<<set _woolCount[1][_i].color = ntc.shades[_i][1]>>*/
+        <<set _woolCount[1][_i] = 0>>
+        /*<<set _woolCount[2][_i].color = ntc.shades[_i][1]>>*/
+        <<set _woolCount[2][_i] = 0>>
+    <</for>>
+
+    <<for _this, _inventory range $ourStore.inventory>>
+        <<if _inventory.quality != 0 && _inventory.quality != 1 && _inventory.quality != 2>>
+            <<run $ourStore.delete(_inventory)>>
+            <<run console.log(`ERROR: <<showInventory>>: Invalid milk quality ${_inventory.quality}.`)>>
+        <<else>>
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            <<if _inventory.name === "Milk">>
+                <<set _milkCount[_inventory.quality] = Number(Number(_milkCount[_inventory.quality]) + _inventory.amount)>>
+
+            /* Milk and meat ony have quality and amount, so just tally them up */
+            <<elseif _inventory.name === "Meat">>
+                <<set _meatCount[_inventory.quality] = Number(Number(_meatCount[_inventory.quality]) + _inventory.amount)>>
+
+            /* Wool also has a color to deal with */
+            <<elseif _inventory.name === "Wool">>
+                <<for _i = 0; _i < ntc.shades.length; _i++>>
+                    <<for _j = 0; _j < 3; _j++>>
+                        <<if ntc.shades[_i][1] === _inventory.color>>
+                            <<set _woolCount[_j][_i] = Number(Number(_woolCount[_j][_i]) + _inventory.amount)>>
+                        <</if>>
+                    <</for>>
+                <</for>>
+
+            <<else>>
+                <<run $ourStore.delete(_inventory)>>
+                <<run console.log(`ERROR: <<showInventory>>: Invalid inventory item ${_inventory.name}.`)>>
+            <</if>>
+        <</if>>
+    <</for>>
+
+    <br>@@.coral;Store Inventory@@
+    <br>
+    <<if _milkCount[0] <= 0 && _milkCount[1] <= 0 && _milkCount[2] <= 0>>
+        @@.lightsalmon;0 ҁ@@ of milk.
+    <<else>>
+        <<if _milkCount[0] > 0>>
+            @@.lightsalmon;<<- _milkCount[0]>> ҁ@@ of low quality milk.
+        <</if>>
+        <<if _milkCount[1] > 0>>
+            @@.lightsalmon;<<- _milkCount[1]>> ҁ@@ of average quality milk.
+        <</if>>
+        <<if _milkCount[2] > 0>>
+            @@.lightsalmon;<<- _milkCount[2]>> ҁ@@ of high quality milk.
+        <</if>>
+    <</if>>
+
+    <br>
+    <<if _meatCount[0] <= 0 && _meatCount[1] <= 0 && _meatCount[2] <= 0>>
+        @@.lightsalmon;0 ҁ@@ of meat.
+    <<else>>
+        <<if _meatCount[0] > 0>>
+            @@.lightsalmon;<<- _meatCount[0]>> ҁ@@ of low quality meat.
+        <</if>>
+        <<if _meatCount[1] > 0>>
+            @@.lightsalmon;<<- _meatCount[1]>> ҁ@@ of average quality meat.
+        <</if>>
+        <<if _meatCount[2] > 0>>
+            @@.lightsalmon;<<- _meatCount[2]>> ҁ@@ of high quality meat.
+        <</if>>
+    <</if>>
+
+    <<set _check = false>>
+    <<for _i = 0; _i < ntc.shades.length; _i++>>
+        <<if _woolCount[0][_i] > 0>>
+            <br>
+            @@.lightsalmon;<<- _woolCount[0][_i]>> ҁ@@ of low quality <<- ntc.shades[_i][1]>> wool
+            <<set _check = true>>
+        <<elseif _woolCount[1][_i] > 0>>
+            <br>
+            @@.lightsalmon;<<- _woolCount[1][_i]>> ҁ@@ of average quality <<- ntc.shades[_i][1]>> wool
+            <<set _check = true>>
+        <<elseif _woolCount[2][_i] > 0>>
+            <br>
+            @@.lightsalmon;<<- _woolCount[2][_i]>> ouҁ@@ of high quality <<- ntc.shades[_i][1]>> wool
+            <<set _check = true>>
+        <</if>>
+    <</for>>
+    <<if _check == false>>
+        <br>
+        @@.lightsalmon;0 ҁ@@ of woool.
+    <</if>>
+
+<</widget>>
+
+/* ***
+ *	Call as <<addInventory item>>
+ *	Adds an item to the store inventory.
+ *** */
+<<widget "addInventory">>
+    <<if ndef _args[0]>>
+        <<run console.log(`ERROR: <<addInventory>>: Called with no arguments.`)>>
+    <<else>>
+        <<set _newItem =
+        {
+            name: _args[0].name,
+            color: _args[0].color,
+            amount: Math.clamp(_args[0].amount, 0, 64),
+            quality: Math.clamp(_args[0].quality, 0, 2)
+        } >>
+
+        <<if _newItem.name === "Wool" || _newItem.name === "Milk" || _newItem.name === "Meat">>
+<<run console.log(`DEBUG: <<addInventory>>: valid type.`)>>
+            <<if $ourStore.inventory.length == 0>>
+                <<run console.log(`DEBUT: <<addInventory>>: pushing to empty inventory ${_newItem.name}.`)>>
+                <<set $ourStore.inventory.push(_newItem)>>
+            <<else>>
+                <<for _this, _inventory range $ourStore.inventory>>
+
+    <<run console.log(`DEBUG: <<addInventory>>: existing check ${_this}.`)>>
+                    <<if _inventory.name == _newItem.name && _inventory.quality == _newItem.quality>>
+    <<run console.log(`DEBUG: <<addInventory>>: existing check ${_this}; name and quality match.`)>>
+                        <<if _inventory.name === "Wool">>
+    <<run console.log(`DEBUG: <<addInventory>>: found wool.`)>>
+                            <<if _inventory.color == _newItem.color>>
+    <<run console.log(`DEBUG: <<addInventory>>: adding to wool.`)>>
+                                <<set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))>>
+                            <<else>>
+                <<run console.log(`DEBUT: <<addInventory>>: pushing ${_newItem.name}.`)>>
+                                <<set $ourStore.inventory.push(_newItem)>>
+                            <</if>>
+                        <<else>>
+    <<run console.log(`DEBUG: <<addInventory>>: adding to non wool.`)>>
+                            <<set $ourStore.inventory[_this].amount = Number(Number(_inventory.amount) + Number(_newItem.amount))>>
+                        <</if>>
+                    <<else>>
+    <<run console.log(`DEBUT: <<addInventory>>: pushing ${_newItem.name}.`)>>
+                        <<set $ourStore.inventory.push(_newItem)>>
+                    <</if>>
+    <<run console.log(`DEBUG: <<addInventory>>: no matches ${_this}.`)>>
+                <</for>>
+            <</if>>
+        <<else>>
+            <<run console.log(`ERROR: <<addInventory>>: Called unsuported item type ${_newItem.name}.`)>>
+        <</if>>
+    <</if>>
+<</widget>>

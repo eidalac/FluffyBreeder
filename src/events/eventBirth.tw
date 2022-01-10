@@ -1,0 +1,146 @@
+:: Event Birth [nobr]
+
+/* **********
+ * eventBirth.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Event for a fluffy giving birth.
+ *
+ *********** */
+
+<h1>Birth Event</h1>
+<br>$mom.name is giving birth to $mom.litter foals.
+<br><<fluffSpeech "SKREEEEE BIGGGEST POOOPIES!!!" $mom>>
+<br>
+<hr>
+
+<<capture _fo, _section, _sectionP, _line>>
+
+	<<for _fo, $activeFluffy range $birthList>>
+	
+		<<set _stillbirth = false>>
+	
+		/* Base chance for still births is based on the mare's fertility and number of prior children */
+		<<if $mom.fertility < 1>>
+			<<set _diff = Number(Number(35) - Number($mom.children.length))>>
+		<<elseif $mom.fertility < 2>>
+			<<set _diff = Number(Number(55) - Number($mom.children.length))>>
+		<<elseif $mom.fertility < 3>>
+			<<set _diff = Number(Number(75) - Number($mom.children.length))>>
+		<<else>>
+			<<set _diff = Number(Number(95) - Number($mom.children.length))>>
+		<</if>>
+
+		/* Random based on fertility: */
+		<<if $rand[0] >= _diff>>
+			<<set _stillbirth = true>>
+
+		/* bad gene trifect 1: */
+		<<elseif $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(14,15) && $activeFluffy.geneString.substring(12,13) === $activeFluffy.geneString.substring(12,13).toLowerCase() && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(38,39) && $activeFluffy.geneString.substring(36,37) === $activeFluffy.geneString.substring(36,37).toLowerCase() && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(82,83) && $activeFluffy.geneString.substring(80,81) === $activeFluffy.geneString.substring(80,81).toLowerCase()>>
+			<<set _stillbirth = true>>
+
+		/* bad gene trifect 2: */
+		<<elseif $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(22,23) && $activeFluffy.geneString.substring(20,21) === $activeFluffy.geneString.substring(20,21).toLowerCase() &&$activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(46,47) && $activeFluffy.geneString.substring(44,45) === $activeFluffy.geneString.substring(44,45).toLowerCase() && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(102,103) && $activeFluffy.geneString.substring(100,101) === $activeFluffy.geneString.substring(100,101).toLowerCase()>>
+			<<set _stillbirth = true>>
+
+		/* bad gene trifect 3: */
+		<<elseif $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(30,31) && $activeFluffy.geneString.substring(28,29) === $activeFluffy.geneString.substring(28,29).toLowerCase() && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(54,55) && $activeFluffy.geneString.substring(52,53) === $activeFluffy.geneString.substring(52,53).toLowerCase() && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(122,123) && $activeFluffy.geneString.substring(120,121) === $activeFluffy.geneString.substring(120,121).toLowerCase()>>
+			<<set _stillbirth = true>>
+		<</if>>
+	
+		/* Stillbirth; we display some info about the foal (type and color), so this happens after generating it. */
+		<<if _stillbirth>>
+			<br>Foal#<<print _fo+1>> is a stillborn <<colorizeText $activeFluffy.cColor.hex $activeFluffy.cColor.name>> $activeFluffy.breed.
+			<br>
+			<<stillBirthText $mom.ID>>
+			
+			<<set $mom.stress += 25>>
+			<<set $mom.trauma += 1>>
+			<br>
+			<br>
+			<hr>		
+		<<else>>
+			/* Print the foal info */	
+			<<set _line = "Foal" + (_fo+1) + " [Click to Expand/Collapse]">>
+			/*<<set _line = "Foal# " + (_fo+1)>>*/
+			<<set _section = "section" + _fo>>
+			<<set _sectionP = "#section" + _fo>>
+			<<link _line>><<toggleclass _sectionP "hidden">><</link>>
+			<div @id="_line"></div>
+			<div @id="_section" class="hidden">
+				/*<<FluffyDesc>>*/
+				<<shortDesc $activeFluffy>>
+			</div>
+			<hr>
+
+			/* Save it */
+			<<set $activeFluffy.ageWeeks = 0>>
+			<<set $activeFluffy.ageCategory = 0>>
+			<<set $activeFluffy.ID = $globalFluffies.length>>
+				
+			<<if $nameType === "ordinal">>
+				<<set $activeFluffy.name = ($ordinalString + " " + $globalFluffies.length)>>
+			<</if>>
+			<<set $mom.children.push($activeFluffy.ID)>>
+			<<set $dad.children.push($activeFluffy.ID)>>
+
+			<<run $ourStore.fluffies.push($activeFluffy.ID)>>
+			<<run $globalFluffies.push($activeFluffy)>>
+
+			<<set $ourStore.foals++>>
+
+			/*<<set $mom.nursing++>>*/
+			<<run $mom.nursing.push($activeFluffy.ID)>>
+			<<set $mom.stress += 5>>
+
+			<<if $activeFluffy.cColor.group == "Brown" || $activeFluffy.mColor.group == "Brown">>
+				/* Push to event stack  */
+				<<run $eventList.push( { target: $activeFluffy.ID, type: "Rejection" } )>>
+			<</if>> 
+
+			
+		<</if>> /* Close stillbirth test */
+
+	<</for>> /* Close litter itteration */
+
+	/* We have a 2% chance to loose fertility per child we've had, plus 2% for each child in the current litter count */
+	<<if $mom.fertility > 0>>
+		<<set _fertileChance = $mom.litter>>
+		<<set _fertileChance += $mom.children.length>>
+		<<set _fertileChance = 3 * _fertileChance>>
+		
+		/* Test for fertility drop */
+		<<if $rand[1] >= _fertileChance>> 
+			<<set $mom.fertility-->>
+			<<set $mom.stress += 5>>
+			<<set $mom.trauma += 1>>
+			<<fluffSpeech "Why special place hurties?" $mom>>
+		<</if>> /* Close fertilty drop test */
+	<<else>>
+		/* 0 fertility left */
+		<<set $mom.stress += 50>>
+		<<set $mom.trauma += 5>>
+		<<fluffSpeech "WHY SO MANY HURTIES HUHU NU WANA BE MAMA NU MORE!" $mom>>
+	<</if>> /* Close fertilty > 0 test */
+	
+	/* Update the mom: */
+	<<set $mom.litter = 0>>
+	<<set $mom.dueDate = -1>>
+	<<set $mom.pregnant = false>>
+	<<set $mom.pregnantBy = -1>>
+	<<set $mom.nursingTime = $week + 5>>
+	<<set $mom.nursingMax = $mom.nursing.length>>
+	<<set $mom.nursingMax -= $rand[2]>>
+	
+	/* Save changes to mom and dad*/ 
+	<<set $globalFluffies[$mom.ID] = $mom>>
+	<<set $globalFluffies[$dad.ID] = $dad>>
+
+<</capture>>
+	
+<<set $nextButton = "Continue">>
+<<set $nextLink = "Event Main">>
+
+<br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]

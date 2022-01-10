@@ -1,0 +1,147 @@
+:: Color Config [widget nobr]
+
+/* **********
+ * colorConfig.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Data for color configuration/pricing
+ *
+ *********** */
+
+ 
+  
+/* ***
+ *	Color Value
+ *	Call as <<colorValue>>
+ *
+ *	Caculates the color value of $activeFluffy
+ *** */
+<<widget "colorValue">>
+
+	<<set _cAppeal = getColorAppeal($activeFluffy.cColor.hex)>>
+	<<set _mAppeal = getColorAppeal($activeFluffy.mColor.hex)>>
+	<<set _eAppeal = getColorAppeal($activeFluffy.eColor.hex)>>
+
+	<<set _coatGroup = $activeFluffy.cColor.group>>
+	<<set _maneGroup = $activeFluffy.mColor.group>>
+	<<set _eyeGroup = $activeFluffy.eColor.group>>
+
+	/* One point per tier for eyes, 2 for mane and 3 for coat. */
+	<<set _netAppeal = Number(_cAppeal)>>
+	<<set _netAppeal = Number(_netAppeal) + Number(Number(_mAppeal) / 2).toFixed(0)>>
+	<<set _netAppeal = Number(_netAppeal) + Number(Number(_eAppeal) / 3).toFixed(0)>>
+	<<set _netAppeal = Math.clamp(_netAppeal, 1, 180)>>
+
+	/* Now it's a %, from 1-180% */
+	<<set _netAppeal = Number(_netAppeal / 100).toFixed(2)>>
+
+	/* ***
+	 *	Complimentary pairs:
+	 *		Blue - Orange
+	 *		Red - Green
+	 *		Yellow - Purple
+	 *** */
+  
+	<<set _pairBonus = 0>>
+	
+	/* Colors match */
+	<<if _coatGroup == _maneGroup>>
+		<<if _coatGroup == "Brown">>
+			<<set _pairBonus = 0>>
+		<<else>>
+			<<set _pairBonus = 0.75>>
+		<</if>>
+	
+	/* Complimentary pair */
+	<<elseif _coatGroup == "Black" && _maneGroup == "White">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "White" && _maneGroup == "Black">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Blue" && _maneGroup == "Orange">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Orange" && _maneGroup == "Blue">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Red" && _maneGroup == "Green">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Green" && _maneGroup == "Red">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Yellow" && _maneGroup == "Purple">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Purple" && _maneGroup == "Yellow">>
+		<<set _pairBonus = 0.5>>
+	<<elseif _coatGroup == "Brown" && _maneGroup == "Brown">>
+		<<set _pairBonus = 0>>
+	<</if>>
+
+	<<set _colorBonus = Number(_netAppeal).toFixed(2)>>
+	<<set _colorBonus = Number(Number(_colorBonus)+ Number(_pairBonus)).toFixed(2)>>
+	<<set _colorBonus = Number(Number(_colorBonus).toFixed(2) * Number(2).toFixed(2)).toFixed(2)>>
+	<<set $activeFluffy.colorBonus = Number(Math.clamp(_colorBonus, 0.05, 6.00)).toFixed(2)>>
+<</widget>>
+
+
+/* ***
+ *	Limit Color
+ *	Call as <<limitValue [low,] high>>
+ *
+ *	Limits the color tier of a generated fluffy ($activeFluffy) to a value >= low, <= high.
+ *	Used to limit the colors you can get from different sources.
+ *** */
+<<widget "limitColor">>
+
+<</widget>>
+
+
+
+/* ***
+ *	Call as <<setFilters $fluffy>>
+ *	Set new filter values
+ *** */
+<<widget "setFilters">>
+	<<if _args[0]>>
+		<<set _fluffy = _args[0]>>
+	<<else>>
+		<<set _fluffy = $activeFluffy>>
+	<</if>>
+	
+	<<set _fluffy.cColor.filter = hexToFilter(_hslFluffy.cColor.hex)>>
+	<<set _fluffy.mColor.filter = hexToFilter(_hslFluffy.mColor.hex)>>
+	<<set _fluffy.eColor.filter = hexToFilter(_hslFluffy.eColor.hex)>>
+<</widget>>
+
+/* ***
+ *	Call as <<fixColors $fluffy>>
+ *	Fixes deprecated color values
+ *** */
+<<widget "fixColors">>
+	<<if _args[0]>>
+		<<set _fixFluffy = _args[0]>>
+	<<else>>
+		<<set _fixFluffy = $activeFluffy>>
+	<</if>>
+
+	<<if def typeof _fixFluffy.cColor === 'string' || typeof _fixFluffy.mColor === 'string' || typeof _fixFluffy.eColor === 'string'>>
+		<<set _colorRegEx = /([\ \-#])|(\(.*\))|([0-9])/gi>>
+		<<set _nameRegEx = /([#])|(\ \(.*\))|([0-9])/gi>>
+
+		<<for _i = 0; _i < colorList.length; _i++>>
+			<<capture _i>>
+				<<set _name = colorList[_i].name>>
+				<<if typeof _fixFluffy.cColor === 'string' && _fixFluffy.cColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<set _fixFluffy.cColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+				<<if typeof _fixFluffy.mColor === 'string' && _fixFluffy.mColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<set _fixFluffy.mColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+				<<if  typeof _fixFluffy.eColor === 'string' && _fixFluffy.eColor.toLowerCase() === _name.toLowerCase().replace(_colorRegEx, '')>>
+					<<set _fixFluffy.eColor = { name: _name.replace(_nameRegEx, ''), hex: colorList[_i].hex }>>
+				<</if>>
+			<</capture>>
+		<</for>>
+	<</if>>
+
+	/*<<colorGroup _fixFluffy>>*/
+	<<setFilters _fixFluffy>>
+<</widget>>

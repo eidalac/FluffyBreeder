@@ -1,0 +1,533 @@
+:: Fluffy Interact [nobr]
+
+/* **********
+ * fluffyInteract.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ *	General Fluffy Interaction
+ *
+ *	Todo: expand with general interations and more details.
+ *
+ *********** */
+ 
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<<set $ui = "main">>
+<<set $nextButton to "Back to the fluffy list.", $nextLink to "Fluffy List">>
+
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+
+	<<sidebarTop>>
+
+	<div>
+		<div class="w3-dropdown-hover">
+			@@.sortbutton;<<button "Back">><<goto $nextLink>><</button>>@@
+		</div>
+			
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card" id="header">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item"><<- $activeFluffy.name>></h1>
+</header>
+
+<<timed 5ms>>
+	<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main">
+	<span class="fluffy-interact">
+		<<interactDetails>>
+	</span>
+
+	/* ***
+	*	Debug option to enter a genetic editing mode.
+	*** */
+	<<if $debugMode == true || $unlockGeneLab == true>>
+		[[Enter the Gene Lab|Gene Lab][$encyclopedia = "Gene Lab"]]
+		<hr>
+	<</if>>
+
+	/* <svg viewBox="0 0 200 200">
+	<defs>
+		<linearGradient id="gradient" gradientTransform="rotate(90)">
+		<stop id="gradientStop1" offset="0%" stop-color="var(--startColor)" />
+		<stop id="gradientStop2 " offset="100%" stop-color="var(--stopColor)" />
+		</linearGradient>
+	</defs>
+	<path d="" fill="url('#gradient')"></path>
+	</svg>
+	<p>Hover!</p> */
+
+	<div class="w3-container" id="greet-container">
+		<<timed 5ms>>
+			<<if $activeFluffy.age > 0 || $activeFluffy.ageWeeks > 2>>
+				<<if $activeFluffy.trauma < 167 >>
+					<<personalityFix $activeFluffy>>
+					<<switch $activeFluffy.personality>>
+						<<case "Fussy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "<title>! bestest babbeh can hab' nyu toysies pwease?" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "dummeh <title>... gib <fluffy> wowstes\' saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Shy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "h-hewwo <title>... yus, <fluffy> am happies..." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "huhuhu... why gib saddies to <fluffy>... huhu..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Lazy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>, tank\' \'ou fow nummies." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "<title>, gib\' nummies fow make saddies gu \'way?" $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Cute">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "wub\' '\ou <title>! 'ou am da bestest <title>!" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "huhuhu... why nu wub\' fow gud <fluffy>? nu wan\' saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Peppy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "tank' \'ou fow toysies <title>! <fluffy> am happies!" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "wai nu mowe toysies fow <fluffy>? su saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Diligent">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>, <fluffy> am su happies to see \'ou!" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>... <fluffy> hab\' saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Bossy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "<title>, <fluffy> am gud fwuffy, gib skettis nao." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "dummeh <title>! gib\' <fluffy> skettis ow get sowweh poopies!" $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Curious">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "<fluffy> am otay, how is '\ou, <title>?" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "<fluffy> hab saddies... <title> hewp <fluffy>?" $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Timid">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "<fluffy> am happies... tank \'ou fow nicest homesies..." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "pwease nu huwt <fluffy> fow hab saddies, <title>..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Pensive">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "oh, hewwo <title>, <fluffy> am otay, tank \'ou." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "<fluffy> hab'\ saddies... nu no wai..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Dull">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>, it nice tu see \'ou." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "<fluffy> am su saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Sweet">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>, <fluffy> wuv\' \'ou!" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "huhuhu... <fluffy> hab bigges' saddies..." $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Haughty">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "hewwo <title>, <fluffy> am gud, can hab\' skettis nao?" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "dummeh <title>! hatechu fow gib\' saddies!" $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Playful">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "<title>, <fluffy> am su happies! wan'\ pway wid <fluffy>?" $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "huhu... <title>, pway wid <fluffy> fow maek saddies gu \'way?" $activeFluffy>><</replace>>
+							<</if>>
+						<<case "Rowdy">>
+							<<if $activeFluffy.happy > 100>>
+								<<replace "#greet-msg">><<fluffSpeech "\'ou am gud <title>, gib\' <fluffy> happies." $activeFluffy>><</replace>>
+							<<else>>
+								<<replace "#greet-msg">><<fluffSpeech "dummeh <title>, <fluffy> gib\' \'ou sowweh hoofsies!" $activeFluffy>><</replace>>
+							<</if>>
+						<<default>>
+							<<replace "#greet-msg">><<fluffSpeech "hewwo <title>!" $activeFluffy>><</replace>>
+					<</switch>>
+				<<else>>
+					<<replace "#greet-msg">><<fluffSpeech "<fluffy> wan die..." $activeFluffy>><</replace>>
+				<</if>>
+			<<else>>
+				<<replace "#greet-msg">><<fluffSpeech "cheep... cheep..." $activeFluffy>><</replace>>
+			<</if>>
+		<</timed>>
+		<<if $activeFluffy.trauma < 167>>
+			<<if $activeFluffy.happy > 100>>
+				<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> seems happy.
+			<<elseif $activeFluffy.happy <= 100>>
+				<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> appears decent.
+			<<elseif $activeFluffy.happy < 67>>
+				<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> looks upset.
+			<</if>>
+		<<else>>
+			<<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> has entered the loop.
+		<</if>>
+		<br>
+		<span id="greet-msg"></span>
+	</div>
+
+	<div id="name-form">
+		<br>Name: <span id="active-fluffy-name"><<textbox "$activeFluffy.name" $activeFluffy.name "Fluffy Interact">></span>
+		<<button "Rename">>
+			<<if $activeFluffy.hasName == false>>
+				<<set $activeFluffy.hasName = true>>
+				<<set $activeFluffy.happy += 20>>
+				<<replace "#rename-msg">><br><<fluffSpeech "<fluffy> wuv\' nyu namesie!!" $activeFluffy>><</replace>>
+			<<else>>
+				<<replace "#rename-msg">><br><<fluffSpeech "bu\'... wike\' old namesie..." $activeFluffy>><</replace>>
+				<<append "#rename-msg">><br><<fluffSpeech "otay, fwuffy am called <fluffy> nao" $activeFluffy>><</append>>
+			<</if>>
+			<<set $activeFluffy.name to $activeFluffy.name.trim()>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+			<<replace "#navHead">><<- $activeFluffy.name>><</replace>>
+			<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+			<<replace "#train-msg">><</replace>>
+			<<replace "#abuse-msg">><</replace>>
+			<<replace "#play-msg">><</replace>>
+			<<replace "#greet-msg">><</replace>>
+		<</button>>
+		<<button "Random">>
+			<<setName true>>
+			<<replace "#active-fluffy-name">><<textbox "$activeFluffy.name" $randomName "Fluffy Interact">><</replace>>
+		<</button>>
+		/* Form for error message to display*/
+		<span id="form-error"></span>
+	</div>
+	<span id="rename-msg"></span>
+	<br>
+
+	<div id="breed-form">
+
+		<<capture _nSF>> 
+			Special Friend: <<if $activeFluffy.specialFriend == -1>>[[None|Fluffy Breeding][$nextButton = "Back", $nextLink = "Fluffy List", $breedMare = -1, $breedStal = -1]]<<else>><<set _nSF = $globalFluffies[$activeFluffy.specialFriend]>>[[$globalFluffies[$activeFluffy.specialFriend].name|Fluffy Interact][$activeFluffy = _nSF]].
+				<<button "Break Up">>
+				/* Clear both special friends flag, ending breeding*/
+				<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+				<<fluffSpeech "HUHUHU WORST SADIES!" $activeFluffy>>
+
+				<<set _specialName = "friend">>
+				
+				<<if def $globalFluffies[$activeFluffy.specialFriend]>>
+					<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+					<<set _specialName = $globalFluffies[$activeFluffy.specialFriend].name>>
+				<</if>>
+				
+				<<set $activeFluffy.specialFriend = -1>>
+				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+					
+				<<replace "#breed-form">>[[None|Fluffy Breeding][$nextButton = "Back to fluffy", $nextLink = passage(), $breedMare = -1, $breedStal = -1]]<</replace>>
+				<<replace "#breed-message">><br><<print _specialName>> and $activeFluffy.name are no longer special friends.<br><<colorizeText $activeFluffy.cColor.hex 'HUHUHU... WORSTES SADDIES!'>><</replace>>
+				<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+				<</button>>
+			<</if>>
+		<</capture>>
+	</div>
+	/* Form for error message to display*/
+	<span id="breed-message"></span>
+	<br>
+
+<<run console.log(`Debug: [fluffyInteract]: shearing check; furstage = ${$activeFluffy.furStage}.`)>>
+
+	<div id="product-form">
+		<<if $activeFluffy.furStage > 67>>
+			<<set _shear = true>>
+			<<set _desc = "Shear " + $activeFluffy.name>>
+		<<elseif $activeFluffy.nursing.length > 0>>
+			<<set _milk = true>>
+			<<set _desc = "Milk " + $activeFluffy.name>>
+		<</if>>
+		<<if _shear>>
+			<<button _desc>>
+				<<if $actions <= 0>>
+					<<replace "#shear-msg">><br>You are too tired to shear right now.<</replace>>
+				<<elseif $activeFluffy.furStage <= 67>>
+					<<replace "#shear-msg">><br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> cannot be sheared.<</replace>>
+				<<else>>
+					<<set $actions-->>
+					<<set $stress -= 10>>
+					<<if $stress < 0>><<set $stress = 0>><</if>>
+
+					<<set _woolYield = 0>>
+					<<set _coatTier = 0>>
+					<<set _coatGroup = 0>>
+
+					/* Interate through the list of colors, if they match, remember the tier. */
+					<<for _i = 0; _i < $Colors.length; _i++>>
+						<<if $activeFluffy.cColor.hex == $Colors[_i].name>>
+							<<set _coatTier = $Colors[_i].tier>>
+							<<set _coatGroup = $Colors[_i].group>>
+							<<break>>
+						<</if>>
+					<</for>>
+
+					<<if $activeFluffy.subSpecies == 2>>
+						<<if $activeFluffy.furStage > 167>>
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(97))>>
+							<<set $activeFluffy.furStage = 101>>
+						<<elseif $activeFluffy.furStage > 100>>
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(64))>>
+							<<set $activeFluffy.furStage = 68>>
+						<<else>> /* $activeFluffy.furStage > 67>>*/
+							<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(0))>>
+							<<set $activeFluffy.furStage = 0>>
+						<</if>>
+					<<else>>
+						<<set _woolYield = Number(Number($activeFluffy.furStage) - Number(0))>>
+						<<set $activeFluffy.furStage = 0>>
+					<</if>>
+
+					/* .33-.99 */
+					<<set _woolYield = Number(Number(_woolYield) / Number(100)).toFixed(2)>>
+
+					/* .33-.99 * length (2-11) = 0.66 - 10.89 */
+					<<set _woolYield = Number(Number($activeFluffy.coatLength).toFixed(2) * Number(_woolYield).toFixed(2)).toFixed(2)>>
+
+					/* 0 - 10 */
+					<<set _woolYield = Number(_woolYield).toFixed(0)>>
+
+					/* 2 - 12 oz of wool */
+					<<set _woolYield = Number(Number(_woolYield) + Number(2)).toFixed(0)>>
+
+					<<set _woolQuality = 0>>
+
+					<<set _woolQuality = Number(Number(_coatTier) + Number($activeFluffy.coatCurl))>>
+					<<set _woolQuality = Number(Number(_woolQuality) / Number(2)).toFixed(2)>>
+					<<set _woolQuality = Number(Number(_woolQuality).toFixed(2) * Number(Number($activeFluffy.coatDensity).toFixed(2) / Number(100).toFixed(2))).toFixed(2)>>
+					<<set _woolQuality = Number(Number(_woolQuality).toFixed(2) / Number(6).toFixed(2)).toFixed(2)>>
+					<<set _woolQuality = Number(_woolQuality).toFixed(0)>>
+
+					<<set _item =
+					{
+						name: "Wool",
+						color: $activeFluffy.cColor.group,
+						amount: _woolYield,
+						quality: _woolQuality
+					} >>
+
+<<run console.log(`Debug: [fluffyInteract]: Wool adding, color = ${$activeFluffy.cColor.group}, amount = ${_woolYield}, qualty = ${_woolQuality}.`)>>
+<<run console.log(`Debug: [fluffyInteract]: Wool adding, item name = ${_item.name} color = ${_item.color}, amount = ${_item.amount}, qualty = ${_item.quality}.`)>>
+
+					<<addInventory _item>>
+
+					<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+					<<replace "#shear-msg">>
+						<br><<fluffSpeech"huu huu... why taek pwetty fwuff fwom <fluffy>?" $activeFluffy>>
+					<</replace>>
+					<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+				<</if>>
+
+				<<replace "#train-msg">><</replace>>
+				<<replace "#abuse-msg">><</replace>>
+				<<replace "#rename-msg">><</replace>>
+				<<replace "#play-msg">><</replace>>
+				<<replace "#greet-msg">><</replace>>
+			<</button>>
+			<br>
+		<</if>>
+	</div>
+	/* Form for error message to display*/
+	<span id="shear-msg"></span>
+	<br>
+
+	<div id="play-form">
+		<<set _desc = "Play with " + $activeFluffy.name>>
+		<<button _desc>>
+			<<if $actions > 0>>
+				<<set $actions-->>
+				<<set $stress -= 10>>
+				<<if $stress < 0>><<set $stress = 0>><</if>>
+				<<set $hugbox += 2>>
+				<<set $training += 1>>
+				<<set $activeFluffy.trust++>>
+				<<set $activeFluffy.happy++>>
+				<<set $activeFluffy.temperament++>>
+				<<set $activeFluffy.stress-->>
+				
+				<<if $ourStore.upgrades.includes("Deluxe Toys")>>
+					<<set $activeFluffy.stress-->>
+				<</if>>
+				<<if $ourStore.upgrades.includes("Fancy Toys")>>
+					<<set $activeFluffy.happy++>>
+				<</if>>
+				<<if $ourStore.upgrades.includes("Basic Toys")>>
+					<<set $activeFluffy.happy++>>
+					<<set $activeFluffy.stress-->>
+				<</if>>
+				
+				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+				<<replace "#play-msg">>
+					<br><<- $title>><<colorizeText $activeFluffy.cColor.hex "am bestest at pwayin\'! Pway AWW da games wit\'">>
+					<<fluffSpeech $activeFluffy.name $activeFluffy>><<colorizeText $activeFluffy.cColor.hex ", heheheh!">>
+				<</replace>>
+				<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+			<<else>>
+				<<replace "#play-msg">><br>You are too tired to play right now.<</replace>>
+			<</if>>
+
+			<<replace "#train-msg">><</replace>>
+			<<replace "#abuse-msg">><</replace>>
+			<<replace "#rename-msg">><</replace>>
+			<<replace "#greet-msg">><</replace>>
+		<</button>>
+	</div>
+	/* Form for error message to display*/
+	<span id="play-msg"></span>
+	<br>
+
+	<div id="train-form">
+		<<set _desc = "Train " + $activeFluffy.name>> 
+		<<button _desc>>
+			<<if $actions > 0>>
+
+				<<set $stress += 1>>
+				<<set $actions-->>
+				<<set $training += 1>>
+				<<set $activeFluffy.training++>>
+				<<set $activeFluffy.trust++>>
+				<<set $activeFluffy.temperament-->>
+				
+				<<if $ourStore.upgrades.includes("Deluxe Training Equipment")>>
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.training++>>
+					<</if>>
+					
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.stress++>>
+					<</if>>
+
+					<<if random(0, 1) == 0>>
+						<<set $activeFluffy.temperament-->>
+					<</if>>
+				<</if>>
+				<<if $ourStore.upgrades.includes("Fancy Training Equipment")>>
+					<<if random(0, 2) == 0>>
+						<<set $activeFluffy.training++>>
+					<</if>>
+					
+					<<if random(0, 2) == 0>>
+						<<set $activeFluffy.stress++>>
+					<</if>>
+
+					<<if random(0, 2) == 0>>
+						<<set $activeFluffy.temperament-->>
+					<</if>>
+				<</if>>
+				<<if $ourStore.upgrades.includes("Basic Training Equipment")>>
+					<<if random(0, 3) == 0>>
+						<<set $activeFluffy.training++>>
+					<</if>>
+					
+					<<if random(0, 3) == 0>>
+						<<set $activeFluffy.stress++>>
+					<</if>>
+
+					<<if random(0, 3) == 0>>
+						<<set $activeFluffy.temperament-->>
+					<</if>>
+				<</if>>
+				
+				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+				<<replace "#train-msg">><br><<fluffSpeech $activeFluffy.name $activeFluffy>><<colorizeText $activeFluffy.cColor.hex "feew happeh and stwong! Wanna pway aww day wong!">><</replace>>
+				<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+			<<else>>
+				<<replace "#train-msg">><br>You are too tired for training right now.<</replace>>
+			<</if>>
+			
+			<<replace "#rename-msg">><</replace>>
+			<<replace "#abuse-msg">><</replace>>
+			<<replace "#play-msg">><</replace>>
+			<<replace "#greet-msg">><</replace>>
+		<</button>>
+	</div>
+	/* Form for error message to display*/
+	<span id="train-msg"></span>
+	<br>
+
+	<div id="abuse-form">
+		<<set _desc = "Abuse " + $activeFluffy.name>> 
+		<<button _desc>>
+			<<if $actions > 0>>
+				<<set $stress -= 50>>
+				<<set $actions-->>
+				<<set $abuse += 1>>
+				<<set $activeFluffy.trauma += random(0,1)>>
+				<<set $activeFluffy.stress++>>
+				<<set $activeFluffy.temperament-->>
+				<<set $activeFluffy.happy-->>
+				<<set $activeFluffy.trust-->>
+				<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+				<<replace "#abuse-msg">><br><<colorizeText $activeFluffy.cColor.hex "Huhuhu... why huwt gud fwuffy?">><</replace>>
+				<<replace ".fluffy-interact">><<interactDetails>><</replace>>
+			<<else>>
+				<<replace "#abuse-msg">><br>You are too tired for this right now.<</replace>>
+			<</if>>
+			
+			<<replace "#train-msg">><</replace>>
+			<<replace "#rename-msg">><</replace>>
+			<<replace "#play-msg">><</replace>>
+			<<replace "#greet-msg">><</replace>>
+		<</button>>
+	</div>
+	/* Form for error message to display*/
+	<span id="abuse-msg"></span>
+	<br>
+
+	<div id="remove-form">
+		<<listbox "_removeType" autoselect>>
+			<<option "Euthanize">>
+			<<option "Release">>
+			<<option "Murder">>
+		<</listbox>>
+		<<set _desc = "Remove " + $activeFluffy.name>> 
+
+		<<button _desc>>
+			<<replace "#remove-msg">><br>Are you sure you want to <<- _desc>>?
+				<<button [[Yes, do it|Fluffy List]]>>
+					<<if _removeType == "Euthanize">>
+						<<set $hugbox++>>
+					<<elseif _removeType == "Murder">>
+						<<set $abuse++>>
+					<</if>>
+				
+					<<removeFluffy $activeFluffy>>
+				<</button>>
+			<</replace>>
+		<</button>>
+	</div>
+	/* Form for error message to display*/
+	<span id="remove-msg"></span>
+</div>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+ 	// importScripts(
+	// 	"../bin/external-js/globals.js",
+	// 	"../bin/external-js/spline.js",
+    // 	"../bin/external-js/simplex-noise.js"
+	// ).then(importScripts("../bin/external-js/shapes.js"));
+<</script>>

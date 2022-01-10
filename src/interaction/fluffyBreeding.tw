@@ -1,0 +1,104 @@
+:: Fluffy Breeding [nobr]
+
+/* **********
+ * fluffyBreeding.tw
+ *
+ * Package: FluffyBreeder
+ * Format: Twine2 (Sugarcube 2)
+ *
+ * Sets breeding pairs
+ *
+ *********** */
+
+/* Saves use the first eight printed words to make the "file name", the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+<<script>>UIBar.destroy();<</script>>
+
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="https://www.w3schools.com/w3css/4/w3pro.css">
+<link rel="stylesheet" href="https://www.w3schools.com/lib/w3-theme-teal.css">
+
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+<<set $ui = "main">>
+<<set $nextButton to "Back to the fluffy list.", $nextLink to "Fluffy List">>
+
+
+<nav class="w3-bar-block w3-card w3-animate-left" id="sidebar">
+
+	<<sidebarTop>>
+
+	<div>
+		<div class="w3-dropdown-hover">
+			@@.sortbutton;<<button "Back">><<set $listType = "All">><<goto $nextLink>><</button>>@@
+		</div>
+		
+		<div class="w3-dropdown-hover">
+			<<sortButtons "breeding">>
+			<<filterButtons "breeding">>
+		</div>
+
+		<<systemButtons>>
+	</div>
+</nav>
+
+<header class="w3-bar w3-card" id="header">
+	<button id="openNav" class="w3-bar-item w3-button w3-large w3-hover-theme">&#9776;</button>
+ 	<h1 id="navHead" class="w3-bar-item"><<- $activeFluffy.name>></h1>
+</header>
+
+<<timed 5ms>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-grey")>>
+		<<run $(".sortbutton button").addClass("w3-bar-item w3-button w3-hover-cyan w3-white")>>
+		
+		<<run $(".selectbutton button").addClass("w3-button w3-hover-cyan w3-dark-grey")>>
+<</timed>>
+
+<div class="w3-container" id="main">
+
+	<span id="fluffy-name">
+		<<interactDetails>>
+	</span>
+	<hr>
+	<br>
+<<if $activeFluffy.specialFriend != -1>>
+	<br>Is special friends with <<print $globalFluffies[$activeFluffy.specialFriend].name>>.
+	<<link [[Break up |Fluffy Breeding]]>>
+		/* Clear both special friends flag, ending breeding*/
+		<br>$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
+		<br><<fluffSpeech "HUHUHU WORST SADIES!" $activeFluffy>>
+		
+		<<if def $globalFluffies[$activeFluffy.specialFriend]>>
+			<<set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1>>
+		<</if>>
+	
+		<<set $activeFluffy.specialFriend = -1>>
+		
+		<<if $activeFluffy.ID == $globalFluffies[$activeFluffy.ID].ID>> 
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<<else>>
+			<<run console.log(`ERROR: <<fluffyBreeding>>: invalid $activeFluffy ID: ${$activeFluffy.ID} Should be ${$globalFluffies[$activeFluffy.ID].ID}.`)>>
+			<<set $activeFluffy.ID = $globalFluffies[$activeFluffy.ID].ID>>
+			<<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
+		<</if>>
+
+	<</link>>
+<</if>>
+
+<<if $breedStal < 0 || $breedMare < 0>>
+	<<set _activeFluffy = $activeFluffy>>
+	<div id="fluffy-list"><<FluffyList "breeding">></div>
+	<<set $activeFluffy = _activeFluffy>>
+<<else>>
+	<<goto "Pre Bonding">>
+<</if>>
+
+
+</div>
+
+<<script>>
+ 	importScripts("./external-js/globals.js").then(function() {
+		pageLoad();
+	})
+<</script>>
