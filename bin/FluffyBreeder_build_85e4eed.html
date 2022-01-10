@@ -18013,6 +18013,10 @@ window.nameList = {
  * Event a random customer looking for a fluffy
  *
  *********** */
+/* Saves use the first eight printed words to make the &quot;file name&quot;, the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
+
+&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
 
 &lt;style&gt;
 button {
@@ -18086,19 +18090,18 @@ button {
 		&lt;h1&gt;Customer&lt;/h1&gt;
 		&lt;br&gt;A customer comes into &lt;&lt;- $ourStore.name&gt;&gt;. 
 		
-
+		/* This customer will accept any fluffy */
 		&lt;&lt;if $customerWants == 0&gt;&gt;
-			&lt;br&gt;They are looking at 
-			/* This customer will accept any fluffy */
-			&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt;.
+			&lt;br&gt;They are looking at &lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt;.
 
+			/* If we toggled autosell, just sell this one: */
 			&lt;&lt;if $autoSell&gt;&gt;
 				&lt;&lt;goto &quot;Post Customer&quot;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 
+		/* This customer has specific needs */
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;They are looking for 
-			/* This customer has specific needs */
 			@@.coral; 
 			&lt;&lt;for _need range $customerDeck&gt;&gt;
 				&lt;&lt;if _need == $customerDeck.last()&gt;&gt;
@@ -18109,7 +18112,6 @@ button {
 			&lt;&lt;/for&gt;&gt;
 			@@
 
-			&lt;br&gt;if you meet all &lt;&lt;- $customerWants&gt;&gt; of these requests, you may get a &lt;&lt;- Number(1 + Number($customerWants / 5))&gt;&gt;x price bonus.
 		&lt;&lt;/if&gt;&gt;
 		&lt;br&gt;
 		&lt;br&gt;
@@ -18758,7 +18760,10 @@ button {
  * Post processing for offering a fuffy to a customer.
  *
  *********** */
+/* Saves use the first eight printed words to make the &quot;file name&quot;, the below line cheats and makes saves nicer named. */
+@@display: none; $ourStore.name, Week $week, $ourStore.fluffies.length Fluffies, ¤$cash … … …  @@
 
+&lt;&lt;script&gt;&gt;UIBar.destroy();&lt;&lt;/script&gt;&gt;
  
 &lt;style&gt;
 button {
@@ -18781,322 +18786,147 @@ button {
             &lt;&lt;for _card range $customerDeck&gt;&gt;
 
                 &lt;&lt;set _card = _card.toLowerCase()&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [eventCustomer]: card:  ${_card}`)&gt;&gt;
-                /* Personality, +2 points if it matches, 0 otherwise */
-                &lt;&lt;if _card === $activeFluffy.personality&gt;&gt;
-                    &lt;&lt;set _needsMatch += 2&gt;&gt;
 
-                /* Gender, +2 points if it matches, 0 otherwise */
+                &lt;&lt;if _card === $activeFluffy.personality.toLowerCase()&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 &lt;&lt;elseif _card == $activeFluffy.gender.toLowerCase()&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
+                &lt;&lt;elseif _card === $activeFluffy.breed.toLowerCase()&gt;&gt;
+                    /* 2 points since this is a major factor */
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
-
-                /* Breed, value depends on what is offered*/
-                &lt;&lt;elseif _card === &quot;earthy&quot; || _card === &quot;unicorn&quot; || _card === &quot;pegasus&quot; || _card === &quot;alicorn&quot;&gt;&gt;
-                    /* Pefect match, 2 points */
-                    &lt;&lt;if _card === $activeFluffy.breed.toLowerCase()&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-
-                    /* Half matches */				
-                    &lt;&lt;elseif $activeFluffy.breed != &quot;Earthy&quot;&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set _needsMatch += 0&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;			
 
                 /* Strength stat: */
-                &lt;&lt;elseif _card.includes(&quot;stength&quot;)&gt;&gt;
-                    
-                    &lt;&lt;if _card === &quot;high strength&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.strength &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.strength &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average strength&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.strength &lt; 5 &amp;&amp; $activeFluffy.strength &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low strength&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.strength &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.strength &lt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high strength&quot; &amp;&amp; $activeFluffy.strength &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average strength&quot; &amp;&amp; $activeFluffy.strength &lt; 5 &amp;&amp; $activeFluffy.strength &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low strength&quot; &amp;&amp; $activeFluffy.strength &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Energy stat: */
-                &lt;&lt;elseif _card.includes(&quot;energy&quot;)&gt;&gt;
-                
-                    &lt;&lt;if _card === &quot;high energy&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.energy &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.energy &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average energy&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.energy &lt; 5 &amp;&amp; $activeFluffy.energy &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low energy&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.energy &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.energy &lt; 4&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high energy&quot; &amp;&amp; $activeFluffy.energy &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average energy&quot; &amp;&amp; $activeFluffy.energy &lt; 5 &amp;&amp; $activeFluffy.energy &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low energy&quot; &amp;&amp; $activeFluffy.energy &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Charm stat: */
-                &lt;&lt;elseif _card.includes(&quot;charm&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;high charm&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.charm &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.charm &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average charm&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.charm &lt; 5 &amp;&amp; $activeFluffy.charm &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low charm&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.charm &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.charm &lt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high charm&quot; &amp;&amp; $activeFluffy.charm &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average charm&quot; &amp;&amp; $activeFluffy.charm &lt; 5 &amp;&amp; $activeFluffy.charm &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low charm&quot; &amp;&amp; $activeFluffy.charm &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Thinking stat: */
-                &lt;&lt;elseif _card.includes(&quot;thinking&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;high thinking&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.thinking &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.thinking &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average thinking&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.thinking &lt; 5 &amp;&amp; $activeFluffy.thinking &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low thinking&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.thinking &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.thinking &lt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high thinking&quot; &amp;&amp; $activeFluffy.thinking &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average thinking&quot; &amp;&amp; $activeFluffy.thinking &lt; 5 &amp;&amp; $activeFluffy.thinking &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low thinking&quot; &amp;&amp; $activeFluffy.thinking &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
                 
                 /* Learning stat: */
-                &lt;&lt;elseif _card.includes(&quot;learning&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;high learning&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.learning &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.learning &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average learning&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.learning &lt; 5 &amp;&amp; $activeFluffy.learning &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low learning&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.learning &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.learning &lt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high learning&quot; &amp;&amp; $activeFluffy.learning &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average learning&quot; &amp;&amp; $activeFluffy.learning &lt; 5 &amp;&amp; $activeFluffy.learning &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low learning&quot; &amp;&amp; $activeFluffy.learning &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
                 
                 /* Fertility stat: */
-                &lt;&lt;elseif _card.includes(&quot;fertility&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;high fertility&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.fertility &gt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.fertility &gt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average fertility&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.fertility &lt; 5 &amp;&amp; $activeFluffy.fertility &gt;= 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low fertility&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.fertility &lt; 3&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.fertility &lt; 5&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high fertility&quot; &amp;&amp; $activeFluffy.fertility &gt; 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average fertility&quot; &amp;&amp; $activeFluffy.fertility &lt; 5 &amp;&amp; $activeFluffy.fertility &gt;= 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low fertility&quot; &amp;&amp; $activeFluffy.fertility &lt; 3&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Temperament: */
-                &lt;&lt;elseif _card.includes(&quot;temperament&quot;)&gt;&gt;
-                    &lt;&lt;if _card === &quot;high temperament&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.temperament &gt; 190&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.temperament &gt; 130&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;average temperament&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.temperament &lt; 130 &amp;&amp; $activeFluffy.temperament &gt;= 70&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.temperament &lt; 190 &amp;&amp; $activeFluffy.temperament &gt;= 10&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;elseif _card === &quot;low temperament&quot;&gt;&gt;
-                        &lt;&lt;if $activeFluffy.temperament &lt; 10&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;elseif $activeFluffy.temperament &lt; 70&gt;&gt;
-                            &lt;&lt;set _needsMatch += 0&gt;&gt;
-                        &lt;&lt;/if&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;high temperament&quot; &amp;&amp; $activeFluffy.temperament &gt; 190&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;average temperament&quot; &amp;&amp; $activeFluffy.temperament &lt; 130 &amp;&amp; $activeFluffy.temperament &gt;= 70&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+                &lt;&lt;elseif _card === &quot;low temperament&quot; &amp;&amp; $activeFluffy.temperament &lt; 10&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Coat: */
                 &lt;&lt;elseif _card.includes(&quot;coat&quot;)&gt;&gt;
                     &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.cColor.group.toLowerCase())&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            /* ***
-                            *	Complimentary pairs:
-                            *		Blue - Orange
-                            *		Red - Green
-                            *		Yellow - Purple
-                            *** */
-                            &lt;&lt;if $activeFluffy.cColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
-                                $activeFluffy.cColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
-                                $activeFluffy.cColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
-                                $activeFluffy.cColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
-                                $activeFluffy.cColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
-                                $activeFluffy.cColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
-
-                                &lt;&lt;set _needsMatch += 0&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _needsMatch += 1&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.cColor.name.toLowerCase())&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                        &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Mane: */
                 &lt;&lt;elseif _card.includes(&quot;mane&quot;)&gt;&gt;
                     &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.mColor.group.toLowerCase())&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            /* ***
-                            *	Complimentary pairs:
-                            *		Blue - Orange
-                            *		Red - Green
-                            *		Yellow - Purple
-                            *** */
-                            &lt;&lt;if $activeFluffy.mColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
-                                $activeFluffy.mColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
-                                $activeFluffy.mColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
-                                $activeFluffy.mColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
-                                $activeFluffy.mColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
-                                $activeFluffy.mColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
-
-                                &lt;&lt;set _needsMatch += 0&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _needsMatch += 1&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.mColor.name.toLowerCase())&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                        &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
                 /* Eyes: */
                 &lt;&lt;elseif _card.includes(&quot;eye&quot;)&gt;&gt;
-          
                     &lt;&lt;if _card.includes(&quot;group&quot;)&gt;&gt;
                         &lt;&lt;if _card.includes($activeFluffy.eColor.group.toLowerCase())&gt;&gt;
-                            &lt;&lt;set _needsMatch += 2&gt;&gt;
-                        &lt;&lt;else&gt;&gt;
-                            /* ***
-                            *	Complimentary pairs:
-                            *		Blue - Orange
-                            *		Red - Green
-                            *		Yellow - Purple
-                            *** */
-                            &lt;&lt;if $activeFluffy.eColor.group === &quot;blue&quot; &amp;&amp; _card === &quot;orange&quot; ||
-                                $activeFluffy.eColor.group === &quot;orange&quot; &amp;&amp; _card === &quot;blue&quot; ||
-                                $activeFluffy.eColor.group === &quot;red&quot; &amp;&amp; _card === &quot;green&quot; ||
-                                $activeFluffy.eColor.group === &quot;green&quot; &amp;&amp; _card === &quot;red&quot; ||
-                                $activeFluffy.eColor.group === &quot;yellow&quot; &amp;&amp; _card === &quot;purple&quot; ||
-                                $activeFluffy.eColor.group === &quot;purple&quot; &amp;&amp; _card === &quot;yellow&quot;&gt;&gt;
-
-                                &lt;&lt;set _needsMatch += 0&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _needsMatch += 1&gt;&gt;
                         &lt;&lt;/if&gt;&gt;
                     &lt;&lt;elseif _card.includes($activeFluffy.eColor.name.toLowerCase())&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                        &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 
                 /* Age &quot;Newborn&quot;: */
-                &lt;&lt;elseif _card === &quot;newborn&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 0&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                     &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;newborn&quot; &amp;&amp; $activeFluffy.ageCategory == 0&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 /* Age &quot;Chirpy&quot;: */
-                &lt;&lt;elseif _card === &quot;chirpy&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 1&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;chirpy&quot; &amp;&amp; $activeFluffy.ageCategory == 1&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 /* Age &quot;Talky&quot;: */
-                &lt;&lt;elseif _card === &quot;talky&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 2&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                     &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;talky&quot; &amp;&amp; $activeFluffy.ageCategory == 2&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 /* Age &quot;Foal&quot;: */
-                &lt;&lt;elseif _card === &quot;foal&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 3&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;foal&quot; &amp;&amp; $activeFluffy.ageCategory == 3&gt;&gt;
+                     &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 /* Age &quot;Youth&quot;: */
-                &lt;&lt;elseif _card === &quot;youth&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 4&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;youth&quot; &amp;&amp; $activeFluffy.ageCategory == 4&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
+
                 /* Age &quot;Adult&quot;: */
-                &lt;&lt;elseif _card === &quot;adult&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 5&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;adult&quot; &amp;&amp; $activeFluffy.ageCategory == 5&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 /* Age &quot;Grey&quot;: */
-                &lt;&lt;elseif _card === &quot;grey&quot;&gt;&gt;
-                    &lt;&lt;if $activeFluffy.ageCategory == 6&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;elseif _card === &quot;grey&quot; &amp;&amp; $activeFluffy.ageCategory == 6&gt;&gt;
+                    &lt;&lt;set _needsMatch += 1&gt;&gt;
 
                 &lt;&lt;elseif _card === $activeFluffy.subSpeciesString.toLowerCase()&gt;&gt;
+                    /* 2 points since this is a major factor */
                     &lt;&lt;set _needsMatch += 2&gt;&gt;
 
                 &lt;&lt;elseif _card.includes(&quot;trait&quot;)&gt;&gt;
                     &lt;&lt;set _subString = _card.substring(6).trim()&gt;&gt;
                     &lt;&lt;set _subString = _subString.charAt(0).toUpperCase() + _subString.slice(1)&gt;&gt;
                     &lt;&lt;if $activeFluffy.traits.includes(String(_subString))&gt;&gt;
-                        &lt;&lt;set _needsMatch += 2&gt;&gt;
+                        &lt;&lt;set _needsMatch += 1&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;	
             &lt;&lt;/for&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
         &lt;&lt;set _msgString = &quot;&quot;&gt;&gt;
-        /*
-        &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match points = &quot; + _needsMatch + &quot;.@@&quot;&gt;&gt;
-        &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Possible points = &quot; + Number($customerWants * 2) + &quot;.@@&quot;&gt;&gt;
-        
-        &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Match % = &quot; + Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) + &quot;.@@&quot;&gt;&gt;
-*/
-        &lt;&lt;run console.log(`Debug: [postCustomer]: needs matches: ${_needsMatch}, possible ${Number($customerWants * 2)}.`)&gt;&gt;
-            
+
         &lt;&lt;set _price = Number($activeFluffy.training)&gt;&gt;
         &lt;&lt;set _price = Number(_price) + Number(Number($activeFluffy.trust/10))&gt;&gt;
 
@@ -19147,22 +18977,18 @@ button {
             &lt;&lt;run console.log(`ERROR: [postCustomer]: price was negative.`)&gt;&gt;
             &lt;&lt;set _price = Number($earthPrice.mart)&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        /* 
-        &lt;br&gt;@@.orange;Base price = &lt;&lt;- _price&gt;&gt;.@@
-*/
+
         /* They want any fluffy */
         &lt;&lt;if $customerWants == 0&gt;&gt;
             &lt;&lt;set _priceBonus = Number(Number($rand[0]/100).toFixed(2))&gt;&gt; 
         &lt;&lt;else&gt;&gt;
-            &lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 10))&gt;&gt;
+            &lt;&lt;set _priceBonus = Number(1 + Number(Number(_needsMatch) / 5))&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-        /*
-        &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;Price Bonus = &quot;+ _priceBonus + &quot;.@@&quot;&gt;&gt;
-*/
+
         &lt;&lt;set _price = Number(_price * _priceBonus).toFixed(2)&gt;&gt;
 
         /* Check if they will accept the offer */
-        &lt;&lt;if $customerWants &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number($customerWants * 2)).toFixed(2)) &lt;= 33&gt;&gt;
+        &lt;&lt;if $customerWants &gt; 0 &amp;&amp; Number(100 * Number(_needsMatch / Number($customerWants)).toFixed(2)) &lt;= 33&gt;&gt;
 
                 &lt;&lt;if $customerTolerance &gt; 0&gt;&gt;
                     &lt;&lt;set $customerTolerance--&gt;&gt;
@@ -19176,15 +19002,13 @@ button {
                     [[CONTINUE|Event Main][$encyclopedia = 0]]
                 &lt;&lt;/if&gt;&gt;
         &lt;&lt;else&gt;&gt;
-/* 
-            &lt;&lt;set _msgString += &quot;&lt;br&gt;@@.orange;They would pay = &quot; + _price + &quot; for &quot; +$activeFluffy.name + &quot;.@@&lt;br&gt;&quot;&gt;&gt;
-  */          
+ 
             &lt;&lt;if $activeFluffy.ID != $activeFluffy.ID&gt;&gt;
                 &lt;&lt;run console.log(`ERROR: [postCustomer]: Invalid ID found: ${$activeFluffy.ID}, Should be ${$activeFluffy.ID}.`)&gt;&gt;
                 &lt;&lt;set $activeFluffy.ID = $activeFluffy.ID&gt;&gt;
             &lt;&lt;/if&gt;&gt; 
 
-            &lt;&lt;set $reputation += _priceBonus&gt;&gt;
+            &lt;&lt;set $reputation = Number(Number($reputation) + Number(_priceBonus)).toFixed(0)&gt;&gt;
 
             /* Random chance to &#39;upsell&#39;*/
             &lt;&lt;set _chance = Number(($training + $reputation) / 4).toFixed(2)&gt;&gt;
@@ -19461,11 +19285,15 @@ button {
 &lt;&lt;else&gt;&gt;
 
     /* First, we build a customer, starting with how many wants it has, up to 6 */
-    &lt;&lt;set $customerWants = Math.clamp(random(-3, 6), 0, 6)&gt;&gt;
+    &lt;&lt;set $customerWants = random(-3, 6)&gt;&gt;
+
+    /* 40% chance the customer will take any fluffy: */
+    &lt;&lt;set $customerWants = Math.clamp($customerWants, 0, 6)&gt;&gt;
 
     /* How picky the customer is and how many fails they will put up with */
     &lt;&lt;set $customerTolerance = random(0, 3)&gt;&gt;
 
+    /* Clear the deck of any cards: */
     &lt;&lt;set $customerDeck = []&gt;&gt;
 
     /* pre run random numbers for the event: */
@@ -19486,52 +19314,46 @@ button {
     &lt;&lt;run console.log(`DEBUG: [eventCustomer]: customerWants = ${$customerWants}.`)&gt;&gt;
 
     &lt;&lt;if $customerWants == 0&gt;&gt;
-        &lt;&lt;run console.log(`DEBUG: [eventCustomer]: customerWants is 0.`)&gt;&gt;
+        /* Any fluffy, pick one at random the customer wants: */
         &lt;&lt;set $activeFluffy = _displayFluffies.random()&gt;&gt;
     &lt;&lt;else&gt;&gt;
-        &lt;&lt;set _hasPersonality = false&gt;&gt;
-        &lt;&lt;set _hasSpecies = false&gt;&gt;
-        &lt;&lt;set _hasBreed = false&gt;&gt;
-        &lt;&lt;set _hasCoat = false&gt;&gt;
-        &lt;&lt;set _hasMane = false&gt;&gt;
-        &lt;&lt;set _hasEye = false&gt;&gt;
-        &lt;&lt;set _hasAge = false&gt;&gt;
-
         &lt;&lt;run console.log(`DEBUG: [eventCustomer]: building deck.`)&gt;&gt;
 
         &lt;&lt;for _c = 0; _c &lt;= $customerWants; _c++&gt;&gt;
 
             &lt;&lt;set _push = &quot;&quot;&gt;&gt;
 
+            /* Ran out of possible cards (should not be possible as there are 11 of these and max we can pick is 6)*/
             &lt;&lt;if _nonvisibleCards.length &lt; 1 &amp;&amp; _visibleCards.length &lt; 1&gt;&gt;
                 &lt;&lt;break&gt;&gt;
             &lt;&lt;/if&gt;&gt;
 
+            /* Pick a random fluffy on display to get a card from: */
             &lt;&lt;set $activeFluffy = _displayFluffies.random()&gt;&gt;
 
             &lt;&lt;run console.log(`DEBUG: [eventCustomer]: picked fluffy for card ${_c}.`)&gt;&gt;
 
             /* Pick a trait for this card, favouring more visible ones (color, breed, age) over non visible ones */
-            &lt;&lt;switch random(0,10)&gt;&gt;
+            &lt;&lt;set _cardType = random(0,10)&gt;&gt;
+
+            /* Used all picks (only 4 so could be possible)*/
+            &lt;&lt;if _nonvisibleCards.length &lt; 1&gt;&gt;
+                /* Pick a vissible card since all non vissible are used up: */
+                &lt;&lt;set _cardType = 4&gt;&gt;
+            &lt;&lt;/if&gt;&gt;
+            
+            &lt;&lt;switch _cardType&gt;&gt;
+
+                /* Pick a non-visible trait (4/10) */	
                 &lt;&lt;case 0 1 2 3&gt;&gt;
-                    
-                    /* Pick a non-visible trait */	
-                    &lt;&lt;if _nonvisibleCards.length &lt; 1&gt;&gt;
-                        &lt;&lt;continue&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                   
+                    /* Pluck the option so there are no repeats: */
                     &lt;&lt;switch _nonvisibleCards.pluck()&gt;&gt;
                         &lt;&lt;case &quot;Personality&quot;&gt;&gt;
-                            &lt;&lt;if _hasPersonality == false&gt;&gt;&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.personality.toLowerCase()&gt;&gt;
-                                &lt;&lt;set _hasPersonality = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.personality.toLowerCase()&gt;&gt;
                         &lt;&lt;case &quot;Stat&quot;&gt;&gt;
                             &lt;&lt;switch random(0, 16)&gt;&gt;
                                 &lt;&lt;case 0 1&gt;&gt;
-                                    &lt;&lt;if $customerDeck.includes(&quot;high stength&quot;) || $customerDeck.includes(&quot;low stength&quot;)  || $customerDeck.includes(&quot;average stength&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.strength &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.strength &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high strength&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.strength &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low strength&quot;&gt;&gt;
@@ -19539,9 +19361,7 @@ button {
                                         &lt;&lt;set _push = &quot;average strength&quot;&gt;&gt;
                                     &lt;&lt;/if&gt;&gt;
                                 &lt;&lt;case 2 3&gt;&gt;
-                                    &lt;&lt;if $customerDeck.includes(&quot;high energy&quot;) || $customerDeck.includes(&quot;low energy&quot;)  || $customerDeck.includes(&quot;average energy&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.energy &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.energy &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high energy&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.energy &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low energy&quot;&gt;&gt;
@@ -19549,9 +19369,7 @@ button {
                                         &lt;&lt;set _push = &quot;average energy&quot;&gt;&gt;
                                     &lt;&lt;/if&gt;&gt;
                                 &lt;&lt;case 8 9&gt;&gt;
-                                    &lt;&lt;if $customerDeck.includes(&quot;high thinking&quot;) || $customerDeck.includes(&quot;low thinking&quot;)  || $customerDeck.includes(&quot;average thinking&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.thinking &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.thinking &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high thinking&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.thinking &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low thinking&quot;&gt;&gt;
@@ -19559,9 +19377,7 @@ button {
                                         &lt;&lt;set _push = &quot;average thinking&quot;&gt;&gt;
                                     &lt;&lt;/if&gt;&gt;
                                 &lt;&lt;case 10 11&gt;&gt;
-                                    &lt;&lt;if $customerDeck.includes(&quot;high learning&quot;) || $customerDeck.includes(&quot;low learning&quot;)  || $customerDeck.includes(&quot;average learning&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.learning &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.learning &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high learning&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.learning &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low learning&quot;&gt;&gt;
@@ -19569,9 +19385,7 @@ button {
                                         &lt;&lt;set _push = &quot;average learning&quot;&gt;&gt;
                                     &lt;&lt;/if&gt;&gt;
                                 &lt;&lt;case 12&gt;&gt;
-                                    &lt;&lt;if $customerDeck.includes(&quot;high fertility&quot;) || $customerDeck.includes(&quot;low fertility&quot;)  || $customerDeck.includes(&quot;average fertility&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.fertility &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.fertility &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high fertility&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.fertility &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low fertility&quot;&gt;&gt;
@@ -19579,9 +19393,7 @@ button {
                                         &lt;&lt;set _push = &quot;average fertility&quot;&gt;&gt;
                                     &lt;&lt;/if&gt;&gt;
                                 &lt;&lt;default&gt;&gt;
-                                  &lt;&lt;if $customerDeck.includes(&quot;high charm&quot;) || $customerDeck.includes(&quot;low charm&quot;)  || $customerDeck.includes(&quot;average charm&quot;)&gt;&gt;
-                                        &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                                    &lt;&lt;elseif $activeFluffy.charm &gt; 5 &gt;&gt;
+                                    &lt;&lt;if $activeFluffy.charm &gt; 5 &gt;&gt;
                                         &lt;&lt;set _push = &quot;high charm&quot;&gt;&gt;
                                     &lt;&lt;elseif $activeFluffy.charm &lt; 3&gt;&gt;
                                         &lt;&lt;set _push = &quot;low charm&quot;&gt;&gt;
@@ -19590,9 +19402,7 @@ button {
                                     &lt;&lt;/if&gt;&gt;
                             &lt;&lt;/switch&gt;&gt;
                         &lt;&lt;case &quot;Temperament&quot;&gt;&gt;
-                            &lt;&lt;if $customerDeck.includes(&quot;high temperament&quot;) || $customerDeck.includes(&quot;low temperament&quot;)  || $customerDeck.includes(&quot;average temperament&quot;)&gt;&gt;
-                                &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                            &lt;&lt;elseif $activeFluffy.temperament &gt; 190 &gt;&gt;
+                            &lt;&lt;if $activeFluffy.temperament &gt; 190 &gt;&gt;
                                 &lt;&lt;set _push = &quot;high temperament&quot;&gt;&gt;
                             &lt;&lt;elseif $activeFluffy.temperament &lt; 130&gt;&gt;
                                 &lt;&lt;set _push = &quot;low temperament&quot;&gt;&gt;
@@ -19602,94 +19412,82 @@ button {
                         &lt;&lt;case &quot;Trait&quot;&gt;&gt;
                             &lt;&lt;set _push = &quot;trait &quot; + $activeFluffy.traits.random().toLowerCase()&gt;&gt;
                         &lt;&lt;default&gt;&gt;
-                            &lt;&lt;if _hasPersonality == false&gt;&gt;&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.personality.toLowerCase()&gt;&gt;
-                                &lt;&lt;set _hasPersonality = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.personality.toLowerCase()&gt;&gt;
                     &lt;&lt;/switch&gt;&gt;
+
+                /* Pick a visible trait (6/10) */
                 &lt;&lt;default&gt;&gt;
-                    /* Pick a visible trait */
+                    
+                    /* Shouldn&#39;t be possible, but just in case: */
                     &lt;&lt;if _visibleCards.length &lt; 1&gt;&gt;
                         &lt;&lt;continue&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
 
+                    /* Pluck the option so there are no repeats: */
                     &lt;&lt;switch _visibleCards.pluck()&gt;&gt;
                         &lt;&lt;case &quot;Species&quot;&gt;&gt;
-                            &lt;&lt;if _hasSpecies == false&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.subSpeciesString.toLowerCase()&gt;&gt;
-                                &lt;&lt;set _hasSpecies = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.subSpeciesString.toLowerCase()&gt;&gt;
                         &lt;&lt;case &quot;Gender&quot;&gt;&gt;
-                            &lt;&lt;if $customerDeck.includes(&quot;male&quot;) || $customerDeck.includes(&quot;female&quot;)&gt;&gt;
-                                &lt;&lt;set _push = &quot;&quot;&gt;&gt;
-                            &lt;&lt;else&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.gender.toLowerCase()&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.gender.toLowerCase()&gt;&gt;
                         &lt;&lt;case &quot;Breed&quot;&gt;&gt;
-                            &lt;&lt;if _hasBreed == false&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.breed.toLowerCase()&gt;&gt;
-                                &lt;&lt;set _hasBreed = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.breed.toLowerCase()&gt;&gt;
                         &lt;&lt;case &quot;Coat&quot;&gt;&gt;
-                            &lt;&lt;if _hasCoat == false&gt;&gt;
-                                &lt;&lt;if random(0,6) == 6&gt;&gt;
-                                    &lt;&lt;set _push = `${$activeFluffy.cColor.name} coat`&gt;&gt;
-                                &lt;&lt;else&gt;&gt;
-                                    &lt;&lt;set _push = `coat group ${$activeFluffy.cColor.group}`&gt;&gt;
-                                &lt;&lt;/if&gt;&gt;
-                                &lt;&lt;set _hasCoat = true&gt;&gt;
+                            &lt;&lt;if random(0,6) == 6&gt;&gt;
+                                &lt;&lt;set _push = `${$activeFluffy.cColor.name} coat`&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
+                                &lt;&lt;set _push = `coat group ${$activeFluffy.cColor.group}`&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;case &quot;Mane&quot;&gt;&gt;
-                            &lt;&lt;if _hasMane == false&gt;&gt;
+                            /* Can&#39;t see mane on this young */
+                            &lt;&lt;if $activeFluffy.ageCategory &lt;= 2&gt;&gt;
+                                &lt;&lt;continue&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
                                 &lt;&lt;if random(0,6) == 6&gt;&gt;
                                     &lt;&lt;set _push = `${$activeFluffy.mColor.name} mane`&gt;&gt;
                                 &lt;&lt;else&gt;&gt;
                                     &lt;&lt;set _push = `mane group ${$activeFluffy.mColor.group}`&gt;&gt;
                                 &lt;&lt;/if&gt;&gt;
-                                &lt;&lt;set _hasMane = true&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;case &quot;Eyes&quot;&gt;&gt;
-                            &lt;&lt;if _hasEye == false&gt;&gt;
+                            /* Can&#39;t see eyes on chirpies */
+                            &lt;&lt;if $activeFluffy.ageCategory &lt;= 1&gt;&gt;
+                                &lt;&lt;continue&gt;&gt;
+                            &lt;&lt;else&gt;&gt;
                                 &lt;&lt;if random(0,6) == 6&gt;&gt;
                                     &lt;&lt;set _push = `${$activeFluffy.eColor.name} eye`&gt;&gt;
                                 &lt;&lt;else&gt;&gt;
                                     &lt;&lt;set _push = `eye group ${$activeFluffy.eColor.group}`&gt;&gt;
                                 &lt;&lt;/if&gt;&gt;
-                                &lt;&lt;set _hasEye = true&gt;&gt;
                             &lt;&lt;/if&gt;&gt;
                         &lt;&lt;case &quot;Age&quot;&gt;&gt;
-                            &lt;&lt;if _hasAge == false&gt;&gt;&gt;&gt;
-                                &lt;&lt;switch $activeFluffy.ageCategory&gt;&gt;
-                                    &lt;&lt;case 0&gt;&gt;
-                                        &lt;&lt;set _push = &quot;newborn&quot;&gt;&gt;
-                                    &lt;&lt;case 1&gt;&gt;
-                                        &lt;&lt;set _push = &quot;chirpy&quot;&gt;&gt;
-                                    &lt;&lt;case 2&gt;&gt;
-                                        &lt;&lt;set _push = &quot;talky&quot;&gt;&gt;
-                                    &lt;&lt;case 3&gt;&gt;
-                                        &lt;&lt;set _push = &quot;foal&quot;&gt;&gt;
-                                    &lt;&lt;case 4&gt;&gt;
-                                        &lt;&lt;set _push = &quot;youth&quot;&gt;&gt;
-                                    &lt;&lt;case 5&gt;&gt;
-                                        &lt;&lt;set _push = &quot;adult&quot;&gt;&gt;
-                                    &lt;&lt;default&gt;&gt;
-                                        &lt;&lt;set _push = &quot;grey&quot;&gt;&gt;
-                                &lt;&lt;/switch&gt;&gt;
-                                &lt;&lt;set _hasPersonality = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;switch $activeFluffy.ageCategory&gt;&gt;
+                                &lt;&lt;case 0&gt;&gt;
+                                    &lt;&lt;set _push = &quot;newborn&quot;&gt;&gt;
+                                &lt;&lt;case 1&gt;&gt;
+                                    &lt;&lt;set _push = &quot;chirpy&quot;&gt;&gt;
+                                &lt;&lt;case 2&gt;&gt;
+                                    &lt;&lt;set _push = &quot;talky&quot;&gt;&gt;
+                                &lt;&lt;case 3&gt;&gt;
+                                    &lt;&lt;set _push = &quot;foal&quot;&gt;&gt;
+                                &lt;&lt;case 4&gt;&gt;
+                                    &lt;&lt;set _push = &quot;youth&quot;&gt;&gt;
+                                &lt;&lt;case 5&gt;&gt;
+                                    &lt;&lt;set _push = &quot;adult&quot;&gt;&gt;
+                                &lt;&lt;default&gt;&gt;
+                                    &lt;&lt;set _push = &quot;grey&quot;&gt;&gt;
+                            &lt;&lt;/switch&gt;&gt;
                         &lt;&lt;default&gt;&gt;
-                            &lt;&lt;if _hasBreed == false&gt;&gt;
-                                &lt;&lt;set _push = $activeFluffy.breed.toLowerCase()&gt;&gt;
-                                &lt;&lt;set _hasBreed = true&gt;&gt;
-                            &lt;&lt;/if&gt;&gt;
+                            &lt;&lt;set _push = $activeFluffy.breed.toLowerCase()&gt;&gt;
                     &lt;&lt;/switch&gt;&gt;
             &lt;&lt;/switch&gt;&gt;
 
             &lt;&lt;run console.log(`DEBUG: [eventCustomer]: card picked is &quot;${_push}&quot;.`)&gt;&gt;
 
+            /* Should not be possible: */
             &lt;&lt;if ndef _push&gt;&gt;
                 &lt;&lt;run console.log(`ERROR: [endWeek]: customer card is undefined.`)&gt;&gt;
             &lt;&lt;else&gt;&gt;
+                /* Should not be possible, but just in case skip an empty card: */
                 &lt;&lt;if _push != &quot;&quot;&gt;&gt;
                     &lt;&lt;set _push = _push.toLowerCase()&gt;&gt;
                     &lt;&lt;run $customerDeck.pushUnique(_push)&gt;&gt;
@@ -19704,6 +19502,11 @@ button {
 &lt;&lt;/if&gt;&gt;
 
 &lt;&lt;run console.log(`DEBUG: [eventCustomer]: going to event with ${$customerDeck.length} cards.`)&gt;&gt;
+
+/* Just in case the wants are off, reset them to the length: */
+&lt;&lt;if $customerDeck.length != $customerWants&gt;&gt;
+    &lt;&lt;set $customerWants = $customerDeck.length&gt;&gt;
+&lt;&lt;/if&gt;&gt;
 
 /* Once all the caculations are done we display the event: */
 &lt;&lt;goto &quot;Event Customer&quot;&gt;&gt;</tw-passagedata><tw-passagedata pid="22" name="Pre Mating" tags="nobr" position="225,350" size="100,100">/* **********
@@ -22855,7 +22658,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;3f0f8c0&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;85e4eed&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
