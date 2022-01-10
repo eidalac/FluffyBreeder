@@ -353,6 +353,7 @@
     <<else>>
         <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
         <<newFromGene $testChild>>
+        <<set $activeFluffy.ageCategory = 4>>
 
         <<set $activeFluffy.ID = $globalFluffies.length>>
         <<run $globalFluffies.push($activeFluffy)>>
@@ -463,6 +464,17 @@
                 <</if>>
 
                 <<set $activeFluffy.furStage = Number(random(60, 120))>>
+            <<elseif $shop == "shelter" ||  $shop == "mart" >>
+                /* 25% chance for each limb to be missing */
+                <<for _i, _status range $activeFluffy.limbs['earthy']>>
+                    <<capture _i>>
+                        <<if random(0, 3) == 0>>
+                            <<set $activeFluffy.limbs['earthy'][_i] = 'missing'>>
+                        <<else>>
+                            /* Nothing */
+                        <</if>>
+                    <</capture>>
+                <</for>>
             <<elseif $shop == "breeder" || $shop == "angora">>
                 /* breeder fluffies always have a name */
                 <<setName>>

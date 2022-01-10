@@ -241,7 +241,7 @@
 			</div>
 			<<if $shop != "feral">>
 				<br><<They>> would cost 
-				
+
 				<<if $shop == "breeder">>
 					<<set $globalFluffies[_id].training = 50>>
 					<<set $globalFluffies[_id].trust = 50>>
@@ -262,19 +262,25 @@
 						<<set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)>>
 				<</switch>>
 				
+				<<set _priceMulti = 1>>
 				<<if $shop == "shelter">>
-					<<set _ageMulti = 0.5>>
-				<<else>>
-					<<set _ageMulti = 1>>
+					<<set _priceMulti = _priceMulti*0.5>>
 				<</if>>
+				<<for _i, _status range $activeFluffy.limbs['earthy']>>
+                    <<capture _i>>
+                        <<if $activeFluffy.limbs['earthy'][_i] === 'missing'>>
+							<<set _priceMulti = _priceMulti*0.9>>
+                        <</if>>
+                    <</capture>>
+                <</for>>
 				
 				<<set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)>>
 				<<set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)>>
 				<<if $globalFluffies[_id].ageCategory < 5>>
-					<<set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
+					<<set _priceMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)>>
 				<</if>>
 
-				<<set _price = Number(_price * _ageMulti).toFixed(2)>>
+				<<set _price = Number(_price * _priceMulti).toFixed(2)>>
 
 				<<if $shop == "angora">>
 					<<set _price = Number(_price * 1.5).toFixed(2)>>
