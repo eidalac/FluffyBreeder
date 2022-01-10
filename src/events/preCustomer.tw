@@ -69,6 +69,10 @@
 
             <<set _push = "">>
 
+            <<if _nonvisibleCards.length < 1 && _visibleCards.length < 1>>
+                <<break>>
+            <</if>>
+
             <<set $activeFluffy = _displayFluffies.random()>>
 
             <<run console.log(`DEBUG: [eventCustomer]: picked fluffy for card ${_c}.`)>>
@@ -76,8 +80,13 @@
             /* Pick a trait for this card, favouring more visible ones (color, breed, age) over non visible ones */
             <<switch random(0,10)>>
                 <<case 0 1 2 3>>
+                    
                     /* Pick a non-visible trait */	
-                    <<switch _nonvisibleCards.random()>>
+                    <<if _nonvisibleCards.length < 1>>
+                        <<continue>>
+                    <</if>>
+                   
+                    <<switch _nonvisibleCards.pluck()>>
                         <<case "Personality">>
                             <<if _hasPersonality == false>>>>
                                 <<set _push = $activeFluffy.personality.toLowerCase()>>
@@ -146,96 +155,100 @@
                                         <<set _push = "average charm">>
                                     <</if>>
                             <</switch>>
-                    <<case "Temperament">>
-                        <<if $customerDeck.includes("high temperament") || $customerDeck.includes("low temperament")  || $customerDeck.includes("average temperament")>>
-                            <<set _push = "">>
-                        <<elseif $activeFluffy.temperament > 190 >>
-                            <<set _push = "high temperament">>
-                        <<elseif $activeFluffy.temperament < 130>>
-                            <<set _push = "low temperament">>
-                        <<else>>
-                            <<set _push = "average temperament">>
-                        <</if>>
-                    <<case "Trait">>
-                        <<set _push = "trait " + $activeFluffy.traits.random().toLowerCase()>>
-                    <<default>>
-                        <<if _hasPersonality == false>>>>
-                            <<set _push = $activeFluffy.personality.toLowerCase()>>
-                            <<set _hasPersonality = true>>
-                        <</if>>
-                <</switch>>
-            <<default>>
-                /* Pick a visible trait */
-                <<switch _visibleCards.random()>>
-                    <<case "Species">>
-                        <<if _hasSpecies == false>>
-                            <<set _push = $activeFluffy.subSpeciesString.toLowerCase()>>
-                            <<set _hasSpecies = true>>
-                        <</if>>
-                    <<case "Gender">>
-                        <<if $customerDeck.includes("male") || $customerDeck.includes("female")>>
-                            <<set _push = "">>
-                        <<else>>
-                            <<set _push = $activeFluffy.gender.toLowerCase()>>
-                        <</if>>
-                    <<case "Breed">>
-                        <<if _hasBreed == false>>
-                            <<set _push = $activeFluffy.breed.toLowerCase()>>
-                            <<set _hasBreed = true>>
-                        <</if>>
-                    <<case "Coat">>
-                        <<if _hasCoat == false>>
-                            <<if random(0,6) == 6>>
-                                <<set _push = `${$activeFluffy.cColor.name} coat`>>
+                        <<case "Temperament">>
+                            <<if $customerDeck.includes("high temperament") || $customerDeck.includes("low temperament")  || $customerDeck.includes("average temperament")>>
+                                <<set _push = "">>
+                            <<elseif $activeFluffy.temperament > 190 >>
+                                <<set _push = "high temperament">>
+                            <<elseif $activeFluffy.temperament < 130>>
+                                <<set _push = "low temperament">>
                             <<else>>
-                                <<set _push = `coat group ${$activeFluffy.cColor.group}`>>
+                                <<set _push = "average temperament">>
                             <</if>>
-                            <<set _hasCoat = true>>
-                        <</if>>
-                    <<case "Mane">>
-                        <<if _hasMane == false>>
-                            <<if random(0,6) == 6>>
-                                <<set _push = `${$activeFluffy.mColor.name} mane`>>
+                        <<case "Trait">>
+                            <<set _push = "trait " + $activeFluffy.traits.random().toLowerCase()>>
+                        <<default>>
+                            <<if _hasPersonality == false>>>>
+                                <<set _push = $activeFluffy.personality.toLowerCase()>>
+                                <<set _hasPersonality = true>>
+                            <</if>>
+                    <</switch>>
+                <<default>>
+                    /* Pick a visible trait */
+                    <<if _visibleCards.length < 1>>
+                        <<continue>>
+                    <</if>>
+
+                    <<switch _visibleCards.pluck()>>
+                        <<case "Species">>
+                            <<if _hasSpecies == false>>
+                                <<set _push = $activeFluffy.subSpeciesString.toLowerCase()>>
+                                <<set _hasSpecies = true>>
+                            <</if>>
+                        <<case "Gender">>
+                            <<if $customerDeck.includes("male") || $customerDeck.includes("female")>>
+                                <<set _push = "">>
                             <<else>>
-                                <<set _push = `mane group ${$activeFluffy.mColor.group}`>>
+                                <<set _push = $activeFluffy.gender.toLowerCase()>>
                             <</if>>
-                            <<set _hasMane = true>>
-                        <</if>>
-                    <<case "Eyes">>
-                        <<if _hasEye == false>>
-                            <<if random(0,6) == 6>>
-                                <<set _push = `${$activeFluffy.eColor.name} eye`>>
-                            <<else>>
-                                <<set _push = `eye group ${$activeFluffy.eColor.group}`>>
+                        <<case "Breed">>
+                            <<if _hasBreed == false>>
+                                <<set _push = $activeFluffy.breed.toLowerCase()>>
+                                <<set _hasBreed = true>>
                             <</if>>
-                            <<set _hasEye = true>>
-                        <</if>>
-                    <<case "Age">>
-                        <<if _hasAge == false>>>>
-                            <<switch $activeFluffy.ageCategory>>
-                                <<case 0>>
-                                    <<set _push = "newborn">>
-                                <<case 1>>
-                                    <<set _push = "chirpy">>
-                                <<case 2>>
-                                    <<set _push = "talky">>
-                                <<case 3>>
-                                    <<set _push = "foal">>
-                                <<case 4>>
-                                    <<set _push = "youth">>
-                                <<case 5>>
-                                    <<set _push = "adult">>
-                                <<default>>
-                                    <<set _push = "grey">>
-                            <</switch>>
-                            <<set _hasPersonality = true>>
-                        <</if>>
-                    <<default>>
-                        <<if _hasBreed == false>>
-                            <<set _push = $activeFluffy.breed.toLowerCase()>>
-                            <<set _hasBreed = true>>
-                        <</if>>
-                <</switch>>
+                        <<case "Coat">>
+                            <<if _hasCoat == false>>
+                                <<if random(0,6) == 6>>
+                                    <<set _push = `${$activeFluffy.cColor.name} coat`>>
+                                <<else>>
+                                    <<set _push = `coat group ${$activeFluffy.cColor.group}`>>
+                                <</if>>
+                                <<set _hasCoat = true>>
+                            <</if>>
+                        <<case "Mane">>
+                            <<if _hasMane == false>>
+                                <<if random(0,6) == 6>>
+                                    <<set _push = `${$activeFluffy.mColor.name} mane`>>
+                                <<else>>
+                                    <<set _push = `mane group ${$activeFluffy.mColor.group}`>>
+                                <</if>>
+                                <<set _hasMane = true>>
+                            <</if>>
+                        <<case "Eyes">>
+                            <<if _hasEye == false>>
+                                <<if random(0,6) == 6>>
+                                    <<set _push = `${$activeFluffy.eColor.name} eye`>>
+                                <<else>>
+                                    <<set _push = `eye group ${$activeFluffy.eColor.group}`>>
+                                <</if>>
+                                <<set _hasEye = true>>
+                            <</if>>
+                        <<case "Age">>
+                            <<if _hasAge == false>>>>
+                                <<switch $activeFluffy.ageCategory>>
+                                    <<case 0>>
+                                        <<set _push = "newborn">>
+                                    <<case 1>>
+                                        <<set _push = "chirpy">>
+                                    <<case 2>>
+                                        <<set _push = "talky">>
+                                    <<case 3>>
+                                        <<set _push = "foal">>
+                                    <<case 4>>
+                                        <<set _push = "youth">>
+                                    <<case 5>>
+                                        <<set _push = "adult">>
+                                    <<default>>
+                                        <<set _push = "grey">>
+                                <</switch>>
+                                <<set _hasPersonality = true>>
+                            <</if>>
+                        <<default>>
+                            <<if _hasBreed == false>>
+                                <<set _push = $activeFluffy.breed.toLowerCase()>>
+                                <<set _hasBreed = true>>
+                            <</if>>
+                    <</switch>>
             <</switch>>
 
             <<run console.log(`DEBUG: [eventCustomer]: card picked is "${_push}".`)>>
