@@ -829,7 +829,7 @@ button:disabled{
 
 /*Filter styles*/
 /* .filter { filter: brightness(0) saturate(100%) ; } */
-.manefilter {filter: brightness(1) opacity(0.2);}
+.manefilter {filter: brightness(1) opacity(0.1);}
 .eyefilter {filter: brightness(1) opacity(0.1);}
 .blackfilter { filter: brightness(20%) saturate(100%); }
 .greyfilter { filter: brightness(50%) saturate(50%); }
@@ -1131,8 +1131,7 @@ button:disabled{
   align-items: center;
 }
 .fluffy-image img {
-  width: 300px;
-  height: 300px;
+  height: 400px;
   position: absolute;
 }
 
@@ -3202,7 +3201,7 @@ button:disabled{
 
 /*Filter styles*/
 /* .filter { filter: brightness(0) saturate(100%) ; } */
-.manefilter {filter: brightness(1) opacity(0.2);}
+.manefilter {filter: brightness(1) opacity(0.1);}
 .eyefilter {filter: brightness(1) opacity(0.1);}
 .blackfilter { filter: brightness(20%) saturate(100%); }
 .greyfilter { filter: brightness(50%) saturate(50%); }
@@ -3504,8 +3503,7 @@ button:disabled{
   align-items: center;
 }
 .fluffy-image img {
-  width: 300px;
-  height: 300px;
+  height: 400px;
   position: absolute;
 }
 
@@ -12020,15 +12018,15 @@ Genome.prototype.getNewGeneColor = function(index, addition) {
 
 	let geneObject;
 	const colorFilter = hexToFilter(hexString);
-	const genHex = hexString;
-	const genFilter = colorFilter;
+	const geneFilter = colorFilter;
 
 	// Check which existing color most matches generated color
 	const ntcObject = ntc.name(hexString);
-	const genName = ntcObject[1];
-	const genGroup = ntcObject[3];
+	const geneHex = ntcObject[0];
+	const geneName = ntcObject[1];
+	const geneGroup = ntcObject[3];
 
-	geneObject = { name: String(genName), hex: String(genHex), filter: String(genFilter), group: String(genGroup)};
+	geneObject = { name: String(geneName), hex: String(geneHex), filter: String(geneFilter), group: String(geneGroup)};
 
 	return geneObject;
 }
@@ -16502,9 +16500,9 @@ window.getInfo = function($target) {
       case 'trait_limp':
         return `<b class="info-highlight">Limp</b> fluffies have a perminate limp in one leg, limiting mobility.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-1</span><p>`
       case 'trait_lame':
-        return `<b class="info-highlight">Lame</b> fluffies have at least one non functional leg and have a hard time getting around.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-1</span>, Charm: <span style="color:darkred">-1</span><p>`
-      case 'trait_crippled':
-        return `<b class="info-highlight">Crippled</b> fluffies are barely able to move without assistance.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
+        return `<b class="info-highlight">Lame</b> fluffies have a hard time getting around.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-1</span>, Charm: <span style="color:darkred">-1</span><p>`
+      case 'trait_immobile':
+        return `<b class="info-highlight">Immobile</b> fluffies are unable able to move without assistance.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-2</span><p>`
 
       /* Lung Defects */
       case 'trait_tired':
@@ -16512,7 +16510,7 @@ window.getInfo = function($target) {
       case 'trait_breathless':
         return `<b class="info-highlight">Breathless</b> fluffies have a hard time breathing.<p>Energy: <span style="color:darkred">-2</span>, Strength: <span style="color:darkred">-2</span>, Charm: <span style="color:darkred">-1</span><p>`
       case 'trait_stertorous':
-        return `<b class="info-highlight">Asthmatic</b> fluffies have difficulty breathing, cough, and wheeze.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
+        return `<b class="info-highlight">Stertorous</b> fluffies have difficulty breathing, cough, and wheeze.<p>Energy: <span style="color:darkred">-3</span>, Strength: <span style="color:darkred">-3</span>, Charm: <span style="color:darkred">-2</span><p>`
       case 'trait_exhausted':
         return `<b class="info-highlight">Exhausted</b> fluffies are unable to get anything done.<p>Energy: <span style="color:darkred">-4</span>, Strength: <span style="color:darkred">-4</span>, Charm: <span style="color:darkred">-3</span><p>`
 
@@ -16809,17 +16807,13 @@ window.nameList = {
 			"Buddy",
 			"Bumpa",
 			"Bumpkin",
-			"Bunny",
 			"Bunbuns",
-			"Buster",
 			"Buttercup",
 			"Butterfly",
 			"Button",
 			"Cakes",
 			"Candy",
 			"Captain",
-			"Champ",
-			"Charming",
 			"Cheeky",
 			"Cherry",
 			"Cherub",
@@ -16833,14 +16827,11 @@ window.nameList = {
 			"Cuddles",
 			"Cuddly",
 			"Cupcake",
-			"Cuteness",
 			"Daisy",
 			"Darling",
 			"Dashing",
 			"Diamond",
-			"Dimples",
 			"Doll",
-			"Doobie",
 			"Dork",
 			"Dove",
 			"Duckling",
@@ -16854,53 +16845,26 @@ window.nameList = {
 			"Giggles",
 			"Golden",
 			"Goldie",
-			"Goobers",
 			"Goofy",
-			"Gorgeous",
-			"Handsome",
 			"Haven",
-			"Honey",
-			"Huggalump",
-			"Huggy Bear",
-			"Hunk",
-			"Hunky",
-			"Hunny",
-			"Jujube",
-			"Juliet",
-			"Kiddo",
-			"Killer",
 			"King",
-			"Kit Kat",
-			"Kitten",
-			"Kitty",
 			"Knight",
 			"Knockout",
 			"Little",
-			"Lubber",
 			"Magic",
 			"Marshmallow",
-			"Monkey",
 			"Mooky",
 			"Muffin",
-			"Muffinhead",
 			"Muffy",
 			"Muggles",
 			"Muncie",
 			"Munchkin",
 			"Muppet",
 			"Pandabear",
-			"Papi",
-			"Papito",
 			"Paradise",
 			"Perfect",
-			"Pet",
 			"Petal",
 			"Pinky",
-			"Pinup",
-			"Pooka",
-			"Pookie",
-			"Poopie",
-			"Poopsie",
 			"Pudding",
 			"Punk",
 			"Pumpkin",
@@ -16910,8 +16874,6 @@ window.nameList = {
 			"Slick",
 			"Smiles",
 			"Smiley",
-			"Smoochie",
-			"Snookums",
 			"Snuggles",
 			"Spark",
 			"Sparkles",
@@ -16926,8 +16888,6 @@ window.nameList = {
 			"Sunshine",
 			"Superman",
 			"Superstar",
-			"Sweetie",
-			"Sweetum",
 			"Sweety",
 			"Teardrop",
 			"Tiger",
@@ -16935,7 +16895,6 @@ window.nameList = {
 			"Twinkle",
 			"Wonderful",
 			"Yummers",
-			"Roo",
 		],
 		"Male": [
 			"Heisenberg",
@@ -17315,6 +17274,7 @@ window.nameList = {
 			"Cinnamon",
 			"Sandy",
 			"Peanut",
+			"Chocolate"
 		],
 		"White": [
 			"Cauliflower",
@@ -17324,29 +17284,97 @@ window.nameList = {
 			"Lychee",
 			"Peach",
 			"Snowflake",
+			"Snow",
+			"Snowy",
 			"Ivory",
-			"Sugar"
+			"Light",
+			"Sugar",
+			"Sugarcube",
+			"Daisy",
+			"Cheesecake",
+			"Marshmellow",
+			"Milk",
+			"Milky",
+			"Napkin",
+			"Paper",
+			"Doily",
+			"Tissue",
+			"Plate",
+			"Bone",
+			"Boner",
+			"Cloudy",
+			"Chalky",
+			"Whitegold",
+			"Icy",
+			"Cornsilk",
+			"Cream",
+			"Whip",
+			"Antique",
+			"Seashell",
+			"Steam"
 		],
 		"Black": [
 			"Charcoal",
 			"Night",
+			"Black",
+			"Midnight",
+			"Oil",
+			"Ink",
+			"Ebony",
+			"Licorice",
+			"Eerie",
+			"Jet",
+			"Onyx",
+			"Cave",
 			"Blacky",
 			"Darkness",
 			"Blackberry",
 			"Currant",
 			"Nebula",
 			"Chaos",
-			"Angst"
+			"Angst",
+			"Slate",
+			"Dark",
+			"Bat",
+			"Coal",
+			"Asphalt",
+			"Space",
+			"Spacy",
+			"Soot",
+			"Oreo",
+			"Chip",
+			"Obsideon"
 		],
 		"Grey": [
 			"Foggy",
+			"Oyster",
 			"Ash",
+			"Cloud",
+			"Stormy",
+			"Gray",
+			"Steel",
+			"Steely",
+			"Lead",
+			"Ashley",
 			"Smoke",
+			"Smokey",
 			"Bullet",
 			"Jet",
 			"Platinum",
 			"Stone",
-			"Rocky"
+			"Stoney",
+			"Rocky",
+			"Gravel",
+			"Clay",
+			"Slate",
+			"Concrete",
+			"Cloudy",
+			"Sepia",
+			"Ashen",
+			"Dingy",
+			"Iron",
+			"Zinc",
+			"Silver"
 		]
 	},
 	"abuse": [
@@ -18265,6 +18293,7 @@ button {
 &lt;&lt;else&gt;&gt;
 	&lt;br&gt;
 	&lt;&lt;colorizeText $dad.cColor.hex $dad.name&gt;&gt; and &lt;&lt;colorizeText $mom.cColor.hex $mom.name&gt;&gt; are having special hugs.
+	&lt;br&gt;
 	&lt;&lt;fluffSpeech &quot;enf... enf... ENF...&quot; $dad&gt;&gt;
 	&lt;br&gt;
 	&lt;&lt;fluffSpeech &quot;GUD FEEWS!!&quot; $dad&gt;&gt; 
@@ -19013,16 +19042,16 @@ button {
             /* Random chance to &#39;upsell&#39;*/
             &lt;&lt;set _chance = Number(($training + $reputation) / 4).toFixed(2)&gt;&gt;
         
-            &lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;) &amp;&amp; _chance &gt; $rand[1]&gt;&gt;
-                &lt;br&gt;You add some Toy Tablet to the sale.
+            &lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) &amp;&amp; _chance &gt; $rand[1]&gt;&gt;
+                &lt;br&gt;You add some deluxe toys to the sale.
                 &lt;br&gt; 				
                 &lt;&lt;set _price = Number(Number(_price) + Number($rand[2]))&gt;&gt;
-            &lt;&lt;elseif $ourStore.upgrades.includes(&quot;Toy Blocks&quot;) &amp;&amp; _chance &gt; $rand[3]&gt;&gt;
-                &lt;br&gt;You add some Toy Blocks to the sale.
+            &lt;&lt;elseif $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) &amp;&amp; _chance &gt; $rand[3]&gt;&gt;
+                &lt;br&gt;You add some fancy toys to the sale.
                 &lt;br&gt; 				
                 &lt;&lt;set _price = Number(Number(_price) + Number($rand[4]))&gt;&gt;
-            &lt;&lt;elseif $ourStore.upgrades.includes(&quot;Toy Ball&quot;) &amp;&amp; _chance &gt; $rand[5]&gt;&gt;
-                &lt;br&gt;You add some Toy Ball to the sale.
+            &lt;&lt;elseif $ourStore.upgrades.includes(&quot;Basic Toys&quot;) &amp;&amp; _chance &gt; $rand[5]&gt;&gt;
+                &lt;br&gt;You add some basic toys to the sale.
                 &lt;br&gt; 				
                 &lt;&lt;set _price = Number(Number(_price) + Number($rand[6]))&gt;&gt;
             &lt;&lt;/if&gt;&gt;
@@ -20327,13 +20356,13 @@ Genes       Height multiplier
 &lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
 &lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
 
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Blocks&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Ball&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -20370,6 +20399,12 @@ Genes       Height multiplier
  *** */
 &lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
 
+	&lt;&lt;if ndef $globalFluffies[_ef]&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: ID in store does not exist in globalFluffies: ${_ef}.`)&gt;&gt;
+		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
+		&lt;&lt;continue&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
+
 	&lt;&lt;if $globalFluffies[_ef].ID != _ef&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)&gt;&gt;
 		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
@@ -20394,13 +20429,18 @@ Genes       Height multiplier
 	&lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;if $globalFluffies[_ef].specialFriend &gt;= 0&gt;&gt;
-		&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)&gt;&gt;
+		&lt;&lt;if ndef $globalFluffies[$globalFluffies[_ef].specialFriend]&gt;&gt;
+			&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Non Defined Special friend found.`)&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true&gt;&gt;
-			&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+		&lt;&lt;else&gt;&gt;
+			&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true&gt;&gt;
+				&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)&gt;&gt;
+				&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true&gt;&gt;
+				&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)&gt;&gt;
+				&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
 		&lt;&lt;if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false&gt;&gt;
@@ -21928,13 +21968,13 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
 &lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
 &lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
 
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Blocks&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Ball&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -22303,6 +22343,68 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
             &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
     &lt;&lt;/switch&gt;&gt;
 
+    &lt;&lt;set _fiveColorEyesPart = `./art/sprites/5_color_eyes.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesEyesPart = `./art/sprites/5_lines_eyes.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorEyesSadPart = `./art/sprites/5_color_eyes_sad.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesEyesSadPart = `./art/sprites/5_lines_eyes_sad.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorEyesAngryPart = `./art/sprites/5_color_eyes_angry.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesEyesAngryPart = `./art/sprites/5_color_eyes_angry.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorEyesCannibalPart = `./art/sprites/5_color_eyes_cannibal.png`&gt;&gt;
+    &lt;&lt;set _fiveColorEyesCannibalSadPart = `./art/sprites/5_color_eyes_cannibal_sad.png`&gt;&gt;
+    &lt;&lt;set _fiveColorEyesCannibalAngryPart = `./art/sprites/5_color_eyes_cannibal_angry.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorEyewhitesPart = `./art/sprites/5_color_eyewhites.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorManePart = `./art/sprites/5_color_mane.png`&gt;&gt;
+    &lt;&lt;set _fiveColorManeTailPart = `./art/sprites/5_color_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _fiveColorManeTailShavedPart = `./art/sprites/5_color_mane_tail_shaved.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesManeTailPart = `./art/sprites/5_lines_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesManeTailShavedPart = `./art/sprites/5_lines_mane_tail_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorEarsDownPart = `./art/sprites/5_color_earsdown.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesEarsDownPart = `./art/sprites/5_lines_earsdown.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesManeEarsDownPart = `./art/sprites/5_lines_mane_earsdown.png`&gt;&gt;
+    &lt;&lt;set _fiveColorEarsDownShavedPart = `./art/sprites/5_color_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesEarsDownShavedPart = `./art/sprites/5_lines_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesManeEarsUpPart = `./art/sprites/5_lines_mane_earsup.png`&gt;&gt;
+    &lt;&lt;set _fiveColorEarsUpPart = `./art/sprites/5_color_earsup.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorBasePart = `./art/sprites/5_color_base.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesBasePart = `./art/sprites/5_lines_base.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesBaseShavedPart = `./art/sprites/5_lines_base_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _fiveLinesMouthPart = `./art/sprites/5_lines_mouth_neutral.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesMouthSmilePart = `./art/sprites/5_lines_mouth_smile.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesMouthAngryPart = `./art/sprites/5_lines_mouth_angry.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorLegsPart = `./art/sprites/5_color_legs.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesLegsPart = `./art/sprites/5_lines_legs.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesLegsShavedPart = `./art/sprites/5_lines_legs_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorLegsPillowedPart = `./art/sprites/5_color_legs_pillowed.png`&gt;&gt;
+    &lt;&lt;set _fiveColorLegsPillowedScarPart = `./art/sprites/5_color_legs_pillowed_scar.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesLegsPillowedPart = `./art/sprites/5_lines_legs_pillowed.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorLegsPillowedBackPart = `./art/sprites/5_color_legs_pillowed_back.png`&gt;&gt;
+    &lt;&lt;set _fiveColorLegsPillowedBackScarPart = `./art/sprites/5_color_legs_pillowed_back_scar.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesLegsPillowedBackPart = `./art/sprites/5_lines_legs_pillowed_back.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorLegsPillowedFrontPart = `./art/sprites/5_color_legs_pillowed_front.png`&gt;&gt;
+    &lt;&lt;set _fiveColorLegsPillowedFrontScarPart = `./art/sprites/5_color_legs_pillowed_front_scar.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesLegsPillowedFrontPart = `./art/sprites/5_lines_legs_pillowed_front.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorWingPart = `./art/sprites/5_color_wing.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesWingPart = `./art/sprites/5_lines_wing.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesWingShavedPart = `./art/sprites/5_lines_wing_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _fiveColorHornPart = `./art/sprites/5_color_horn.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesHornPart = `./art/sprites/5_lines_horn.png`&gt;&gt;
+    &lt;&lt;set _fiveColorHornManePart = `./art/sprites/5_color_horn_mane.png`&gt;&gt;
+    &lt;&lt;set _fiveLinesHornManePart = `./art/sprites/5_lines_horn_mane.png`&gt;&gt;
+
     &lt;&lt;set _fiveColorCoat = `./art/sprites/${_speciesName}/5_color_coat.png`&gt;&gt;
     &lt;&lt;set _fiveColorCoatWing = `./art/sprites/${_speciesName}/5_color_coat_wing.png`&gt;&gt;
     &lt;&lt;set _fiveColorEyes = `./art/sprites/${_speciesName}/5_color_eyes.png`&gt;&gt;
@@ -22336,6 +22438,70 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
         &lt;&lt;default&gt;&gt;
             &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
     &lt;&lt;/switch&gt;&gt;
+
+    &lt;&lt;set _sixColorEyesPart = `./art/sprites/6_color_eyes.png`&gt;&gt;
+    &lt;&lt;set _sixLinesEyesPart = `./art/sprites/6_lines_eyes.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorEyesSadPart = `./art/sprites/6+7_color_eyes_sad.png`&gt;&gt;
+    &lt;&lt;set _sixLinesEyesSadPart = `./art/sprites/6+7_lines_eyes_sad.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorEyesAngryPart = `./art/sprites/6+7_color_eyes_angry.png`&gt;&gt;
+    &lt;&lt;set _sixLinesEyesAngryPart = `./art/sprites/6+7_color_eyes_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorEyesCannibalPart = `./art/sprites/6+7_color_eyes_cannibal.png`&gt;&gt;
+    &lt;&lt;set _sixColorEyesCannibalSadPart = `./art/sprites/6+7_color_eyes_cannibal_sad.png`&gt;&gt;
+    &lt;&lt;set _sixColorEyesCannibalAngryPart = `./art/sprites/6+7_color_eyes_cannibal_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorEyewhitesPart = `./art/sprites/6+7_color_eyewhites.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorManePart = `./art/sprites/6+7_color_mane.png`&gt;&gt;
+    &lt;&lt;set _sixColorManeTailPart = `./art/sprites/6+7_color_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _sixColorManeTailShavedPart = `./art/sprites/6+7_color_mane_tail_shaved.png`&gt;&gt;
+    &lt;&lt;set _sixLinesManeTailPart = `./art/sprites/6+7_lines_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _sixLinesManeTailShavedPart = `./art/sprites/6+7_lines_mane_tail_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorEarsDownPart = `./art/sprites/6+7_color_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sixLinesEarsDownPart = `./art/sprites/6+7_lines_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sixLinesManeEarsDownPart = `./art/sprites/6+7_lines_mane_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sixColorEarsDownShavedPart = `./art/sprites/6+7_color_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _sixLinesEarsDownShavedPart = `./art/sprites/6+7_lines_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _sixLinesManeEarsUpPart = `./art/sprites/6+7_lines_mane_earsup.png`&gt;&gt;
+    &lt;&lt;set _sixColorEarsUpPart = `./art/sprites/6+7_color_earsup.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorBasePart = `./art/sprites/6+7_color_base.png`&gt;&gt;
+    &lt;&lt;set _sixLinesBasePart = `./art/sprites/6+7_lines_base.png`&gt;&gt;
+    &lt;&lt;set _sixLinesBaseShavedPart = `./art/sprites/6+7_lines_base_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sixLinesMouthPart = `./art/sprites/6+7_lines_mouth_neutral.png`&gt;&gt;
+    &lt;&lt;set _sixLinesMouthSmilePart = `./art/sprites/6+7_lines_mouth_smile.png`&gt;&gt;
+    &lt;&lt;set _sixLinesMouthAngryPart = `./art/sprites/6+7_lines_mouth_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorLegsPart = `./art/sprites/6+7_color_legs.png`&gt;&gt;
+    &lt;&lt;set _sixLinesLegsPart = `./art/sprites/6+7_lines_legs.png`&gt;&gt;
+    &lt;&lt;set _sixLinesLegsShavedPart = `./art/sprites/6+7_lines_legs_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorLegsPillowedPart = `./art/sprites/6+7_color_legs_pillowed.png`&gt;&gt;
+    &lt;&lt;set _sixColorLegsPillowedScarPart = `./art/sprites/6+7_color_legs_pillowed_scar.png`&gt;&gt;
+    &lt;&lt;set _sixLinesLegsPillowedPart = `./art/sprites/6+7_lines_legs_pillowed.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorLegsPillowedBackPart = `./art/sprites/6+7_color_legs_pillowed_back.png`&gt;&gt;
+    &lt;&lt;set _sixColorLegsPillowedBackScarPart = `./art/sprites/6+7_color_legs_pillowed_back_scar.png`&gt;&gt;
+    &lt;&lt;set _sixLinesLegsPillowedBackPart = `./art/sprites/6+7_lines_legs_pillowed_back.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorLegsPillowedFrontPart = `./art/sprites/6+7_color_legs_pillowed_front.png`&gt;&gt;
+    &lt;&lt;set _sixColorLegsPillowedFrontScarPart = `./art/sprites/6+7_color_legs_pillowed_front_scar.png`&gt;&gt;
+    &lt;&lt;set _sixLinesLegsPillowedFrontPart = `./art/sprites/6+7_lines_legs_pillowed_front.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorWingPart = `./art/sprites/6+7_color_wing.png`&gt;&gt;
+    &lt;&lt;set _sixLinesWingPart = `./art/sprites/6+7_lines_wing.png`&gt;&gt;
+    &lt;&lt;set _sixLinesWingShavedPart = `./art/sprites/6+7_lines_wing_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sixColorHornPart = `./art/sprites/6+7_color_horn.png`&gt;&gt;
+    &lt;&lt;set _sixLinesHornPart = `./art/sprites/6+7_lines_horn.png`&gt;&gt;
+    &lt;&lt;set _sixColorHornManePart = `./art/sprites/6+7_color_horn_mane.png`&gt;&gt;
+    &lt;&lt;set _sixLinesHornManePart = `./art/sprites/6+7_lines_horn_mane.png`&gt;&gt;
+
+    &lt;&lt;set _sixLinesTeatsPart = `./art/sprites/6+7_lines_teats.png`&gt;&gt;
 
     &lt;&lt;set _sixColorEyes = `./art/sprites/${_speciesName}/6_color_eyes.png`&gt;&gt;
     &lt;&lt;set _sixColorEyesTrimmed = `./art/sprites/${_speciesName}/6+7_color_eyes_trimmed.png`&gt;&gt;
@@ -22412,6 +22578,68 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
         &lt;&lt;default&gt;&gt;
             &lt;&lt;set _speciesName = &#39;fluffy&#39;&gt;&gt;
     &lt;&lt;/switch&gt;&gt;
+
+    &lt;&lt;set _sevenColorEyesPart = `./art/sprites/7_color_eyes.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesEyesPart = `./art/sprites/7_lines_eyes.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorEyesSadPart = `./art/sprites/6+7_color_eyes_sad.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesEyesSadPart = `./art/sprites/6+7_lines_eyes_sad.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorEyesAngryPart = `./art/sprites/6+7_color_eyes_angry.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesEyesAngryPart = `./art/sprites/6+7_color_eyes_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorEyesCannibalPart = `./art/sprites/6+7_color_eyes_cannibal.png`&gt;&gt;
+    &lt;&lt;set _sevenColorEyesCannibalSadPart = `./art/sprites/6+7_color_eyes_cannibal_sad.png`&gt;&gt;
+    &lt;&lt;set _sevenColorEyesCannibalAngryPart = `./art/sprites/6+7_color_eyes_cannibal_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorEyewhitesPart = `./art/sprites/6+7_color_eyewhites.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorManePart = `./art/sprites/6+7_color_mane.png`&gt;&gt;
+    &lt;&lt;set _sevenColorManeTailPart = `./art/sprites/6+7_color_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _sevenColorManeTailShavedPart = `./art/sprites/6+7_color_mane_tail_shaved.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesManeTailPart = `./art/sprites/6+7_lines_mane_tail.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesManeTailShavedPart = `./art/sprites/6+7_lines_mane_tail_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorEarsDownPart = `./art/sprites/6+7_color_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesEarsDownPart = `./art/sprites/6+7_lines_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesManeEarsDownPart = `./art/sprites/6+7_lines_mane_earsdown.png`&gt;&gt;
+    &lt;&lt;set _sevenColorEarsDownShavedPart = `./art/sprites/6+7_color_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesEarsDownShavedPart = `./art/sprites/6+7_lines_earsdown_shaved.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesManeEarsUpPart = `./art/sprites/6+7_lines_mane_earsup.png`&gt;&gt;
+    &lt;&lt;set _sevenColorEarsUpPart = `./art/sprites/6+7_color_earsup.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorBasePart = `./art/sprites/6+7_color_base.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesBasePart = `./art/sprites/6+7_lines_base.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesBaseShavedPart = `./art/sprites/6+7_lines_base_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sevenLinesMouthPart = `./art/sprites/6+7_lines_mouth_neutral.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesMouthSmilePart = `./art/sprites/6+7_lines_mouth_smile.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesMouthAngryPart = `./art/sprites/6+7_lines_mouth_angry.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorLegsPart = `./art/sprites/6+7_color_legs.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesLegsPart = `./art/sprites/6+7_lines_legs.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesLegsShavedPart = `./art/sprites/6+7_lines_legs_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorLegsPillowedPart = `./art/sprites/6+7_color_legs_pillowed.png`&gt;&gt;
+    &lt;&lt;set _sevenColorLegsPillowedScarPart = `./art/sprites/6+7_color_legs_pillowed_scar.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesLegsPillowedPart = `./art/sprites/6+7_lines_legs_pillowed.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorLegsPillowedBackPart = `./art/sprites/6+7_color_legs_pillowed_back.png`&gt;&gt;
+    &lt;&lt;set _sevenColorLegsPillowedBackScarPart = `./art/sprites/6+7_color_legs_pillowed_back_scar.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesLegsPillowedBackPart = `./art/sprites/6+7_lines_legs_pillowed_back.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorLegsPillowedFrontPart = `./art/sprites/6+7_color_legs_pillowed_front.png`&gt;&gt;
+    &lt;&lt;set _sevenColorLegsPillowedFrontScarPart = `./art/sprites/6+7_color_legs_pillowed_front_scar.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesLegsPillowedFrontPart = `./art/sprites/6+7_lines_legs_pillowed_front.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorWingPart = `./art/sprites/6+7_color_wing.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesWingPart = `./art/sprites/6+7_lines_wing.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesWingShavedPart = `./art/sprites/6+7_lines_wing_shaved.png`&gt;&gt;
+
+    &lt;&lt;set _sevenColorHornPart = `./art/sprites/6+7_color_horn.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesHornPart = `./art/sprites/6+7_lines_horn.png`&gt;&gt;
+    &lt;&lt;set _sevenColorHornManePart = `./art/sprites/6+7_color_horn_mane.png`&gt;&gt;
+    &lt;&lt;set _sevenLinesHornManePart = `./art/sprites/6+7_lines_horn_mane.png`&gt;&gt;
 
     &lt;&lt;set _sevenColorEyes = `./art/sprites/${_speciesName}/7_color_eyes.png`&gt;&gt;
     &lt;&lt;set _sevenColorEyesTrimmed = `./art/sprites/${_speciesName}/6+7_color_eyes_trimmed.png`&gt;&gt;
@@ -22658,7 +22886,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;85e4eed&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;07dfdbb&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23183,7 +23411,7 @@ profitsTotal: 0
 			&lt;/div&gt;
 			&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
 				&lt;br&gt;&lt;&lt;They&gt;&gt; would cost 
-				
+
 				&lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
 					&lt;&lt;set $globalFluffies[_id].training = 50&gt;&gt;
 					&lt;&lt;set $globalFluffies[_id].trust = 50&gt;&gt;
@@ -23204,19 +23432,25 @@ profitsTotal: 0
 						&lt;&lt;set _price = Number(Number($earthPrice.mart) + Number(_price)).toFixed(2)&gt;&gt;
 				&lt;&lt;/switch&gt;&gt;
 				
+				&lt;&lt;set _priceMulti = 1&gt;&gt;
 				&lt;&lt;if $shop == &quot;shelter&quot;&gt;&gt;
-					&lt;&lt;set _ageMulti = 0.5&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set _ageMulti = 1&gt;&gt;
+					&lt;&lt;set _priceMulti = _priceMulti*0.5&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;for _i, _status range $activeFluffy.limbs[&#39;earthy&#39;]&gt;&gt;
+                    &lt;&lt;capture _i&gt;&gt;
+                        &lt;&lt;if $activeFluffy.limbs[&#39;earthy&#39;][_i] === &#39;missing&#39;&gt;&gt;
+							&lt;&lt;set _priceMulti = _priceMulti*0.9&gt;&gt;
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;/capture&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
 				
 				&lt;&lt;set _price = Number(Number(_price) * Number($globalFluffies[_id].statBonus)).toFixed(2)&gt;&gt;
 				&lt;&lt;set _price = Number(_price * $globalFluffies[_id].colorBonus).toFixed(2)&gt;&gt;
 				&lt;&lt;if $globalFluffies[_id].ageCategory &lt; 5&gt;&gt;
-					&lt;&lt;set _ageMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
+					&lt;&lt;set _priceMulti = Number(($globalFluffies[_id].ageWeeks+1) / 44).toFixed(2)&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 
-				&lt;&lt;set _price = Number(_price * _ageMulti).toFixed(2)&gt;&gt;
+				&lt;&lt;set _price = Number(_price * _priceMulti).toFixed(2)&gt;&gt;
 
 				&lt;&lt;if $shop == &quot;angora&quot;&gt;&gt;
 					&lt;&lt;set _price = Number(_price * 1.5).toFixed(2)&gt;&gt;
@@ -23368,13 +23602,13 @@ profitsTotal: 0
 &lt;&lt;set $costs = Number(Number($costs) + Number($ourStore.space))&gt;&gt;
 &lt;&lt;set $costs = Number(Number($costs) / Number(50)).toFixed(2)&gt;&gt;
 
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Blocks&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
-&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Ball&quot;)&gt;&gt;
+&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
 	&lt;&lt;set $costs = Number(Number($costs) + Number(1))&gt;&gt;
 &lt;&lt;/if&gt;&gt;
 
@@ -23611,38 +23845,38 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 &lt;hr&gt;
 &lt;h1&gt;Upgrades and Improvements&lt;/h1&gt;
 
-&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Toy Ball@@ to &lt;&lt;- $ourStore.name&gt;&gt;. 
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Basic Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;. 
 &lt;br&gt;Cost @@.yellowgreen;¤@@100, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@.
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@5-10 to sale price.&lt;/p&gt;
-@@#basic_toys;&lt;&lt;button &quot;Buy Toy Ball&quot;&gt;&gt;	
+@@#basic_toys;&lt;&lt;button &quot;Buy Basic Toys&quot;&gt;&gt;	
 	&lt;&lt;cashAdd -100&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
-	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Toy Ball&quot;)&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Basic Toys&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
     &lt;&lt;updateStoreButtons&gt;&gt;
 &lt;&lt;/button&gt;&gt;@@
 
-&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Toy Blocks@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Fancy Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
 &lt;br&gt;Cost @@.yellowgreen;¤@@500, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@10-15 to sale price.&lt;/p&gt;
-@@#fancy_toys;&lt;&lt;button &quot;Buy Toy Blocks&quot;&gt;&gt;	
+@@#fancy_toys;&lt;&lt;button &quot;Buy Fancy Toys&quot;&gt;&gt;	
 	&lt;&lt;cashAdd -500&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
-	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Toy Blocks&quot;)&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Fancy Toys&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
     &lt;&lt;updateStoreButtons&gt;&gt;
 &lt;&lt;/button&gt;&gt;@@
 
-&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Toy Tablet@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
+&lt;p class=&quot;hang&quot;&gt;Add some @@.coral;Deluxe Toys@@ to &lt;&lt;- $ourStore.name&gt;&gt;.
 &lt;br&gt;Cost @@.yellowgreen;¤@@1000, +@@.yellowgreen;¤@@1 upkeep, @@.lightcoral;1 Space@@. 
 &lt;br&gt;Improves Play Action, chance to add +@@.yellowgreen;¤@@15-20 to sale price.&lt;/p&gt;
-@@#deluxe_toys;&lt;&lt;button &quot;Buy Toy Tablet&quot;&gt;&gt;	
+@@#deluxe_toys;&lt;&lt;button &quot;Buy Deluxe Toys&quot;&gt;&gt;	
 	&lt;&lt;cashAdd -1000&gt;&gt;
 	&lt;&lt;set $ourStore.space -= 1&gt;&gt;
 	&lt;&lt;set $costs += 1&gt;&gt;
-	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Toy Tablet&quot;)&gt;&gt;
+	&lt;&lt;run $ourStore.upgrades.pushUnique(&quot;Deluxe Toys&quot;)&gt;&gt;
     &lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
     &lt;&lt;updateStoreButtons&gt;&gt;
 &lt;&lt;/button&gt;&gt;@@
@@ -23691,19 +23925,19 @@ Display: &lt;span id=&quot;stats-display&quot;&gt;&lt;&lt;print $ourStore.displa
 
 
 &lt;&lt;widget &quot;updateStoreButtons&quot;&gt;&gt;
-	&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Ball&quot;) == false &amp;&amp; $cash &gt;= 100 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;) == false &amp;&amp; $cash &gt;= 100 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
 		&lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;run $(&quot;#basic_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Blocks&quot;) == false &amp;&amp; $cash &gt;= 500 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;) == false &amp;&amp; $cash &gt;= 500 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
 		&lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;run $(&quot;#fancy_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;) == false &amp;&amp; $cash &gt;= 1000 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
+	&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;) == false &amp;&amp; $cash &gt;= 1000 &amp;&amp; $ourStore.space &gt;= 1&gt;&gt;
 		&lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, false)&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;run $(&quot;#deluxe_toys button&quot;).prop(&quot;disabled&quot;, true)&gt;&gt;
@@ -24391,13 +24625,13 @@ Upgrades:
 				&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
 				&lt;&lt;set $activeFluffy.stress--&gt;&gt;
 				
-				&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Tablet&quot;)&gt;&gt;
+				&lt;&lt;if $ourStore.upgrades.includes(&quot;Deluxe Toys&quot;)&gt;&gt;
 					&lt;&lt;set $activeFluffy.stress--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Blocks&quot;)&gt;&gt;
+				&lt;&lt;if $ourStore.upgrades.includes(&quot;Fancy Toys&quot;)&gt;&gt;
 					&lt;&lt;set $activeFluffy.happy++&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-				&lt;&lt;if $ourStore.upgrades.includes(&quot;Toy Ball&quot;)&gt;&gt;
+				&lt;&lt;if $ourStore.upgrades.includes(&quot;Basic Toys&quot;)&gt;&gt;
 					&lt;&lt;set $activeFluffy.happy++&gt;&gt;
 					&lt;&lt;set $activeFluffy.stress--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -26583,6 +26817,7 @@ Subspecies:
     &lt;&lt;else&gt;&gt;
         &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
         &lt;&lt;newFromGene $testChild&gt;&gt;
+        &lt;&lt;set $activeFluffy.ageCategory = 4&gt;&gt;
 
         &lt;&lt;set $activeFluffy.ID = $globalFluffies.length&gt;&gt;
         &lt;&lt;run $globalFluffies.push($activeFluffy)&gt;&gt;
@@ -26712,6 +26947,17 @@ Subspecies:
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;set $activeFluffy.furStage = Number(random(60, 120))&gt;&gt;
+            &lt;&lt;elseif $shop == &quot;shelter&quot; ||  $shop == &quot;mart&quot; &gt;&gt;
+                /* 25% chance for each limb to be missing */
+                &lt;&lt;for _i, _status range $activeFluffy.limbs[&#39;earthy&#39;]&gt;&gt;
+                    &lt;&lt;capture _i&gt;&gt;
+                        &lt;&lt;if random(0, 3) == 0&gt;&gt;
+                            &lt;&lt;set $activeFluffy.limbs[&#39;earthy&#39;][_i] = &#39;missing&#39;&gt;&gt;
+                        &lt;&lt;else&gt;&gt;
+                            /* Nothing */
+                        &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;/capture&gt;&gt;
+                &lt;&lt;/for&gt;&gt;
             &lt;&lt;elseif $shop == &quot;breeder&quot; || $shop == &quot;angora&quot;&gt;&gt;
                 /* breeder fluffies always have a name */
                 &lt;&lt;setName&gt;&gt;
@@ -28086,6 +28332,10 @@ button {
 		sold: false,
 		preOwned: false,
 		dead: false,
+		limbs: {
+			&#39;leg_front_right&#39;: &#39;healthy&#39;, &#39;leg_front_left&#39;: &#39;healthy&#39;, &#39;leg_back_right&#39;: &#39;healthy&#39;, &#39;leg_back_left&#39;: &#39;healthy&#39;,
+			&#39;horn&#39;: &#39;healthy&#39;, &#39;wing_right&#39;: &#39;healthy&#39;, &#39;wing_left&#39;: &#39;healthy&#39;
+		},
 		weaned: true,
 		traits: [],
 		foodType: &quot;Kibble&quot;,
@@ -28190,6 +28440,17 @@ button {
 			sold: false,
 			preOwned: false,
 			dead: false,
+            limbs: {
+				&#39;earthy&#39;: {
+				    &#39;leg_front_right&#39;: &#39;healthy&#39;, &#39;leg_front_left&#39;: &#39;healthy&#39;, &#39;leg_back_right&#39;: &#39;healthy&#39;, &#39;leg_back_left&#39;: &#39;healthy&#39;
+				},
+                &#39;pegasus&#39;: {
+                   &#39;wing_right&#39;: &#39;healthy&#39;, &#39;wing_left&#39;: &#39;healthy&#39;
+                },
+                &#39;unicorn&#39;: {
+                   &#39;horn&#39;: &#39;healthy&#39;
+                }
+            },
 			weaned: true,
 			traits: [],
 			foodType: &quot;Kibble&quot;,
@@ -28401,7 +28662,7 @@ button {
 							&lt;&lt;set $activeFluffy.strength -= 1&gt;&gt;
 							&lt;&lt;set $activeFluffy.charm -= 1&gt;&gt;
 						&lt;&lt;default&gt;&gt;
-							&lt;&lt;addTrait &quot;Crippled&quot; $activeFluffy&gt;&gt;
+							&lt;&lt;addTrait &quot;Immobile&quot; $activeFluffy&gt;&gt;
 							&lt;&lt;set $activeFluffy.energy -= 4&gt;&gt;
 							&lt;&lt;set $activeFluffy.strength -= 2&gt;&gt;
 							&lt;&lt;set $activeFluffy.charm -= 2&gt;&gt;
@@ -29028,10 +29289,19 @@ button {
  		&lt;&lt;set _weightRatio = Number(Number($activeFluffy.weight).toFixed(3) / Number(Number(Number($activeFluffy.maxWeight) + Number(4.5)).toFixed(3) / Number(2)).toFixed(3)).toFixed(3)&gt;&gt;
  	&lt;&lt;/if&gt;&gt;
 
-
+	/* Set colors */
 	&lt;&lt;set _coatFilter = $activeFluffy.cColor.filter&gt;&gt;
 	&lt;&lt;set _maneFilter = $activeFluffy.mColor.filter&gt;&gt;
 	&lt;&lt;set _eyeFilter = $activeFluffy.eColor.filter&gt;&gt;
+
+	/* Set limbs */
+	&lt;&lt;set _activeLimbs = $activeFluffy.limbs[&#39;earthy&#39;]&gt;&gt;
+	&lt;&lt;if def _activeLimbs&gt;&gt;
+		&lt;&lt;set _legFrontRight = _activeLimbs[&#39;leg_front_right&#39;]&gt;&gt;
+		&lt;&lt;set _legFrontLeft = _activeLimbs[&#39;leg_front_left&#39;]&gt;&gt;
+		&lt;&lt;set _legBackRight = _activeLimbs[&#39;leg_back_right&#39;]&gt;&gt;
+		&lt;&lt;set _legBackLeft = _activeLimbs[&#39;leg_back_left&#39;]&gt;&gt;
+	&lt;&lt;/if&gt;&gt;
 
  	/* ***
  	 *  1. newborn 
@@ -29145,56 +29415,284 @@ button {
 		
 		&lt;&lt;youthSprite $activeFluffy&gt;&gt;
 
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+		/* Body */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 0&gt;&gt;
+			/* TODO: Add shaved version */
+			/* &lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt; */
+				/* Body */
+				/* &lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesBaseShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt; */
 
-		&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-		
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorMane + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				/* Wings */
+				/* &lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesWingShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt; */
 
-		&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyewhites + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+				/* Mane &amp; Ears */
+				/* &lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEarsDownShavedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEarsDownShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt; */
 
-		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+				/* Horns */
+				/* &lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorHornPart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesHornPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt; */
 
-		&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesAlicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;elseif _args[0] === &quot;earthie&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEarthie + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesPegasus + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesUnicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+				/* Tail */
+				/* &lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManeTailShavedPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManeTailShavedPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesManeTailShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt; */
+
+				/* Eyes */
+				/* &lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt; */
+			/* &lt;&lt;else&gt;&gt; */
+				/* Body */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Tail */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManeTailPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManeTailPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesManeTailPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Legs */
+				&lt;&lt;if _activeLimbs &amp;&amp; _legFrontRight === &#39;healthy&#39; &amp;&amp; _legFrontLeft === &#39;healthy&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedBackPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedBackScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesLegsPillowedBackPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;healthy&#39; &amp;&amp; _legBackLeft === &#39;healthy&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedFrontPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedFrontScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesLegsPillowedFrontPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPillowedScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesLegsPillowedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorLegsPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesLegsPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				&lt;&lt;/if&gt;&gt;
+
+				/* Wings */
+				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if $activeFluffy.happy &gt; 167&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesMouthSmilePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif $activeFluffy.happy &gt; 100&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesMouthPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEarsDownPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesManeEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* &lt;&lt;/if&gt;&gt; */
+
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyewhitesPart + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+
+			/* Horns */
+			/* &lt;&lt;if $activeFluffy.furStage &gt;= 67&gt;&gt; */
+				&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorHornManePart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesHornManePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			/* &lt;&lt;/if&gt;&gt; */
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+
+			&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+			
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorMane + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorEyewhites + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+
+			&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesAlicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;elseif _args[0] === &quot;earthie&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesEarthie + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesPegasus + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _fiveLinesUnicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
 	/* 6. adult (teats on female) week 36-47*/
 	&lt;&lt;elseif $activeFluffy.ageCategory == 5&gt;&gt;
 		
 		&lt;&lt;adultSprite $activeFluffy&gt;&gt;
-
-		/* Eyes */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
-				/* Nothing */
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesTrimmed + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesShaved + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
 		
-		/* Coat */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+		/* Body */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 0&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
+				/* Body */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesBaseShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Wings */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesWingShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Mane &amp; Ears */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEarsDownShavedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEarsDownShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Horns */
+				&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHornPart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesHornPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				/* Tail */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeTailShavedPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeTailShavedPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesManeTailShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Eyes */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				/* Body */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Tail */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeTailPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeTailPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesManeTailPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Legs */
+				&lt;&lt;if _activeLimbs &amp;&amp; _legFrontRight === &#39;healthy&#39; &amp;&amp; _legFrontLeft === &#39;healthy&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedBackPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedBackScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesLegsPillowedBackPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;healthy&#39; &amp;&amp; _legBackLeft === &#39;healthy&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedFrontPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedFrontScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesLegsPillowedFrontPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPillowedScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesLegsPillowedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorLegsPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesLegsPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Teats */
+					&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
+						&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesTeatsPart + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				/* Wings */
+				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if $activeFluffy.happy &gt; 167&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesMouthSmilePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif $activeFluffy.happy &gt; 100&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesMouthPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEarsDownPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesManeEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhitesPart + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+
+			/* Horns */
+			&lt;&lt;if $activeFluffy.furStage &gt;= 67&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHornManePart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesHornManePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -29220,24 +29718,11 @@ button {
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatShaved + &#39;&quot;  class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWingShaved + &#39;&quot;  class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatShaved + &#39;&quot;  class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
 		/* Mane */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeWingOvergrown + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -29260,41 +29745,23 @@ button {
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeShaved + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorManeShaved + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorMane + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* Eyewhites */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
-				/* Nothing */
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 		
 		/* Horns */
 		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+			&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+			&lt;&lt;case 2&gt;&gt;
 				&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHornOvergrown + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;else&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
 		/* Outlines */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesAlicornOvergrown + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
@@ -29336,56 +29803,168 @@ button {
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEarthieShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesAlicornShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesPegasusShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesUnicornShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEarthieShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesAlicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesPegasus + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesUnicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesEarthie + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
-		&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesTeats + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		/* Eyes */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
+				/* Nothing */
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesTrimmed + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyesShaved + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+
+		/* Eyewhites */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
+				/* Nothing */
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixColorEyewhites + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+		
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sixLinesTeats + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
 	/* 7. grey (droopy eyes and greying fur) week 208-364 (4-7 years)*/
 	&lt;&lt;else&gt;&gt;
 	
 		&lt;&lt;greySprite $activeFluffy&gt;&gt;
 
-		/* Eyes */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
-				/* Nothing */
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesTrimmed + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _seveColorEyesShaved + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		/* Body */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 0&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
+				/* Body */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesBaseShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
 
-		/* Coat */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+				/* Wings */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesWingShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Mane &amp; Ears */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEarsDownShavedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarsDownShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Horns */
+				&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHornPart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesHornPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				/* Tail */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeTailShavedPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeTailShavedPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesManeTailShavedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Eyes */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				/* Body */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorBasePart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesBasePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Tail */
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeTailPart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeTailPart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesManeTailPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+				/* Legs */
+				&lt;&lt;if _activeLimbs &amp;&amp; _legFrontRight === &#39;healthy&#39; &amp;&amp; _legFrontLeft === &#39;healthy&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedBackPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedBackScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesLegsPillowedBackPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;healthy&#39; &amp;&amp; _legBackLeft === &#39;healthy&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedFrontPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedFrontScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesLegsPillowedFrontPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _activeLimbs &amp;&amp; _legFrontRight === &#39;missing&#39; &amp;&amp; _legFrontLeft === &#39;missing&#39; &amp;&amp; _legBackRight === &#39;missing&#39; &amp;&amp; _legBackLeft === &#39;missing&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPillowedScarPart + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesLegsPillowedPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorLegsPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesLegsPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Teats */
+					&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
+						&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesTeatsPart + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				/* Wings */
+				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorWingPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesWingPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if $activeFluffy.happy &gt; 167&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesMouthSmilePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif $activeFluffy.happy &gt; 100&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEyesPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEarsUpPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesManeEarsUpPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mouth */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesMouthPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					/* Eyes */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesSadPart + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesSadPart + &#39;&quot; class=&quot;eyefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEyesSadPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+
+					/* Mane &amp; Ears */
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManePart + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEarsDownPart + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesManeEarsDownPart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+
+			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyewhitesPart + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+
+			/* Horns */
+			&lt;&lt;if $activeFluffy.furStage &gt;= 67&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHornManePart + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesHornManePart + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingOvergrown + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -29406,29 +29985,16 @@ button {
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingShaved + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingShaved + &#39;&quot;  class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatShaved + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatShaved + &#39;&quot;  class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWingShaved + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatShaved + &#39;&quot; class=&quot;pinkfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoatWing + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;earthie&quot; || _args[0] === &quot;unicorn&quot; || $activeFluffy.subSpecies == undefined&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorCoat + &#39;&quot; style=&quot;&#39; + _coatFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 
 		/* Mane */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
 				&lt;&lt;if _args[0] === &quot;alicorn&quot; ||  _args[0] === &quot;pegasus&quot;&gt;&gt;
 					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeWingOvergrown + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
@@ -29451,148 +30017,96 @@ button {
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeShaved + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorManeShaved + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorMane + &#39;&quot; style=&quot;&#39; + _maneFilter + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorMane + &#39;&quot; class=&quot;manefilter&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+		
+		/* Horns */
+		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
+			&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+			&lt;&lt;case 2&gt;&gt;
+				&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHornOvergrown + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-	
+
+		/* Outlines */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornOvergrown + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusOvergrown + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornOvergrown + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieOvergrown + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasus + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicorn + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthie + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornTrimmed + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusTrimmed + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornTrimmed + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieTrimmed + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;else&gt;&gt;
+					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieShaved + &#39;&quot; class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+
+		/* Eyes */
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
+				/* Nothing */
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyes + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesTrimmed + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;else&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyesShaved + &#39;&quot; style=&quot;&#39; + _eyeFilter + &#39;&quot;&gt;&#39;&gt;&gt;
+			&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
+
 		/* Eyewhites */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
 				/* Nothing */
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyewhites + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorEyewhites + &#39;&quot;  class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* Overlay */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayOvergrown + &#39;&quot;&gt;&#39;&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWing + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlay + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWingTrimmed + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayTrimmed + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWingShaved + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayShaved + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWingShaved + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayShaved + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlayWing + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorOverlay + &#39;&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 		
-		/* Horns */
-		&lt;&lt;if _args[0] === &quot;unicorn&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
-			&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-				&lt;&lt;if $activeFluffy.furStage &gt;= 167&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHornOvergrown + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenColorHorn + &#39;&quot; class=&quot;whitefilter&quot;&gt;&#39;&gt;&gt;
+		&lt;&lt;switch $activeFluffy.subSpecies&gt;&gt;
+		&lt;&lt;case 2&gt;&gt;
+			&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
+				&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesTeats + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		/* Outlines */
-		&lt;&lt;if $activeFluffy.subSpecies == 2&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &gt; 167&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornOvergrown + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusOvergrown + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornOvergrown + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieOvergrown + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 100&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicorn + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasus + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicorn + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthie + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;elseif $activeFluffy.furStage &gt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornTrimmed + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusTrimmed + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornTrimmed + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieTrimmed + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $activeFluffy.furStage &lt; 67&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicornShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasusShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicornShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthieShaved + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if _args[0] === &quot;alicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesAlicorn + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;pegasus&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesPegasus + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;elseif _args[0] === &quot;unicorn&quot;&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesUnicorn + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;else&gt;&gt;
-					&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesEarthie + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
-			&lt;&lt;/if&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
-
-		&lt;&lt;if $activeFluffy.gender === &quot;female&quot;&gt;&gt;
-			&lt;&lt;= &#39;&lt;img src=&quot;&#39; + _sevenLinesTeats + &#39;&quot;  class=&quot;blackfilter&quot;&gt;&#39;&gt;&gt;
-		&lt;&lt;/if&gt;&gt;
+		&lt;&lt;/switch&gt;&gt;
 		
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/widget&gt;&gt;

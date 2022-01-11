@@ -66,6 +66,12 @@
  *** */
 <<for _ef range $ourStore.fluffies>>
 
+	<<if ndef $globalFluffies[_ef]>>
+		<<run console.log(`ERROR: [endWeek.tw]: ID in store does not exist in globalFluffies: ${_ef}.`)>>
+		<<run $ourStore.fluffies.delete(_ef)>>
+		<<continue>>
+	<</if>>
+
 	<<if $globalFluffies[_ef].ID != _ef>>
 		<<run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
@@ -90,13 +96,18 @@
 	<</if>>
 
 	<<if $globalFluffies[_ef].specialFriend >= 0>>
-		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true>>
-			<<run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)>>
+		<<if ndef $globalFluffies[$globalFluffies[_ef].specialFriend]>>
+			<<run console.log(`ERROR: [endWeek.tw]: Non Defined Special friend found.`)>>
 			<<set $globalFluffies[_ef].specialFriend = -1>>
-		<</if>>
-		<<if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true>>
-			<<run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)>>
-			<<set $globalFluffies[_ef].specialFriend = -1>>
+		<<else>>
+			<<if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true>>
+				<<run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)>>
+				<<set $globalFluffies[_ef].specialFriend = -1>>
+			<</if>>
+			<<if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true>>
+				<<run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)>>
+				<<set $globalFluffies[_ef].specialFriend = -1>>
+			<</if>>
 		<</if>>
 		
 		<<if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false>>
