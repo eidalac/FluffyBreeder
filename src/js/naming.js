@@ -46,7 +46,6 @@ window.nameList = {
 			"Cookie",
 			"Cuddlebug",
 			"Cuddles",
-			"Cuddly",
 			"Cupcake",
 			"Daisy",
 			"Darling",
@@ -59,13 +58,11 @@ window.nameList = {
 			"Ducky",
 			"Dummy",
 			"Dumpling",
-			"Egghead",
 			"Flower",
 			"Fruity",
 			"Gorgeous",
 			"Giggles",
 			"Golden",
-			"Goldie",
 			"Goofy",
 			"Haven",
 			"King",
@@ -107,17 +104,18 @@ window.nameList = {
 			"Sugar",
 			"Sunny",
 			"Sunshine",
-			"Superman",
-			"Superstar",
 			"Sweety",
 			"Teardrop",
 			"Tiger",
-			"Toots",
 			"Twinkle",
-			"Wonderful",
-			"Yummers",
+			"Jean",
 		],
 		"Male": [
+			"Tzar",
+			"Otto",
+			"Caesar",
+			"Nero",
+			"Julius",
 			"Heisenberg",
 			"Hero",
 			"Stud",
@@ -226,6 +224,7 @@ window.nameList = {
 			"King"
 		],
 		"Female": [
+			"Crystal",
 			"Tinkerbell",
 			"June",
 			"Joy",
@@ -427,7 +426,8 @@ window.nameList = {
 			"Moss",
 			"Seaweed",
 			"Spruce",
-			"Peppermint"
+			"Peppermint",
+			"Salad"
 		],
 		"Blue": [
 			"Azure",
@@ -495,7 +495,8 @@ window.nameList = {
 			"Cinnamon",
 			"Sandy",
 			"Peanut",
-			"Chocolate"
+			"Chocolate",
+			"Potato"
 		],
 		"White": [
 			"Cauliflower",
@@ -532,9 +533,11 @@ window.nameList = {
 			"Whip",
 			"Antique",
 			"Seashell",
-			"Steam"
+			"Steam",
+			"Ghost"
 		],
 		"Black": [
+			"Schwarz",
 			"Charcoal",
 			"Night",
 			"Black",
