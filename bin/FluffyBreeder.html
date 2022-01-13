@@ -16214,6 +16214,16 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 
+    // update limb data
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].limbs = {
+        'earthy': { 'leg_front_right': 'healthy', 'leg_front_left': 'healthy', 'leg_back_right': 'healthy', 'leg_back_left': 'healthy' },
+        'pegasus': { 'wing_right': 'healthy', 'wing_left': 'healthy' },
+        'unicorn': { 'horn': 'healthy' }
+      };
+    }
+    
     // Update birth date
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
     {
@@ -22886,7 +22896,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;07dfdbb&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;09c90e3&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********

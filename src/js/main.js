@@ -56,6 +56,16 @@ Save.onLoad.add(function (save)
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
 
+    // update limb data
+    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
+    {
+      save.state.history[save.state.index].variables.globalFluffies[i].limbs = {
+        'earthy': { 'leg_front_right': 'healthy', 'leg_front_left': 'healthy', 'leg_back_right': 'healthy', 'leg_back_left': 'healthy' },
+        'pegasus': { 'wing_right': 'healthy', 'wing_left': 'healthy' },
+        'unicorn': { 'horn': 'healthy' }
+      };
+    }
+    
     // Update birth date
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
     {
