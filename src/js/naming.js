@@ -223,9 +223,12 @@ window.nameList = {
 			"Cash",
 			"Archie",
 			"Walter",
-			"King"
+			"King",
+			"Albedo"
 		],
 		"Female": [
+			"Barbara",
+			"Crystal",
 			"Tinkerbell",
 			"June",
 			"Joy",
@@ -339,6 +342,7 @@ window.nameList = {
 	},
 	"colors": {
 		"Red": [
+			"Valentine",
 			"Red",
 			"Crimson",
 			"Scarlet",
@@ -375,7 +379,10 @@ window.nameList = {
 			"Peaches",
 		],
 		"Yellow": [
+			"Bee",
 			"Yellow",
+			"Sunny",
+			"Sunlight",
 			"Sunshine",
 			"Apricot",
 			"Banana",
@@ -427,7 +434,9 @@ window.nameList = {
 			"Moss",
 			"Seaweed",
 			"Spruce",
-			"Peppermint"
+			"Peppermint",
+			"Salad",
+			"Malachite",
 		],
 		"Blue": [
 			"Azure",
@@ -459,6 +468,8 @@ window.nameList = {
 			"Dewdrop",
 		],
 		"Violet": [
+			"Valentine",
+			"Amethyst",
 			"Plum",
 			"Blueberry",
 			"Boysenberry",
@@ -495,9 +506,12 @@ window.nameList = {
 			"Cinnamon",
 			"Sandy",
 			"Peanut",
-			"Chocolate"
+			"Chocolate",
+			"Potato",
+			"Oak"
 		],
 		"White": [
+			"Quartz",
 			"Cauliflower",
 			"Angel",
 			"Whitey",
@@ -532,9 +546,13 @@ window.nameList = {
 			"Whip",
 			"Antique",
 			"Seashell",
-			"Steam"
+			"Steam",
+			"Ghost",
+			"Aether"
 		],
 		"Black": [
+			"Obsidian",
+			"Schwarz",
 			"Charcoal",
 			"Night",
 			"Black",
@@ -582,6 +600,7 @@ window.nameList = {
 			"Bullet",
 			"Jet",
 			"Platinum",
+			"Flint",
 			"Stone",
 			"Stoney",
 			"Rocky",
