@@ -18465,7 +18465,7 @@ button {
 			
 	&lt;br&gt;&lt;br&gt;
 	&lt;&lt;button &quot;Kill it&quot;&gt;&gt;
-		&lt;&lt;removeFluffy $globalFluffies[$activeFluffy.ID] true&gt;&gt;
+		&lt;&lt;removeFluffy $globalFluffies[$activeFluffy.ID] &quot;kill&quot;&gt;&gt;
 		&lt;&lt;set $abuse++&gt;&gt;
 		&lt;&lt;set _reactionString = &quot;You snap &quot; + $globalFluffies[$activeFluffy.ID].name + &quot;&#39;s neck.&quot;&gt;&gt;
 		
@@ -18475,7 +18475,7 @@ button {
 
 	&lt;&lt;button &quot;Release it&quot;&gt;&gt;
 		&lt;&lt;set $hugbox++&gt;&gt;
-		&lt;&lt;removeFluffy $globalFluffies[$activeFluffy.ID]&gt;&gt;
+		&lt;&lt;removeFluffy $activeFluffy &quot;sell&quot;&gt;&gt;
 		&lt;&lt;set _reactionString = &quot;You release &quot; + $globalFluffies[$activeFluffy.ID].name + &quot; into the wild.&quot;&gt;&gt;
 		
 		&lt;&lt;replace &quot;#reaction-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;- _reactionString&gt;&gt;&lt;br&gt;&lt;br&gt;&lt;&lt;set $nextButton = &quot;CONTINUE&quot;&gt;&gt;[[CONTINUE|Event Main][$encyclopedia = 0]]&lt;&lt;/replace&gt;&gt;
@@ -18521,7 +18521,7 @@ button {
 
 	/* Doing this as a post step to ensure no weirdness referencing a removed fluffy: */
 	&lt;&lt;if $eventStarve == 0&gt;&gt;
-		&lt;&lt;removeFluffy $actFluffy true&gt;&gt;
+		&lt;&lt;removeFluffy $actFluffy &quot;kill&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 &lt;&lt;/button&gt;&gt;</tw-passagedata><tw-passagedata pid="17" name="Event Stress" tags="nobr" position="850,225" size="100,100">/* **********
  * eventStress.tw
@@ -18747,7 +18747,7 @@ button {
 					&lt;&lt;set $globalFluffies[_eFluff].specialFriend = -1&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 	
-			&lt;&lt;removeFluffy $globalFluffies[_eFluff] true&gt;&gt;
+			&lt;&lt;removeFluffy $globalFluffies[_eFluff] &quot;kill&quot;&gt;&gt;
 		&lt;&lt;/for&gt;&gt;
 		&lt;br&gt;
 
@@ -21120,6 +21120,28 @@ Genes       Height multiplier
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: endWeek: ${$globalFluffies[_ef].name} nursing ${$globalFluffies[_ef].nursing.length}.`)&gt;&gt;
+
+		&lt;&lt;if $globalFluffies[_ef].nursing.length &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $globalFluffies[_ef].nursing&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} dead: ${$globalFluffies[_child].dead} sold ${$globalFluffies[_child].sold}.`)&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].dead || $globalFluffies[_child].sold&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${$globalFluffies[_child].weaned} ageCategory ${$globalFluffies[_child].ageCategory}.`)&gt;&gt;
+				&lt;&lt;if $globalFluffies[_child].weaned || $globalFluffies[_child].ageCategory &gt; 3&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+
+				&lt;&lt;if $ourStore.fluffies.includes(_child) == false&gt;&gt;
+					&lt;&lt;run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)&gt;&gt;
+					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
+				&lt;&lt;/if&gt;&gt;
+			&lt;&lt;/for&gt;&gt;
+		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;elseif $globalFluffies[_ef].pregnant&gt;&gt;
 	 	&lt;&lt;run console.log(`ERROR: endWeek: Male with pregnant flag set.`)&gt;&gt;
 		&lt;&lt;set $globalFluffies[_ef].litter = 0&gt;&gt;
@@ -22896,7 +22918,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;09c90e3&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;d61dff1&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -24781,7 +24803,7 @@ Upgrades:
 						&lt;&lt;set $abuse++&gt;&gt;
 					&lt;&lt;/if&gt;&gt;
 				
-					&lt;&lt;removeFluffy $activeFluffy&gt;&gt;
+					&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 				&lt;&lt;/button&gt;&gt;
 			&lt;&lt;/replace&gt;&gt;
 		&lt;&lt;/button&gt;&gt;
@@ -24944,7 +24966,7 @@ Upgrades:
 									&lt;&lt;for _bf range $ourStore.fluffies&gt;&gt;
 										&lt;&lt;if $globalFluffies[_bf].isChecked == true&gt;&gt;
 											&lt;&lt;set $hugbox++&gt;&gt;
-											&lt;&lt;removeFluffy $globalFluffies[_bf]&gt;&gt;
+											&lt;&lt;removeFluffy $globalFluffies[_bf] &quot;sell&quot;&gt;&gt;
 										&lt;&lt;/if&gt;&gt;
 									&lt;&lt;/for&gt;&gt;
 
@@ -29251,7 +29273,14 @@ button {
 			&lt;&lt;set $globalFluffies[_ID].specialFriend = -1&gt;&gt;
 		&lt;&lt;/if&gt;&gt; /* Close special friend check */
 
-		&lt;&lt;run $ourStore.fluffies.delete($globalFluffies[_ID].ID)&gt;&gt;
+		/* Make sure to clear nursing, just in case this is a foal: */
+		&lt;&lt;if def $globalFluffies[_ID].mother&gt;&gt;
+			&lt;&lt;if $globalFluffies[$globalFluffies[_ID].mother].nursing.includes(_ID)&gt;&gt;
+				&lt;&lt;run $globalFluffies[$globalFluffies[_ID].mother].nursing.delete(_ID)&gt;&gt;
+			&lt;&lt;/if&gt;&gt;	
+		&lt;&lt;/if&gt;&gt;
+
+		&lt;&lt;run $ourStore.fluffies.delete(_ID)&gt;&gt;
 
 		&lt;&lt;if $globalFluffies[_ID].ageCategory &lt;= 3&gt;&gt;
 			&lt;&lt;set $ourStore.foals--&gt;&gt;
