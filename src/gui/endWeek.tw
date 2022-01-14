@@ -777,6 +777,28 @@
 		<<else>>
 			<<set $globalFluffies[_ef].dueDate = -1>>
 		<</if>>
+
+<<run console.log(`DEBUG: endWeek: ${$globalFluffies[_ef].name} nursing ${$globalFluffies[_ef].nursing.length}.`)>>
+
+		<<if $globalFluffies[_ef].nursing.length > 0>>
+			<<for _child range $globalFluffies[_ef].nursing>>
+
+<<run console.log(`DEBUG: endWeek: Child ${_child} dead: ${$globalFluffies[_child].dead} sold ${$globalFluffies[_child].sold}.`)>>
+				<<if $globalFluffies[_child].dead || $globalFluffies[_child].sold>>
+					<<run $globalFluffies[_ef].nursing.delete(_child)>>
+				<</if>>
+
+<<run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${$globalFluffies[_child].weaned} ageCategory ${$globalFluffies[_child].ageCategory}.`)>>
+				<<if $globalFluffies[_child].weaned || $globalFluffies[_child].ageCategory > 3>>
+					<<run $globalFluffies[_ef].nursing.delete(_child)>>
+				<</if>>
+
+				<<if $ourStore.fluffies.includes(_child) == false>>
+					<<run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)>>
+					<<run $globalFluffies[_ef].nursing.delete(_child)>>
+				<</if>>
+			<</for>>
+		<</if>>
 	<<elseif $globalFluffies[_ef].pregnant>>
 	 	<<run console.log(`ERROR: endWeek: Male with pregnant flag set.`)>>
 		<<set $globalFluffies[_ef].litter = 0>>
