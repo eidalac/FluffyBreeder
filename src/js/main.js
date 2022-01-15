@@ -73,7 +73,7 @@ Save.onLoad.add(function (save)
       var days = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks) * Number(7));
     
 			date.setDate(date.getDate() - days);
-			date.setYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
+			date.setFullYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
 
       date.setDate(date.getDate() - days);
 

@@ -41,20 +41,20 @@
     <<set $randomFluffies = []>>
 <<else>>
 
-    <<if $shop == "feral">>
+    /* Setup lists for any existing fluffies (leave the lists empty if there are none) */
+    <<if _wildFluffies.length > 0>>
+        <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female" && fluffy.age > 0)>>
+        <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male" && fluffy.age > 0)>>
+        <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
+        <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
+    <<else>>
+        <<set _femaleFluffies = []>>
+        <<set _maleFluffies = []>>
+        <<set _youngFluffies = []>>
+        <<set _oldFluffies = []>>
+    <</if>>
 
-        /* Setup lists for any existing fluffies (leave the lists empty if there are none) */
-        <<if _wildFluffies.length > 0>>
-            <<set _femaleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "female" && fluffy.age > 0)>>
-            <<set _maleFluffies = _wildFluffies.filter(fluffy => fluffy.gender === "male" && fluffy.age > 0)>>
-            <<set _youngFluffies = _wildFluffies.filter(fluffy => fluffy.age === 0)>>
-            <<set _oldFluffies = _wildFluffies.filter(fluffy => fluffy.age >= $activeFluffy.maxAge*0.5)>>
-        <<else>>
-            <<set _femaleFluffies = []>>
-            <<set _maleFluffies = []>>
-            <<set _youngFluffies = []>>
-            <<set _oldFluffies = []>>
-        <</if>>
+    <<if $shop == "feral">>
 
         <<switch random(0, 10)>>
 
@@ -469,6 +469,50 @@
             <</if>>
         <</if>>
 
+        /* shelter sells pre-owned, older, named fluffies */
+        <<if $shop == "shelter">>
+            /* 25% chance that wild fluffy is pre-owned */
+            <<if random(0, 3) == 0 && _oldFluffies.length > 0>>
+                <<set $activeFluffy = _oldFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
+                <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
+            <<else>>
+
+                <<set $activeFluffy.age = Number(random(Number($activeFluffy.maxAge * 0.6), Number($activeFluffy.maxAge * 0.8))).toFixed(0)>>
+
+                <<script>>
+                    var date = new Date(State.variables.gameDate);
+                    var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
+                    
+                    date.setDate(date.getDate() - days);
+                    date.setFullYear(date.getFullYear() - State.variables.activeFluffy.age);
+
+                    State.variables.activeFluffy.birthDate = date.toString();
+                <</script>>
+
+                <<checkAgeCategory>>
+                <<setName>>
+                <<set $activeFluffy.hasName = true>>
+                <<limitColor 1 2 3 4>>
+            <</if>>
+
+            <<set $activeFluffy.furStage = Number(random(60, 120))>>
+        <</if>>
+
+        /* Limb checks: */
+        <<if $shop == "shelter" ||  $shop == "mart" >>
+            /* 25% chance for each limb to be missing */
+            <<for _i, _status range $activeFluffy.limbs['earthy']>>
+                <<if random(0, 3) == 0>>
+                    <<set $activeFluffy.limbs['earthy'][_i] = 'missing'>>
+                <</if>>
+            <</for>>
+        <<elseif $shop == "breeder" || $shop == "angora">>
+            /* breeder fluffies always have a name */
+            <<setName>>
+            <<set $activeFluffy.hasName = true>>
+            <<set $activeFluffy.furStage = Number(random(90, 180))>>
+        <</if>>
+
         /* Adjust things based on age for children/foals */
         <<if $activeFluffy.ageCategory <= 4>>
             <<set _wMultiBase = 0.0286>>
@@ -486,51 +530,10 @@
             <<set $activeFluffy.height = Number($activeFluffy.maxLength * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
             <<set $activeFluffy.length = Number($activeFluffy.maxHeight * (_lMultiBase + ($activeFluffy.ageWeeks * _lMultiAdd))).toFixed(2)>>
             <<set $activeFluffy.furStage = Number(random(1, 10))>>
-        <<else>>
-            /* shelter sells pre-owned, older, named fluffies */
-            <<if $shop == "shelter">>
-                /* 25% chance that wild fluffy is pre-owned */
-                <<if random(0, 3) == 0 && _oldFluffies.length > 0>>
-                    <<set $activeFluffy = _oldFluffies[Math.floor(Math.random(0, _wildFluffies.length-1))]>>
-                     <<set $activeFluffy.genes = Genome.fromString($activeFluffy.geneString)>>
-                <<else>>
-                    <<set $activeFluffy.age = $activeFluffy.maxAge-random($activeFluffy.maxAge*0.2, $activeFluffy.maxAge*0.4)>>
+        <</if>>
 
-                    <<script>>
-                        var date = new Date(State.variables.gameDate);
-                        var days = Number(Number(State.variables.activeFluffy.ageWeeks) * Number(7));
-                        
-                        date.setDate(date.getDate() - days);
-                        date.setDate(date.getFullYear() - State.variables.activeFluffy.age);
-
-                        State.variables.activeFluffy.birthDate = date.toString();
-                    <</script>>
-
-                    <<checkAgeCategory>>
-                    <<setName>>
-                    <<set $activeFluffy.hasName = true>>
-                    <<limitColor 1 2 3 4>>
-                <</if>>
-
-                <<set $activeFluffy.furStage = Number(random(60, 120))>>
-            <<elseif $shop == "shelter" ||  $shop == "mart" >>
-                /* 25% chance for each limb to be missing */
-                <<for _i, _status range $activeFluffy.limbs['earthy']>>
-                    <<capture _i>>
-                        <<if random(0, 3) == 0>>
-                            <<set $activeFluffy.limbs['earthy'][_i] = 'missing'>>
-                        <<else>>
-                            /* Nothing */
-                        <</if>>
-                    <</capture>>
-                <</for>>
-            <<elseif $shop == "breeder" || $shop == "angora">>
-                /* breeder fluffies always have a name */
-                <<setName>>
-                <<set $activeFluffy.hasName = true>>
-                <<set $activeFluffy.furStage = Number(random(90, 180))>>
-            <</if>>
-            /* generate adult traits */
+        /* generate adult traits */
+        <<if $activeFluffy.ageCategory >= 5>>
             <<switch random(0,4)>>
                 <<case 0>>
                     <<if random(0, 1) == 0>>
@@ -561,13 +564,13 @@
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Pensive">>
                         <<set $activeFluffy.learning++>>
-                         <<set $activeFluffy.happy = 80>>
+                            <<set $activeFluffy.happy = 80>>
                     <<else>>
                         <<set $activeFluffy.personality = "Dull">>
                         <<set $activeFluffy.energy-->>
-                         <<set $activeFluffy.happy = 90>>
+                            <<set $activeFluffy.happy = 90>>
                     <</if>>
-                   
+                    
                 <<case 3>>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Playful">>
@@ -580,18 +583,52 @@
                         <<set $activeFluffy.temperament += 10>>
                         <<set $activeFluffy.happy = 110>>
                     <</if>>
-              <<default>> /* "Cute" */
+                <<default>> /* "Cute" */
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Sweet">>
                         <<set $activeFluffy.learning++>>
                         <<set $activeFluffy.temperament += 10>>
-                         <<set $activeFluffy.happy = 130>>
+                        <<set $activeFluffy.happy = 130>>
                     <<else>>
                         <<set $activeFluffy.personality = "Haughty">>
                         <<set $activeFluffy.learning-->>
                         <<set $activeFluffy.temperament += 20>>
-                         <<set $activeFluffy.happy = 110>>
+                        <<set $activeFluffy.happy = 110>>
                     <</if>>                   
+            <</switch>>
+        <<else>>
+            /* Pick a random child trait:*/
+            <<switch random(0,5)>>
+                <<case 0>>
+                    <<set $activeFluffy.personality = "Fussy" >>
+                    <<set $activeFluffy.strength++>>
+                    <<set $activeFluffy.temperament = 140>>
+                    <<set $activeFluffy.happy = 60>>
+                <<case 1>>
+                    <<set $activeFluffy.personality =  "Shy">>
+                    <<set $activeFluffy.learning++>>
+                    <<set $activeFluffy.temperament = 80>>
+                    <<set $activeFluffy.happy = 80>>
+                <<case 2>>
+                    <<set $activeFluffy.personality = "Lazy">>
+                    <<set $activeFluffy.thinking++>>
+                    <<set $activeFluffy.temperament = 80>>
+                    <<set $activeFluffy.happy = 80>>
+                <<case 3>>
+                    <<set $activeFluffy.personality = "Cute">>
+                    <<set $activeFluffy.charm++>>
+                    <<set $activeFluffy.temperament = 100>>
+                    <<set $activeFluffy.happy = 120>>
+                <<case 4>>
+                    <<set $activeFluffy.personality = "Peppy">>
+                    <<set $activeFluffy.energy++>>
+                    <<set $activeFluffy.temperament = 120>>
+                    <<set $activeFluffy.happy = 100>>
+                <<default>>
+                    <<set $activeFluffy.personality = "Cute">>
+                    <<set $activeFluffy.charm++>>
+                    <<set $activeFluffy.temperament = 100>>
+                    <<set $activeFluffy.happy = 120>>
             <</switch>>
         <</if>>
 
