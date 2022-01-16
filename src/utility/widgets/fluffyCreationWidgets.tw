@@ -233,47 +233,29 @@
 
 		<<set $activeFluffy.preWeight = $activeFluffy.weight>>
 
-		<<set _rAge = random(Number($activeFluffy.maturity), Number(Number($activeFluffy.maturity) * Number(2)))>>
-		<<set _rAge = Math.clamp(Number(_rAge * 7), 364, 672)>>
+		<<set _rAge = random(Number(Number($activeFluffy.maturity) / Number(2)), Number(Number($activeFluffy.maturity) * Number(2)))>>
+		<<set _rAge = Math.clamp(Number(_rAge * 7), 140, 310)>>
 
 		<<script>>
 			var date = new Date(State.variables.gameDate);
 			var daysOld = Number(State.temporary.rAge);
-			var weeksOld = 0;
-			var yearsOld = 0;
+			var weeksOld = Math.floor(Number(daysOld / 7));;
+			var yearsOld = Math.floor(Number(daysOld / 365.4));
 
-			date.setDate(date.getDate() - daysOld);
-
-			State.variables.activeFluffy.birthDate = date.toString();
-
-			weeksOld = Math.floor(Number(daysOld / 7));
-			yearsOld = Math.floor(Number(daysOld / 365.4));
+			State.variables.activeFluffy.age = yearsOld;
+			State.variables.activeFluffy.ageWeeks = weeksOld;
 
 			while (weeksOld > 52)
 			{
 				weeksOld = Math.floor(Number(weeksOld - 52));
-/*
-				if (yearsOld < 1)
-				{
-					yearsOld++;
-				}
-			*/
 			}
 
-			console.log(`Birthday: daysOld ${daysOld}, yearsOld ${yearsOld}, weeksOld ${weeksOld}`);
-
-			State.variables.activeFluffy.age = yearsOld;
-			State.variables.activeFluffy.ageWeeks = weeksOld;
+			date.setDate(date.getDate() - daysOld);
+			State.variables.activeFluffy.birthDate = date.toString();
 		<</script>>
 
-<<run console.log(`Debug: Birthday: age: ${$activeFluffy.ageWeeks} weeks ${$activeFluffy.age} years; birthDate: ${$activeFluffy.birthDate}, today: ${new Date(State.variables.gameDate)}.`)>>
-/*
-		<<set $activeFluffy.age = Math.trunc(Number(_rAge / 52))>>
-		<<set $activeFluffy.ageWeeks = Math.max(Number(Number(_rAge) - Number(52)), 0)>>
-*/
+		<<run console.log(`Debug: Birthday: age: ${$activeFluffy.ageWeeks} weeks ${$activeFluffy.age} years; birthDate: ${$activeFluffy.birthDate}, today: ${new Date(State.variables.gameDate)}.`)>>
 		<<checkAgeCategory>>
-
-
 
 		<<switch $alicornRarity>>
 		<<case 0>>
