@@ -5,17 +5,17 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_birth_default':
         return `BIGGES' POOPIES!!`
       case 'fluffy_birth_fertility_down':
-        return `huuhuu... why speshaw pwace huwties?`
+        return `huuhuu... wai speshaw pwace huwties?`
       case 'fluffy_birth_fertility_zero':
-        return `speshaw pwace hab' wowstes' huwties... <fluffy> nu can hab' babbhes nu mowe...`
+        return `speshaw pwace hab' wowstes' huwties... <fluffy> nu can hab' babbehs nu mowe...`
 
       ////// Fluffy Birth Rejection
       case 'fluffy_rejection_fear':
-        return `<title> hewp... miwkie thief... sabe good fwuffy mummah, <title>... hu hu hu...`
+        return `<title> hewp... miwkie thief... sabe gud fwuffy mummah, <title>... hu hu hu...`
       case 'fluffy_rejection_discipline_good':
         return `<fluffy> am gud mummah! wuv' aww babbehs!`
       case 'fluffy_rejection_discipline_bad':
-        return `bu' <fluffy> am gud'! why gib' huwties? huuhuu!`
+        return `bu' <fluffy> am gud'! wai gib' huwties? huuhuu!`
       case 'fluffy_rejection_ignore':
         return `nu! bad babbeh! nu miwkies fow 'ou!`
       case 'fluffy_rejection_take':
@@ -25,15 +25,15 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_rejection_diligent_temperament_high':
         return `miwkies onwy fow bestes' babbehs! nu miwkies fow poopie babbeh!`
       case 'fluffy_rejection_diligent_temperament_low':
-        return `Nu hab time… maybe gib tu wonewy mummah wifout babbehs?`
+        return `Nu hab time… maybe gib' tu wonewy mummah wifout babbehs?`
       // Bossy
       case 'fluffy_rejection_bossy_temperament_high':
         return `poopie babbeh gu 'way ow gid wowses' huwties!`
       case 'fluffy_rejection_bossy_temperament_low':
-        return `nu wan' gib wub to wowstes' poopie babbeh...`
+        return `nu wan' gib' wub to wowstes' poopie babbeh...`
       // Curious
       case 'fluffy_rejection_curious_temperament_high':
-        return `why hab wowstes', ugwy poopie babbeh? nu pwetty?`
+        return `wai hab wowstes', ugwy poopie babbeh? nu pwetty?`
       case 'fluffy_rejection_curious_temperament_low':
         return `nu wike wowstes' babbeh...`
       // Timid
@@ -58,14 +58,14 @@ window.getDialogue = function(dialogue_id) {
         return `poopie babbeh... nu wan... huu huu....`
       // Haughty
       case 'fluffy_rejection_haughty_temperament_high':
-        return `nu wike poopie babbeh an' nu gib ANEE wub ow huggies`
+        return `nu wike poopie babbeh an' nu gib' ANEE wub ow huggies`
       case 'fluffy_rejection_haughty_temperament_low':
         return `wub' and huggies bad fow poopie babbehs, nu gib' huggies...`
       // Playful
       case 'fluffy_rejection_playful_temperament_high':
         return `poopie babbeh? dat nu am <fluffy> babbeh, nu nee' gib' wuv'`
       case 'fluffy_rejection_playful_temperament_low':
-        return `wanted pwetty babbeh... dis am poopie babbeh...`
+        return `wan'ed pwetty babbeh... dis am poopie babbeh...`
       // Rowdy
       case 'fluffy_rejection_rowdy_temperament_high':
         return `hatechu, poopie babbeh, nu wan'.`
@@ -77,15 +77,15 @@ window.getDialogue = function(dialogue_id) {
       ////// Fluffy Stillbirth
       // Foals
       case 'fluffy_stillbirth_fussy':
-        return `babbeh no chwip? no wuv mummah <fluffy>?`
+        return `babbeh nu chwip? nu wuv mummah <fluffy>?`
       case 'fluffy_stillbirth_shy':
-        return `h-hewwo... babbeh? mummah no bothew... huu huu...`
+        return `h-hewwo... babbeh? mummah nu bothew... huu huu...`
       case 'fluffy_stillbirth_lazy':
-        return `babbeh? why nu come to mummah <fluffy>?`
+        return `babbeh? wai nu cum to mummah <fluffy>?`
       case 'fluffy_stillbirth_cute':
-        return `hewwo nicest babbeh, <fluffy> am gud mummah, come to mummah, pwease...`
+        return `hewwo nicest babbeh, <fluffy> am gud mummah, cum to mummah, pwease...`
       case 'fluffy_stillbirth_peppy':
-        return `babbeh! babbeh! why babbeh nu bweefies?`
+        return `babbeh! babbeh! wai babbeh nu bweefies?`
 
       // Adults
       case 'fluffy_stillbirth_diligent':
@@ -101,11 +101,11 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_stillbirth_dull':
         return `<fluffy> wuv' babbehs, siwwy nu chiwpy babbeh.`
       case 'fluffy_stillbirth_sweet':
-        return `babbeh? why no chiwp? babbeh need miwkies... huhuhu am worstest mummah...`
+        return `babbeh? wai nu chiwp? babbeh need miwkies... huhuhu am worstest mummah...`
       case 'fluffy_stillbirth_haughty':
-        return `bad babbeh, give mummah heawt huwties. no wuv' bad babbeh.`
+        return `bad babbeh, gib' mummah heawt huwties. nu wuv' bad babbeh.`
       case 'fluffy_stillbirth_playful':
-        return `why babbeh nu play wid' mummah? <fluffy> wuv' chu...`
+        return `wai babbeh nu play wid' mummah? <fluffy> wuv' chu...`
       case 'fluffy_stillbirth_rowdy':
         return `<fluffy> wan' pway with babbeh, but babbeh am bad.`
 
@@ -114,7 +114,7 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_smarty_fussy':
 			  return `GIVE BESTES' TOYS AN' NUMMIES TO BESTES' BABBEH WITE NAO!`
       case 'fluffy_smarty_peppy':
-			  return `bestes' babbeh need bestes' toys, no give to dummeh babbehs.`
+			  return `bestes' babbeh need bestes' toys, nu gib' to dummeh babbehs.`
       case 'fluffy_smarty_lazy':
 			  return `nu wake babbeh fwom nappies ow git sowwy poopies.`
       case 'fluffy_smarty_cute':
@@ -134,7 +134,7 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_smarty_curious':
         return `smawty fink dummeh <title> hide bested nummies, smawty gonna find aww da nummies!`
       case 'fluffy_smarty_playful':
-        return `gib nyu toysies fow fwuffy nao ow gid' sowweh poopies!`
+        return `gib' nyu toysies fow fwuffy nao ow gid' sowweh poopies!`
       case 'fluffy_smarty_dull':
         return `<title> nu know <fluffy> am smawty, neba find out, dummeh <title>`
       case 'fluffy_smarty_timid':
@@ -183,7 +183,7 @@ window.getDialogue = function(dialogue_id) {
       ///// Shearing
       // TODO: Add personality-specific dialogue
       case 'fluffy_interact_shearing':
-        return `huu huu... why taek pwetty fwuff fwom <fluffy>?`
+        return `huu huu... wai taek pwetty fwuff fwom <fluffy>?`
 
       ///// Playing
       // TODO: Add personality-specific dialogue
@@ -193,7 +193,7 @@ window.getDialogue = function(dialogue_id) {
       ///// Training
       // TODO: Add personality-specific dialogue
       case 'fluffy_interact_train':
-        return `<fluffy> feew happeh and stwong! wanna pway aww day wong!`
+        return `<fluffy> feew happeh and stwong! wan' pway aww day wong!`
 
       //// Foals
       case 'fluffy_interact_baby':
@@ -202,12 +202,12 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_interact_fussy_happy':
         return `"<title>! bestest babbeh can hab' nyu toysies pwease?`
       case 'fluffy_interact_fussy_sad':
-        return `dummeh <title>... gib <fluffy> wowstes' saddies...`
+        return `dummeh <title>... gib' <fluffy> wowstes' saddies...`
       // Shy
       case 'fluffy_interact_shy_happy':
         return `h-hewwo <title>... yus, <fluffy> am happies...`
       case 'fluffy_interact_shy_sad':
-        return `huhuhu... why gib saddies to <fluffy>... huhu...`
+        return `huhuhu... wai gib' saddies to <fluffy>... huhu...`
       // Lazy
       case 'fluffy_interact_lazy_happy':
         return `hewwo <title>, tank' 'ou fow nummies an' housie.`
@@ -217,7 +217,7 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_interact_cute_happy':
         return `wub' 'ou <title>! 'ou am da bestest <title>!`
       case 'fluffy_interact_cute_sad':
-        return `huhuhu... why nu wub' fow gud <fluffy>? nu wan' saddies...`  
+        return `huhuhu... wai nu wub' fow gud <fluffy>? nu wan' saddies...`  
       // Peppy
       case 'fluffy_interact_peppy_happy':
         return `tank' 'ou fow toysies <title>! <fluffy> am happies!`
@@ -236,7 +236,7 @@ window.getDialogue = function(dialogue_id) {
         return `hewwo <title>... <fluffy> hab' saddies...`
       // Bossy
       case 'fluffy_interact_bossy_happy':
-        return `<title>, <fluffy> am gud fwuffy, gib skettis nao.`
+        return `<title>, <fluffy> am gud fwuffy, gib' skettis nao.`
       case 'fluffy_interact_bossy_sad':
         return `dummeh <title>! gib\' <fluffy> skettis ow get sowweh poopies!`
       // Curious
@@ -253,7 +253,7 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_interact_pensive_happy':
         return `oh, hewwo <title>, <fluffy> am otay, tank 'ou.`
       case 'fluffy_interact_pensive_sad':
-        return `<fluffy> hab' saddies... nu no wai...`
+        return `<fluffy> hab' saddies... nu nu wai...`
       // Dull
       case 'fluffy_interact_dull_happy':
         return `hewwo <title>, it nice tu see 'ou.`
@@ -309,9 +309,9 @@ window.getDialogue = function(dialogue_id) {
         return `hewwo nice hoomin, be nyu daddeh ow mummah fow <fluffy> an' babbehs'?`
       // Bossy
       case 'fluffy_debut_bossy':
-        return `dummeh hoomin! gib nyu housie nao.`
+        return `dummeh hoomin! gib' nyu housie nao.`
       case 'fluffy_debut_bossy_babies':
-        return `dummeh hoomin! gib nyu housie to <fluffy> an' babbehs.`
+        return `dummeh hoomin! gib' nyu housie to <fluffy> an' babbehs.`
       // Curious
       case 'fluffy_debut_curious':
         return `hewwo nice hoomin, mebbeh gib' nyu housie to <fluffy>?`
@@ -319,14 +319,14 @@ window.getDialogue = function(dialogue_id) {
         return `hewwo nice hoomin, mebbeh gib' nyu housie to <fluffy> an' babbehs?`
       // Timid
       case 'fluffy_debut_timid':
-        return `h-hewwo nice hoomin... pwease no huwties... hab' babbehs...`
+        return `h-hewwo nice hoomin... pwease nu huwties... hab' babbehs...`
       case 'fluffy_debut_timid_babies':
-        return `h-hewwo nice hoomin... pwease no huwties...`
+        return `h-hewwo nice hoomin... pwease nu huwties...`
       // Pensive
       case 'fluffy_debut_pensive':
-        return `wha' hoomin want fwom <fluffy>?`
+        return `wha' hoomin wan' fwom <fluffy>?`
       case 'fluffy_debut_pensive_babies':
-        return `wha' hoomin want fwom <fluffy> an' babbehs?`
+        return `wha' hoomin wan' fwom <fluffy> an' babbehs?`
       case 'fluffy_debut_pensive_feral':
         return `<fluffy> wookin' fow nummies, hoomin hab' nummies?`
       case 'fluffy_debut_pensive_feral_babies':
@@ -361,9 +361,9 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_debut_rowdy_babies':
         return `hoomin gib' <fluffy> nyu homesie, am gud fwuffy, hab gud' babbehs.`
       case 'fluffy_debut_rowdy_feral':
-        return `<fluffy> wookin' fow nummies, hoomin gib <fluffy> nummies?`
+        return `<fluffy> wookin' fow nummies, hoomin gib' <fluffy> nummies?`
       case 'fluffy_debut_rowdy_feral_babies':
-        return `<fluffy> wookin' fow nummies, hoomin gib <fluffy> nummies fow babbehs?`
+        return `<fluffy> wookin' fow nummies, hoomin gib' <fluffy> nummies fow babbehs?`
 
 
       default:
