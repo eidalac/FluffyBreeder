@@ -29,7 +29,7 @@
     /* < 10 = fear/terror, so fluffy will just be terrified of the babby */
     <<elseif $mom.temperament < 10>>
         <br>
-        <<fluffSpeech "<title> hewp... miwkie thief... sabe good fwuffy mummah, <title>... hu hu hu..." $mom>>
+        <<fluffSpeech 'fluffy_birth_rejection_fear' $mom>>
         <<set $mom.stress += 25>>
         <<set $mom.trauma += 5>>
         <br><br>[[CONTINUE|Event Main][$encyclopedia = 0]]
@@ -61,9 +61,9 @@
 
             <<if Number($eventDifficulty) >= Number($rand[0])>>
                 <<set $mom.traits.push("Good Mama")>>
-                <<set _reactionString = "Am be gud mummah!  Wuv all Babhe!  Pomis!">>
+                <<set _reactionString = 'fluffy_birth_discipline_good'>>
             <<else>>
-                <<set _reactionString = "But fluffy is gud mummah!  huuhuuhuu!">>
+                <<set _reactionString = 'fluffy_birth_discipline_bad'>>
             <</if>>
             
             <<replace "#reaction-msg">><br>You discipline <<- $mom.name>><br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
@@ -82,7 +82,7 @@
             <<set $activeFluffy.foodQuality = 0>>
             
             <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
-            <<set _reactionString = "Nu miwkies for bad babbeh!">>
+            <<set _reactionString = 'fluffy_birth_rejection_ignore'>>
             
             <<replace "#reaction-msg">><br>You ignore it.<br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
         <</button>>
@@ -102,7 +102,7 @@
 
             <<set $globalFluffies[$activeFluffy.ID] = $activeFluffy>>
 
-            <<set _reactionString = "Take bad babbehs for trashies?">>
+            <<set _reactionString = 'fluffy_birth_rejection_take'>>
             
             <<replace "#reaction-msg">><br>You take the foal for some formula.<br><<fluffSpeech _reactionString $mom>><br>[[CONTINUE|Event Main][$encyclopedia = 0]]<</replace>>
         <</button>>
