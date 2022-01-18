@@ -169,6 +169,21 @@ window.getDialogue = function(dialogue_id) {
         return `huu huu... <fluffy> hab wowstes' tummy huwties...`
       case 'fluffy_starvation_end':
         return `tank 'ou fow nummies, <title>...`
+      // Bossy
+      case 'fluffy_starvation_bossy':
+        return `dummeh <title>, gib' <fluffy> nummies wite nao!`
+      case 'fluffy_starvation_bossy_end':
+        return `dank 'ou for nummies, <fluffy> wub nummies'`
+      // Timid
+      case 'fluffy_starvation_timid':
+        return `c-can pwease hab nummies nice <title>?...nu w..wiw ask 'gain'`
+      case 'fluffy_starvation_timid_end':
+        return `t-tank 'ou nice <title>... <fluffy> wub yu...`
+      // Sweet
+      case 'fluffy_starvation_sweet':
+        return `<title>, can <fluffy> pwease hab nummies? pwetty pwease? nu wan sketti, jus' nummies`
+      case 'fluffy_starvation_sweet_end':
+        return `tank 'ou nicest <title>! <fluffy> wub 'ou moa den skettis!`
 
       ////// Fluffy Suffering
       // TODO: Add personality-specific dialogue
