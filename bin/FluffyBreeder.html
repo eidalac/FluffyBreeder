@@ -23504,7 +23504,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;663bda5&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;eca12ec&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -27247,16 +27247,15 @@ Subspecies:
                 /* 25% chance that wild fluffy is pre-owned */
                 &lt;&lt;if random(0, 3) == 0 &amp;&amp; _femaleFluffies.length &gt; 0&gt;&gt;
                     &lt;&lt;set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]&gt;&gt;
+
                     &lt;&lt;if random(0, 3) == 0&gt;&gt;
                         &lt;&lt;setName&gt;&gt;
                         &lt;&lt;set $mom.hasName = true&gt;&gt;
                     &lt;&lt;/if&gt;&gt;
+
                     &lt;&lt;run console.log($mom)&gt;&gt;
                     &lt;&lt;set $mom.genes = Genome.fromString($mom.geneString)&gt;&gt;
-
-                &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: Pre generated mom age invalid 1: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Pre generated mom.`)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
@@ -27266,10 +27265,6 @@ Subspecies:
                     &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-
-                &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: generated mom age invalid 1: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
@@ -27285,9 +27280,8 @@ Subspecies:
                     &lt;&lt;run console.log($dad)&gt;&gt;
                     &lt;&lt;set $dad.genes = Genome.fromString($dad.geneString)&gt;&gt;
 
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: pre generated dad age invalid 1: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
+                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Pre generated dad.`)&gt;&gt;
+
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
@@ -27298,20 +27292,10 @@ Subspecies:
                     &lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
 
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: generated dad age invalid 1: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
-
-                &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: Dad age invalid: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
                 &lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
@@ -27589,65 +27573,10 @@ Subspecies:
             &lt;&lt;set $activeFluffy.furStage = Number(random(1, 10))&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
-        /* generate adult traits */
-        &lt;&lt;if $activeFluffy.ageCategory &gt;= 5&gt;&gt;
-            &lt;&lt;switch $activeFluffy.personality&gt;&gt;
-                &lt;&lt;case &quot;Fussy&quot;&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.charm--&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                &lt;&lt;case &quot;Shy&quot;&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.energy++&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.strength--&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                &lt;&lt;case &quot;Lazy&quot;&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.energy--&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                &lt;&lt;case &quot;Peppy&quot;&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.charm++&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament -= 10&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.charm--&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                &lt;&lt;case &quot;Cute&quot;&gt;&gt;
-                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning++&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament -= 10&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
-                    &lt;&lt;else&gt;&gt;
-                        &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
-                        &lt;&lt;set $activeFluffy.learning--&gt;&gt;
-                        &lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
-                        &lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
-                    &lt;&lt;/if&gt;&gt;
-                /*&lt;&lt;default&gt;&gt; already has an adult trait, no changes */
-            &lt;&lt;/switch&gt;&gt;
-        &lt;&lt;/if&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Checking traits.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: ageCategory = ${$activeFluffy.ageCategory}.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: personality = ${$activeFluffy.personality}.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: happy = ${$activeFluffy.happy}.`)&gt;&gt;
 
         /* Just in case: */
         &lt;&lt;if $activeFluffy.happy == 0&gt;&gt;
@@ -27655,14 +27584,71 @@ Subspecies:
 			&lt;&lt;set $activeFluffy.charm++&gt;&gt;
 			&lt;&lt;set $activeFluffy.temperament = 120&gt;&gt;
 			&lt;&lt;set $activeFluffy.happy = 120&gt;&gt;
-
-            &lt;&lt;if $activeFluffy.ageCategory &gt;= 5&gt;&gt;
-                &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
-                &lt;&lt;set $activeFluffy.learning++&gt;&gt;
-                &lt;&lt;set $activeFluffy.temperament = 110&gt;&gt;
-                &lt;&lt;set $activeFluffy.happy = 130&gt;&gt;
-            &lt;&lt;/if&gt;&gt;
         &lt;&lt;/if&gt;&gt;
+
+        /* generate adult traits */
+        &lt;&lt;if $activeFluffy.ageCategory &gt;= 5&gt;&gt;
+            &lt;&lt;switch $activeFluffy.personality&gt;&gt;
+                &lt;&lt;case &quot;Fussy&quot;&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(20))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm = Number(Number($activeFluffy.charm) - Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(30))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case &quot;Shy&quot;&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.energy = Number(Number($activeFluffy.energy) + Number(1))&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.strength = Number(Number($activeFluffy.strength) - Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case &quot;Lazy&quot;&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.energy = Number(Number($activeFluffy.energy) - Number(1))&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case &quot;Peppy&quot;&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm = Number(Number($activeFluffy.charm) + Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(10))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.charm = Number(Number($activeFluffy.charm) - Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(10))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                &lt;&lt;case &quot;Cute&quot;&gt;&gt;
+                    &lt;&lt;if random(0, 1) == 0&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(10))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))&gt;&gt;
+                    &lt;&lt;else&gt;&gt;
+                        &lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
+                        &lt;&lt;set $activeFluffy.learning = Number(Number($activeFluffy.learning) - Number(1))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(20))&gt;&gt;
+                        &lt;&lt;set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))&gt;&gt;
+                    &lt;&lt;/if&gt;&gt;
+                /*&lt;&lt;default&gt;&gt; already has an adult trait, no changes */
+            &lt;&lt;/switch&gt;&gt;
+        &lt;&lt;/if&gt;&gt;
+
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: personality 2 = ${$activeFluffy.personality}.`)&gt;&gt;
+&lt;&lt;run console.log(`DEBUG: [Pre Shop]: happy 2 = ${$activeFluffy.happy}.`)&gt;&gt;
+
 
         &lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
             &lt;&lt;limitColor 4 6&gt;&gt;

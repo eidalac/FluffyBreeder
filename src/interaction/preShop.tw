@@ -196,16 +196,15 @@
                 /* 25% chance that wild fluffy is pre-owned */
                 <<if random(0, 3) == 0 && _femaleFluffies.length > 0>>
                     <<set $mom = _femaleFluffies[Math.floor(Math.random(0, _femaleFluffies.length-1))]>>
+
                     <<if random(0, 3) == 0>>
                         <<setName>>
                         <<set $mom.hasName = true>>
                     <</if>>
+
                     <<run console.log($mom)>>
                     <<set $mom.genes = Genome.fromString($mom.geneString)>>
-
-                <<if $mom.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: Pre generated mom age invalid 1: ${$mom.age}.`)>>
-                <</if>>
+                    <<run console.log(`DEBUG: [Pre Shop]: Pre generated mom.`)>>
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -215,10 +214,6 @@
                     <<set $mom.ID = $globalFluffies.length>>
                     <<run $globalFluffies.push($mom)>>
                     <<setGeneTraits $activeFluffy>>
-
-                <<if $mom.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: generated mom age invalid 1: ${$mom.age}.`)>>
-                <</if>>
                 <</if>>
 
                 <<addTrait "Feral" $mom>>
@@ -234,9 +229,8 @@
                     <<run console.log($dad)>>
                     <<set $dad.genes = Genome.fromString($dad.geneString)>>
 
-                <<if $dad.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: pre generated dad age invalid 1: ${$dad.age}.`)>>
-                <</if>>
+                    <<run console.log(`DEBUG: [Pre Shop]: Pre generated dad.`)>>
+
                 <<else>>
                     <<set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)>>
                     <<newFromGene $testChild>>
@@ -247,20 +241,10 @@
                     <<run $globalFluffies.push($dad)>>
                     <<setGeneTraits $activeFluffy>>
 
-                <<if $dad.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: generated dad age invalid 1: ${$dad.age}.`)>>
-                <</if>>
                 <</if>>
 
                 <<addTrait "Feral" $dad>>
                 <<run $randomFluffies.push($dad.ID)>>
-
-                <<if $mom.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)>>
-                <</if>>
-                <<if $dad.age <= 0>>
-                    <<run console.log(`ERROR: [Pre Shop]: Dad age invalid: ${$dad.age}.`)>>
-                <</if>>
 
                 <<set $mom.specialFriend = $dad.ID>>
                 <<set $dad.specialFriend = $mom.ID>>
@@ -538,65 +522,10 @@
             <<set $activeFluffy.furStage = Number(random(1, 10))>>
         <</if>>
 
-        /* generate adult traits */
-        <<if $activeFluffy.ageCategory >= 5>>
-            <<switch $activeFluffy.personality>>
-                <<case "Fussy">>
-                    <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Diligent">>
-                        <<set $activeFluffy.learning++>>
-                        <<set $activeFluffy.temperament += 20>>
-                        <<set $activeFluffy.happy -= 10>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Bossy">>
-                        <<set $activeFluffy.charm-->>
-                        <<set $activeFluffy.temperament += 30>>
-                        <<set $activeFluffy.happy -= 10>>
-                    <</if>>
-                <<case "Shy">>
-                    <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Curious">>
-                        <<set $activeFluffy.energy++>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Timid">>
-                        <<set $activeFluffy.strength-->>
-                        <<set $activeFluffy.happy -= 10>>
-                    <</if>>
-                <<case "Lazy">>
-                    <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Pensive">>
-                        <<set $activeFluffy.learning++>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Dull">>
-                        <<set $activeFluffy.energy-->>
-                    <</if>>
-                <<case "Peppy">>
-                    <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Playful">>
-                        <<set $activeFluffy.charm++>>
-                        <<set $activeFluffy.temperament -= 10>>
-                        <<set $activeFluffy.happy += 10>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Rowdy">>
-                        <<set $activeFluffy.charm-->>
-                        <<set $activeFluffy.temperament += 10>>
-                        <<set $activeFluffy.happy += 10>>
-                    <</if>>
-                <<case "Cute">>
-                    <<if random(0, 1) == 0>>
-                        <<set $activeFluffy.personality = "Sweet">>
-                        <<set $activeFluffy.learning++>>
-                        <<set $activeFluffy.temperament -= 10>>
-                        <<set $activeFluffy.happy += 10>>
-                    <<else>>
-                        <<set $activeFluffy.personality = "Haughty">>
-                        <<set $activeFluffy.learning-->>
-                        <<set $activeFluffy.temperament += 20>>
-                        <<set $activeFluffy.happy -= 10>>
-                    <</if>>
-                /*<<default>> already has an adult trait, no changes */
-            <</switch>>
-        <</if>>
+<<run console.log(`DEBUG: [Pre Shop]: Checking traits.`)>>
+<<run console.log(`DEBUG: [Pre Shop]: ageCategory = ${$activeFluffy.ageCategory}.`)>>
+<<run console.log(`DEBUG: [Pre Shop]: personality = ${$activeFluffy.personality}.`)>>
+<<run console.log(`DEBUG: [Pre Shop]: happy = ${$activeFluffy.happy}.`)>>
 
         /* Just in case: */
         <<if $activeFluffy.happy == 0>>
@@ -604,14 +533,71 @@
 			<<set $activeFluffy.charm++>>
 			<<set $activeFluffy.temperament = 120>>
 			<<set $activeFluffy.happy = 120>>
-
-            <<if $activeFluffy.ageCategory >= 5>>
-                <<set $activeFluffy.personality = "Sweet">>
-                <<set $activeFluffy.learning++>>
-                <<set $activeFluffy.temperament = 110>>
-                <<set $activeFluffy.happy = 130>>
-            <</if>>
         <</if>>
+
+        /* generate adult traits */
+        <<if $activeFluffy.ageCategory >= 5>>
+            <<switch $activeFluffy.personality>>
+                <<case "Fussy">>
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Diligent">>
+                        <<set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(20))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Bossy">>
+                        <<set $activeFluffy.charm = Number(Number($activeFluffy.charm) - Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(30))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))>>
+                    <</if>>
+                <<case "Shy">>
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Curious">>
+                        <<set $activeFluffy.energy = Number(Number($activeFluffy.energy) + Number(1))>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Timid">>
+                        <<set $activeFluffy.strength = Number(Number($activeFluffy.strength) - Number(1))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))>>
+                    <</if>>
+                <<case "Lazy">>
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Pensive">>
+                        <<set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Dull">>
+                        <<set $activeFluffy.energy = Number(Number($activeFluffy.energy) - Number(1))>>
+                    <</if>>
+                <<case "Peppy">>
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Playful">>
+                        <<set $activeFluffy.charm = Number(Number($activeFluffy.charm) + Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(10))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Rowdy">>
+                        <<set $activeFluffy.charm = Number(Number($activeFluffy.charm) - Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) + Number(10))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))>>
+                    <</if>>
+                <<case "Cute">>
+                    <<if random(0, 1) == 0>>
+                        <<set $activeFluffy.personality = "Sweet">>
+                        <<set $activeFluffy.learning = Number(Number($activeFluffy.learning) + Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(10))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) + Number(10))>>
+                    <<else>>
+                        <<set $activeFluffy.personality = "Haughty">>
+                        <<set $activeFluffy.learning = Number(Number($activeFluffy.learning) - Number(1))>>
+                        <<set $activeFluffy.temperament = Number(Number($activeFluffy.temperament) - Number(20))>>
+                        <<set $activeFluffy.happy = Number(Number($activeFluffy.happy) - Number(10))>>
+                    <</if>>
+                /*<<default>> already has an adult trait, no changes */
+            <</switch>>
+        <</if>>
+
+<<run console.log(`DEBUG: [Pre Shop]: personality 2 = ${$activeFluffy.personality}.`)>>
+<<run console.log(`DEBUG: [Pre Shop]: happy 2 = ${$activeFluffy.happy}.`)>>
+
 
         <<if $shop == "breeder">>
             <<limitColor 4 6>>
