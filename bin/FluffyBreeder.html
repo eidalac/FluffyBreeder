@@ -23504,7 +23504,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;eca12ec&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;64f1beb&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -23857,6 +23857,7 @@ profitsTotal: 0
 							&lt;&lt;for _rID range $randomFluffies&gt;&gt;
 								&lt;&lt;if $globalFluffies[_rID].isChecked&gt;&gt;
 									&lt;&lt;run $ourStore.fluffies.push($globalFluffies[_rID].ID)&gt;&gt;
+									&lt;&lt;set $globalFluffies[_rID].sold = false&gt;&gt;
 				
 									/* only rename unnamed fluffies */
 									&lt;&lt;if $nameType === &quot;ordinal&quot; &amp;&amp; $globalFluffies[_rID].hasName == false&gt;&gt;
@@ -24024,7 +24025,6 @@ profitsTotal: 0
 					&lt;&lt;drawSprite $globalFluffies[_id]&gt;&gt;
 					&lt;&lt;shortDesc $globalFluffies[_id]&gt;&gt;
 				&lt;/div&gt;
-&lt;&lt;run console.log(`Debug: &lt;&lt;fluffyList&gt;&gt;: Birthdate: ${$globalFluffies[_id].birthDate}, age: ${$globalFluffies[_id].age}, weeks: ${$globalFluffies[_id].ageWeeks}.`)&gt;&gt;
 				&lt;&lt;set _price = 0&gt;&gt;
 			&lt;/div&gt;
 			&lt;&lt;if $shop != &quot;feral&quot;&gt;&gt;
@@ -24086,7 +24086,6 @@ profitsTotal: 0
 							&lt;&lt;personalityFix $globalFluffies[_id]&gt;&gt;
 							&lt;&lt;set $activeFluffy = $globalFluffies[_id]&gt;&gt;
 
-							&lt;&lt;run console.log(`DEBUT: &lt;&lt;talking&gt;&gt;: ${$activeFluffy.name}, ${$activeFluffy.personality}, ${_id}.`)&gt;&gt;
 							&lt;&lt;switch $globalFluffies[_id].personality&gt;&gt;
 								&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
 									&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &#39;fluffy_debut_fussy&#39; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
@@ -27157,10 +27156,6 @@ Subspecies:
                     &lt;&lt;run console.log($mom)&gt;&gt;
                     &lt;&lt;set $mom.genes = Genome.fromString($mom.geneString)&gt;&gt;
 
-                    &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: pre generated mome age invalid: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
-
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
@@ -27170,10 +27165,6 @@ Subspecies:
                     &lt;&lt;set $mom.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($mom)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-
-                    &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: generated mom age invalid: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;addTrait &quot;Feral&quot; $mom&gt;&gt;
@@ -27188,9 +27179,6 @@ Subspecies:
                     &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($dad)&gt;&gt;
                     &lt;&lt;set $dad.genes = Genome.fromString($dad.geneString)&gt;&gt;
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: pre gen dad age invalid: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -27201,23 +27189,12 @@ Subspecies:
                     &lt;&lt;set $dad.ID = $globalFluffies.length&gt;&gt;
                     &lt;&lt;run $globalFluffies.push($dad)&gt;&gt;
                     &lt;&lt;setGeneTraits $activeFluffy&gt;&gt;
-
-
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: generated dad age invalid: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
+                    
 
                 &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;addTrait &quot;Feral&quot; $dad&gt;&gt;
                 &lt;&lt;run $randomFluffies.push($dad.ID)&gt;&gt;
-
-                &lt;&lt;if $mom.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: Mother age invalid: ${$mom.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
-                &lt;&lt;if $dad.age &lt;= 0&gt;&gt;
-                    &lt;&lt;run console.log(`ERROR: [Pre Shop]: dad age invalid: ${$dad.age}.`)&gt;&gt;
-                &lt;&lt;/if&gt;&gt;
 
                 &lt;&lt;set $mom.specialFriend = $dad.ID&gt;&gt;
                 &lt;&lt;set $dad.specialFriend = $mom.ID&gt;&gt;
@@ -27255,7 +27232,6 @@ Subspecies:
 
                     &lt;&lt;run console.log($mom)&gt;&gt;
                     &lt;&lt;set $mom.genes = Genome.fromString($mom.geneString)&gt;&gt;
-                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Pre generated mom.`)&gt;&gt;
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
                     &lt;&lt;newFromGene $testChild&gt;&gt;
@@ -27279,8 +27255,6 @@ Subspecies:
                     &lt;&lt;/if&gt;&gt;
                     &lt;&lt;run console.log($dad)&gt;&gt;
                     &lt;&lt;set $dad.genes = Genome.fromString($dad.geneString)&gt;&gt;
-
-                    &lt;&lt;run console.log(`DEBUG: [Pre Shop]: Pre generated dad.`)&gt;&gt;
 
                 &lt;&lt;else&gt;&gt;
                     &lt;&lt;set $testChild = _Grandmom.genes.breedWithGenome(_Granddad.genes)&gt;&gt;
@@ -27573,11 +27547,6 @@ Subspecies:
             &lt;&lt;set $activeFluffy.furStage = Number(random(1, 10))&gt;&gt;
         &lt;&lt;/if&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: Checking traits.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: ageCategory = ${$activeFluffy.ageCategory}.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: personality = ${$activeFluffy.personality}.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: happy = ${$activeFluffy.happy}.`)&gt;&gt;
-
         /* Just in case: */
         &lt;&lt;if $activeFluffy.happy == 0&gt;&gt;
 			&lt;&lt;set $activeFluffy.personality = &quot;Cute&quot;&gt;&gt;
@@ -27645,10 +27614,6 @@ Subspecies:
                 /*&lt;&lt;default&gt;&gt; already has an adult trait, no changes */
             &lt;&lt;/switch&gt;&gt;
         &lt;&lt;/if&gt;&gt;
-
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: personality 2 = ${$activeFluffy.personality}.`)&gt;&gt;
-&lt;&lt;run console.log(`DEBUG: [Pre Shop]: happy 2 = ${$activeFluffy.happy}.`)&gt;&gt;
-
 
         &lt;&lt;if $shop == &quot;breeder&quot;&gt;&gt;
             &lt;&lt;limitColor 4 6&gt;&gt;
@@ -29120,7 +29085,6 @@ button {
 			State.variables.activeFluffy.birthDate = date.toString();
 		&lt;&lt;/script&gt;&gt;
 
-		&lt;&lt;run console.log(`Debug: Birthday: age: ${$activeFluffy.ageWeeks} weeks ${$activeFluffy.age} years; birthDate: ${$activeFluffy.birthDate}, today: ${new Date(State.variables.gameDate)}.`)&gt;&gt;
 		&lt;&lt;checkAgeCategory&gt;&gt;
 
 		&lt;&lt;switch $alicornRarity&gt;&gt;

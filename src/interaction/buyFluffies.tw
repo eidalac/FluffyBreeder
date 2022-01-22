@@ -69,6 +69,7 @@
 							<<for _rID range $randomFluffies>>
 								<<if $globalFluffies[_rID].isChecked>>
 									<<run $ourStore.fluffies.push($globalFluffies[_rID].ID)>>
+									<<set $globalFluffies[_rID].sold = false>>
 				
 									/* only rename unnamed fluffies */
 									<<if $nameType === "ordinal" && $globalFluffies[_rID].hasName == false>>
@@ -236,7 +237,6 @@
 					<<drawSprite $globalFluffies[_id]>>
 					<<shortDesc $globalFluffies[_id]>>
 				</div>
-<<run console.log(`Debug: <<fluffyList>>: Birthdate: ${$globalFluffies[_id].birthDate}, age: ${$globalFluffies[_id].age}, weeks: ${$globalFluffies[_id].ageWeeks}.`)>>
 				<<set _price = 0>>
 			</div>
 			<<if $shop != "feral">>
@@ -298,7 +298,6 @@
 							<<personalityFix $globalFluffies[_id]>>
 							<<set $activeFluffy = $globalFluffies[_id]>>
 
-							<<run console.log(`DEBUT: <<talking>>: ${$activeFluffy.name}, ${$activeFluffy.personality}, ${_id}.`)>>
 							<<switch $globalFluffies[_id].personality>>
 								<<case "Fussy">>
 									<<replace "#greet-msg">><<fluffSpeech 'fluffy_debut_fussy' $globalFluffies[_id]>><</replace>>
