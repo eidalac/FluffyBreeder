@@ -31,7 +31,7 @@
 <<set _wildFluffies = _wildFluffies.filter(fluffy => !fluffy.dead)>>
 
 <<for _ef range $ourStore.fluffies>>
-    <<set $globalFluffies[_ef].isChecked = false>>
+    <<set $activeFluffy.isChecked = false>>
 <</for>>
 
 /* ***
@@ -540,102 +540,77 @@
 
         /* generate adult traits */
         <<if $activeFluffy.ageCategory >= 5>>
-            <<switch random(0,4)>>
-                <<case 0>>
+            <<switch $activeFluffy.personality>>
+                <<case "Fussy">>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Diligent">>
                         <<set $activeFluffy.learning++>>
                         <<set $activeFluffy.temperament += 20>>
-                        <<set $activeFluffy.happy = 60>>
+                        <<set $activeFluffy.happy -= 10>>
                     <<else>>
                         <<set $activeFluffy.personality = "Bossy">>
                         <<set $activeFluffy.charm-->>
                         <<set $activeFluffy.temperament += 30>>
-                        <<set $activeFluffy.happy = 50>>
+                        <<set $activeFluffy.happy -= 10>>
                     <</if>>
-                    
-                <<case 1>>
+                <<case "Shy">>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Curious">>
                         <<set $activeFluffy.energy++>>
-                        <<set $activeFluffy.temperament += 10>>
-                        <<set $activeFluffy.happy = 90>>
                     <<else>>
                         <<set $activeFluffy.personality = "Timid">>
                         <<set $activeFluffy.strength-->>
-                        <<set $activeFluffy.happy = 70>>
+                        <<set $activeFluffy.happy -= 10>>
                     <</if>>
-                    
-                <<case 2>>
+                <<case "Lazy">>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Pensive">>
                         <<set $activeFluffy.learning++>>
-                            <<set $activeFluffy.happy = 80>>
                     <<else>>
                         <<set $activeFluffy.personality = "Dull">>
                         <<set $activeFluffy.energy-->>
-                            <<set $activeFluffy.happy = 90>>
                     <</if>>
-                    
-                <<case 3>>
+                <<case "Peppy">>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Playful">>
                         <<set $activeFluffy.charm++>>
-                        <<set $activeFluffy.temperament += 10>>
-                        <<set $activeFluffy.happy = 120>>
+                        <<set $activeFluffy.temperament -= 10>>
+                        <<set $activeFluffy.happy += 10>>
                     <<else>>
                         <<set $activeFluffy.personality = "Rowdy">>
                         <<set $activeFluffy.charm-->>
                         <<set $activeFluffy.temperament += 10>>
-                        <<set $activeFluffy.happy = 110>>
+                        <<set $activeFluffy.happy += 10>>
                     <</if>>
-                <<default>> /* "Cute" */
+                <<case "Cute">>
                     <<if random(0, 1) == 0>>
                         <<set $activeFluffy.personality = "Sweet">>
                         <<set $activeFluffy.learning++>>
-                        <<set $activeFluffy.temperament += 10>>
-                        <<set $activeFluffy.happy = 130>>
+                        <<set $activeFluffy.temperament -= 10>>
+                        <<set $activeFluffy.happy += 10>>
                     <<else>>
                         <<set $activeFluffy.personality = "Haughty">>
                         <<set $activeFluffy.learning-->>
                         <<set $activeFluffy.temperament += 20>>
-                        <<set $activeFluffy.happy = 110>>
-                    <</if>>                   
+                        <<set $activeFluffy.happy -= 10>>
+                    <</if>>
+                /*<<default>> already has an adult trait, no changes */
             <</switch>>
-        <<else>>
-            /* Pick a random child trait:*/
-            <<switch random(0,5)>>
-                <<case 0>>
-                    <<set $activeFluffy.personality = "Fussy" >>
-                    <<set $activeFluffy.strength++>>
-                    <<set $activeFluffy.temperament = 140>>
-                    <<set $activeFluffy.happy = 60>>
-                <<case 1>>
-                    <<set $activeFluffy.personality =  "Shy">>
-                    <<set $activeFluffy.learning++>>
-                    <<set $activeFluffy.temperament = 80>>
-                    <<set $activeFluffy.happy = 80>>
-                <<case 2>>
-                    <<set $activeFluffy.personality = "Lazy">>
-                    <<set $activeFluffy.thinking++>>
-                    <<set $activeFluffy.temperament = 80>>
-                    <<set $activeFluffy.happy = 80>>
-                <<case 3>>
-                    <<set $activeFluffy.personality = "Cute">>
-                    <<set $activeFluffy.charm++>>
-                    <<set $activeFluffy.temperament = 100>>
-                    <<set $activeFluffy.happy = 120>>
-                <<case 4>>
-                    <<set $activeFluffy.personality = "Peppy">>
-                    <<set $activeFluffy.energy++>>
-                    <<set $activeFluffy.temperament = 120>>
-                    <<set $activeFluffy.happy = 100>>
-                <<default>>
-                    <<set $activeFluffy.personality = "Cute">>
-                    <<set $activeFluffy.charm++>>
-                    <<set $activeFluffy.temperament = 100>>
-                    <<set $activeFluffy.happy = 120>>
-            <</switch>>
+        <</if>>
+
+        /* Just in case: */
+        <<if $activeFluffy.happy == 0>>
+			<<set $activeFluffy.personality = "Cute">>
+			<<set $activeFluffy.charm++>>
+			<<set $activeFluffy.temperament = 120>>
+			<<set $activeFluffy.happy = 120>>
+
+            <<if $activeFluffy.ageCategory >= 5>>
+                <<set $activeFluffy.personality = "Sweet">>
+                <<set $activeFluffy.learning++>>
+                <<set $activeFluffy.temperament = 110>>
+                <<set $activeFluffy.happy = 130>>
+            <</if>>
         <</if>>
 
         <<if $shop == "breeder">>
