@@ -10239,7 +10239,9 @@ window.getDialogue = function(dialogue_id) {
       //// Female
       case 'fluffy_bonding_female':
         return `yus, <fluffy> wan' be speshaw fwens!`
-      
+      //// Breakup
+      case 'fluffy_breeding_breakup':
+        return `HUUUU, <fluffy> wan' speshaw fwen back!`
 
       ////// Fluffy Mating
       // TODO: Add personality-specific dialogue
@@ -10295,12 +10297,19 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_interact_train':
         return `<fluffy> feew happeh and stwong! wan' pway aww day wong!`
 
+      ///// naming
+      // TODO: Add personality-specific dialogue
+      case 'fluffy_interact_name':
+        return `<fluffy> wuv\' nyu namesie!!`
+      case 'fluffy_interact_rename':
+        return `bu\'... wike\' old namesie...otay, fwuffy am called <fluffy> nao`
+
       //// Foals
       case 'fluffy_interact_baby':
         return `cheep... cheep...`
       // Fussy
       case 'fluffy_interact_fussy_happy':
-        return `"<title>! bestest babbeh can hab' nyu toysies pwease?`
+        return `<title>! bestest babbeh can hab' nyu toysies pwease?`
       case 'fluffy_interact_fussy_sad':
         return `dummeh <title>... gib' <fluffy> wowstes' saddies...`
       // Shy
@@ -23508,7 +23517,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;cff01e3&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;76969f9&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -24111,7 +24120,7 @@ profitsTotal: 0
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
 										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &#39;fluffy_debut_bossy_babies&#39; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;else&gt;&gt;
-										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &quot;dummeh hoomin! gib nyu housie nao.&quot; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
+										&lt;&lt;replace &quot;#greet-msg&quot;&gt;&gt;&lt;&lt;fluffSpeech &#39;fluffy_debut_bossy&#39; $globalFluffies[_id]&gt;&gt;&lt;&lt;/replace&gt;&gt;
 									&lt;&lt;/if&gt;&gt;
 								&lt;&lt;case &quot;Curious&quot;&gt;&gt;
 									&lt;&lt;if  $randomFluffies.length &gt; 2&gt;&gt;
@@ -24670,7 +24679,7 @@ Upgrades:
 	&lt;&lt;link [[Break up |Fluffy Breeding]]&gt;&gt;
 		/* Clear both special friends flag, ending breeding*/
 		&lt;br&gt;$globalFluffies[$activeFluffy.specialFriend].name and $activeFluffy.name are no longer special friends.
-		&lt;br&gt;&lt;&lt;fluffSpeech &quot;HUHUHU WORST SADIES!&quot; $activeFluffy&gt;&gt;
+		&lt;br&gt;&lt;&lt;fluffSpeech &#39;fluffy_breeding_breakup&#39; $activeFluffy&gt;&gt;
 		
 		&lt;&lt;if def $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.specialFriend].specialFriend = -1&gt;&gt;
@@ -25075,10 +25084,9 @@ Upgrades:
 			&lt;&lt;if $activeFluffy.hasName == false&gt;&gt;
 				&lt;&lt;set $activeFluffy.hasName = true&gt;&gt;
 				&lt;&lt;set $activeFluffy.happy += 20&gt;&gt;
-				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;&lt;fluffy&gt; wuv\&#39; nyu namesie!!&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
+				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &#39;fluffy_interact_name&#39; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;bu\&#39;... wike\&#39; old namesie...&quot; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
-				&lt;&lt;append &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &quot;otay, fwuffy am called &lt;fluffy&gt; nao&quot; $activeFluffy&gt;&gt;&lt;&lt;/append&gt;&gt;
+				&lt;&lt;replace &quot;#rename-msg&quot;&gt;&gt;&lt;br&gt;&lt;&lt;fluffSpeech &#39;fluffy_interact_rename&#39; $activeFluffy&gt;&gt;&lt;&lt;/replace&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 			&lt;&lt;set $activeFluffy.name to $activeFluffy.name.trim()&gt;&gt;
 			&lt;&lt;set $globalFluffies[$activeFluffy.ID] = $activeFluffy&gt;&gt;

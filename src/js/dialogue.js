@@ -154,7 +154,9 @@ window.getDialogue = function(dialogue_id) {
       //// Female
       case 'fluffy_bonding_female':
         return `yus, <fluffy> wan' be speshaw fwens!`
-      
+      //// Breakup
+      case 'fluffy_breeding_breakup':
+        return `HUUUU, <fluffy> wan' speshaw fwen back!`
 
       ////// Fluffy Mating
       // TODO: Add personality-specific dialogue
@@ -210,12 +212,19 @@ window.getDialogue = function(dialogue_id) {
       case 'fluffy_interact_train':
         return `<fluffy> feew happeh and stwong! wan' pway aww day wong!`
 
+      ///// naming
+      // TODO: Add personality-specific dialogue
+      case 'fluffy_interact_name':
+        return `<fluffy> wuv\' nyu namesie!!`
+      case 'fluffy_interact_rename':
+        return `bu\'... wike\' old namesie...otay, fwuffy am called <fluffy> nao`
+
       //// Foals
       case 'fluffy_interact_baby':
         return `cheep... cheep...`
       // Fussy
       case 'fluffy_interact_fussy_happy':
-        return `"<title>! bestest babbeh can hab' nyu toysies pwease?`
+        return `<title>! bestest babbeh can hab' nyu toysies pwease?`
       case 'fluffy_interact_fussy_sad':
         return `dummeh <title>... gib' <fluffy> wowstes' saddies...`
       // Shy
