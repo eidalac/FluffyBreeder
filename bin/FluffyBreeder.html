@@ -16599,8 +16599,12 @@ Save.onLoad.add(function (save)
     save.state.history[save.state.index].variables.autoSell = false;
   }
 
+  console.log("DEBUG: loop to check fluffy data, count: ", save.state.history[save.state.index].variables.globalFluffies.length)
+
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
+
+    console.log("DEBUG: chekcing fluffy ", i)
 
     // update limb data
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
@@ -16710,7 +16714,7 @@ Save.onLoad.add(function (save)
       var hslEyes = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
       
       save.state.history[save.state.index].variables.globalFluffies[i].colorGroup = ["", "", ""];
-  
+  /*
       for (let k = 0; k < window.groupList.length-2; k++)
       {
           if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
@@ -16740,7 +16744,7 @@ Save.onLoad.add(function (save)
             save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
           }
       }
-
+*/
       save.state.history[save.state.index].variables.globalFluffies[i].cColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
       save.state.history[save.state.index].variables.globalFluffies[i].mColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
       save.state.history[save.state.index].variables.globalFluffies[i].eColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
@@ -23504,7 +23508,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;64f1beb&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;4d5381d&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
@@ -30175,12 +30179,14 @@ button {
 		&lt;&lt;case 2&gt;&gt;
 			&lt;&lt;print `&lt;img src=&quot;${_threeColorEyes}&quot; ${_eyeFilter}`&gt;&gt;
 
+/*
 			&lt;&lt;if _args[0] === &quot;pegasus&quot; || _args[0] === &quot;alicorn&quot;&gt;&gt;
 				&lt;&lt;print `&lt;img src=&quot;${_threeColorCoatWing}&quot; ${_coatFilter}`&gt;&gt;
 			&lt;&lt;else&gt;&gt;
 				&lt;&lt;print `&lt;img src=&quot;${_threeColorCoat}&quot; ${_coatFilter}`&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-			
+*/			
+			&lt;&lt;print `&lt;img src=&quot;${_threeColorCoat}&quot; ${_coatFilter}`&gt;&gt;
 			&lt;&lt;print `&lt;img src=&quot;${_threeColorMane}&quot; ${_maneFilter}`&gt;&gt;
 			&lt;&lt;print `&lt;img src=&quot;${_threeColorMane}&quot; class=&quot;manefilter&quot;&gt;`&gt;&gt;
 

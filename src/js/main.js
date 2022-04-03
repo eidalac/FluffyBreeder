@@ -53,8 +53,12 @@ Save.onLoad.add(function (save)
     save.state.history[save.state.index].variables.autoSell = false;
   }
 
+  console.log("DEBUG: loop to check fluffy data, count: ", save.state.history[save.state.index].variables.globalFluffies.length)
+
   for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
   {
+
+    console.log("DEBUG: chekcing fluffy ", i)
 
     // update limb data
     if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
@@ -164,7 +168,7 @@ Save.onLoad.add(function (save)
       var hslEyes = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
       
       save.state.history[save.state.index].variables.globalFluffies[i].colorGroup = ["", "", ""];
-  
+  /*
       for (let k = 0; k < window.groupList.length-2; k++)
       {
           if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
@@ -194,7 +198,7 @@ Save.onLoad.add(function (save)
             save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
           }
       }
-
+*/
       save.state.history[save.state.index].variables.globalFluffies[i].cColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
       save.state.history[save.state.index].variables.globalFluffies[i].mColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
       save.state.history[save.state.index].variables.globalFluffies[i].eColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
