@@ -14,20 +14,13 @@ importStyles('https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font
 /* -- Save Functions - */
 Save.onLoad.add(function (save)
 {
+
   if (typeof save.state.history[save.state.index].variables.ver == 'undefined')
   {
     save.state.history[save.state.index].variables.ver = State.variables.ver;
     save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
   }
-  else if (save.state.history[save.state.index].variables.ver != State.variables.ver)
-  {
-    save.state.history[save.state.index].variables.saveVer = save.state.history[save.state.index].variables.ver;
-    save.state.history[save.state.index].variables.saveReleaseID = save.state.history[save.state.index].variables.releaseID;
-
-    save.state.history[save.state.index].variables.ver = State.variables.ver;
-    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
-  }
-
+  
   if (typeof save.state.history[save.state.index].variables.saveVer == 'undefined')
   {
     save.state.history[save.state.index].variables.saveVer = State.variables.ver;
@@ -38,226 +31,239 @@ Save.onLoad.add(function (save)
     save.state.history[save.state.index].variables.saveReleaseID = State.variables.releaseID;
   }
 
-  if (typeof save.state.history[save.state.index].variables.grandmotherGene == 'undefined')
+  if (save.state.history[save.state.index].variables.ver != State.variables.ver ||
+    save.state.history[save.state.index].variables.saveReleaseID != State.variables.saveReleaseID)
   {
-    save.state.history[save.state.index].variables.grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
-  }
+    save.state.history[save.state.index].variables.saveVer = save.state.history[save.state.index].variables.ver;
+    save.state.history[save.state.index].variables.saveReleaseID = save.state.history[save.state.index].variables.releaseID;
 
-  if (typeof save.state.history[save.state.index].variables.grandfatherGene == 'undefined')
-  {
-    save.state.history[save.state.index].variables.grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
-  }
+    save.state.history[save.state.index].variables.ver = State.variables.ver;
+    save.state.history[save.state.index].variables.releaseID = State.variables.releaseID;
 
-  if (typeof save.state.history[save.state.index].variables.autoSell == 'undefined')
-  {
-    save.state.history[save.state.index].variables.autoSell = false;
-  }
-
-  console.log("DEBUG: loop to check fluffy data, count: ", save.state.history[save.state.index].variables.globalFluffies.length)
-
-  for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
-  {
-
-    console.log("DEBUG: chekcing fluffy ", i)
-
-    // update limb data
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
+    if (typeof save.state.history[save.state.index].variables.grandmotherGene == 'undefined')
     {
-      save.state.history[save.state.index].variables.globalFluffies[i].limbs = {
-        'earthy': { 'leg_front_right': 'healthy', 'leg_front_left': 'healthy', 'leg_back_right': 'healthy', 'leg_back_left': 'healthy' },
-        'pegasus': { 'wing_right': 'healthy', 'wing_left': 'healthy' },
-        'unicorn': { 'horn': 'healthy' }
-      };
-    }
-    
-    // Update birth date
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
-    {
-      var date = new Date(State.variables.gameDate);
-      var days = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks) * Number(7));
-    
-			date.setDate(date.getDate() - days);
-			date.setFullYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
-
-      date.setDate(date.getDate() - days);
-
-      save.state.history[save.state.index].variables.globalFluffies[i].birthDate = date.toString();
+      save.state.history[save.state.index].variables.grandmotherGene = "X/Y;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
     }
 
-    // Update age category
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
+    if (typeof save.state.history[save.state.index].variables.grandfatherGene == 'undefined')
     {
-      var totalAge = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].age * 52) + save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks);
-
-      if (totalAge == 0)
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 0;
-      }
-      else if (totalAge == 1)
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 1;
-      }
-      else if (save.state.history[save.state.index].variables.globalFluffies[i].weaned === false)
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 2;
-      }
-      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity / 2))
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 3;
-      }
-      else if (totalAge <= Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity))
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 4;
-      }
-      else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maxAge * 52 * 0.75))
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 5;
-      }
-      else
-      {
-        save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 6;
-      }
+      save.state.history[save.state.index].variables.grandfatherGene = "X/X;A/a;B/b;C/c;E/e;F/f;G/g;H/h;J/j;K/k;M/m;N/n;S/s;X/x;E/e;P/a;U/a;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;B/b;Y/y;R/r;O/o;W/w;S/s;T/t;E/e;N/n;C/c;H/h;T/t;H/h;L/l;E/e;0/0;C/c;L/l;C/c;D/d;C/c;C/c;0/0";
     }
 
-    if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
+    if (typeof save.state.history[save.state.index].variables.autoSell == 'undefined')
     {
-      // How many children does this fluffy have?
-      var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;
+      save.state.history[save.state.index].variables.autoSell = false;
+    }
 
-      if (cCount <= 0)
+    console.log("DEBUG: loop to check fluffy data, count: ", save.state.history[save.state.index].variables.globalFluffies.length)
+
+    for (var i = 0; i < save.state.history[save.state.index].variables.globalFluffies.length; i++)
+    {
+
+      console.log("DEBUG: chekcing fluffy ", i)
+
+      // update limb data
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].limbs === 'undefined')
       {
-        // No kids, just make it an empty array:
-        save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
+        save.state.history[save.state.index].variables.globalFluffies[i].limbs = {
+          'earthy': { 'leg_front_right': 'healthy', 'leg_front_left': 'healthy', 'leg_back_right': 'healthy', 'leg_back_left': 'healthy' },
+          'pegasus': { 'wing_right': 'healthy', 'wing_left': 'healthy' },
+          'unicorn': { 'horn': 'healthy' }
+        };
       }
-      else 
+      
+      // Update birth date
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].birthDate === 'undefined')
       {
-        // If we have more kids than the number nursing, just pick the youngest.
-        if (cCount > save.state.history[save.state.index].variables.globalFluffies[i].nursing)
+        var date = new Date(State.variables.gameDate);
+        var days = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks) * Number(7));
+      
+        date.setDate(date.getDate() - days);
+        date.setFullYear(date.getFullYear() - save.state.history[save.state.index].variables.globalFluffies[i].age);
+
+        date.setDate(date.getDate() - days);
+
+        save.state.history[save.state.index].variables.globalFluffies[i].birthDate = date.toString();
+      }
+
+      // Update age category
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].ageCategory === 'undefined')
+      {
+        var totalAge = Number(Number(save.state.history[save.state.index].variables.globalFluffies[i].age * 52) + save.state.history[save.state.index].variables.globalFluffies[i].ageWeeks);
+
+        if (totalAge == 0)
         {
-          cCount = Number(Number(cCount) - Number(save.state.history[save.state.index].variables.globalFluffies[i].nursing));
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 0;
         }
-
-        // Start with a blank array:
-        save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
-
-        // Push the children in revrse order to get youngest first:
-        for (;cCount > 0; cCount--)
+        else if (totalAge == 1)
         {
-          save.state.history[save.state.index].variables.globalFluffies[i].nursing.push(save.state.history[save.state.index].variables.globalFluffies[i].children[cCount]);
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 1;
+        }
+        else if (save.state.history[save.state.index].variables.globalFluffies[i].weaned === false)
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 2;
+        }
+        else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity / 2))
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 3;
+        }
+        else if (totalAge <= Number(save.state.history[save.state.index].variables.globalFluffies[i].maturity))
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 4;
+        }
+        else if (totalAge < Number(save.state.history[save.state.index].variables.globalFluffies[i].maxAge * 52 * 0.75))
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 5;
+        }
+        else
+        {
+          save.state.history[save.state.index].variables.globalFluffies[i].ageCategory = 6;
         }
       }
-    }
 
-    // Set color info if we are using old style data
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].cColor === 'string' ||
-    typeof save.state.history[save.state.index].variables.globalFluffies[i].mColor === 'string' ||
-    typeof save.state.history[save.state.index].variables.globalFluffies[i].eColor === 'string')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = Math.floor(Math.random() * (28 - 0) + 0);
-      save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = Math.floor(Math.random() * (28 - 0) + 0);
-      save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = Math.floor(Math.random() * (28 - 0) + 0);
-      
-      save.state.history[save.state.index].variables.globalFluffies[i].genes = Genome.fromString(save.state.history[save.state.index].variables.globalFluffies[i].geneString);
-
-      save.state.history[save.state.index].variables.globalFluffies[i].cColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newCoatColorObject(save.state.history[save.state.index].variables.globalFluffies[i].coatModifer);
-      save.state.history[save.state.index].variables.globalFluffies[i].mColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newManeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].maneModifer);
-      save.state.history[save.state.index].variables.globalFluffies[i].eColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newEyeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer);
-
-      var hslCoat = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
-      var hslMane = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
-      var hslEyes = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
-      
-      save.state.history[save.state.index].variables.globalFluffies[i].colorGroup = ["", "", ""];
-  /*
-      for (let k = 0; k < window.groupList.length-2; k++)
+      if (Array.isArray(save.state.history[save.state.index].variables.globalFluffies[i].nursing) == false)
       {
-          if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+        // How many children does this fluffy have?
+        var cCount = save.state.history[save.state.index].variables.globalFluffies[i].children.length;
+
+        if (cCount <= 0)
+        {
+          // No kids, just make it an empty array:
+          save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
+        }
+        else 
+        {
+          // If we have more kids than the number nursing, just pick the youngest.
+          if (cCount > save.state.history[save.state.index].variables.globalFluffies[i].nursing)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[k].name
-          }
-          else if (hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue)
-          {
-            save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[groupList.length-1].name;
+            cCount = Number(Number(cCount) - Number(save.state.history[save.state.index].variables.globalFluffies[i].nursing));
           }
 
-          if (inRange(hslMane[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
-          {
-            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[k].name;
-          }
-          else if (hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue)
-          {
-            save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[groupList.length-1].name;
-          }
+          // Start with a blank array:
+          save.state.history[save.state.index].variables.globalFluffies[i].nursing = [];
 
-          if (inRange(hslEyes[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+          // Push the children in revrse order to get youngest first:
+          for (;cCount > 0; cCount--)
           {
-            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[k].name;
+            if (typeof save.state.history[save.state.index].variables.globalFluffies[i].children[cCount] == "number")
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].nursing.push(save.state.history[save.state.index].variables.globalFluffies[i].children[cCount]);
+            }
           }
-          else if (hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue)
-          {
-            save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
-          }
+        }
       }
-*/
-      save.state.history[save.state.index].variables.globalFluffies[i].cColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
-      save.state.history[save.state.index].variables.globalFluffies[i].mColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
-      save.state.history[save.state.index].variables.globalFluffies[i].eColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
+
+      // Set color info if we are using old style data
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].cColor === 'string' ||
+      typeof save.state.history[save.state.index].variables.globalFluffies[i].mColor === 'string' ||
+      typeof save.state.history[save.state.index].variables.globalFluffies[i].eColor === 'string')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = Math.floor(Math.random() * (28 - 0) + 0);
+        save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = Math.floor(Math.random() * (28 - 0) + 0);
+        save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = Math.floor(Math.random() * (28 - 0) + 0);
+        
+        save.state.history[save.state.index].variables.globalFluffies[i].genes = Genome.fromString(save.state.history[save.state.index].variables.globalFluffies[i].geneString);
+
+        save.state.history[save.state.index].variables.globalFluffies[i].cColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newCoatColorObject(save.state.history[save.state.index].variables.globalFluffies[i].coatModifer);
+        save.state.history[save.state.index].variables.globalFluffies[i].mColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newManeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].maneModifer);
+        save.state.history[save.state.index].variables.globalFluffies[i].eColor = save.state.history[save.state.index].variables.globalFluffies[i].genes.newEyeColorObject(save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer);
+
+        var hslCoat = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
+        var hslMane = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
+        var hslEyes = hexToHSL(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
+        
+        save.state.history[save.state.index].variables.globalFluffies[i].colorGroup = ["", "", ""];
+    /*
+        for (let k = 0; k < window.groupList.length-2; k++)
+        {
+            if (inRange(hslCoat[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[k].name
+            }
+            else if (hslCoat[0].toFixed(0) >= groupList[groupList.length-1].hue)
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].cColor.group = groupList[groupList.length-1].name;
+            }
+
+            if (inRange(hslMane[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[k].name;
+            }
+            else if (hslMane[0].toFixed(0) >= groupList[groupList.length-1].hue)
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].mColor.group = groupList[groupList.length-1].name;
+            }
+
+            if (inRange(hslEyes[0].toFixed(0), groupList[k].hue, groupList[k+1].hue))
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[k].name;
+            }
+            else if (hslEyes[0].toFixed(0) >= groupList[groupList.length-1].hue)
+            {
+              save.state.history[save.state.index].variables.globalFluffies[i].eColor.group = groupList[groupList.length-1].name;
+            }
+        }
+  */
+        save.state.history[save.state.index].variables.globalFluffies[i].cColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].cColor.hex);
+        save.state.history[save.state.index].variables.globalFluffies[i].mColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].mColor.hex);
+        save.state.history[save.state.index].variables.globalFluffies[i].eColor.filter = hexToFilter(save.state.history[save.state.index].variables.globalFluffies[i].eColor.hex);
+      }
+
+      // Force set a default value to furStage if it's missing:
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
+      }
+
+      const expected_length = save.state.history[save.state.index].variables.grandfatherGene.length;
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].geneString.length < expected_length)
+      {
+        var addStr = save.state.history[save.state.index].variables.grandfatherGene.subString(save.state.history[save.state.index].variables.globalFluffies[i].geneString.length);
+
+        save.state.history[save.state.index].variables.globalFluffies[i].geneString += addStr;
+      }
+
+      // Set coat information if missing:
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd = 0;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLength == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatLength = 2;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensity == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatDensity = 100;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd = 10;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatCurl == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatCurl = 2;
+      }
+
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatModifer == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = 0;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].maneModifer == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = 0;
+      }
+      if (typeof save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer == 'undefined')
+      {
+        save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = 0;
+      }
+    
     }
 
-    // Force set a default value to furStage if it's missing:
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].furStage == 'undefined')
+    if (typeof save.state.history[save.state.index].variables.ourStore.inventory == 'undefined')
     {
-      save.state.history[save.state.index].variables.globalFluffies[i].furStage = 100;
+      save.state.history[save.state.index].variables.ourStore.inventory = [];
     }
-
-    const expected_length = save.state.history[save.state.index].variables.grandfatherGene.length;
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].geneString.length < expected_length)
-    {
-      var addStr = save.state.history[save.state.index].variables.grandfatherGene.subString(save.state.history[save.state.index].variables.globalFluffies[i].geneString.length);
-
-      save.state.history[save.state.index].variables.globalFluffies[i].geneString += addStr;
-    }
-
-    // Set coat information if missing:
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatLengthAdd = 0;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatLength == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatLength = 2;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensity == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatDensity = 100;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatDensityAdd = 10;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatCurl == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatCurl = 2;
-    }
-
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].coatModifer == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].coatModifer = 0;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].maneModifer == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].maneModifer = 0;
-    }
-    if (typeof save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer == 'undefined')
-    {
-      save.state.history[save.state.index].variables.globalFluffies[i].eyeModifer = 0;
-    }
-  
-  }
-
-  if (typeof save.state.history[save.state.index].variables.ourStore.inventory == 'undefined')
-  {
-    save.state.history[save.state.index].variables.ourStore.inventory = [];
   }
 });
 
