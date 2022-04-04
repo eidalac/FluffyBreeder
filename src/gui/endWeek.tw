@@ -66,154 +66,154 @@
  *** */
 <<for _ef range $ourStore.fluffies>>
 
-	<<if ndef $globalFluffies[_ef]>>
+	<<set $activeFluffy = $globalFluffies[_ef]>>
+
+	<<if ndef $activeFluffy>>
 		<<run console.log(`ERROR: [endWeek.tw]: ID in store does not exist in globalFluffies: ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
 		<<continue>>
 	<</if>>
 
-	<<if $globalFluffies[_ef].ID != _ef>>
-		<<run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
+	<<if $activeFluffy.ID != _ef>>
+		<<run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$activeFluffy.ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
 		<<continue>>
 	<</if>>
 	
-	<<if $globalFluffies[_ef].dead == true>>
-		<<run console.log(`ERROR: [endWeek.tw]: dead fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
+	<<if $activeFluffy.dead == true>>
+		<<run console.log(`ERROR: [endWeek.tw]: dead fluffy found: ${$activeFluffy.ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
 		<<continue>>
 	<</if>>
 
-	<<if $globalFluffies[_ef].sold == true>>
-		<<run console.log(`ERROR: [endWeek.tw]: sold fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)>>
+	<<if $activeFluffy.sold == true>>
+		<<run console.log(`ERROR: [endWeek.tw]: sold fluffy found: ${$activeFluffy.ID}, Should be ${_ef}.`)>>
 		<<run $ourStore.fluffies.delete(_ef)>>
 		<<continue>>
 	<</if>>
 
-	<<if $globalFluffies[_ef].dueDate > 7>>
-		<<run console.log(`ERROR: [endWeek.tw]: invalid due date: ${$globalFluffies[_ef].dueDate}.`)>>
-		<<set $globalFluffies[_ef].dueDate = 7>>
+	<<if $activeFluffy.dueDate > 7>>
+		<<run console.log(`ERROR: [endWeek.tw]: invalid due date: ${$activeFluffy.dueDate}.`)>>
+		<<set $activeFluffy.dueDate = 7>>
 	<</if>>
 
-	<<if $globalFluffies[_ef].specialFriend >= 0>>
-		<<if ndef $globalFluffies[$globalFluffies[_ef].specialFriend]>>
+	<<if $activeFluffy.specialFriend >= 0>>
+		<<if ndef $globalFluffies[$activeFluffy.specialFriend]>>
 			<<run console.log(`ERROR: [endWeek.tw]: Non Defined Special friend found.`)>>
-			<<set $globalFluffies[_ef].specialFriend = -1>>
+			<<set $activeFluffy.specialFriend = -1>>
 		<<else>>
-			<<if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true>>
+			<<if $globalFluffies[$activeFluffy.specialFriend].dead == true>>
 				<<run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)>>
-				<<set $globalFluffies[_ef].specialFriend = -1>>
+				<<set $activeFluffy.specialFriend = -1>>
 			<</if>>
-			<<if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true>>
+			<<if $globalFluffies[$activeFluffy.specialFriend].sold == true>>
 				<<run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)>>
-				<<set $globalFluffies[_ef].specialFriend = -1>>
+				<<set $activeFluffy.specialFriend = -1>>
 			<</if>>
 		<</if>>
 		
-		<<if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false>>
+		<<if $ourStore.fluffies.includes($activeFluffy.specialFriend) == false>>
 			<<run console.log(`ERROR: [endWeek.tw]: Invalid Special friend found.`)>>
-			<<set $globalFluffies[_ef].specialFriend = -1>>
+			<<set $activeFluffy.specialFriend = -1>>
 		<</if>>
 	<</if>>
 
 	/* First some tedius house keeping: */
-	<<pruneTraits $globalFluffies[_ef]>>
+	<<pruneTraits $activeFluffy>>
 
-	<<if ndef $globalFluffies[_ef].name>>
-		<<set $globalFluffies[_ef].name = "Fluffy">>
+	<<if ndef $activeFluffy.name>>
+		<<set $activeFluffy.name = "Fluffy">>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].gender>>
-		<<set $globalFluffies[_ef].gender = "Female">>
+	<<if ndef $activeFluffy.gender>>
+		<<set $activeFluffy.gender = "Female">>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].geneString>>
-		<<if $globalFluffies[_ef].gender == "Male">>
+	<<if ndef $activeFluffy.geneString>>
+		<<if $activeFluffy.gender == "Male">>
 			<<set _geneSTR = $grandfatherGene>>
 		<<else>>
 			<<set _geneSTR = $grandmotherGene>>
 		<</if>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].weekAcquired>>
-		<<set $globalFluffies[_ef].weekAcquired = 0>>
+	<<if ndef $activeFluffy.weekAcquired>>
+		<<set $activeFluffy.weekAcquired = 0>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].ID>>
-		<<set $globalFluffies[_ef].ID = $ourStore.fluffies[_ef]>>
+	<<if ndef $activeFluffy.ID>>
+		<<set $activeFluffy.ID = $ourStore.fluffies[_ef]>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].specialFriend>>
-		<<set $globalFluffies[_ef].specialFriend = -1>>
+	<<if ndef $activeFluffy.specialFriend>>
+		<<set $activeFluffy.specialFriend = -1>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].pregnant>>
-		<<set $globalFluffies[_ef].pregnant = false>>
+	<<if ndef $activeFluffy.pregnant>>
+		<<set $activeFluffy.pregnant = false>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].pregnantBy>>
-		<<set $globalFluffies[_ef].pregnantBy = -1>>
+	<<if ndef $activeFluffy.pregnantBy>>
+		<<set $activeFluffy.pregnantBy = -1>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].ageWeeks>>
-		<<set $globalFluffies[_ef].ageWeeks = -1>>
+	<<if ndef $activeFluffy.ageWeeks>>
+		<<set $activeFluffy.ageWeeks = -1>>
 	<</if>>
-	<<if ndef $globalFluffies[_ef].foodType>>
-		<<set $globalFluffies[_ef].foodType = "Kibble">>
+	<<if ndef $activeFluffy.foodType>>
+		<<set $activeFluffy.foodType = "Kibble">>
 	<</if>>
 	
 	/* Age up a week. */
-	<<set $globalFluffies[_ef].ageWeeks++>>
+	<<set $activeFluffy.ageWeeks++>>
 	
 	/* turn 52 weeks into a year */
-	<<if Number($globalFluffies[_ef].ageWeeks) > 52>>
-		<<set $globalFluffies[_ef].ageWeeks = 0>>
-		<<set $globalFluffies[_ef].age++>>
+	<<if Number($activeFluffy.ageWeeks) > 52>>
+		<<set $activeFluffy.ageWeeks = 0>>
+		<<set $activeFluffy.age++>>
 	<</if>>
-
-	<<set $activeFluffy = $globalFluffies[_ef]>>
 	
 	<<checkAgeCategory>>
 
-	<<switch $globalFluffies[_ef].foodType>>
+	<<switch $activeFluffy.foodType>>
 		<<case "Kibble">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$activeFluffy.foodQuality])).toFixed(2)>>
 		<<case "Greens">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$activeFluffy.foodQuality])).toFixed(2)>>
 		<<case "Sketti">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$activeFluffy.foodQuality])).toFixed(2)>>
 		<<case "Formula">>
-			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)>>
+			<<set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$activeFluffy.foodQuality])).toFixed(2)>>
 		<<case "Default">>
 			<<set _feedCost = 0>>
 	<</switch>>
 
 	/* < 1 year old */
-	<<if $globalFluffies[_ef].ageCategory <= 4>>
+	<<if $activeFluffy.ageCategory <= 4>>
 		<<set $ourStore.foals++>>
 
-	<<elseif $globalFluffies[_ef].gender == "male">>
+	<<elseif $activeFluffy.gender == "male">>
 		<<set $ourStore.stallions++>>
 	<<else>>
 		<<set $ourStore.mares++>>
 	<</if>>
 
 	/* some logic checking */
-	<<if ndef $globalFluffies[_ef].nursing>>
-		<<set $globalFluffies[_ef].nursing = []>>
+	<<if ndef $activeFluffy.nursing>>
+		<<set $activeFluffy.nursing = []>>
 	<</if>>
 	/*
-	<<if $globalFluffies[_ef].nursing < 0>>
-		<<set $globalFluffies[_ef].nursing = 0>>
+	<<if $activeFluffy.nursing < 0>>
+		<<set $activeFluffy.nursing = 0>>
 	<</if>>
 	*/
 
 	/* Logic check if mother is no longer in the store: */
-	<<if $globalFluffies[_ef].foodType == "Nursing" && $ourStore.fluffies.includes($globalFluffies[_ef].mother) == false>>
-		<br><<- $globalFluffies[_ef].name>> can't find it's mother!
-		<<set $globalFluffies[_ef].foodType = "Nothing">>
+	<<if $activeFluffy.foodType == "Nursing" && $ourStore.fluffies.includes($activeFluffy.mother) == false>>
+		<br><<- $activeFluffy.name>> can't find it's mother!
+		<<set $activeFluffy.foodType = "Nothing">>
 	<</if>>
 
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	<<if Number($globalFluffies[_ef].maxAge) <= Number($globalFluffies[_ef].age)>>
+	<<if Number($activeFluffy.maxAge) <= Number($activeFluffy.age)>>
 		<<if random(0, 1) == 1>>
-			<br><<print $globalFluffies[_ef].name>> does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
+			<br><<print $activeFluffy.name>> does not wake up.  ($activeFluffy.age /  $activeFluffy.maxAge years old)
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			
 			<<continue>>
 		<</if>>
@@ -223,185 +223,185 @@
 	/*
 	 * 200 - Morbidity
 	 */
-	<<if $globalFluffies[_ef].trauma >= 200>>
+	<<if $activeFluffy.trauma >= 200>>
 		/* Deaded */
-		<br><<print $globalFluffies[_ef].name>> has died due to injury. 
+		<br><<print $activeFluffy.name>> has died due to injury. 
 		<br>
-		<<removeFluffy $globalFluffies[_ef] "kill">>
+		<<removeFluffy $activeFluffy "kill">>
 		<<continue>>
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 180>>
+	<<elseif $activeFluffy.trauma >= 180>>
 		<<if random(0, 2) == 0>>
 			/* Deaded */
-			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br><<print $activeFluffy.name>> has died from wounds. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
 			<br>
-			<<fluffSpeech 'fluffy_suffering_default' $globalFluffies[_ef]>>
-			<<set $globalFluffies[_ef].stress += 5>>
-			<<set $globalFluffies[_ef].trauma += 5>>
-			<<set $globalFluffies[_ef].temperament -= 5>>
-			<<set $globalFluffies[_ef].happy -= 5>>
+			<<fluffSpeech 'fluffy_suffering_default' $activeFluffy>>
+			<<set $activeFluffy.stress += 5>>
+			<<set $activeFluffy.trauma += 5>>
+			<<set $activeFluffy.temperament -= 5>>
+			<<set $activeFluffy.happy -= 5>>
 		<</if>>
 	/*
 	 * 160 - Increasing risk of death
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 160>>
+	<<elseif $activeFluffy.trauma >= 160>>
 		<<if random(0, 4) == 0>>
-			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br><<print $activeFluffy.name>> has died from wounds. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from wounds. 
-			<<fluffSpeech 'fluffy_suffering_default' $globalFluffies[_ef]>>
-			<<set $globalFluffies[_ef].temperament -= 4>>
-			<<set $globalFluffies[_ef].happy -= 4>>
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from wounds. 
+			<<fluffSpeech 'fluffy_suffering_default' $activeFluffy>>
+			<<set $activeFluffy.temperament -= 4>>
+			<<set $activeFluffy.happy -= 4>>
 		<</if>>
 	/*
 	 * 140 - Risk of death
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 140>>
+	<<elseif $activeFluffy.trauma >= 140>>
 		<<if random(0, 6) == 0>>
-			<br><<print $globalFluffies[_ef].name>> has died from wounds. 
+			<br><<print $activeFluffy.name>> has died from wounds. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from wounds. 
-			<<fluffSpeech 'fluffy_suffering_default' $globalFluffies[_ef]>>
-			<<set $globalFluffies[_ef].temperament -= 3>>
-			<<set $globalFluffies[_ef].happy -= 3>>
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from wounds. 
+			<<fluffSpeech 'fluffy_suffering_default' $activeFluffy>>
+			<<set $activeFluffy.temperament -= 3>>
+			<<set $activeFluffy.happy -= 3>>
 		<</if>>
 	/*
 	 * 120 - No healing
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 120>>
-		<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from wounds. 
-		<<fluffSpeech 'fluffy_suffering_default' $globalFluffies[_ef]>>
-		<<set $globalFluffies[_ef].temperament -= 2>>
-		<<set $globalFluffies[_ef].happy -= 2>>
+	<<elseif $activeFluffy.trauma >= 120>>
+		<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from wounds. 
+		<<fluffSpeech 'fluffy_suffering_default' $activeFluffy>>
+		<<set $activeFluffy.temperament -= 2>>
+		<<set $activeFluffy.happy -= 2>>
 	/*
 	 * 80 - Trauma decays into stress
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 80>>
-		<<set $globalFluffies[_ef].trauma -= 1>>
-		<<set $globalFluffies[_ef].stress += 5>>
-		<<set $globalFluffies[_ef].temperament -= 1>>
-		<<set $globalFluffies[_ef].happy -= 1>>
+	<<elseif $activeFluffy.trauma >= 80>>
+		<<set $activeFluffy.trauma -= 1>>
+		<<set $activeFluffy.stress += 5>>
+		<<set $activeFluffy.temperament -= 1>>
+		<<set $activeFluffy.happy -= 1>>
 	/*
 	 * 40 - Slow healing
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 40>>
-		<<set $globalFluffies[_ef].trauma -= 1>>
+	<<elseif $activeFluffy.trauma >= 40>>
+		<<set $activeFluffy.trauma -= 1>>
 	/*
 	 * 20 - Normal Healing
 	 */
-	<<elseif $globalFluffies[_ef].trauma >= 20>>
-	 	<<set $globalFluffies[_ef].trauma -= 1>>
+	<<elseif $activeFluffy.trauma >= 20>>
+	 	<<set $activeFluffy.trauma -= 1>>
 	/*
 	 * 10 - quick healing
 	 */
 	<<else>>
-		<<set $globalFluffies[_ef].trauma -= 2>>
+		<<set $activeFluffy.trauma -= 2>>
 	<</if>>
 	
 	/* Stress ticks */
 	/*
 	 * 200 - Morbidity
 	 */
-	<<if $globalFluffies[_ef].stress >= 200>>
+	<<if $activeFluffy.stress >= 200>>
 		/* Deaded */
-		<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> has died from stress. 
+		<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> has died from stress. 
 		<br>
-		<<removeFluffy $globalFluffies[_ef] "kill">>
+		<<removeFluffy $activeFluffy "kill">>
 		<<continue>>
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 180>>
+	<<elseif $activeFluffy.stress >= 180>>
 		<<if random(0, 2) == 0>>
 			/* Deaded */
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> has died from stress. 
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> has died from stress. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from stress. 
-			<<fluffSpeech 'fluffy_suffering_mental' $globalFluffies[_ef]>>
-			<<set $globalFluffies[_ef].stress += 10>>
-			<<set $globalFluffies[_ef].trauma += 2>>
-			<<set $globalFluffies[_ef].temperament -= 4>>
-			<<set $globalFluffies[_ef].happy -= 4>>
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from stress. 
+			<<fluffSpeech 'fluffy_suffering_mental' $activeFluffy>>
+			<<set $activeFluffy.stress += 10>>
+			<<set $activeFluffy.trauma += 2>>
+			<<set $activeFluffy.temperament -= 4>>
+			<<set $activeFluffy.happy -= 4>>
 		<</if>>
 	/*
 	 * 160 - Increasing risk of death
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 160>>
+	<<elseif $activeFluffy.stress >= 160>>
 		<<if random(0, 4) == 0>>
-			<br><<print $globalFluffies[_ef].name>> has died from stress. 
+			<br><<print $activeFluffy.name>> has died from stress. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from stress. 
-			<<fluffSpeech 'fluffy_suffering_mental' $globalFluffies[_ef]>>
-			<<set $globalFluffies[_ef].temperament -= 3>>
-			<<set $globalFluffies[_ef].happy -= 3>>
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from stress. 
+			<<fluffSpeech 'fluffy_suffering_mental' $activeFluffy>>
+			<<set $activeFluffy.temperament -= 3>>
+			<<set $activeFluffy.happy -= 3>>
 		<</if>>
 	/*
 	 * 140 - Risk of death
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 140>>
+	<<elseif $activeFluffy.stress >= 140>>
 		<<if random(0, 6) == 0>>
-			<br><<print $globalFluffies[_ef].name>> has died from stress. 
+			<br><<print $activeFluffy.name>> has died from stress. 
 			<br>
-			<<removeFluffy $globalFluffies[_ef] "kill">>
+			<<removeFluffy $activeFluffy "kill">>
 			<<continue>>
 		<<else>>
-			<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from stress. 
-			<<fluffSpeech 'fluffy_suffering_mental' $globalFluffies[_ef]>><<set $globalFluffies[_ef].temperament -= 2>>
-			<<set $globalFluffies[_ef].happy -= 2>>
+			<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from stress. 
+			<<fluffSpeech 'fluffy_suffering_mental' $activeFluffy>><<set $activeFluffy.temperament -= 2>>
+			<<set $activeFluffy.happy -= 2>>
 		<</if>>
 	/*
 	 * 120 - No healing
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 120>>
-		<br><<colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name>> is suffering from stress. 
-		<<fluffSpeech 'fluffy_suffering_mental' $globalFluffies[_ef]>>
+	<<elseif $activeFluffy.stress >= 120>>
+		<br><<colorizeText $activeFluffy.cColor.hex $activeFluffy.name>> is suffering from stress. 
+		<<fluffSpeech 'fluffy_suffering_mental' $activeFluffy>>
 	/*
 	 * 100 - Stress decays into Trauma
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 100>>
-		<<set $globalFluffies[_ef].trauma += 1>>
-		<<set $globalFluffies[_ef].stress -= 5>>
-		<<set $globalFluffies[_ef].temperament -= 1>>
-		<<set $globalFluffies[_ef].happy -= 1>>
+	<<elseif $activeFluffy.stress >= 100>>
+		<<set $activeFluffy.trauma += 1>>
+		<<set $activeFluffy.stress -= 5>>
+		<<set $activeFluffy.temperament -= 1>>
+		<<set $activeFluffy.happy -= 1>>
 
 	/*
 	 * 40 - Slow healing; blocked if trauma is over 59
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 40>>
-		<<if $globalFluffies[_ef].trauma < 60>>
-			<<set $globalFluffies[_ef].stress -= 5>>
+	<<elseif $activeFluffy.stress >= 40>>
+		<<if $activeFluffy.trauma < 60>>
+			<<set $activeFluffy.stress -= 5>>
 		<</if>>
 	/*
 	 * 20 - Normal Healing; blocked if trauma is over 59
 	 */
-	<<elseif $globalFluffies[_ef].stress >= 20>>
-		<<if $globalFluffies[_ef].trauma < 60>>
-	 		<<set $globalFluffies[_ef].stress -= 5>>
+	<<elseif $activeFluffy.stress >= 20>>
+		<<if $activeFluffy.trauma < 60>>
+	 		<<set $activeFluffy.stress -= 5>>
 	 	<</if>>
 	/*
 	 * 10 - quick healing; blocked if trauma is over 59
 	 */
 	<<else>>
-		<<if $globalFluffies[_ef].trauma < 60>>
-			<<set $globalFluffies[_ef].stress -= 10>>
+		<<if $activeFluffy.trauma < 60>>
+			<<set $activeFluffy.stress -= 10>>
 		<</if>>
 	<</if>>
 
@@ -416,12 +416,12 @@
 
 	<<set _smartyBase = Number(Number(130) - Number(Number($smartySyndrom) * Number(10)))>>
 
-	<<if $globalFluffies[_ef].temperament >= _smartyBase && $globalFluffies[_ef].ageCategory >= 3>>
+	<<if $activeFluffy.temperament >= _smartyBase && $activeFluffy.ageCategory >= 3>>
 
 		/* Random chance to not fire at all: */
 		<<if $smartySyndrom > random(0, 10)>>
 			/* An existing smarty has a 1/4 chance of fireing an event. */
-			<<if $globalFluffies[_ef].traits.includes("Smarty")>>
+			<<if $activeFluffy.traits.includes("Smarty")>>
 				<<if random(0,3) == 0>>
 					<<run $eventList.push( { target: _ef, type: "Smarty" } )>>
 				<</if>>
@@ -431,17 +431,17 @@
 				/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
 				/* This may be from -200 up to 200 */
 				/* Divide by 2 and normalize to 0 to 100 */
-				<<set _smartyThreshold = Number($globalFluffies[_ef].temperament)>>
-				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))>>
-				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))>>
+				<<set _smartyThreshold = Number($activeFluffy.temperament)>>
+				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($activeFluffy.training))>>
+				<<set _smartyThreshold = Number(Number(_smartyThreshold) - Number($activeFluffy.trust))>>
 				<<set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))>>
 
 				<<set _smartyChance = 0>>
 
 				/* Odds are based on personality: */
-				<<personalityFix $globalFluffies[_ef]>>
+				<<personalityFix $activeFluffy>>
 
-				<<switch $globalFluffies[_ef].personality>>
+				<<switch $activeFluffy.personality>>
 					<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
 						/* 70% chance at max threshold: */
 						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.70)))>>
@@ -455,7 +455,7 @@
 						/* 05% chance at max threshold: */
 						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))>>
 					<<default>>
-						<<run console.log(`ERROR: [endWeek]: Defaulted personality, maybe ${$globalFluffies[_ef].personality} is empty string?`)>>
+						<<run console.log(`ERROR: [endWeek]: Defaulted personality, maybe ${$activeFluffy.personality} is empty string?`)>>
 						<<set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))>>
 				<</switch>>
 
@@ -483,7 +483,7 @@
 	/* ***
 	 *	Create a deck of 'cards' for customer wants, based on the fluffies we have on display.
 	 *** */
-	<<if $globalFluffies[_ef].onDisplay == true>>
+	<<if $activeFluffy.onDisplay == true>>
 
 		/* Random chance based on repuation, higher rep better odds of getting a customer. */
 		<<if random(-8, 8) <= Number($reputation/100)>>
@@ -496,324 +496,337 @@
 	 *	Feed them.
 	 *** */
 	 <<set _foodBonus = 0>>
-	 <<if $globalFluffies[_ef].foodType != "Nothing" && $globalFluffies[_ef].traits.includes('Starving')>>
-		<<run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: false })>>
+	 <<if $activeFluffy.foodType != "Nothing" && $activeFluffy.traits.includes('Starving')>>
+		<<run $eventStarvation.push({ target: $activeFluffy.ID, enable: false })>>
 	 <</if>>
-	 <<switch $globalFluffies[_ef].foodType>>
+	 <<switch $activeFluffy.foodType>>
 	 	<<case "Kibble">>
-	 		<<if $globalFluffies[_ef].foodQuality > 3>>
+	 		<<if $activeFluffy.foodQuality > 3>>
 	 		/* Quality has some boni */
-	 			<<set $globalFluffies[_ef].happy += 10>>
-	 			<<set $globalFluffies[_ef].stress -= 10>>
-	 			<<set $globalFluffies[_ef].trauma -= 10>>
-	 			<<set $globalFluffies[_ef].temperament++>>
-			<<elseif $globalFluffies[_ef].foodQuality > 2>>
+	 			<<set $activeFluffy.happy += 10>>
+	 			<<set $activeFluffy.stress -= 10>>
+	 			<<set $activeFluffy.trauma -= 10>>
+	 			<<set $activeFluffy.temperament++>>
+			<<elseif $activeFluffy.foodQuality > 2>>
 	 		/* Good */
-	 			<<set $globalFluffies[_ef].happy += 8>>
-	 			<<set $globalFluffies[_ef].trust += 8>>
-	 			<<set $globalFluffies[_ef].stress -= 8>>
-			<<elseif $globalFluffies[_ef].foodQuality > 1>>
+	 			<<set $activeFluffy.happy += 8>>
+	 			<<set $activeFluffy.trust += 8>>
+	 			<<set $activeFluffy.stress -= 8>>
+			<<elseif $activeFluffy.foodQuality > 1>>
 	 		/* Basic */
-	 			<<set $globalFluffies[_ef].happy += 5>>
-	 			<<set $globalFluffies[_ef].trust += 5>>
-	 			<<set $globalFluffies[_ef].stress -= 5>>
-	 		<<elseif $globalFluffies[_ef].foodQuality < 2>>
+	 			<<set $activeFluffy.happy += 5>>
+	 			<<set $activeFluffy.trust += 5>>
+	 			<<set $activeFluffy.stress -= 5>>
+	 		<<elseif $activeFluffy.foodQuality < 2>>
 	 		/* Cheap */
-	 			<<set $globalFluffies[_ef].happy += 3>>
-	 			<<set $globalFluffies[_ef].trust += 3>>
-	 			<<set $globalFluffies[_ef].stress -= 3>>
-	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
+	 			<<set $activeFluffy.happy += 3>>
+	 			<<set $activeFluffy.trust += 3>>
+	 			<<set $activeFluffy.stress -= 3>>
+	 		<<elseif $activeFluffy.foodQuality < 1>>
 	 		/* Trash */
-	 			<<set $globalFluffies[_ef].happy -= 5>>
-	 			<<set $globalFluffies[_ef].stress += 5>>
-	 			<<set $globalFluffies[_ef].trauma++>>
-	 			<<set $globalFluffies[_ef].temperament-->>
+	 			<<set $activeFluffy.happy -= 5>>
+	 			<<set $activeFluffy.stress += 5>>
+	 			<<set $activeFluffy.trauma++>>
+	 			<<set $activeFluffy.temperament-->>
 	 		<</if>>
 
 	 	<<case "Greens">>
-	 		<<if $globalFluffies[_ef].foodQuality > 3>>
+	 		<<if $activeFluffy.foodQuality > 3>>
 	 		/* Quality */
-	 			<<set $globalFluffies[_ef].happy += 15>>
-	 			<<set $globalFluffies[_ef].stress -= 15>>
-	 			<<set $globalFluffies[_ef].trauma -= 15>>
-	 			<<set $globalFluffies[_ef].temperament++>>
-			<<elseif $globalFluffies[_ef].foodQuality > 2>>
+	 			<<set $activeFluffy.happy += 15>>
+	 			<<set $activeFluffy.stress -= 15>>
+	 			<<set $activeFluffy.trauma -= 15>>
+	 			<<set $activeFluffy.temperament++>>
+			<<elseif $activeFluffy.foodQuality > 2>>
 	 		/* Good */
-	 			<<set $globalFluffies[_ef].happy += 10>>
-	 			<<set $globalFluffies[_ef].trust += 10>>
-	 			<<set $globalFluffies[_ef].stress -= 10>>
-	 			<<set $globalFluffies[_ef].temperament++>>
-			<<elseif $globalFluffies[_ef].foodQuality > 1>>
+	 			<<set $activeFluffy.happy += 10>>
+	 			<<set $activeFluffy.trust += 10>>
+	 			<<set $activeFluffy.stress -= 10>>
+	 			<<set $activeFluffy.temperament++>>
+			<<elseif $activeFluffy.foodQuality > 1>>
 	 		/* Basic */
-	 			<<set $globalFluffies[_ef].happy += 8>>
-	 			<<set $globalFluffies[_ef].trust += 8>>
-	 			<<set $globalFluffies[_ef].stress -= 8>>
-	 		<<elseif $globalFluffies[_ef].foodQuality < 2>>
+	 			<<set $activeFluffy.happy += 8>>
+	 			<<set $activeFluffy.trust += 8>>
+	 			<<set $activeFluffy.stress -= 8>>
+	 		<<elseif $activeFluffy.foodQuality < 2>>
 	 		/* Cheap has some malus */
-	 			<<set $globalFluffies[_ef].happy += 5>>
-	 			<<set $globalFluffies[_ef].stress -= 5>>
-	 			<<set $globalFluffies[_ef].trauma -= 5>>
-	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
+	 			<<set $activeFluffy.happy += 5>>
+	 			<<set $activeFluffy.stress -= 5>>
+	 			<<set $activeFluffy.trauma -= 5>>
+	 		<<elseif $activeFluffy.foodQuality < 1>>
 	 		/* Trash has more malus */
-	 			<<set $globalFluffies[_ef].happy -= 3>>
-	 			<<set $globalFluffies[_ef].stress += 3>>
-	 			<<set $globalFluffies[_ef].trauma++>>
-	 			<<set $globalFluffies[_ef].temperament-->>
+	 			<<set $activeFluffy.happy -= 3>>
+	 			<<set $activeFluffy.stress += 3>>
+	 			<<set $activeFluffy.trauma++>>
+	 			<<set $activeFluffy.temperament-->>
 	 		<</if>>
 	 		
 	 	<<case "Sketti">>
-	 		<<if $globalFluffies[_ef].foodQuality > 3>>
+	 		<<if $activeFluffy.foodQuality > 3>>
 	 		/* Quality */
-	 			<<set $globalFluffies[_ef].happy += 20>>
-	 			<<set $globalFluffies[_ef].trust += 20>>
-	 			<<set $globalFluffies[_ef].stress -= 20>>
-	 			<<set $globalFluffies[_ef].temperament += 15>>
-	 		<<elseif $globalFluffies[_ef].foodQuality > 2>>
+	 			<<set $activeFluffy.happy += 20>>
+	 			<<set $activeFluffy.trust += 20>>
+	 			<<set $activeFluffy.stress -= 20>>
+	 			<<set $activeFluffy.temperament += 15>>
+	 		<<elseif $activeFluffy.foodQuality > 2>>
 	 		/* Good */
-	 			<<set $globalFluffies[_ef].happy += 15>>
-	 			<<set $globalFluffies[_ef].trust += 15>>
-	 			<<set $globalFluffies[_ef].stress -= 15>>
-	 			<<set $globalFluffies[_ef].temperament += 10>>
-	 		<<elseif $globalFluffies[_ef].foodQuality > 1>>
+	 			<<set $activeFluffy.happy += 15>>
+	 			<<set $activeFluffy.trust += 15>>
+	 			<<set $activeFluffy.stress -= 15>>
+	 			<<set $activeFluffy.temperament += 10>>
+	 		<<elseif $activeFluffy.foodQuality > 1>>
 	 		/* Basic */
-	 			<<set $globalFluffies[_ef].happy += 10>>
-	 			<<set $globalFluffies[_ef].trust += 10>>
-	 			<<set $globalFluffies[_ef].stress -= 10>>
-	 			<<set $globalFluffies[_ef].temperament += 5>>
-			<<elseif $globalFluffies[_ef].foodQuality === 1>>
+	 			<<set $activeFluffy.happy += 10>>
+	 			<<set $activeFluffy.trust += 10>>
+	 			<<set $activeFluffy.stress -= 10>>
+	 			<<set $activeFluffy.temperament += 5>>
+			<<elseif $activeFluffy.foodQuality === 1>>
 	 		/* Cheap */
-	 			<<set $globalFluffies[_ef].happy += 8>>
-	 			<<set $globalFluffies[_ef].trust += 8>>
-	 			<<set $globalFluffies[_ef].stress -= 8>>
-	 			<<set $globalFluffies[_ef].temperament++>>
-	 		<<elseif $globalFluffies[_ef].foodQuality < 1>>
+	 			<<set $activeFluffy.happy += 8>>
+	 			<<set $activeFluffy.trust += 8>>
+	 			<<set $activeFluffy.stress -= 8>>
+	 			<<set $activeFluffy.temperament++>>
+	 		<<elseif $activeFluffy.foodQuality < 1>>
 	 		/* Trash */
-	 			<<set $globalFluffies[_ef].happy++>>
-				<<set $globalFluffies[_ef].temperament++>>
-	 			<<set $globalFluffies[_ef].stress-->>
+	 			<<set $activeFluffy.happy++>>
+				<<set $activeFluffy.temperament++>>
+	 			<<set $activeFluffy.stress-->>
 	 		<</if>>
 	 		
 	 	<<case "Nothing">>
 	 		/* Quality doesn't matter */
-			<<set $globalFluffies[_ef].stress += 20>>
-			<<set $globalFluffies[_ef].trauma += 20>>
-			<<set $globalFluffies[_ef].happy -= 20>>
- 			<<set $globalFluffies[_ef].trust -= 20>>
- 			<<set $globalFluffies[_ef].temperament -= 20>>
+			<<set $activeFluffy.stress += 20>>
+			<<set $activeFluffy.trauma += 20>>
+			<<set $activeFluffy.happy -= 20>>
+ 			<<set $activeFluffy.trust -= 20>>
+ 			<<set $activeFluffy.temperament -= 20>>
 
-			<<run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: true })>>
+			<<run $eventStarvation.push({ target: $activeFluffy.ID, enable: true })>>
 	 <</switch>>
 	 
 
 	/* ***
 	 *	Grow foals.
 	 *** */
-	<<if $globalFluffies[_ef].ageCategory < 6>>
+	<<if $activeFluffy.ageCategory < 6>>
 
 	 	<<set _wMultiBase = 0.0286>>
 	 	<<set _wMultiAdd = 0.0227>>
 	 	<<set _lMultiBase = 0.22>>
 	 	<<set _lMultiAdd = 0.0177>>
-	 	<<set _newWMulti = Number(($globalFluffies[_ef].ageWeeks * 0.0227)).toFixed(4)>>
+	 	<<set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)>>
 	 	<<set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)>>
-	 	<<set _lengthRatio = Number($globalFluffies[_ef].maxLength / $globalFluffies[_ef].maxWeight).toFixed(3)>>
-	 	<<set _heightRatio = Number($globalFluffies[_ef].maxHeight / $globalFluffies[_ef].maxWeight).toFixed(3)>>
+	 	<<set _lengthRatio = Number($activeFluffy.maxLength / $activeFluffy.maxWeight).toFixed(3)>>
+	 	<<set _heightRatio = Number($activeFluffy.maxHeight / $activeFluffy.maxWeight).toFixed(3)>>
 
-		<<set _mom = $globalFluffies[$globalFluffies[_ef].mother]>>
+		<<set _mom = $globalFluffies[$activeFluffy.mother]>>
 		
-		<<if $globalFluffies[_ef].foodType == "Nursing">>
+		<<if $activeFluffy.foodType == "Nursing">>
 			<<if _mom.nursingMax < _mom.nursing.length>>
 	 			<<set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)>>
-				<<run $globalFluffies[_ef].furStage += 4>>
+				<<run $activeFluffy.furStage += 4>>
 	 		<</if>>
-		<<elseif $globalFluffies[_ef].foodType == "Nothing">>
+		<<elseif $activeFluffy.foodType == "Nothing">>
 			<<set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)>>
 	 	<<else>> 
-	 		<<switch $globalFluffies[_ef].foodQuality>>
+	 		<<switch $activeFluffy.foodQuality>>
 	 			<<case 1>>
 	 				<<set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)>>
-					 <<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.20)).toFixed(0)>>
-					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+					 <<set _adder = Number(Number($activeFluffy.coatLength) * Number(0.20)).toFixed(0)>>
+					<<run $activeFluffy.furStage += Number(_adder)>>
 	 			<<case 2>>
 	 				<<set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)>>
-					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.30)).toFixed(0)>>
-					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+					<<set _adder = Number(Number($activeFluffy.coatLength) * Number(0.30)).toFixed(0)>>
+					<<run $activeFluffy.furStage += Number(_adder)>>
 	 			<<case 3>>
 	 				<<set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)>>
-					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.40)).toFixed(0)>>
-					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+					<<set _adder = Number(Number($activeFluffy.coatLength) * Number(0.40)).toFixed(0)>>
+					<<run $activeFluffy.furStage += Number(_adder)>>
 	 			<<case 4>>	 		
 	 				<<set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)>>
-					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.50)).toFixed(0)>>
-					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+					<<set _adder = Number(Number($activeFluffy.coatLength) * Number(0.50)).toFixed(0)>>
+					<<run $activeFluffy.furStage += Number(_adder)>>
 	 			<<default>> /* 0 */
 	 				<<set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)>>
-					<<set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.10)).toFixed(0)>>
-					<<run $globalFluffies[_ef].furStage += Number(_adder)>>
+					<<set _adder = Number(Number($activeFluffy.coatLength) * Number(0.10)).toFixed(0)>>
+					<<run $activeFluffy.furStage += Number(_adder)>>
 	 		<</switch>>
 		<</if>>
 
 
-		<<set _newW = Number($globalFluffies[_ef].maxWeight * _newWMulti).toFixed(3)>>
-		<<set $globalFluffies[_ef].weight = Number(_newW).toFixed(3)>>
+		<<set _newW = Number($activeFluffy.maxWeight * _newWMulti).toFixed(3)>>
+		<<set $activeFluffy.weight = Number(_newW).toFixed(3)>>
 		
-	 	<<set _newL = Number($globalFluffies[_ef].weight * _lengthRatio).toFixed(3)>>
-	 	<<set _newH = Number($globalFluffies[_ef].weight * _heightRatio).toFixed(3)>>
+	 	<<set _newL = Number($activeFluffy.weight * _lengthRatio).toFixed(3)>>
+	 	<<set _newH = Number($activeFluffy.weight * _heightRatio).toFixed(3)>>
 	 	
-	 	<<set $globalFluffies[_ef].height = Number(_newL).toFixed(2)>>
-		<<set $globalFluffies[_ef].length = Number(_newH).toFixed(2)>>
+	 	<<set $activeFluffy.height = Number(_newL).toFixed(2)>>
+		<<set $activeFluffy.length = Number(_newH).toFixed(2)>>
 
-		<<if ($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight) > 0.14 && $globalFluffies[_ef].weaned == false>> 	
-	 		/*<<set $globalFluffies[$globalFluffies[_ef].mother].nursing-->>*/
-			 <<set $globalFluffies[$globalFluffies[_ef].mother].nursing.delete(_ef)>>
+		<<if ($activeFluffy.weight / $activeFluffy.maxWeight) > 0.14 && $activeFluffy.weaned == false>> 	
+	 		/*<<set $globalFluffies[$activeFluffy.mother].nursing-->>*/
+			 <<set $globalFluffies[$activeFluffy.mother].nursing.delete(_ef)>>
 
-			<br><<print $globalFluffies[_ef].name>> is ready for solid food
-	 		<<if $globalFluffies[_ef].foodType == "Nothing">>
+			<br><<print $activeFluffy.name>> is ready for solid food
+	 		<<if $activeFluffy.foodType == "Nothing">>
 	 			, if it was being fed.
 	 		<<else>>
 	 			.
-	 			<<set $globalFluffies[_ef].foodType = $globalFluffies[$globalFluffies[_ef].mother].foodType>>
-	 			<<set $globalFluffies[_ef].foodQuality = $globalFluffies[$globalFluffies[_ef].mother].foodQuality>>
+	 			<<set $activeFluffy.foodType = $globalFluffies[$activeFluffy.mother].foodType>>
+	 			<<set $activeFluffy.foodQuality = $globalFluffies[$activeFluffy.mother].foodQuality>>
 	 		<</if>>
 	 		
-	 		<<set $globalFluffies[_ef].weaned = true>>
+	 		<<set $activeFluffy.weaned = true>>
 
-	 		<<if $globalFluffies[$globalFluffies[_ef].mother].length == 0>>
-	 			<br><<print $globalFluffies[$globalFluffies[_ef].mother].name>> is done nursing.
+	 		<<if $globalFluffies[$activeFluffy.mother].length == 0>>
+	 			<br><<print $globalFluffies[$activeFluffy.mother].name>> is done nursing.
 	 		<</if>> 
 	 	<</if>>
 	<<else>>
-		<<run $globalFluffies[_ef].furStage += Number($globalFluffies[_ef].coatLength)>>
+		<<run $activeFluffy.furStage += Number($activeFluffy.coatLength)>>
 	<</if>>
 
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
-	<<if $globalFluffies[_ef].ageCategory >= 5>>
-		<<switch $globalFluffies[_ef].personality>>
+	<<if $activeFluffy.ageCategory >= 5>>
+		<<switch $activeFluffy.personality>>
 			<<case "Fussy">>
 				<<if random(0, 1) == 0>>
-					<<set $globalFluffies[_ef].personality = "Diligent">>
-					<<set $globalFluffies[_ef].learning++>>
-					<<set $globalFluffies[_ef].temperament += 20>>
-					<<set $globalFluffies[_ef].happy -= 10>>
+					<<set $activeFluffy.personality = "Diligent">>
+					<<set $activeFluffy.learning++>>
+					<<set $activeFluffy.temperament += 20>>
+					<<set $activeFluffy.happy -= 10>>
 				<<else>>
-					<<set $globalFluffies[_ef].personality = "Bossy">>
-					<<set $globalFluffies[_ef].charm-->>
-					<<set $globalFluffies[_ef].temperament += 30>>
-					<<set $globalFluffies[_ef].happy -= 10>>
+					<<set $activeFluffy.personality = "Bossy">>
+					<<set $activeFluffy.charm-->>
+					<<set $activeFluffy.temperament += 30>>
+					<<set $activeFluffy.happy -= 10>>
 				<</if>>
 			<<case "Shy">>
 				<<if random(0, 1) == 0>>
-					<<set $globalFluffies[_ef].personality = "Curious">>
-					<<set $globalFluffies[_ef].energy++>>
+					<<set $activeFluffy.personality = "Curious">>
+					<<set $activeFluffy.energy++>>
 				<<else>>
-					<<set $globalFluffies[_ef].personality = "Timid">>
-					<<set $globalFluffies[_ef].strength-->>
-					<<set $globalFluffies[_ef].happy -= 10>>
+					<<set $activeFluffy.personality = "Timid">>
+					<<set $activeFluffy.strength-->>
+					<<set $activeFluffy.happy -= 10>>
 				<</if>>
 			<<case "Lazy">>
 				<<if random(0, 1) == 0>>
-					<<set $globalFluffies[_ef].personality = "Pensive">>
-					<<set $globalFluffies[_ef].learning++>>
+					<<set $activeFluffy.personality = "Pensive">>
+					<<set $activeFluffy.learning++>>
 				<<else>>
-					<<set $globalFluffies[_ef].personality = "Dull">>
-					<<set $globalFluffies[_ef].energy-->>
+					<<set $activeFluffy.personality = "Dull">>
+					<<set $activeFluffy.energy-->>
 				<</if>>
 			<<case "Peppy">>
 				<<if random(0, 1) == 0>>
-					<<set $globalFluffies[_ef].personality = "Playful">>
-					<<set $globalFluffies[_ef].charm++>>
-					<<set $globalFluffies[_ef].temperament -= 10>>
-					<<set $globalFluffies[_ef].happy += 10>>
+					<<set $activeFluffy.personality = "Playful">>
+					<<set $activeFluffy.charm++>>
+					<<set $activeFluffy.temperament -= 10>>
+					<<set $activeFluffy.happy += 10>>
 				<<else>>
-					<<set $globalFluffies[_ef].personality = "Rowdy">>
-					<<set $globalFluffies[_ef].charm-->>
-					<<set $globalFluffies[_ef].temperament += 10>>
-					<<set $globalFluffies[_ef].happy += 10>>
+					<<set $activeFluffy.personality = "Rowdy">>
+					<<set $activeFluffy.charm-->>
+					<<set $activeFluffy.temperament += 10>>
+					<<set $activeFluffy.happy += 10>>
 				<</if>>
 			<<default>> /* "Cute" */
 				<<if random(0, 1) == 0>>
-					<<set $globalFluffies[_ef].personality = "Sweet">>
-					<<set $globalFluffies[_ef].learning++>>
-					<<set $globalFluffies[_ef].temperament -= 10>>
-					<<set $globalFluffies[_ef].happy += 10>>
+					<<set $activeFluffy.personality = "Sweet">>
+					<<set $activeFluffy.learning++>>
+					<<set $activeFluffy.temperament -= 10>>
+					<<set $activeFluffy.happy += 10>>
 				<<else>>
-					<<set $globalFluffies[_ef].personality = "Haughty">>
-					<<set $globalFluffies[_ef].learning-->>
-					<<set $globalFluffies[_ef].temperament += 20>>
-					<<set $globalFluffies[_ef].happy -= 10>>
+					<<set $activeFluffy.personality = "Haughty">>
+					<<set $activeFluffy.learning-->>
+					<<set $activeFluffy.temperament += 20>>
+					<<set $activeFluffy.happy -= 10>>
 				<</if>>
 		<</switch>>
 	<</if>>
 
-	<<clampValues $globalFluffies[_ef]>>
+	<<clampValues $activeFluffy>>
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
-	<<if $globalFluffies[_ef].gender == "female">>
+	<<if $activeFluffy.gender == "female">>
 		
-		<<if $globalFluffies[_ef].specialFriend != -1 && $globalFluffies[_ef].pregnant == false && $globalFluffies[_ef].nursing <= 0>>
+		<<if $activeFluffy.specialFriend != -1 && $activeFluffy.pregnant == false && $activeFluffy.nursing <= 0>>
 			/* Push to event stack  */
-			<<run $eventMating.push($globalFluffies[_ef].ID)>>
+			<<run $eventMating.push($activeFluffy.ID)>>
 		<</if>>
 		
-		<<if $globalFluffies[_ef].pregnant>>
-			<<if $globalFluffies[_ef].dueDate <= 0>>
+		<<if $activeFluffy.pregnant>>
+			<<if $activeFluffy.dueDate <= 0>>
 				/* Push to event stack  */
-				<<run $eventBirths.push($globalFluffies[_ef].ID)>>
+				<<run $eventBirths.push($activeFluffy.ID)>>
 				
-				<<set $globalFluffies[_ef].dueDate = -1>>
-				<<set $globalFluffies[_ef].pregnant = false>>
+				<<set $activeFluffy.dueDate = -1>>
+				<<set $activeFluffy.pregnant = false>>
 
-			<<elseif $globalFluffies[_ef].nursing.length > 0>>
-				 <br><<- $globalFluffies[_ef].name>> is nursing foals.
+			<<elseif $activeFluffy.nursing.length > 0>>
+				 <br><<- $activeFluffy.name>> is nursing foals.
 			<<else>>
-				<<if $globalFluffies[_ef].dueDate < 0>>
-					<<set $globalFluffies[_ef].dueDate = -1>>
-					<<set $globalFluffies[_ef].pregnant = false>>
-					<<set $globalFluffies[_ef].litter = 0>>
-					<<set $globalFluffies[_ef].pregnantBy = -1>>
+				<<if $activeFluffy.dueDate < 0>>
+					<<set $activeFluffy.dueDate = -1>>
+					<<set $activeFluffy.pregnant = false>>
+					<<set $activeFluffy.litter = 0>>
+					<<set $activeFluffy.pregnantBy = -1>>
 				<<else>>
-					<<set $globalFluffies[_ef].dueDate-->>
+					<<set $activeFluffy.dueDate-->>
 				<</if>>
 			<</if>>
 		<<else>>
-			<<set $globalFluffies[_ef].dueDate = -1>>
+			<<set $activeFluffy.dueDate = -1>>
 		<</if>>
 
-<<run console.log(`DEBUG: endWeek: ${$globalFluffies[_ef].name} nursing ${$globalFluffies[_ef].nursing.length}.`)>>
+		<<run console.log(`DEBUG: endWeek: ${$activeFluffy.name} nursing ${$activeFluffy.nursing.length}.`)>>
 
-		<<if $globalFluffies[_ef].nursing.length > 0>>
-			<<for _child range $globalFluffies[_ef].nursing>>
+		<<if $activeFluffy.nursing.length > 0>>
+			<<for _child range $activeFluffy.nursing>>
 
-<<run console.log(`DEBUG: endWeek: Child ${_child} dead: ${$globalFluffies[_child].dead} sold ${$globalFluffies[_child].sold}.`)>>
-				<<if $globalFluffies[_child].dead || $globalFluffies[_child].sold>>
-					<<run $globalFluffies[_ef].nursing.delete(_child)>>
-				<</if>>
+				<<if ndef _child>>
+					<<run console.log(`DEBUG: endWeek: ndef on _child.`)>>
+				<<else>>
 
-<<run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${$globalFluffies[_child].weaned} ageCategory ${$globalFluffies[_child].ageCategory}.`)>>
-				<<if $globalFluffies[_child].weaned || $globalFluffies[_child].ageCategory > 3>>
-					<<run $globalFluffies[_ef].nursing.delete(_child)>>
-				<</if>>
+					<<set _childFluffy = $globalFluffies[_child]>>
 
-				<<if $ourStore.fluffies.includes(_child) == false>>
-					<<run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)>>
-					<<run $globalFluffies[_ef].nursing.delete(_child)>>
+					<<if ndef _childFluffy>>
+						<<run $activeFluffy.nursing.delete(_child)>>
+					<<else>>
+						<<run console.log(`DEBUG: endWeek: Child ${_child} dead: ${_childFluffy.dead} sold ${_childFluffy.sold}.`)>>
+
+						<<if _childFluffy.dead || _childFluffy.sold>>
+							<<run $activeFluffy.nursing.delete(_child)>>
+						<</if>>
+
+						<<run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${_childFluffy.weaned} ageCategory ${_childFluffy.ageCategory}.`)>>
+
+						<<if _childFluffy.weaned || _childFluffy.ageCategory > 3>>
+							<<run $activeFluffy.nursing.delete(_child)>>
+						<</if>>
+
+						<<if $ourStore.fluffies.includes(_child) == false>>
+							<<run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)>>
+							<<run $activeFluffy.nursing.delete(_child)>>
+						<</if>>
+					<</if>>
 				<</if>>
 			<</for>>
 		<</if>>
-	<<elseif $globalFluffies[_ef].pregnant>>
+	<<elseif $activeFluffy.pregnant>>
 	 	<<run console.log(`ERROR: endWeek: Male with pregnant flag set.`)>>
-		<<set $globalFluffies[_ef].litter = 0>>
-		<<set $globalFluffies[_ef].dueDate = -1>>
+		<<set $activeFluffy.litter = 0>>
+		<<set $activeFluffy.dueDate = -1>>
 		<<set $globalFluffies[_efD].pregnant = false>>
-		<<set $globalFluffies[_ef].pregnantBy = -1>>
-		<<set $globalFluffies[_ef].nursingTime = 0>>
-		<<set $globalFluffies[_ef].nursingMax = 0>>
-		<<set $globalFluffies[_ef].nursing = []>>
+		<<set $activeFluffy.pregnantBy = -1>>
+		<<set $activeFluffy.nursingTime = 0>>
+		<<set $activeFluffy.nursingMax = 0>>
+		<<set $activeFluffy.nursing = []>>
 	<</if>>
 
 	/* ***
@@ -822,19 +835,19 @@
 	 
 	 /* First get a value based on temperament: */
 	 /* >= 190 - smarty */
-	 <<if $globalFluffies[_ef].temperament >= 190>>
+	 <<if $activeFluffy.temperament >= 190>>
 	 	<<set _thisStress = 4>>
 	 
 	 /* >= 130 - bratty */
-	 <<elseif $globalFluffies[_ef].temperament >= 130>>
+	 <<elseif $activeFluffy.temperament >= 130>>
 	 	<<set _thisStress = 3>>
 	 
 	 /* >= 70 - Normal */
-	 <<elseif $globalFluffies[_ef].temperament >= 70>>
+	 <<elseif $activeFluffy.temperament >= 70>>
 	 	<<set _thisStress = 2>>
 	 
 	 /* >= 10 - Meek */
-	 <<elseif $globalFluffies[_ef].temperament >= 10>>
+	 <<elseif $activeFluffy.temperament >= 10>>
 	 	<<set _thisStress = 1>>
 	 /* < 10 - Afraid */
 	 <<else>>
@@ -842,7 +855,7 @@
 	 <</if>>
 	 
 	 /* Then check based on personality: */
-	 <<switch $globalFluffies[_ef].personality>>
+	 <<switch $activeFluffy.personality>>
 		<<case "Fussy", "Bossy", "Haughty", "Rowdy">>
 			<<set _thisStress = Number(_thisStress) + 3>>
 		<<case "Diligent", "Curious", "Peppy", "Playful">>
@@ -854,13 +867,15 @@
 	 <</switch>>
 	 
 	 /* If this a foal being nursed by the mother, drop the stress: */
-	 <<if $globalFluffies[_ef].foodType == "Nursing">>
+	 <<if $activeFluffy.foodType == "Nursing">>
 	 	<<set _temp = Number(Number(_thisStress) / 80).toFixed(2)>>
 	 <<else>>
 	 	<<set _temp = Number(Number(_thisStress) / 8).toFixed(2)>>
 	 <</if>>
 
 	<<set _stressor = Number(Number(_stressor) + Number(_temp)).toFixed(2)>>
+
+	<<set $globalFluffies[_ef] = $activeFluffy>>
 
 <</for>> /* Close store loop */
 

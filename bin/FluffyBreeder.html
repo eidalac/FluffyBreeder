@@ -20246,7 +20246,7 @@ button {
 		&lt;&lt;set $subEvent = random(6, 10)&gt;&gt;
 	/* Filthy neutral! (= 0) */
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set _subEvent = random(3, 7)&gt;&gt;
+		&lt;&lt;set $subEvent = random(3, 7)&gt;&gt;
 	&lt;&lt;/if&gt;&gt; /* Close leaning check*/
 
  	/* Now a random chance to raise/lower the event number based on player xp and stress */
@@ -20258,7 +20258,7 @@ button {
 
  	/* Better results from higher hubox stat */
  	&lt;&lt;if $hugbox &gt;= random(0,199)&gt;&gt;
-  		&lt;&lt;set _subEvent--&gt;&gt;
+  		&lt;&lt;set $subEvent--&gt;&gt;
  	&lt;&lt;/if&gt;&gt;
 
  	/* Worse events from higher abuse stat: */
@@ -20828,154 +20828,154 @@ Genes       Height multiplier
  *** */
 &lt;&lt;for _ef range $ourStore.fluffies&gt;&gt;
 
-	&lt;&lt;if ndef $globalFluffies[_ef]&gt;&gt;
+	&lt;&lt;set $activeFluffy = $globalFluffies[_ef]&gt;&gt;
+
+	&lt;&lt;if ndef $activeFluffy&gt;&gt;
 		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: ID in store does not exist in globalFluffies: ${_ef}.`)&gt;&gt;
 		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].ID != _ef&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)&gt;&gt;
+	&lt;&lt;if $activeFluffy.ID != _ef&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Invalid ID found: ${$activeFluffy.ID}, Should be ${_ef}.`)&gt;&gt;
 		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
-	&lt;&lt;if $globalFluffies[_ef].dead == true&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: dead fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)&gt;&gt;
+	&lt;&lt;if $activeFluffy.dead == true&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: dead fluffy found: ${$activeFluffy.ID}, Should be ${_ef}.`)&gt;&gt;
 		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].sold == true&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: sold fluffy found: ${$globalFluffies[_ef].ID}, Should be ${_ef}.`)&gt;&gt;
+	&lt;&lt;if $activeFluffy.sold == true&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: sold fluffy found: ${$activeFluffy.ID}, Should be ${_ef}.`)&gt;&gt;
 		&lt;&lt;run $ourStore.fluffies.delete(_ef)&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].dueDate &gt; 7&gt;&gt;
-		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: invalid due date: ${$globalFluffies[_ef].dueDate}.`)&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].dueDate = 7&gt;&gt;
+	&lt;&lt;if $activeFluffy.dueDate &gt; 7&gt;&gt;
+		&lt;&lt;run console.log(`ERROR: [endWeek.tw]: invalid due date: ${$activeFluffy.dueDate}.`)&gt;&gt;
+		&lt;&lt;set $activeFluffy.dueDate = 7&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].specialFriend &gt;= 0&gt;&gt;
-		&lt;&lt;if ndef $globalFluffies[$globalFluffies[_ef].specialFriend]&gt;&gt;
+	&lt;&lt;if $activeFluffy.specialFriend &gt;= 0&gt;&gt;
+		&lt;&lt;if ndef $globalFluffies[$activeFluffy.specialFriend]&gt;&gt;
 			&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Non Defined Special friend found.`)&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].dead == true&gt;&gt;
+			&lt;&lt;if $globalFluffies[$activeFluffy.specialFriend].dead == true&gt;&gt;
 				&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Dead Special friend found.`)&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
-			&lt;&lt;if $globalFluffies[$globalFluffies[_ef].specialFriend].sold == true&gt;&gt;
+			&lt;&lt;if $globalFluffies[$activeFluffy.specialFriend].sold == true&gt;&gt;
 				&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Sold Special friend found.`)&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+				&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
-		&lt;&lt;if $ourStore.fluffies.includes($globalFluffies[_ef].specialFriend) == false&gt;&gt;
+		&lt;&lt;if $ourStore.fluffies.includes($activeFluffy.specialFriend) == false&gt;&gt;
 			&lt;&lt;run console.log(`ERROR: [endWeek.tw]: Invalid Special friend found.`)&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+			&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* First some tedius house keeping: */
-	&lt;&lt;pruneTraits $globalFluffies[_ef]&gt;&gt;
+	&lt;&lt;pruneTraits $activeFluffy&gt;&gt;
 
-	&lt;&lt;if ndef $globalFluffies[_ef].name&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].name = &quot;Fluffy&quot;&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.name&gt;&gt;
+		&lt;&lt;set $activeFluffy.name = &quot;Fluffy&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].gender&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].gender = &quot;Female&quot;&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.gender&gt;&gt;
+		&lt;&lt;set $activeFluffy.gender = &quot;Female&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].geneString&gt;&gt;
-		&lt;&lt;if $globalFluffies[_ef].gender == &quot;Male&quot;&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.geneString&gt;&gt;
+		&lt;&lt;if $activeFluffy.gender == &quot;Male&quot;&gt;&gt;
 			&lt;&lt;set _geneSTR = $grandfatherGene&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;&lt;set _geneSTR = $grandmotherGene&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].weekAcquired&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].weekAcquired = 0&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.weekAcquired&gt;&gt;
+		&lt;&lt;set $activeFluffy.weekAcquired = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].ID&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].ID = $ourStore.fluffies[_ef]&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.ID&gt;&gt;
+		&lt;&lt;set $activeFluffy.ID = $ourStore.fluffies[_ef]&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].specialFriend&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].specialFriend = -1&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.specialFriend&gt;&gt;
+		&lt;&lt;set $activeFluffy.specialFriend = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].pregnant&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].pregnant = false&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.pregnant&gt;&gt;
+		&lt;&lt;set $activeFluffy.pregnant = false&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].pregnantBy&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].pregnantBy = -1&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.pregnantBy&gt;&gt;
+		&lt;&lt;set $activeFluffy.pregnantBy = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].ageWeeks&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].ageWeeks = -1&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.ageWeeks&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageWeeks = -1&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-	&lt;&lt;if ndef $globalFluffies[_ef].foodType&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].foodType = &quot;Kibble&quot;&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.foodType&gt;&gt;
+		&lt;&lt;set $activeFluffy.foodType = &quot;Kibble&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	/* Age up a week. */
-	&lt;&lt;set $globalFluffies[_ef].ageWeeks++&gt;&gt;
+	&lt;&lt;set $activeFluffy.ageWeeks++&gt;&gt;
 	
 	/* turn 52 weeks into a year */
-	&lt;&lt;if Number($globalFluffies[_ef].ageWeeks) &gt; 52&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].ageWeeks = 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].age++&gt;&gt;
+	&lt;&lt;if Number($activeFluffy.ageWeeks) &gt; 52&gt;&gt;
+		&lt;&lt;set $activeFluffy.ageWeeks = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.age++&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
-
-	&lt;&lt;set $activeFluffy = $globalFluffies[_ef]&gt;&gt;
 	
 	&lt;&lt;checkAgeCategory&gt;&gt;
 
-	&lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+	&lt;&lt;switch $activeFluffy.foodType&gt;&gt;
 		&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
-			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.kibble[$activeFluffy.foodQuality])).toFixed(2)&gt;&gt;
 		&lt;&lt;case &quot;Greens&quot;&gt;&gt;
-			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.greens[$activeFluffy.foodQuality])).toFixed(2)&gt;&gt;
 		&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
-			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.sketti[$activeFluffy.foodQuality])).toFixed(2)&gt;&gt;
 		&lt;&lt;case &quot;Formula&quot;&gt;&gt;
-			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$globalFluffies[_ef].foodQuality])).toFixed(2)&gt;&gt;
+			&lt;&lt;set _feedCost = Number(Number(_feedCost) + Number($foodPrice.formula[$activeFluffy.foodQuality])).toFixed(2)&gt;&gt;
 		&lt;&lt;case &quot;Default&quot;&gt;&gt;
 			&lt;&lt;set _feedCost = 0&gt;&gt;
 	&lt;&lt;/switch&gt;&gt;
 
 	/* &lt; 1 year old */
-	&lt;&lt;if $globalFluffies[_ef].ageCategory &lt;= 4&gt;&gt;
+	&lt;&lt;if $activeFluffy.ageCategory &lt;= 4&gt;&gt;
 		&lt;&lt;set $ourStore.foals++&gt;&gt;
 
-	&lt;&lt;elseif $globalFluffies[_ef].gender == &quot;male&quot;&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.gender == &quot;male&quot;&gt;&gt;
 		&lt;&lt;set $ourStore.stallions++&gt;&gt;
 	&lt;&lt;else&gt;&gt;
 		&lt;&lt;set $ourStore.mares++&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* some logic checking */
-	&lt;&lt;if ndef $globalFluffies[_ef].nursing&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].nursing = []&gt;&gt;
+	&lt;&lt;if ndef $activeFluffy.nursing&gt;&gt;
+		&lt;&lt;set $activeFluffy.nursing = []&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	/*
-	&lt;&lt;if $globalFluffies[_ef].nursing &lt; 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].nursing = 0&gt;&gt;
+	&lt;&lt;if $activeFluffy.nursing &lt; 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.nursing = 0&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	*/
 
 	/* Logic check if mother is no longer in the store: */
-	&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.includes($globalFluffies[_ef].mother) == false&gt;&gt;
-		&lt;br&gt;&lt;&lt;- $globalFluffies[_ef].name&gt;&gt; can&#39;t find it&#39;s mother!
-		&lt;&lt;set $globalFluffies[_ef].foodType = &quot;Nothing&quot;&gt;&gt;
+	&lt;&lt;if $activeFluffy.foodType == &quot;Nursing&quot; &amp;&amp; $ourStore.fluffies.includes($activeFluffy.mother) == false&gt;&gt;
+		&lt;br&gt;&lt;&lt;- $activeFluffy.name&gt;&gt; can&#39;t find it&#39;s mother!
+		&lt;&lt;set $activeFluffy.foodType = &quot;Nothing&quot;&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
 	 *	Remove fluffies that die due to old age.
 	 *** */
-	&lt;&lt;if Number($globalFluffies[_ef].maxAge) &lt;= Number($globalFluffies[_ef].age)&gt;&gt;
+	&lt;&lt;if Number($activeFluffy.maxAge) &lt;= Number($activeFluffy.age)&gt;&gt;
 		&lt;&lt;if random(0, 1) == 1&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; does not wake up.  ($globalFluffies[_ef].age /  $globalFluffies[_ef].maxAge years old)
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; does not wake up.  ($activeFluffy.age /  $activeFluffy.maxAge years old)
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
@@ -20985,185 +20985,185 @@ Genes       Height multiplier
 	/*
 	 * 200 - Morbidity
 	 */
-	&lt;&lt;if $globalFluffies[_ef].trauma &gt;= 200&gt;&gt;
+	&lt;&lt;if $activeFluffy.trauma &gt;= 200&gt;&gt;
 		/* Deaded */
-		&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died due to injury. 
+		&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died due to injury. 
 		&lt;br&gt;
-		&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+		&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 180&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 180&gt;&gt;
 		&lt;&lt;if random(0, 2) == 0&gt;&gt;
 			/* Deaded */
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from wounds. 
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died from wounds. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
 			&lt;br&gt;
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $globalFluffies[_ef]&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].trauma += 5&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].temperament -= 5&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress += 5&gt;&gt;
+			&lt;&lt;set $activeFluffy.trauma += 5&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament -= 5&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 5&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 160 - Increasing risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 160&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 160&gt;&gt;
 		&lt;&lt;if random(0, 4) == 0&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from wounds. 
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died from wounds. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from wounds. 
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $globalFluffies[_ef]&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from wounds. 
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 140 - Risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 140&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 140&gt;&gt;
 		&lt;&lt;if random(0, 6) == 0&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from wounds. 
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died from wounds. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from wounds. 
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $globalFluffies[_ef]&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from wounds. 
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 120 - No healing
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 120&gt;&gt;
-		&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from wounds. 
-		&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $globalFluffies[_ef]&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 120&gt;&gt;
+		&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from wounds. 
+		&lt;&lt;fluffSpeech &#39;fluffy_suffering_default&#39; $activeFluffy&gt;&gt;
+		&lt;&lt;set $activeFluffy.temperament -= 2&gt;&gt;
+		&lt;&lt;set $activeFluffy.happy -= 2&gt;&gt;
 	/*
 	 * 80 - Trauma decays into stress
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 80&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].temperament -= 1&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].happy -= 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 80&gt;&gt;
+		&lt;&lt;set $activeFluffy.trauma -= 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.stress += 5&gt;&gt;
+		&lt;&lt;set $activeFluffy.temperament -= 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.happy -= 1&gt;&gt;
 	/*
 	 * 40 - Slow healing
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 40&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 40&gt;&gt;
+		&lt;&lt;set $activeFluffy.trauma -= 1&gt;&gt;
 	/*
 	 * 20 - Normal Healing
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].trauma &gt;= 20&gt;&gt;
-	 	&lt;&lt;set $globalFluffies[_ef].trauma -= 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.trauma &gt;= 20&gt;&gt;
+	 	&lt;&lt;set $activeFluffy.trauma -= 1&gt;&gt;
 	/*
 	 * 10 - quick healing
 	 */
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma -= 2&gt;&gt;
+		&lt;&lt;set $activeFluffy.trauma -= 2&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 	
 	/* Stress ticks */
 	/*
 	 * 200 - Morbidity
 	 */
-	&lt;&lt;if $globalFluffies[_ef].stress &gt;= 200&gt;&gt;
+	&lt;&lt;if $activeFluffy.stress &gt;= 200&gt;&gt;
 		/* Deaded */
-		&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+		&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; has died from stress. 
 		&lt;br&gt;
-		&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+		&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 		&lt;&lt;continue&gt;&gt;
 	/*
 	 * 180 - Increase without treatment, increasing risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 180&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 180&gt;&gt;
 		&lt;&lt;if random(0, 2) == 0&gt;&gt;
 			/* Deaded */
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; has died from stress. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from stress. 
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $globalFluffies[_ef]&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].stress += 10&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].trauma += 2&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].temperament -= 4&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 4&gt;&gt;
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from stress. 
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress += 10&gt;&gt;
+			&lt;&lt;set $activeFluffy.trauma += 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament -= 4&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 4&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 160 - Increasing risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 160&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 160&gt;&gt;
 		&lt;&lt;if random(0, 4) == 0&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died from stress. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from stress. 
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $globalFluffies[_ef]&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].temperament -= 3&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from stress. 
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $activeFluffy&gt;&gt;
+			&lt;&lt;set $activeFluffy.temperament -= 3&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 3&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 140 - Risk of death
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 140&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 140&gt;&gt;
 		&lt;&lt;if random(0, 6) == 0&gt;&gt;
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; has died from stress. 
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; has died from stress. 
 			&lt;br&gt;
-			&lt;&lt;removeFluffy $globalFluffies[_ef] &quot;kill&quot;&gt;&gt;
+			&lt;&lt;removeFluffy $activeFluffy &quot;kill&quot;&gt;&gt;
 			&lt;&lt;continue&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from stress. 
-			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $globalFluffies[_ef]&gt;&gt;&lt;&lt;set $globalFluffies[_ef].temperament -= 2&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 2&gt;&gt;
+			&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from stress. 
+			&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $activeFluffy&gt;&gt;&lt;&lt;set $activeFluffy.temperament -= 2&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 2&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 120 - No healing
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 120&gt;&gt;
-		&lt;br&gt;&lt;&lt;colorizeText $globalFluffies[_ef].cColor.hex $globalFluffies[_ef].name&gt;&gt; is suffering from stress. 
-		&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $globalFluffies[_ef]&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 120&gt;&gt;
+		&lt;br&gt;&lt;&lt;colorizeText $activeFluffy.cColor.hex $activeFluffy.name&gt;&gt; is suffering from stress. 
+		&lt;&lt;fluffSpeech &#39;fluffy_suffering_mental&#39; $activeFluffy&gt;&gt;
 	/*
 	 * 100 - Stress decays into Trauma
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 100&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].trauma += 1&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].temperament -= 1&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].happy -= 1&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 100&gt;&gt;
+		&lt;&lt;set $activeFluffy.trauma += 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.stress -= 5&gt;&gt;
+		&lt;&lt;set $activeFluffy.temperament -= 1&gt;&gt;
+		&lt;&lt;set $activeFluffy.happy -= 1&gt;&gt;
 
 	/*
 	 * 40 - Slow healing; blocked if trauma is over 59
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 40&gt;&gt;
-		&lt;&lt;if $globalFluffies[_ef].trauma &lt; 60&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 40&gt;&gt;
+		&lt;&lt;if $activeFluffy.trauma &lt; 60&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress -= 5&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	/*
 	 * 20 - Normal Healing; blocked if trauma is over 59
 	 */
-	&lt;&lt;elseif $globalFluffies[_ef].stress &gt;= 20&gt;&gt;
-		&lt;&lt;if $globalFluffies[_ef].trauma &lt; 60&gt;&gt;
-	 		&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.stress &gt;= 20&gt;&gt;
+		&lt;&lt;if $activeFluffy.trauma &lt; 60&gt;&gt;
+	 		&lt;&lt;set $activeFluffy.stress -= 5&gt;&gt;
 	 	&lt;&lt;/if&gt;&gt;
 	/*
 	 * 10 - quick healing; blocked if trauma is over 59
 	 */
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;if $globalFluffies[_ef].trauma &lt; 60&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
+		&lt;&lt;if $activeFluffy.trauma &lt; 60&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress -= 10&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
@@ -21178,12 +21178,12 @@ Genes       Height multiplier
 
 	&lt;&lt;set _smartyBase = Number(Number(130) - Number(Number($smartySyndrom) * Number(10)))&gt;&gt;
 
-	&lt;&lt;if $globalFluffies[_ef].temperament &gt;= _smartyBase &amp;&amp; $globalFluffies[_ef].ageCategory &gt;= 3&gt;&gt;
+	&lt;&lt;if $activeFluffy.temperament &gt;= _smartyBase &amp;&amp; $activeFluffy.ageCategory &gt;= 3&gt;&gt;
 
 		/* Random chance to not fire at all: */
 		&lt;&lt;if $smartySyndrom &gt; random(0, 10)&gt;&gt;
 			/* An existing smarty has a 1/4 chance of fireing an event. */
-			&lt;&lt;if $globalFluffies[_ef].traits.includes(&quot;Smarty&quot;)&gt;&gt;
+			&lt;&lt;if $activeFluffy.traits.includes(&quot;Smarty&quot;)&gt;&gt;
 				&lt;&lt;if random(0,3) == 0&gt;&gt;
 					&lt;&lt;run $eventList.push( { target: _ef, type: &quot;Smarty&quot; } )&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
@@ -21193,17 +21193,17 @@ Genes       Height multiplier
 				/* The threshold is Temperament (0-200) minus both Training (0-200) and Trust (0-200) */
 				/* This may be from -200 up to 200 */
 				/* Divide by 2 and normalize to 0 to 100 */
-				&lt;&lt;set _smartyThreshold = Number($globalFluffies[_ef].temperament)&gt;&gt;
-				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].training))&gt;&gt;
-				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($globalFluffies[_ef].trust))&gt;&gt;
+				&lt;&lt;set _smartyThreshold = Number($activeFluffy.temperament)&gt;&gt;
+				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($activeFluffy.training))&gt;&gt;
+				&lt;&lt;set _smartyThreshold = Number(Number(_smartyThreshold) - Number($activeFluffy.trust))&gt;&gt;
 				&lt;&lt;set _smartyThreshold = Math.trunc(Number((Number(_smartyThreshold) + 200) / 4))&gt;&gt;
 
 				&lt;&lt;set _smartyChance = 0&gt;&gt;
 
 				/* Odds are based on personality: */
-				&lt;&lt;personalityFix $globalFluffies[_ef]&gt;&gt;
+				&lt;&lt;personalityFix $activeFluffy&gt;&gt;
 
-				&lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
+				&lt;&lt;switch $activeFluffy.personality&gt;&gt;
 					&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
 						/* 70% chance at max threshold: */
 						&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.70)))&gt;&gt;
@@ -21217,7 +21217,7 @@ Genes       Height multiplier
 						/* 05% chance at max threshold: */
 						&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))&gt;&gt;
 					&lt;&lt;default&gt;&gt;
-						&lt;&lt;run console.log(`ERROR: [endWeek]: Defaulted personality, maybe ${$globalFluffies[_ef].personality} is empty string?`)&gt;&gt;
+						&lt;&lt;run console.log(`ERROR: [endWeek]: Defaulted personality, maybe ${$activeFluffy.personality} is empty string?`)&gt;&gt;
 						&lt;&lt;set _smartyThreshold = Math.trunc(Number(Number(_smartyThreshold) * Number(0.05)))&gt;&gt;
 				&lt;&lt;/switch&gt;&gt;
 
@@ -21245,7 +21245,7 @@ Genes       Height multiplier
 	/* ***
 	 *	Create a deck of &#39;cards&#39; for customer wants, based on the fluffies we have on display.
 	 *** */
-	&lt;&lt;if $globalFluffies[_ef].onDisplay == true&gt;&gt;
+	&lt;&lt;if $activeFluffy.onDisplay == true&gt;&gt;
 
 		/* Random chance based on repuation, higher rep better odds of getting a customer. */
 		&lt;&lt;if random(-8, 8) &lt;= Number($reputation/100)&gt;&gt;
@@ -21258,324 +21258,337 @@ Genes       Height multiplier
 	 *	Feed them.
 	 *** */
 	 &lt;&lt;set _foodBonus = 0&gt;&gt;
-	 &lt;&lt;if $globalFluffies[_ef].foodType != &quot;Nothing&quot; &amp;&amp; $globalFluffies[_ef].traits.includes(&#39;Starving&#39;)&gt;&gt;
-		&lt;&lt;run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: false })&gt;&gt;
+	 &lt;&lt;if $activeFluffy.foodType != &quot;Nothing&quot; &amp;&amp; $activeFluffy.traits.includes(&#39;Starving&#39;)&gt;&gt;
+		&lt;&lt;run $eventStarvation.push({ target: $activeFluffy.ID, enable: false })&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
-	 &lt;&lt;switch $globalFluffies[_ef].foodType&gt;&gt;
+	 &lt;&lt;switch $activeFluffy.foodType&gt;&gt;
 	 	&lt;&lt;case &quot;Kibble&quot;&gt;&gt;
-	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
+	 		&lt;&lt;if $activeFluffy.foodQuality &gt; 3&gt;&gt;
 	 		/* Quality has some boni */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trauma -= 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.foodQuality &gt; 2&gt;&gt;
 	 		/* Good */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 8&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.foodQuality &gt; 1&gt;&gt;
 	 		/* Basic */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 5&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &lt; 2&gt;&gt;
 	 		/* Cheap */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 3&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 3&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 3&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 3&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &lt; 1&gt;&gt;
 	 		/* Trash */
-	 			&lt;&lt;set $globalFluffies[_ef].happy -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy -= 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress += 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trauma++&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 
 	 	&lt;&lt;case &quot;Greens&quot;&gt;&gt;
-	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
+	 		&lt;&lt;if $activeFluffy.foodQuality &gt; 3&gt;&gt;
 	 		/* Quality */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trauma -= 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.foodQuality &gt; 2&gt;&gt;
 	 		/* Good */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.foodQuality &gt; 1&gt;&gt;
 	 		/* Basic */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 2&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 8&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &lt; 2&gt;&gt;
 	 		/* Cheap has some malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 5&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma -= 5&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 5&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trauma -= 5&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &lt; 1&gt;&gt;
 	 		/* Trash has more malus */
-	 			&lt;&lt;set $globalFluffies[_ef].happy -= 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress += 3&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trauma++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament--&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy -= 3&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress += 3&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trauma++&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
 	 	&lt;&lt;case &quot;Sketti&quot;&gt;&gt;
-	 		&lt;&lt;if $globalFluffies[_ef].foodQuality &gt; 3&gt;&gt;
+	 		&lt;&lt;if $activeFluffy.foodQuality &gt; 3&gt;&gt;
 	 		/* Quality */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 20&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 20&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 20&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 15&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 2&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 20&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 20&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 20&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament += 15&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &gt; 2&gt;&gt;
 	 		/* Good */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 15&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &gt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 15&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &gt; 1&gt;&gt;
 	 		/* Basic */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 10&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament += 5&gt;&gt;
-			&lt;&lt;elseif $globalFluffies[_ef].foodQuality === 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 10&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament += 5&gt;&gt;
+			&lt;&lt;elseif $activeFluffy.foodQuality === 1&gt;&gt;
 	 		/* Cheap */
-	 			&lt;&lt;set $globalFluffies[_ef].happy += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].trust += 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress -= 8&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
-	 		&lt;&lt;elseif $globalFluffies[_ef].foodQuality &lt; 1&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.trust += 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress -= 8&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+	 		&lt;&lt;elseif $activeFluffy.foodQuality &lt; 1&gt;&gt;
 	 		/* Trash */
-	 			&lt;&lt;set $globalFluffies[_ef].happy++&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].temperament++&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].stress--&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.happy++&gt;&gt;
+				&lt;&lt;set $activeFluffy.temperament++&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.stress--&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
 	 	&lt;&lt;case &quot;Nothing&quot;&gt;&gt;
 	 		/* Quality doesn&#39;t matter */
-			&lt;&lt;set $globalFluffies[_ef].stress += 20&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].trauma += 20&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].happy -= 20&gt;&gt;
- 			&lt;&lt;set $globalFluffies[_ef].trust -= 20&gt;&gt;
- 			&lt;&lt;set $globalFluffies[_ef].temperament -= 20&gt;&gt;
+			&lt;&lt;set $activeFluffy.stress += 20&gt;&gt;
+			&lt;&lt;set $activeFluffy.trauma += 20&gt;&gt;
+			&lt;&lt;set $activeFluffy.happy -= 20&gt;&gt;
+ 			&lt;&lt;set $activeFluffy.trust -= 20&gt;&gt;
+ 			&lt;&lt;set $activeFluffy.temperament -= 20&gt;&gt;
 
-			&lt;&lt;run $eventStarvation.push({ target: $globalFluffies[_ef].ID, enable: true })&gt;&gt;
+			&lt;&lt;run $eventStarvation.push({ target: $activeFluffy.ID, enable: true })&gt;&gt;
 	 &lt;&lt;/switch&gt;&gt;
 	 
 
 	/* ***
 	 *	Grow foals.
 	 *** */
-	&lt;&lt;if $globalFluffies[_ef].ageCategory &lt; 6&gt;&gt;
+	&lt;&lt;if $activeFluffy.ageCategory &lt; 6&gt;&gt;
 
 	 	&lt;&lt;set _wMultiBase = 0.0286&gt;&gt;
 	 	&lt;&lt;set _wMultiAdd = 0.0227&gt;&gt;
 	 	&lt;&lt;set _lMultiBase = 0.22&gt;&gt;
 	 	&lt;&lt;set _lMultiAdd = 0.0177&gt;&gt;
-	 	&lt;&lt;set _newWMulti = Number(($globalFluffies[_ef].ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
+	 	&lt;&lt;set _newWMulti = Number(($activeFluffy.ageWeeks * 0.0227)).toFixed(4)&gt;&gt;
 	 	&lt;&lt;set _newWMulti = Number(Number(_newWMulti) + Number(_wMultiBase)).toFixed(4)&gt;&gt;
-	 	&lt;&lt;set _lengthRatio = Number($globalFluffies[_ef].maxLength / $globalFluffies[_ef].maxWeight).toFixed(3)&gt;&gt;
-	 	&lt;&lt;set _heightRatio = Number($globalFluffies[_ef].maxHeight / $globalFluffies[_ef].maxWeight).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _lengthRatio = Number($activeFluffy.maxLength / $activeFluffy.maxWeight).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _heightRatio = Number($activeFluffy.maxHeight / $activeFluffy.maxWeight).toFixed(3)&gt;&gt;
 
-		&lt;&lt;set _mom = $globalFluffies[$globalFluffies[_ef].mother]&gt;&gt;
+		&lt;&lt;set _mom = $globalFluffies[$activeFluffy.mother]&gt;&gt;
 		
-		&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot;&gt;&gt;
+		&lt;&lt;if $activeFluffy.foodType == &quot;Nursing&quot;&gt;&gt;
 			&lt;&lt;if _mom.nursingMax &lt; _mom.nursing.length&gt;&gt;
 	 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.95).toFixed(3)&gt;&gt;
-				&lt;&lt;run $globalFluffies[_ef].furStage += 4&gt;&gt;
+				&lt;&lt;run $activeFluffy.furStage += 4&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
-		&lt;&lt;elseif $globalFluffies[_ef].foodType == &quot;Nothing&quot;&gt;&gt;
+		&lt;&lt;elseif $activeFluffy.foodType == &quot;Nothing&quot;&gt;&gt;
 			&lt;&lt;set _newWMulti = Number(_newWMulti * 0.50).toFixed(3)&gt;&gt;
 	 	&lt;&lt;else&gt;&gt; 
-	 		&lt;&lt;switch $globalFluffies[_ef].foodQuality&gt;&gt;
+	 		&lt;&lt;switch $activeFluffy.foodQuality&gt;&gt;
 	 			&lt;&lt;case 1&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.9).toFixed(3)&gt;&gt;
-					 &lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.20)).toFixed(0)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+					 &lt;&lt;set _adder = Number(Number($activeFluffy.coatLength) * Number(0.20)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $activeFluffy.furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 2&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
-					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.30)).toFixed(0)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($activeFluffy.coatLength) * Number(0.30)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $activeFluffy.furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 3&gt;&gt;
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.1).toFixed(3)&gt;&gt;
-					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.40)).toFixed(0)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($activeFluffy.coatLength) * Number(0.40)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $activeFluffy.furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;case 4&gt;&gt;	 		
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 1.2).toFixed(3)&gt;&gt;
-					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.50)).toFixed(0)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($activeFluffy.coatLength) * Number(0.50)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $activeFluffy.furStage += Number(_adder)&gt;&gt;
 	 			&lt;&lt;default&gt;&gt; /* 0 */
 	 				&lt;&lt;set _newWMulti = Number(_newWMulti * 0.80).toFixed(3)&gt;&gt;
-					&lt;&lt;set _adder = Number(Number($globalFluffies[_ef].coatLength) * Number(0.10)).toFixed(0)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].furStage += Number(_adder)&gt;&gt;
+					&lt;&lt;set _adder = Number(Number($activeFluffy.coatLength) * Number(0.10)).toFixed(0)&gt;&gt;
+					&lt;&lt;run $activeFluffy.furStage += Number(_adder)&gt;&gt;
 	 		&lt;&lt;/switch&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
 
-		&lt;&lt;set _newW = Number($globalFluffies[_ef].maxWeight * _newWMulti).toFixed(3)&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].weight = Number(_newW).toFixed(3)&gt;&gt;
+		&lt;&lt;set _newW = Number($activeFluffy.maxWeight * _newWMulti).toFixed(3)&gt;&gt;
+		&lt;&lt;set $activeFluffy.weight = Number(_newW).toFixed(3)&gt;&gt;
 		
-	 	&lt;&lt;set _newL = Number($globalFluffies[_ef].weight * _lengthRatio).toFixed(3)&gt;&gt;
-	 	&lt;&lt;set _newH = Number($globalFluffies[_ef].weight * _heightRatio).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _newL = Number($activeFluffy.weight * _lengthRatio).toFixed(3)&gt;&gt;
+	 	&lt;&lt;set _newH = Number($activeFluffy.weight * _heightRatio).toFixed(3)&gt;&gt;
 	 	
-	 	&lt;&lt;set $globalFluffies[_ef].height = Number(_newL).toFixed(2)&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].length = Number(_newH).toFixed(2)&gt;&gt;
+	 	&lt;&lt;set $activeFluffy.height = Number(_newL).toFixed(2)&gt;&gt;
+		&lt;&lt;set $activeFluffy.length = Number(_newH).toFixed(2)&gt;&gt;
 
-		&lt;&lt;if ($globalFluffies[_ef].weight / $globalFluffies[_ef].maxWeight) &gt; 0.14 &amp;&amp; $globalFluffies[_ef].weaned == false&gt;&gt; 	
-	 		/*&lt;&lt;set $globalFluffies[$globalFluffies[_ef].mother].nursing--&gt;&gt;*/
-			 &lt;&lt;set $globalFluffies[$globalFluffies[_ef].mother].nursing.delete(_ef)&gt;&gt;
+		&lt;&lt;if ($activeFluffy.weight / $activeFluffy.maxWeight) &gt; 0.14 &amp;&amp; $activeFluffy.weaned == false&gt;&gt; 	
+	 		/*&lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing--&gt;&gt;*/
+			 &lt;&lt;set $globalFluffies[$activeFluffy.mother].nursing.delete(_ef)&gt;&gt;
 
-			&lt;br&gt;&lt;&lt;print $globalFluffies[_ef].name&gt;&gt; is ready for solid food
-	 		&lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nothing&quot;&gt;&gt;
+			&lt;br&gt;&lt;&lt;print $activeFluffy.name&gt;&gt; is ready for solid food
+	 		&lt;&lt;if $activeFluffy.foodType == &quot;Nothing&quot;&gt;&gt;
 	 			, if it was being fed.
 	 		&lt;&lt;else&gt;&gt;
 	 			.
-	 			&lt;&lt;set $globalFluffies[_ef].foodType = $globalFluffies[$globalFluffies[_ef].mother].foodType&gt;&gt;
-	 			&lt;&lt;set $globalFluffies[_ef].foodQuality = $globalFluffies[$globalFluffies[_ef].mother].foodQuality&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.foodType = $globalFluffies[$activeFluffy.mother].foodType&gt;&gt;
+	 			&lt;&lt;set $activeFluffy.foodQuality = $globalFluffies[$activeFluffy.mother].foodQuality&gt;&gt;
 	 		&lt;&lt;/if&gt;&gt;
 	 		
-	 		&lt;&lt;set $globalFluffies[_ef].weaned = true&gt;&gt;
+	 		&lt;&lt;set $activeFluffy.weaned = true&gt;&gt;
 
-	 		&lt;&lt;if $globalFluffies[$globalFluffies[_ef].mother].length == 0&gt;&gt;
-	 			&lt;br&gt;&lt;&lt;print $globalFluffies[$globalFluffies[_ef].mother].name&gt;&gt; is done nursing.
+	 		&lt;&lt;if $globalFluffies[$activeFluffy.mother].length == 0&gt;&gt;
+	 			&lt;br&gt;&lt;&lt;print $globalFluffies[$activeFluffy.mother].name&gt;&gt; is done nursing.
 	 		&lt;&lt;/if&gt;&gt; 
 	 	&lt;&lt;/if&gt;&gt;
 	&lt;&lt;else&gt;&gt;
-		&lt;&lt;run $globalFluffies[_ef].furStage += Number($globalFluffies[_ef].coatLength)&gt;&gt;
+		&lt;&lt;run $activeFluffy.furStage += Number($activeFluffy.coatLength)&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
 	 *	Check for maturity and update traits:
 	 *** */
-	&lt;&lt;if $globalFluffies[_ef].ageCategory &gt;= 5&gt;&gt;
-		&lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
+	&lt;&lt;if $activeFluffy.ageCategory &gt;= 5&gt;&gt;
+		&lt;&lt;switch $activeFluffy.personality&gt;&gt;
 			&lt;&lt;case &quot;Fussy&quot;&gt;&gt;
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Diligent&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament += 20&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Diligent&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Bossy&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].charm--&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament += 30&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Bossy&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 30&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case &quot;Shy&quot;&gt;&gt;
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Curious&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].energy++&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Curious&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.energy++&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Timid&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].strength--&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Timid&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.strength--&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case &quot;Lazy&quot;&gt;&gt;
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Pensive&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Pensive&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Dull&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].energy--&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Dull&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.energy--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;case &quot;Peppy&quot;&gt;&gt;
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Playful&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].charm++&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament -= 10&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Playful&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Rowdy&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].charm--&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament += 10&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Rowdy&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.charm--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;default&gt;&gt; /* &quot;Cute&quot; */
 				&lt;&lt;if random(0, 1) == 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Sweet&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].learning++&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament -= 10&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy += 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Sweet&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning++&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy += 10&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].personality = &quot;Haughty&quot;&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].learning--&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].temperament += 20&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].happy -= 10&gt;&gt;
+					&lt;&lt;set $activeFluffy.personality = &quot;Haughty&quot;&gt;&gt;
+					&lt;&lt;set $activeFluffy.learning--&gt;&gt;
+					&lt;&lt;set $activeFluffy.temperament += 20&gt;&gt;
+					&lt;&lt;set $activeFluffy.happy -= 10&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 		&lt;&lt;/switch&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
-	&lt;&lt;clampValues $globalFluffies[_ef]&gt;&gt;
+	&lt;&lt;clampValues $activeFluffy&gt;&gt;
 
 	/* ***
 	 *	Check for breeding pairs, and make some babies.
 	 *	need to change this to a preg status change
 	 *** */
-	&lt;&lt;if $globalFluffies[_ef].gender == &quot;female&quot;&gt;&gt;
+	&lt;&lt;if $activeFluffy.gender == &quot;female&quot;&gt;&gt;
 		
-		&lt;&lt;if $globalFluffies[_ef].specialFriend != -1 &amp;&amp; $globalFluffies[_ef].pregnant == false &amp;&amp; $globalFluffies[_ef].nursing &lt;= 0&gt;&gt;
+		&lt;&lt;if $activeFluffy.specialFriend != -1 &amp;&amp; $activeFluffy.pregnant == false &amp;&amp; $activeFluffy.nursing &lt;= 0&gt;&gt;
 			/* Push to event stack  */
-			&lt;&lt;run $eventMating.push($globalFluffies[_ef].ID)&gt;&gt;
+			&lt;&lt;run $eventMating.push($activeFluffy.ID)&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 		
-		&lt;&lt;if $globalFluffies[_ef].pregnant&gt;&gt;
-			&lt;&lt;if $globalFluffies[_ef].dueDate &lt;= 0&gt;&gt;
+		&lt;&lt;if $activeFluffy.pregnant&gt;&gt;
+			&lt;&lt;if $activeFluffy.dueDate &lt;= 0&gt;&gt;
 				/* Push to event stack  */
-				&lt;&lt;run $eventBirths.push($globalFluffies[_ef].ID)&gt;&gt;
+				&lt;&lt;run $eventBirths.push($activeFluffy.ID)&gt;&gt;
 				
-				&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
-				&lt;&lt;set $globalFluffies[_ef].pregnant = false&gt;&gt;
+				&lt;&lt;set $activeFluffy.dueDate = -1&gt;&gt;
+				&lt;&lt;set $activeFluffy.pregnant = false&gt;&gt;
 
-			&lt;&lt;elseif $globalFluffies[_ef].nursing.length &gt; 0&gt;&gt;
-				 &lt;br&gt;&lt;&lt;- $globalFluffies[_ef].name&gt;&gt; is nursing foals.
+			&lt;&lt;elseif $activeFluffy.nursing.length &gt; 0&gt;&gt;
+				 &lt;br&gt;&lt;&lt;- $activeFluffy.name&gt;&gt; is nursing foals.
 			&lt;&lt;else&gt;&gt;
-				&lt;&lt;if $globalFluffies[_ef].dueDate &lt; 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].pregnant = false&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].litter = 0&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].pregnantBy = -1&gt;&gt;
+				&lt;&lt;if $activeFluffy.dueDate &lt; 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.dueDate = -1&gt;&gt;
+					&lt;&lt;set $activeFluffy.pregnant = false&gt;&gt;
+					&lt;&lt;set $activeFluffy.litter = 0&gt;&gt;
+					&lt;&lt;set $activeFluffy.pregnantBy = -1&gt;&gt;
 				&lt;&lt;else&gt;&gt;
-					&lt;&lt;set $globalFluffies[_ef].dueDate--&gt;&gt;
+					&lt;&lt;set $activeFluffy.dueDate--&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/if&gt;&gt;
 		&lt;&lt;else&gt;&gt;
-			&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
+			&lt;&lt;set $activeFluffy.dueDate = -1&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: endWeek: ${$globalFluffies[_ef].name} nursing ${$globalFluffies[_ef].nursing.length}.`)&gt;&gt;
+		&lt;&lt;run console.log(`DEBUG: endWeek: ${$activeFluffy.name} nursing ${$activeFluffy.nursing.length}.`)&gt;&gt;
 
-		&lt;&lt;if $globalFluffies[_ef].nursing.length &gt; 0&gt;&gt;
-			&lt;&lt;for _child range $globalFluffies[_ef].nursing&gt;&gt;
+		&lt;&lt;if $activeFluffy.nursing.length &gt; 0&gt;&gt;
+			&lt;&lt;for _child range $activeFluffy.nursing&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} dead: ${$globalFluffies[_child].dead} sold ${$globalFluffies[_child].sold}.`)&gt;&gt;
-				&lt;&lt;if $globalFluffies[_child].dead || $globalFluffies[_child].sold&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
+				&lt;&lt;if ndef _child&gt;&gt;
+					&lt;&lt;run console.log(`DEBUG: endWeek: ndef on _child.`)&gt;&gt;
+				&lt;&lt;else&gt;&gt;
 
-&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${$globalFluffies[_child].weaned} ageCategory ${$globalFluffies[_child].ageCategory}.`)&gt;&gt;
-				&lt;&lt;if $globalFluffies[_child].weaned || $globalFluffies[_child].ageCategory &gt; 3&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
-				&lt;&lt;/if&gt;&gt;
+					&lt;&lt;set _childFluffy = $globalFluffies[_child]&gt;&gt;
 
-				&lt;&lt;if $ourStore.fluffies.includes(_child) == false&gt;&gt;
-					&lt;&lt;run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)&gt;&gt;
-					&lt;&lt;run $globalFluffies[_ef].nursing.delete(_child)&gt;&gt;
+					&lt;&lt;if ndef _childFluffy&gt;&gt;
+						&lt;&lt;run $activeFluffy.nursing.delete(_child)&gt;&gt;
+					&lt;&lt;else&gt;&gt;
+						&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} dead: ${_childFluffy.dead} sold ${_childFluffy.sold}.`)&gt;&gt;
+
+						&lt;&lt;if _childFluffy.dead || _childFluffy.sold&gt;&gt;
+							&lt;&lt;run $activeFluffy.nursing.delete(_child)&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+
+						&lt;&lt;run console.log(`DEBUG: endWeek: Child ${_child} weaned: ${_childFluffy.weaned} ageCategory ${_childFluffy.ageCategory}.`)&gt;&gt;
+
+						&lt;&lt;if _childFluffy.weaned || _childFluffy.ageCategory &gt; 3&gt;&gt;
+							&lt;&lt;run $activeFluffy.nursing.delete(_child)&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+
+						&lt;&lt;if $ourStore.fluffies.includes(_child) == false&gt;&gt;
+							&lt;&lt;run console.log(`Error: endWeek: Child ${_child} being nursed but not in store.`)&gt;&gt;
+							&lt;&lt;run $activeFluffy.nursing.delete(_child)&gt;&gt;
+						&lt;&lt;/if&gt;&gt;
+					&lt;&lt;/if&gt;&gt;
 				&lt;&lt;/if&gt;&gt;
 			&lt;&lt;/for&gt;&gt;
 		&lt;&lt;/if&gt;&gt;
-	&lt;&lt;elseif $globalFluffies[_ef].pregnant&gt;&gt;
+	&lt;&lt;elseif $activeFluffy.pregnant&gt;&gt;
 	 	&lt;&lt;run console.log(`ERROR: endWeek: Male with pregnant flag set.`)&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].litter = 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].dueDate = -1&gt;&gt;
+		&lt;&lt;set $activeFluffy.litter = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.dueDate = -1&gt;&gt;
 		&lt;&lt;set $globalFluffies[_efD].pregnant = false&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].pregnantBy = -1&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].nursingTime = 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].nursingMax = 0&gt;&gt;
-		&lt;&lt;set $globalFluffies[_ef].nursing = []&gt;&gt;
+		&lt;&lt;set $activeFluffy.pregnantBy = -1&gt;&gt;
+		&lt;&lt;set $activeFluffy.nursingTime = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.nursingMax = 0&gt;&gt;
+		&lt;&lt;set $activeFluffy.nursing = []&gt;&gt;
 	&lt;&lt;/if&gt;&gt;
 
 	/* ***
@@ -21584,19 +21597,19 @@ Genes       Height multiplier
 	 
 	 /* First get a value based on temperament: */
 	 /* &gt;= 190 - smarty */
-	 &lt;&lt;if $globalFluffies[_ef].temperament &gt;= 190&gt;&gt;
+	 &lt;&lt;if $activeFluffy.temperament &gt;= 190&gt;&gt;
 	 	&lt;&lt;set _thisStress = 4&gt;&gt;
 	 
 	 /* &gt;= 130 - bratty */
-	 &lt;&lt;elseif $globalFluffies[_ef].temperament &gt;= 130&gt;&gt;
+	 &lt;&lt;elseif $activeFluffy.temperament &gt;= 130&gt;&gt;
 	 	&lt;&lt;set _thisStress = 3&gt;&gt;
 	 
 	 /* &gt;= 70 - Normal */
-	 &lt;&lt;elseif $globalFluffies[_ef].temperament &gt;= 70&gt;&gt;
+	 &lt;&lt;elseif $activeFluffy.temperament &gt;= 70&gt;&gt;
 	 	&lt;&lt;set _thisStress = 2&gt;&gt;
 	 
 	 /* &gt;= 10 - Meek */
-	 &lt;&lt;elseif $globalFluffies[_ef].temperament &gt;= 10&gt;&gt;
+	 &lt;&lt;elseif $activeFluffy.temperament &gt;= 10&gt;&gt;
 	 	&lt;&lt;set _thisStress = 1&gt;&gt;
 	 /* &lt; 10 - Afraid */
 	 &lt;&lt;else&gt;&gt;
@@ -21604,7 +21617,7 @@ Genes       Height multiplier
 	 &lt;&lt;/if&gt;&gt;
 	 
 	 /* Then check based on personality: */
-	 &lt;&lt;switch $globalFluffies[_ef].personality&gt;&gt;
+	 &lt;&lt;switch $activeFluffy.personality&gt;&gt;
 		&lt;&lt;case &quot;Fussy&quot;, &quot;Bossy&quot;, &quot;Haughty&quot;, &quot;Rowdy&quot;&gt;&gt;
 			&lt;&lt;set _thisStress = Number(_thisStress) + 3&gt;&gt;
 		&lt;&lt;case &quot;Diligent&quot;, &quot;Curious&quot;, &quot;Peppy&quot;, &quot;Playful&quot;&gt;&gt;
@@ -21616,13 +21629,15 @@ Genes       Height multiplier
 	 &lt;&lt;/switch&gt;&gt;
 	 
 	 /* If this a foal being nursed by the mother, drop the stress: */
-	 &lt;&lt;if $globalFluffies[_ef].foodType == &quot;Nursing&quot;&gt;&gt;
+	 &lt;&lt;if $activeFluffy.foodType == &quot;Nursing&quot;&gt;&gt;
 	 	&lt;&lt;set _temp = Number(Number(_thisStress) / 80).toFixed(2)&gt;&gt;
 	 &lt;&lt;else&gt;&gt;
 	 	&lt;&lt;set _temp = Number(Number(_thisStress) / 8).toFixed(2)&gt;&gt;
 	 &lt;&lt;/if&gt;&gt;
 
 	&lt;&lt;set _stressor = Number(Number(_stressor) + Number(_temp)).toFixed(2)&gt;&gt;
+
+	&lt;&lt;set $globalFluffies[_ef] = $activeFluffy&gt;&gt;
 
 &lt;&lt;/for&gt;&gt; /* Close store loop */
 
@@ -23517,7 +23532,7 @@ Smarty Syndrome is a form of mental illness, resulting in narcissistic behaviour
  *	Version/Release information
  *********** */
 &lt;&lt;unset $releaseID&gt;&gt;
-&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;76969f9&quot;&gt;&gt;
+&lt;&lt;set $ver = &quot;1.41.384-beta&quot;, $releaseID = &quot;9e69969&quot;&gt;&gt;
 &lt;&lt;if ndef $releaseID&gt;&gt;&lt;&lt;set $releaseID = 1&gt;&gt;&lt;&lt;/if&gt;&gt;
 
 /* **********
